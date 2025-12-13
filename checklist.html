@@ -2308,9 +2308,23 @@
                 // Edit existing tier
                 const tierIndex = checklistConfigData.tiers.findIndex(t => t.id === parseInt(id));
                 if (tierIndex !== -1) {
+                    const originalTier = checklistConfigData.tiers[tierIndex];
+                    const trimmedName = name.trim();
+                    
+                    // Check if new name conflicts with another tier (excluding current one)
+                    if (trimmedName !== originalTier.name) {
+                        const conflictingTier = checklistConfigData.tiers.find(
+                            t => t.name.toLowerCase() === trimmedName.toLowerCase() && t.id !== parseInt(id)
+                        );
+                        if (conflictingTier) {
+                            alert('Tier name already exists');
+                            return;
+                        }
+                    }
+                    
                     checklistConfigData.tiers[tierIndex] = {
                         id: parseInt(id),
-                        name: name.trim(),
+                        name: trimmedName,
                         icon: icon.trim(),
                         color: color,
                         visible: true
@@ -2318,12 +2332,23 @@
                 }
             } else {
                 // Add new tier
+                const trimmedName = name.trim();
+                
+                // Check if tier name already exists
+                const existingTier = checklistConfigData.tiers.find(
+                    t => t.name.toLowerCase() === trimmedName.toLowerCase()
+                );
+                if (existingTier) {
+                    alert('Tier name already exists');
+                    return;
+                }
+                
                 const maxId = checklistConfigData.tiers.length > 0 
                     ? Math.max(...checklistConfigData.tiers.map(t => t.id))
                     : 0;
                 checklistConfigData.tiers.push({
                     id: maxId + 1,
-                    name: name.trim(),
+                    name: trimmedName,
                     icon: icon.trim(),
                     color: color,
                     visible: true
@@ -2530,6 +2555,17 @@
                 // Edit existing business
                 const businessIndex = checklistConfigData.businesses.findIndex(b => b.businessCode === originalCode);
                 if (businessIndex !== -1) {
+                    // Check if new code conflicts with another business (excluding current one)
+                    if (code !== originalCode) {
+                        const conflictingBusiness = checklistConfigData.businesses.find(
+                            b => b.businessCode === code && b.businessCode !== originalCode
+                        );
+                        if (conflictingBusiness) {
+                            alert('Business code already exists');
+                            return;
+                        }
+                    }
+                    
                     checklistConfigData.businesses[businessIndex] = {
                         businessCode: code,
                         businessName: name,
