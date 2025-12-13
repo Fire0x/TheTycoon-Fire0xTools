@@ -134,9 +134,15 @@
         <div class="row">
             <div class="col-md-10 mx-auto">
                 <div class="card merchant-card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title mb-3">📖 How to Use This Page</h5>
-                        <div class="mb-3">
+                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                            <span>📖 How to Use This Page</span>
+                            <span class="float-end" id="howToUseToggle">▼</span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="howToUseCollapse">
+                        <div class="card-body">
+                            <div class="mb-3">
                             <h6 class="mb-2"><strong>Step 1: In-Game</strong></h6>
                             <p class="mb-2">Open your chat and type the command:</p>
                             <code class="d-block p-2 mb-3" style="background-color: var(--bg-color); border: 1px solid var(--card-border); border-radius: 0.25rem; color: var(--link-color);">/merchants</code>
@@ -157,6 +163,7 @@
                             
                             <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
                             <p class="mb-0">Click the <span class="badge bg-primary">Parse & Save Merchants</span> button to add them to your tracker!</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1050,8 +1057,46 @@ Merchant #2
             }
         }
 
+        // How to Use Section Collapse State
+        const HOW_TO_USE_STORAGE_KEY = 'merchants_how_to_use_expanded';
+        
+        // Initialize How to Use collapse state
+        function initHowToUseCollapse() {
+            const stored = localStorage.getItem(HOW_TO_USE_STORAGE_KEY);
+            const shouldExpand = stored === null ? true : stored === 'true'; // Default to expanded
+            
+            const collapseElement = document.getElementById('howToUseCollapse');
+            const toggleIcon = document.getElementById('howToUseToggle');
+            
+            if (collapseElement) {
+                const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                    toggle: false
+                });
+                
+                if (!shouldExpand) {
+                    bsCollapse.hide();
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                } else {
+                    bsCollapse.show();
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                }
+                
+                // Listen for collapse events
+                collapseElement.addEventListener('shown.bs.collapse', function() {
+                    localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'true');
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                });
+                
+                collapseElement.addEventListener('hidden.bs.collapse', function() {
+                    localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'false');
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                });
+            }
+        }
+
         // Initialize
         initDebugMode();
+        initHowToUseCollapse();
         loadFromStorage();
         renderMerchants();
         updateAESTTime();
