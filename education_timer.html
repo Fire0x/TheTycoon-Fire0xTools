@@ -627,6 +627,7 @@ Cancel Training</pre>
             
             const collapseElement = document.getElementById('howToUseCollapse');
             const toggleIcon = document.getElementById('howToUseToggle');
+            const toggleButton = document.querySelector('[data-bs-target="#howToUseCollapse"]');
             
             if (collapseElement) {
                 const bsCollapse = new bootstrap.Collapse(collapseElement, {
@@ -636,20 +637,24 @@ Cancel Training</pre>
                 if (!shouldExpand) {
                     bsCollapse.hide();
                     if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
                 } else {
                     bsCollapse.show();
                     if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
                 }
                 
                 // Listen for collapse events
                 collapseElement.addEventListener('shown.bs.collapse', function() {
                     localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'true');
                     if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
                 });
                 
                 collapseElement.addEventListener('hidden.bs.collapse', function() {
                     localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'false');
                     if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
                 });
             }
         }

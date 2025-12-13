@@ -5,15 +5,15 @@
 
 const VersionManager = {
     // Website overall version
-    website: '0.1.0',
+    website: '0.1.1',
     
     // Individual page versions
     pages: {
         'index.html': '0.0.2',
-        'merchants.html': '0.0.3',
-        'checklist.html': '0.0.6',
-        'VehicleDeliveries.html': '0.0.6',
-        'education_timer.html': '0.0.4'
+        'merchants.html': '0.0.4',
+        'checklist.html': '0.0.7',
+        'VehicleDeliveries.html': '0.0.7',
+        'education_timer.html': '0.0.5'
     },
     
     /**

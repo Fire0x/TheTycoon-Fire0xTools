@@ -471,6 +471,9 @@
             <button type="button" class="btn btn-secondary" onclick="uncheckAll()">❌ Uncheck All</button>
             <button type="button" class="btn btn-info" onclick="saveProgress()">💾 Save Progress</button>
             <button type="button" class="btn btn-danger" onclick="clearProgress()">🗑️ Clear Progress</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="debugToggleBtn" onclick="toggleDebug()">
+                <span id="debugToggleText">🔍 Debug: OFF</span>
+            </button>
         </div>
     </main>
 
@@ -799,10 +802,11 @@
                         checklistConfigData.version = CONFIG_VERSION;
                         saveConfigToLocalStorage();
                     }
-                    console.log('✅ Loaded configuration from localStorage');
+                    debugLog('✅ Loaded configuration from localStorage');
+                    if (!debugEnabled) console.log('✅ Loaded configuration from localStorage');
                     return true;
                 } catch (e) {
-                    console.error('Error parsing saved config:', e);
+                    debugError('Error parsing saved config:', e);
                 }
             }
             
@@ -818,7 +822,7 @@
                     checklistConfigData = JSON.parse(saved);
                     return checklistConfigData;
                 } catch (e) {
-                    console.error('Error loading config:', e);
+                    debugError('Error loading config:', e);
                 }
             }
             return null;
@@ -829,7 +833,7 @@
             if (checklistConfigData) {
                 checklistConfigData.version = CONFIG_VERSION;
                 localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(checklistConfigData));
-                console.log('✅ Saved configuration to localStorage');
+                debugLog('✅ Saved configuration to localStorage');
             }
         }
 
@@ -845,7 +849,7 @@
         // Migrate from API (one-time migration)
         async function migrateFromAPI() {
             try {
-                console.log('🔄 Attempting to migrate from API...');
+                debugLog('🔄 Attempting to migrate from API...');
                 
                 // Wait a bit for config files to potentially load
                 await new Promise(resolve => setTimeout(resolve, 200));
@@ -867,7 +871,8 @@
                     }));
                 } else {
                     // Create default tiers if config not available
-                    console.warn('checklistConfig not available, creating empty tier structure');
+                    debugLog('checklistConfig not available, creating empty tier structure');
+                    if (!debugEnabled) console.warn('checklistConfig not available, creating empty tier structure');
                 }
                 
                 // Migrate businesses
@@ -883,10 +888,12 @@
                 
                 checklistConfigData = config;
                 saveConfigToLocalStorage();
-                console.log('✅ Successfully migrated from API');
+                debugLog('✅ Successfully migrated from API');
+                if (!debugEnabled) console.log('✅ Successfully migrated from API');
                 return true;
             } catch (error) {
-                console.warn('⚠️ Could not migrate from API, using empty config:', error.message);
+                debugError('⚠️ Could not migrate from API, using empty config:', error.message);
+                if (!debugEnabled) console.warn('⚠️ Could not migrate from API, using empty config:', error.message);
                 checklistConfigData = getDefaultConfig();
                 saveConfigToLocalStorage();
                 return false;
@@ -902,10 +909,12 @@
         // Load all businesses from localStorage
         function loadAllBusinesses() {
             if (!checklistConfigData) {
-                console.error('Configuration not initialized');
+                debugError('Configuration not initialized');
                 buildChecklist({});
                 return;
             }
+            
+            debugLog('Loading all businesses, total tiers:', getBusinessTiers().length);
             
             // Group businesses by tier
             const businessesByTier = {};
@@ -1686,6 +1695,9 @@
 
         // Load businesses on page load
         window.addEventListener('DOMContentLoaded', async function() {
+            initDebugMode();
+            debugLog('Page initialized');
+            
             updateTimes();
             setInterval(updateTimes, 1000);
             
@@ -1696,7 +1708,7 @@
             if (checklistConfigData) {
                 loadAllBusinesses();
             } else {
-                console.error('Failed to initialize configuration');
+                debugError('Failed to initialize configuration');
                 document.getElementById('loadingAlert').innerHTML = '<span class="text-danger">⚠️ Failed to initialize configuration. Please refresh the page or add tiers/businesses manually.</span>';
             }
         });
@@ -2151,7 +2163,7 @@
                 } else {
                     alert(`Import failed: ${error.message}`);
                 }
-                console.error('Import error:', error);
+                debugError('Import error:', error);
             }
         }
 
