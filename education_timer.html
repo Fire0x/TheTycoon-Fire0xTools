@@ -109,7 +109,7 @@
     <main class="container py-5">
         <h1 class="glow-text">⏱️ Education Time Left</h1>
         <p class="aest-time mb-4">
-            <strong>Current Time (AEST Brisbane, Australia):</strong> 
+            <strong>Current Time (Local):</strong> 
             <span id="aestTime"></span>
         </p>
 
@@ -168,10 +168,9 @@ Cancel Training</pre>
         // Store trainings data (loaded from localStorage)
         let trainings = {};
 
-        // Format AEST date/time
+        // Format local date/time
         function formatAESTDateTime(date) {
-            const aestOptions = {
-                timeZone: 'Australia/Brisbane',
+            const localOptions = {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -180,10 +179,10 @@ Cancel Training</pre>
                 second: '2-digit',
                 hour12: false
             };
-            return date.toLocaleString('en-AU', aestOptions);
+            return date.toLocaleString('en-US', localOptions);
         }
 
-        // Update AEST time
+        // Update local time
         function updateAESTTime() {
             const now = new Date();
             const aestTime = formatAESTDateTime(now);
