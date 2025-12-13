@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Deliveries - Fire0x Incorporated</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/SiteLogo.png">
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        .paste-area {
+            background-color: var(--card-bg);
+            border: 2px dashed var(--card-border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+        .paste-area textarea {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--card-border);
+        }
+        .paste-area textarea:focus {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border-color: var(--link-color);
+        }
+        .paste-area pre {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--card-border);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#"><img src="images/SiteLogo.png" alt="Site Logo" style="height: 40px; margin-right: 10px;">Fire0x Incorporated</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="merchants.html">Traveling Merchants</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="checklist.html">Checklist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="VehicleDeliveries.html">Vehicle Deliveries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="education_timer.html">Education Timer</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <h1 class="glow-text">🚗 Vehicle Deliveries</h1>
+        <p class="lead">Track event and regular vehicle deliveries</p>
+
+        <!-- Event Vehicles Section -->
+        <div class="card mt-4 mb-4">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-link text-white p-0 me-2" onclick="toggleViewMode('eventVehicles')" style="text-decoration: none; font-size: 1.2rem;" title="Toggle view/edit mode">
+                            <span id="eventVehiclesViewIcon">👁️</span>
+                        </button>
+                        <h2 class="mb-0">🎉 Event Vehicles</h2>
+                        <span id="eventVehiclesViewMode" class="badge bg-light text-dark ms-2" style="display: none;">View Only</span>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-light btn-sm" id="eventVehiclesAddBtn" onclick="addEventVehicle()">
+                            ➕ Add New Event
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="eventVehiclesTable">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventVehiclesBody">
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Loading event vehicles...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    <button type="button" class="btn btn-success" id="eventVehiclesSaveBtn" onclick="saveEventVehicles()">
+                        💾 Save Changes
+                    </button>
+                    <span id="eventVehiclesStatus" class="ms-3"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Normal Vehicles Section -->
+        <div class="card mt-4 mb-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-link text-white p-0 me-2" onclick="toggleViewMode('normalVehicles')" style="text-decoration: none; font-size: 1.2rem;" title="Toggle view/edit mode">
+                            <span id="normalVehiclesViewIcon">👁️</span>
+                        </button>
+                        <h2 class="mb-0">🚙 Regular Vehicles</h2>
+                        <span id="normalVehiclesViewMode" class="badge bg-light text-dark ms-2" style="display: none;">View Only</span>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-light btn-sm" id="normalVehiclesAddBtn" onclick="showAddNormalVehicleModal()">
+                            ➕ Add New Vehicle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="normalVehiclesTable">
+                        <thead>
+                            <tr>
+                                <th>Dealer</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="normalVehiclesBody">
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Loading vehicles...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    <button type="button" class="btn btn-success" id="normalVehiclesSaveBtn" onclick="saveNormalVehicles()">
+                        💾 Save Changes
+                    </button>
+                    <span id="normalVehiclesStatus" class="ms-3"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Normal Vehicle Modal -->
+        <div class="modal fade" id="addNormalVehicleModal" tabindex="-1" aria-labelledby="addNormalVehicleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addNormalVehicleModalLabel">Add New Vehicle</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="newVehicleDealer" class="form-label">Dealer</label>
+                            <input type="text" class="form-control" id="newVehicleDealer" placeholder="Enter dealer name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newVehicleType" class="form-label">Type</label>
+                            <input type="text" class="form-control" id="newVehicleType" placeholder="Enter vehicle type">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="addNormalVehicleFromModal()">Add Vehicle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Delivery Progress Section -->
+        <div class="card mt-4 mb-4 shadow-lg">
+            <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-0">🚗 Vehicle Delivery Progress Tracker</h2>
+                        <p class="mb-0 mt-2" style="opacity: 0.9; font-size: 0.95rem;">Track your vehicle delivery progress and unlock requirements</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Summary Statistics -->
+                <div class="row mb-4" id="progressSummary" style="display: none;">
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%); border: none;">
+                            <div class="card-body text-center d-flex flex-column justify-content-center">
+                                <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">🏆 Highest Reputation Needed</h5>
+                                <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="highestRep">
+                                    0
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); border: none;">
+                            <div class="card-body text-center d-flex flex-column justify-content-center">
+                                <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">📦 Total Vehicles Needed</h5>
+                                <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="totalVehiclesNeeded">
+                                    0
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #dda0dd 0%, #ba55d3 100%); border: none;">
+                            <div class="card-body text-center d-flex flex-column justify-content-center">
+                                <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">✅ Unlocked Vehicles</h5>
+                                <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="unlockedCount">
+                                    0
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paste Area -->
+                <div class="paste-area mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 class="mb-0 me-2">📋 Import Vehicle Progress</h5>
+                        <span class="badge bg-info">Quick Import</span>
+                    </div>
+                    <p class="text-muted mb-3">
+                        Copy and paste your vehicle delivery progress from the game. The system will automatically parse vehicle names, 
+                        current progress (e.g., "0/25"), delivery requirements, and reputation needs. 
+                        <strong>Each vehicle should be on separate lines</strong> with its progress and requirements.
+                    </p>
+                    <div class="alert alert-info d-flex align-items-start mb-3" role="alert">
+                        <div class="me-2">💡</div>
+                        <div>
+                            <strong>Format Example:</strong> Each vehicle entry should include the vehicle name, progress ratio, and requirements. 
+                            Unlocked vehicles will show "✅ Unlocked for purchase!" instead of requirements.
+                        </div>
+                    </div>
+                    <pre class="bg-dark text-light p-3 mb-3 small" style="border-radius: 0.5rem; border: 1px solid #444; font-family: 'Courier New', monospace;">AKUMA
+0/25
+Need 25 more deliveries & 8100 more reputation
+
+BATI
+0/24
+Need 24 more deliveries & 7600 more reputation
+
+SANCTUS
+5/5
+✅ Unlocked for purchase!</pre>
+                    <textarea id="vehicleProgressInput" class="form-control" rows="8" placeholder="Paste your vehicle progress data here...&#10;&#10;Example:&#10;AKUMA&#10;0/25&#10;Need 25 more deliveries & 8100 more reputation" style="font-family: 'Courier New', monospace; background-color: var(--bg-color); color: var(--text-color);"></textarea>
+                    <div class="mt-3 d-flex gap-2">
+                        <button class="btn btn-primary btn-lg" onclick="parseAndSaveVehicleProgress()">
+                            <span>✨</span> Parse & Save Progress
+                        </button>
+                        <button class="btn btn-outline-danger btn-lg" onclick="clearAllVehicleProgress()">
+                            <span>🗑️</span> Clear All Progress
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Cards Container -->
+                <div id="vehicleProgressContainer" class="row g-3">
+                    <!-- Vehicle progress cards will be dynamically generated here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="vehicleProgressEmptyState" class="text-center py-5">
+                    <div class="mb-3" style="font-size: 4rem;">🚗</div>
+                    <h4 class="text-muted mb-2">No Vehicle Progress Data</h4>
+                    <p class="text-muted">Paste your vehicle progress data above to get started tracking your deliveries.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+    <!-- Vehicle Deliveries JS -->
+    <script>
+        const API_BASE = '/api';
+        let eventVehicles = [];
+        let normalVehicles = [];
+        
+        // View mode state (true = view only, false = edit mode)
+        const viewModeState = {
+            eventVehicles: false,
+            normalVehicles: false
+        };
+
+        // Status options
+        const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Completed', 'Did Not Complete'];
+
+        // Load event vehicles
+        async function loadEventVehicles() {
+            try {
+                const response = await fetch(`${API_BASE}/event-vehicles`);
+                if (!response.ok) throw new Error('Failed to fetch event vehicles');
+                eventVehicles = await response.json();
+                renderEventVehicles();
+            } catch (error) {
+                console.error('Error loading event vehicles:', error);
+                document.getElementById('eventVehiclesBody').innerHTML = 
+                    '<tr><td colspan="4" class="text-center text-danger">Error loading event vehicles</td></tr>';
+            }
+        }
+
+        // Format date for date input (yyyy-MM-dd)
+        function formatDateForInput(dateValue) {
+            if (!dateValue) return '';
+            // If it's already in yyyy-MM-dd format, return as is
+            if (typeof dateValue === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+                return dateValue;
+            }
+            // If it's a full timestamp, extract just the date part
+            if (typeof dateValue === 'string' && dateValue.includes('T')) {
+                return dateValue.split('T')[0];
+            }
+            // If it's a Date object, format it
+            if (dateValue instanceof Date) {
+                return dateValue.toISOString().split('T')[0];
+            }
+            // Try to parse and format
+            try {
+                const date = new Date(dateValue);
+                if (!isNaN(date.getTime())) {
+                    return date.toISOString().split('T')[0];
+                }
+            } catch (e) {
+                // Ignore parsing errors
+            }
+            return '';
+        }
+
+        // Render event vehicles table
+        function renderEventVehicles() {
+            const tbody = document.getElementById('eventVehiclesBody');
+            const isViewMode = viewModeState.eventVehicles;
+            
+            if (eventVehicles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No event vehicles found. Click "Add New Event" to create one.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = eventVehicles.map(vehicle => {
+                if (isViewMode) {
+                    // View mode - show read-only text
+                    return `
+                        <tr data-id="${vehicle.id}">
+                            <td>${escapeHtml(vehicle.event_name)}</td>
+                            <td><span class="badge bg-info">${escapeHtml(vehicle.status)}</span></td>
+                            <td>${vehicle.last_updated ? formatDateForInput(vehicle.last_updated) : 'N/A'}</td>
+                            <td>-</td>
+                        </tr>
+                    `;
+                } else {
+                    // Edit mode - show inputs
+                    return `
+                        <tr data-id="${vehicle.id}">
+                            <td>
+                                <input type="text" class="form-control form-control-sm event-name-input" 
+                                       value="${escapeHtml(vehicle.event_name)}" 
+                                       data-id="${vehicle.id}">
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm event-status-select" 
+                                        data-id="${vehicle.id}">
+                                    ${STATUS_OPTIONS.map(status => 
+                                        `<option value="${status}" ${vehicle.status === status ? 'selected' : ''}>${status}</option>`
+                                    ).join('')}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control form-control-sm event-date-input" 
+                                       value="${formatDateForInput(vehicle.last_updated)}" 
+                                       data-id="${vehicle.id}">
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                        onclick="deleteEventVehicle(${vehicle.id})">
+                                    🗑️ Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }).join('');
+        }
+
+        // Load normal vehicles
+        async function loadNormalVehicles() {
+            try {
+                console.log('🔍 [DEBUG] Loading normal vehicles from API...');
+                const response = await fetch(`${API_BASE}/normal-vehicles`);
+                if (!response.ok) throw new Error('Failed to fetch normal vehicles');
+                normalVehicles = await response.json();
+                console.log('🔍 [DEBUG] Loaded normal vehicles:', normalVehicles.length);
+                normalVehicles.forEach((vehicle, index) => {
+                    console.log(`  [${index}] ID: ${vehicle.id}, Dealer: ${vehicle.dealer}, Date: "${vehicle.last_updated}"`);
+                });
+                renderNormalVehicles();
+            } catch (error) {
+                console.error('❌ [DEBUG] Error loading normal vehicles:', error);
+                const tbody = document.getElementById('normalVehiclesBody');
+                if (tbody) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading vehicles</td></tr>';
+                }
+            }
+        }
+
+        // Render normal vehicles in single table
+        function renderNormalVehicles() {
+            const tbody = document.getElementById('normalVehiclesBody');
+            const isViewMode = viewModeState.normalVehicles;
+            
+            if (normalVehicles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No vehicles found. Click "Add New Vehicle" to create one.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = normalVehicles.map(vehicle => {
+                if (isViewMode) {
+                    // View mode - show read-only text
+                    return `
+                        <tr data-id="${vehicle.id}">
+                            <td>${escapeHtml(vehicle.dealer)}</td>
+                            <td>${escapeHtml(vehicle.vehicle_type)}</td>
+                            <td><span class="badge bg-info">${escapeHtml(vehicle.status)}</span></td>
+                            <td>${vehicle.last_updated ? formatDateForInput(vehicle.last_updated) : 'N/A'}</td>
+                            <td>-</td>
+                        </tr>
+                    `;
+                } else {
+                    // Edit mode - show inputs
+                    return `
+                        <tr data-id="${vehicle.id}">
+                            <td>
+                                <input type="text" class="form-control form-control-sm normal-dealer-input" 
+                                       value="${escapeHtml(vehicle.dealer)}" 
+                                       data-id="${vehicle.id}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm normal-type-input" 
+                                       value="${escapeHtml(vehicle.vehicle_type)}" 
+                                       data-id="${vehicle.id}">
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm normal-status-select" 
+                                        data-id="${vehicle.id}">
+                                    ${STATUS_OPTIONS.map(status => 
+                                        `<option value="${status}" ${vehicle.status === status ? 'selected' : ''}>${status}</option>`
+                                    ).join('')}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control form-control-sm normal-date-input" 
+                                       value="${formatDateForInput(vehicle.last_updated)}" 
+                                       data-id="${vehicle.id}">
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                        onclick="deleteNormalVehicle(${vehicle.id})">
+                                    🗑️ Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }).join('');
+        }
+
+        // Add new event vehicle
+        function addEventVehicle() {
+            const newVehicle = {
+                id: 'new-' + Date.now(),
+                event_name: '',
+                status: 'Not Started',
+                last_updated: null
+            };
+            eventVehicles.push(newVehicle);
+            renderEventVehicles();
+        }
+
+        // Show add normal vehicle modal
+        function showAddNormalVehicleModal() {
+            const modalElement = document.getElementById('addNormalVehicleModal');
+            
+            // Reset form before showing
+            document.getElementById('newVehicleDealer').value = '';
+            document.getElementById('newVehicleType').value = '';
+            
+            // Get or create modal instance
+            let modal = bootstrap.Modal.getInstance(modalElement);
+            if (!modal) {
+                modal = new bootstrap.Modal(modalElement);
+            }
+            
+            // Focus on first input after modal is fully shown (aria-hidden removed)
+            modalElement.addEventListener('shown.bs.modal', function focusFirstInput() {
+                const firstInput = document.getElementById('newVehicleDealer');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }, { once: true });
+            
+            // Show modal (Bootstrap will remove aria-hidden when shown)
+            modal.show();
+        }
+
+        // Add new normal vehicle from modal
+        function addNormalVehicleFromModal() {
+            const dealer = document.getElementById('newVehicleDealer').value.trim();
+            const type = document.getElementById('newVehicleType').value.trim();
+            
+            if (!dealer || !type) {
+                alert('Please enter both dealer and type');
+                return;
+            }
+            
+            const newVehicle = {
+                id: 'new-' + Date.now(),
+                dealer: dealer,
+                vehicle_type: type,
+                dealer_category: 'Commercial Dealer', // Default category for database compatibility
+                status: 'Not Started',
+                last_updated: null
+            };
+            normalVehicles.push(newVehicle);
+            
+            // Close modal and reset form
+            const modalElement = document.getElementById('addNormalVehicleModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+            document.getElementById('newVehicleDealer').value = '';
+            document.getElementById('newVehicleType').value = '';
+            
+            renderNormalVehicles();
+        }
+
+        // Save event vehicles
+        async function saveEventVehicles() {
+            const statusEl = document.getElementById('eventVehiclesStatus');
+            statusEl.textContent = 'Saving...';
+            statusEl.className = 'ms-3 text-info';
+
+            console.log('🔍 [DEBUG] saveEventVehicles - Starting save process');
+            console.log('🔍 [DEBUG] Total vehicles to process:', eventVehicles.length);
+
+            try {
+                const promises = [];
+
+                for (const vehicle of eventVehicles) {
+                    console.log(`🔍 [DEBUG] Processing vehicle ID: ${vehicle.id}, Name: ${vehicle.event_name}`);
+                    
+                    if (vehicle.id.toString().startsWith('new-')) {
+                        // Create new
+                        const rawDate = getEventVehicleValue(vehicle.id, 'event-date-input');
+                        const dateValue = rawDate && rawDate.trim() !== '' ? rawDate.trim() : null;
+                        console.log(`🔍 [DEBUG] Creating new vehicle - Raw date input: "${rawDate}", Processed date: "${dateValue}"`);
+                        
+                        promises.push(
+                            fetch(`${API_BASE}/event-vehicles`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    event_name: getEventVehicleValue(vehicle.id, 'event-name-input'),
+                                    status: getEventVehicleValue(vehicle.id, 'event-status-select'),
+                                    last_updated: dateValue
+                                })
+                            })
+                        );
+                    } else {
+                        // Update existing
+                        const name = getEventVehicleValue(vehicle.id, 'event-name-input');
+                        const status = getEventVehicleValue(vehicle.id, 'event-status-select');
+                        // Get raw date value from input - HTML date inputs return YYYY-MM-DD format
+                        const rawDate = getEventVehicleValue(vehicle.id, 'event-date-input');
+                        const date = rawDate && rawDate.trim() !== '' ? rawDate.trim() : null;
+                        
+                        console.log(`🔍 [DEBUG] Updating vehicle ${vehicle.id}:`);
+                        console.log(`  - Raw date input: "${rawDate}"`);
+                        console.log(`  - Processed date: "${date}"`);
+                        console.log(`  - Stored date: "${vehicle.last_updated}"`);
+
+                        if (name !== vehicle.event_name) {
+                            promises.push(
+                                fetch(`${API_BASE}/event-vehicles/${vehicle.id}/name`, {
+                                    method: 'PATCH',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ event_name: name })
+                                })
+                            );
+                        }
+                        if (status !== vehicle.status) {
+                            promises.push(
+                                fetch(`${API_BASE}/event-vehicles/${vehicle.id}/status`, {
+                                    method: 'PATCH',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ status })
+                                })
+                            );
+                        }
+                        // Compare dates - use raw date value directly from input (YYYY-MM-DD format)
+                        // Get stored date in same format for comparison
+                        const storedDateStr = vehicle.last_updated ? formatDateForInput(vehicle.last_updated) : '';
+                        const inputDateStr = date || '';
+                        
+                        console.log(`  - Stored date (formatted): "${storedDateStr}"`);
+                        console.log(`  - Input date (formatted): "${inputDateStr}"`);
+                        console.log(`  - Dates match: ${inputDateStr === storedDateStr}`);
+                        
+                        // Only update if dates are different
+                        if (inputDateStr !== storedDateStr) {
+                            console.log(`  ✅ [DEBUG] Date changed - will update to: "${date}"`);
+                            // Send the date exactly as entered (YYYY-MM-DD format) or null
+                            promises.push(
+                                fetch(`${API_BASE}/event-vehicles/${vehicle.id}/date`, {
+                                    method: 'PATCH',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ last_updated: date })
+                                }).then(async (response) => {
+                                    const result = await response.json();
+                                    console.log(`  ✅ [DEBUG] Date update response for ${vehicle.id}:`, result);
+                                    return response;
+                                })
+                            );
+                        } else {
+                            console.log(`  ⏭️ [DEBUG] Date unchanged - skipping update`);
+                        }
+                    }
+                }
+
+                console.log(`🔍 [DEBUG] Executing ${promises.length} update/create operations`);
+                await Promise.all(promises);
+                console.log('✅ [DEBUG] All operations completed successfully');
+                
+                statusEl.textContent = '✅ Saved successfully!';
+                statusEl.className = 'ms-3 text-success';
+                setTimeout(() => {
+                    statusEl.textContent = '';
+                }, 3000);
+                
+                // Reload data
+                console.log('🔍 [DEBUG] Reloading event vehicles data...');
+                await loadEventVehicles();
+            } catch (error) {
+                console.error('Error saving event vehicles:', error);
+                statusEl.textContent = '❌ Error saving changes';
+                statusEl.className = 'ms-3 text-danger';
+            }
+        }
+
+        // Save normal vehicles
+        async function saveNormalVehicles() {
+            const statusEl = document.getElementById('normalVehiclesStatus');
+            statusEl.textContent = 'Saving...';
+            statusEl.className = 'ms-3 text-info';
+
+            try {
+                const promises = [];
+
+                for (const vehicle of normalVehicles) {
+                    if (vehicle.id.toString().startsWith('new-')) {
+                        // Create new
+                        promises.push(
+                            fetch(`${API_BASE}/normal-vehicles`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    dealer: getNormalVehicleValue(vehicle.id, 'normal-dealer-input'),
+                                    vehicle_type: getNormalVehicleValue(vehicle.id, 'normal-type-input'),
+                                    dealer_category: vehicle.dealer_category,
+                                    status: getNormalVehicleValue(vehicle.id, 'normal-status-select'),
+                                    last_updated: (() => {
+                                        const rawDate = getNormalVehicleValue(vehicle.id, 'normal-date-input');
+                                        return rawDate && rawDate.trim() !== '' ? rawDate.trim() : null;
+                                    })()
+                                })
+                            })
+                        );
+                    } else {
+                        // Update existing
+                        const dealer = getNormalVehicleValue(vehicle.id, 'normal-dealer-input');
+                        const type = getNormalVehicleValue(vehicle.id, 'normal-type-input');
+                        const status = getNormalVehicleValue(vehicle.id, 'normal-status-select');
+                        // Get raw date value from input - HTML date inputs return YYYY-MM-DD format
+                        const rawDate = getNormalVehicleValue(vehicle.id, 'normal-date-input');
+                        const date = rawDate && rawDate.trim() !== '' ? rawDate.trim() : null;
+
+                        if (dealer !== vehicle.dealer || type !== vehicle.vehicle_type) {
+                            promises.push(
+                                fetch(`${API_BASE}/normal-vehicles/${vehicle.id}`, {
+                                    method: 'PATCH',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ dealer, vehicle_type: type })
+                                })
+                            );
+                        }
+                        if (status !== vehicle.status) {
+                            promises.push(
+                                fetch(`${API_BASE}/normal-vehicles/${vehicle.id}/status`, {
+                                    method: 'PATCH',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ status })
+                                })
+                            );
+                        }
+                        // Compare dates - use raw date value directly from input (YYYY-MM-DD format)
+                        // Get stored date in same format for comparison
+                        const storedDateStr = vehicle.last_updated ? formatDateForInput(vehicle.last_updated) : '';
+                        const inputDateStr = date || '';
+                        
+                        console.log(`  - Stored date (formatted): "${storedDateStr}"`);
+                        console.log(`  - Input date (formatted): "${inputDateStr}"`);
+                        console.log(`  - Dates match: ${inputDateStr === storedDateStr}`);
+                        
+                        // Only update if dates are different
+                        if (inputDateStr !== storedDateStr) {
+                            console.log(`  ✅ [DEBUG] Date changed - will update to: "${date}"`);
+                            // Send the date exactly as entered (YYYY-MM-DD format) or null
+                            promises.push(
+                                fetch(`${API_BASE}/normal-vehicles/${vehicle.id}/date`, {
+                                    method: 'PATCH',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ last_updated: date })
+                                }).then(async (response) => {
+                                    const result = await response.json();
+                                    console.log(`  ✅ [DEBUG] Date update response for ${vehicle.id}:`, result);
+                                    return response;
+                                })
+                            );
+                        } else {
+                            console.log(`  ⏭️ [DEBUG] Date unchanged - skipping update`);
+                        }
+                    }
+                }
+
+                console.log(`🔍 [DEBUG] Executing ${promises.length} update/create operations`);
+                await Promise.all(promises);
+                console.log('✅ [DEBUG] All operations completed successfully');
+                
+                statusEl.textContent = '✅ Saved successfully!';
+                statusEl.className = 'ms-3 text-success';
+                setTimeout(() => {
+                    statusEl.textContent = '';
+                }, 3000);
+                
+                // Reload data
+                console.log('🔍 [DEBUG] Reloading normal vehicles data...');
+                await loadNormalVehicles();
+            } catch (error) {
+                console.error('Error saving normal vehicles:', error);
+                statusEl.textContent = '❌ Error saving changes';
+                statusEl.className = 'ms-3 text-danger';
+            }
+        }
+
+        // Delete event vehicle
+        async function deleteEventVehicle(id) {
+            if (!confirm('Are you sure you want to delete this event vehicle?')) {
+                return;
+            }
+
+            try {
+                if (id.toString().startsWith('new-')) {
+                    // Remove from local array
+                    eventVehicles = eventVehicles.filter(v => v.id !== id);
+                    renderEventVehicles();
+                } else {
+                    const response = await fetch(`${API_BASE}/event-vehicles/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) throw new Error('Failed to delete');
+                    await loadEventVehicles();
+                }
+            } catch (error) {
+                console.error('Error deleting event vehicle:', error);
+                alert('Error deleting event vehicle');
+            }
+        }
+
+        // Delete normal vehicle
+        async function deleteNormalVehicle(id) {
+            if (!confirm('Are you sure you want to delete this vehicle?')) {
+                return;
+            }
+
+            try {
+                if (id.toString().startsWith('new-')) {
+                    // Remove from local array
+                    normalVehicles = normalVehicles.filter(v => v.id !== id);
+                    renderNormalVehicles();
+                } else {
+                    const response = await fetch(`${API_BASE}/normal-vehicles/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) throw new Error('Failed to delete');
+                    await loadNormalVehicles();
+                }
+            } catch (error) {
+                console.error('Error deleting normal vehicle:', error);
+                alert('Error deleting vehicle');
+            }
+        }
+
+        // Helper functions
+        function getEventVehicleValue(id, className) {
+            const input = document.querySelector(`.${className}[data-id="${id}"]`);
+            return input ? input.value : '';
+        }
+
+        function getNormalVehicleValue(id, className) {
+            const input = document.querySelector(`.${className}[data-id="${id}"]`);
+            return input ? input.value : '';
+        }
+        
+        // Normalize date to yyyy-MM-dd format for comparison
+        // IMPORTANT: Keep dates as strings to avoid timezone issues
+        // Never create Date objects as they cause timezone conversion problems
+        function normalizeDate(dateValue) {
+            if (!dateValue) return '';
+            
+            const str = dateValue.toString().trim();
+            
+            // If it's already in yyyy-MM-dd format, return as is (no conversion needed)
+            if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+                return str;
+            }
+            
+            // If it's a full timestamp, extract just the date part (before T)
+            if (str.includes('T')) {
+                return str.split('T')[0];
+            }
+            
+            // Try to extract date from string without creating Date object
+            // Handle YYYY-MM-DD or YYYY/MM/DD format
+            const ymdMatch = str.match(/(\d{4})[-/](\d{2})[-/](\d{2})/);
+            if (ymdMatch) {
+                return `${ymdMatch[1]}-${ymdMatch[2]}-${ymdMatch[3]}`;
+            }
+            
+            // Handle DD/MM/YYYY or MM/DD/YYYY format
+            const dmyMatch = str.match(/(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+            if (dmyMatch) {
+                // Assume DD/MM/YYYY format (most common outside US)
+                const day = dmyMatch[1].padStart(2, '0');
+                const month = dmyMatch[2].padStart(2, '0');
+                const year = dmyMatch[3];
+                return `${year}-${month}-${day}`;
+            }
+            
+            return '';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ==================== VEHICLE DELIVERY PROGRESS ====================
+        
+        const PROGRESS_STORAGE_KEY = 'vehicle_delivery_progress';
+        let vehicleProgress = {};
+
+        // Parse vehicle progress data from pasted text
+        function parseVehicleProgress(text) {
+            const vehicles = [];
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+            
+            let i = 0;
+            while (i < lines.length) {
+                const line = lines[i];
+                
+                // Skip empty lines and lines that are clearly not vehicle names
+                if (!line || line.includes('Need') || line.includes('✅') || line.match(/^\d+\/\d+$/)) {
+                    i++;
+                    continue;
+                }
+                
+                // This should be a vehicle name
+                const vehicleName = line;
+                i++;
+                
+                // Next line should be current/total (e.g., "0/25")
+                if (i >= lines.length) break;
+                const progressLine = lines[i];
+                const progressMatch = progressLine.match(/^(\d+)\/(\d+)$/);
+                
+                if (!progressMatch) {
+                    i++;
+                    continue; // Skip this vehicle if format is wrong
+                }
+                
+                const current = parseInt(progressMatch[1]);
+                const total = parseInt(progressMatch[2]);
+                const remaining = total - current;
+                const unlocked = current >= total;
+                i++;
+                
+                // Next line(s) might have "Need X more deliveries & Y more reputation" or "✅ Unlocked"
+                let reputation = null;
+                if (i < lines.length) {
+                    const needLine = lines[i];
+                    
+                    // Check for unlocked status
+                    if (needLine.includes('✅ Unlocked')) {
+                        i++;
+                    }
+                    // Check for "Need X more deliveries & Y more reputation"
+                    else {
+                        const needMatch = needLine.match(/Need (\d+) more deliveries(?: & (\d+) more reputation)?/);
+                        if (needMatch) {
+                            if (needMatch[2]) {
+                                reputation = parseInt(needMatch[2]);
+                            }
+                            i++;
+                        }
+                    }
+                }
+                
+                // Create vehicle object
+                vehicles.push({
+                    name: vehicleName,
+                    current: current,
+                    total: total,
+                    remaining: remaining,
+                    reputation: reputation,
+                    unlocked: unlocked
+                });
+            }
+            
+            return vehicles;
+        }
+
+        // Save vehicle progress to localStorage
+        function saveVehicleProgress() {
+            localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(vehicleProgress));
+        }
+
+        // Load vehicle progress from localStorage
+        function loadVehicleProgress() {
+            const stored = localStorage.getItem(PROGRESS_STORAGE_KEY);
+            if (stored) {
+                try {
+                    vehicleProgress = JSON.parse(stored);
+                } catch (e) {
+                    console.error('Error loading vehicle progress:', e);
+                    vehicleProgress = {};
+                }
+            }
+        }
+
+        // Parse and save vehicle progress
+        function parseAndSaveVehicleProgress() {
+            const input = document.getElementById('vehicleProgressInput').value;
+            if (!input.trim()) {
+                alert('Please paste vehicle progress data first!');
+                return;
+            }
+            
+            const parsed = parseVehicleProgress(input);
+            if (parsed.length === 0) {
+                alert('No valid vehicle progress data found. Please check the format.');
+                return;
+            }
+            
+            // Add or update vehicles
+            parsed.forEach(vehicle => {
+                const key = vehicle.name.toLowerCase().replace(/\s+/g, '-');
+                vehicleProgress[key] = vehicle;
+            });
+            
+            saveVehicleProgress();
+            document.getElementById('vehicleProgressInput').value = '';
+            renderVehicleProgress();
+            
+            alert(`Successfully added ${parsed.length} vehicle(s)!`);
+        }
+
+        // Render vehicle progress cards
+        function renderVehicleProgress() {
+            const container = document.getElementById('vehicleProgressContainer');
+            const emptyState = document.getElementById('vehicleProgressEmptyState');
+            const summary = document.getElementById('progressSummary');
+            
+            const keys = Object.keys(vehicleProgress);
+            
+            if (keys.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                summary.style.display = 'none';
+                // Update summary to show 0s
+                document.getElementById('highestRep').textContent = '0';
+                document.getElementById('totalVehiclesNeeded').textContent = '0';
+                document.getElementById('unlockedCount').textContent = '0';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            summary.style.display = 'flex';
+            
+            // Calculate statistics
+            let highestRep = 0;
+            let totalNeeded = 0;
+            let unlockedCount = 0;
+            
+            keys.forEach(key => {
+                const vehicle = vehicleProgress[key];
+                if (!vehicle.unlocked) {
+                    totalNeeded++;
+                    if (vehicle.reputation && vehicle.reputation > highestRep) {
+                        highestRep = vehicle.reputation;
+                    }
+                } else {
+                    unlockedCount++;
+                }
+            });
+            
+            // Update summary
+            document.getElementById('highestRep').textContent = highestRep.toLocaleString('en-US');
+            document.getElementById('totalVehiclesNeeded').textContent = totalNeeded;
+            document.getElementById('unlockedCount').textContent = unlockedCount;
+            
+            // Render cards
+            container.innerHTML = keys.map(key => {
+                const vehicle = vehicleProgress[key];
+                const name = vehicle.name;
+                const current = vehicle.current || 0;
+                const total = vehicle.total || 0;
+                const reputation = vehicle.reputation || null;
+                const unlocked = vehicle.unlocked || (current >= total);
+                const remaining = total - current;
+                
+                let statusText = '';
+                if (unlocked) {
+                    statusText = '✅ Unlocked for purchase!';
+                } else {
+                    statusText = `Need ${remaining} more deliveries`;
+                    if (reputation) {
+                        statusText += ` & ${reputation.toLocaleString('en-US')} more reputation`;
+                    }
+                }
+                
+                const statusClass = unlocked ? 'text-success' : 'text-info';
+                
+                const progressPercent = total > 0 ? Math.round((current / total) * 100) : 0;
+                const cardBg = unlocked ? 'linear-gradient(135deg, #28a745 0%, #20c997 100%)' : 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)';
+                const textColor = unlocked ? '#fff' : '#fff';
+                
+                return `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card shadow-sm h-100" style="background: ${cardBg}; border: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title mb-0" style="color: ${textColor}; font-weight: bold; font-size: 1.25rem;">${escapeHtml(name)}</h5>
+                                    ${unlocked ? '<span style="font-size: 1.5rem;">✅</span>' : ''}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span style="color: ${textColor}; opacity: 0.9;">Progress</span>
+                                        <span style="color: ${textColor}; font-weight: bold; font-size: 1.1rem;">${current}/${total}</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px; background-color: rgba(255,255,255,0.2);">
+                                        <div class="progress-bar" role="progressbar" style="width: ${progressPercent}%; background-color: ${unlocked ? '#fff' : '#3498db'};" aria-valuenow="${progressPercent}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small style="color: ${textColor}; opacity: 0.8;">${progressPercent}% Complete</small>
+                                </div>
+                                
+                                <div class="mt-3 pt-3" style="border-top: 1px solid rgba(255,255,255,0.2);">
+                                    <p class="mb-0" style="color: ${textColor}; font-weight: 500; font-size: 0.95rem;">
+                                        ${statusText}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Clear all vehicle progress
+        function clearAllVehicleProgress() {
+            if (Object.keys(vehicleProgress).length === 0) {
+                alert('No vehicle progress to clear.');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to clear ALL vehicle progress?')) {
+                vehicleProgress = {};
+                saveVehicleProgress();
+                renderVehicleProgress();
+                alert('All vehicle progress cleared!');
+            }
+        }
+
+        // Load data on page load
+        // Toggle view/edit mode for a section
+        function toggleViewMode(sectionName) {
+            viewModeState[sectionName] = !viewModeState[sectionName];
+            const isViewMode = viewModeState[sectionName];
+            
+            // Update icon and badge
+            const icon = document.getElementById(`${sectionName}ViewIcon`);
+            const badge = document.getElementById(`${sectionName}ViewMode`);
+            const addBtn = document.getElementById(`${sectionName}AddBtn`);
+            const saveBtn = document.getElementById(`${sectionName}SaveBtn`);
+            
+            if (isViewMode) {
+                icon.textContent = '✏️';
+                badge.style.display = 'inline-block';
+                if (addBtn) addBtn.style.display = 'none';
+                if (saveBtn) saveBtn.style.display = 'none';
+            } else {
+                icon.textContent = '👁️';
+                badge.style.display = 'none';
+                if (addBtn) addBtn.style.display = 'inline-block';
+                if (saveBtn) saveBtn.style.display = 'inline-block';
+            }
+            
+            // Re-render the table
+            if (sectionName === 'eventVehicles') {
+                renderEventVehicles();
+            } else if (sectionName === 'normalVehicles') {
+                renderNormalVehicles();
+            }
+            
+            // Save state to localStorage
+            localStorage.setItem('vehicle_deliveries_view_mode', JSON.stringify(viewModeState));
+        }
+        
+        // Load view mode state from localStorage
+        function loadViewModeState() {
+            try {
+                const stored = localStorage.getItem('vehicle_deliveries_view_mode');
+                if (stored) {
+                    const savedState = JSON.parse(stored);
+                    Object.keys(savedState).forEach(key => {
+                        if (viewModeState.hasOwnProperty(key)) {
+                            viewModeState[key] = savedState[key];
+                            // Apply the state visually
+                            const icon = document.getElementById(`${key}ViewIcon`);
+                            const badge = document.getElementById(`${key}ViewMode`);
+                            const addBtn = document.getElementById(`${key}AddBtn`);
+                            const saveBtn = document.getElementById(`${key}SaveBtn`);
+                            
+                            if (savedState[key]) {
+                                if (icon) icon.textContent = '✏️';
+                                if (badge) badge.style.display = 'inline-block';
+                                if (addBtn) addBtn.style.display = 'none';
+                                if (saveBtn) saveBtn.style.display = 'none';
+                            }
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Error loading view mode state:', e);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            loadViewModeState();
+            loadEventVehicles();
+            loadNormalVehicles();
+            loadVehicleProgress();
+            renderVehicleProgress();
+        });
+    </script>
+</body>
+</html>
+

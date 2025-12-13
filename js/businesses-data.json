@@ -1,0 +1,792 @@
+{
+  "TIER1-BIZ001": {
+    "business_code": "TIER1-BIZ001",
+    "business_name": "Route 68, Grand Senora Desert (Starter) #1",
+    "tier": "tier_1.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 50,
+    "is_business_50": true,
+    "All_employees_max_level": "Yes",
+    "storage_capacity": 30100,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 1,
+        "name": "Troublesum",
+        "level": 10,
+        "wage": "$170",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "Best Friend",
+        "lore": "Troublesum is the owner and operator of the Route 68 (Starter) #1 fruit stand, the first location in the business chain. Starting from humble beginnings, they've built a reputation for quality produce and excellent customer service.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ002": {
+    "business_code": "TIER1-BIZ002",
+    "business_name": "Seaview Rd, Grapeseed #2",
+    "tier": "tier_1.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 50,
+    "is_business_50": true,
+    "All_employees_max_level": "Yes",
+    "storage_capacity": 30100,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 2,
+        "name": "MrOscarTheHorse",
+        "level": 10,
+        "wage": "$170",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "LifeV, FiveM",
+        "lore": "OscarTheHorse, once a legendary racehorse, now roams the fruitstand in Los Santos. Trading speed for sweetness, he handpicks fresh fruits daily, sharing his stories of the racetrack with locals who cherish his charm and past glory.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ003": {
+    "business_code": "TIER1-BIZ003",
+    "business_name": "Marlowe Dr, Vinewood Hills EAST #3",
+    "tier": "tier_1.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Yes",
+    "storage_capacity": 30100,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 3,
+        "name": "Present",
+        "level": 10,
+        "wage": "$110",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "Present Now works at a bustling fruit stand in Los Santos, brightening days with her cheerful smile. She loves chatting with customers and sharing fresh, juicy fruits. Her sunny personality makes her a local favorite!",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ004": {
+    "business_code": "TIER1-BIZ004",
+    "business_name": "Joshua Rd, Sandy Shores #4",
+    "tier": "tier_1.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "No",
+    "storage_capacity": 40100,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 4,
+        "name": "windowsdonkeys",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "windowsdonkeys joined the Fruit Stand business at Sandy Shores after seeing a help wanted sign. Starting fresh in Los Santos, they found purpose in selling fresh produce and connecting with the local community.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ005": {
+    "business_code": "TIER1-BIZ005",
+    "business_name": "Great Ocean Hwy, Banham Canyon #5",
+    "tier": "tier_1.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "No",
+    "storage_capacity": 30100,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 5,
+        "name": "connfusion",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "connfusion discovered the Fruit Stand opportunity at Banham Canyon while exploring the coast. Drawn to the simple life of fresh fruit sales, they applied and found a new home among the stands.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ006": {
+    "business_code": "TIER1-BIZ006",
+    "business_name": "Marlowe Dr (2), Vinewood WEST #6",
+    "tier": "tier_1.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "No",
+    "storage_capacity": 30100,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 6,
+        "name": "OoShaneoO",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "OoShaneoO joined the Fruit Stand in Vinewood West after a friend recommended the job. They quickly fell in love with the daily rhythm of stocking shelves and helping customers find the perfect fruit.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ007": {
+    "business_code": "TIER1-BIZ007",
+    "business_name": "Placeholder Business Name",
+    "tier": "tier_1.html",
+    "status": "Not Purchased",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 0,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 7,
+        "name": "Science99",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "Science99 was recruited to the Fruit Stand at TBD #7 through a community job fair. Their analytical mind helps track inventory while their friendly nature keeps customers coming back.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ008": {
+    "business_code": "TIER1-BIZ008",
+    "business_name": "Placeholder Business Name",
+    "tier": "tier_1.html",
+    "status": "Not Purchased",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 0,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 8,
+        "name": "shishkabob",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "shishkabob joined the Fruit Stand at TBD #8 after walking past and seeing the vibrant display. They applied on the spot, drawn to the fresh produce and the chance to work outdoors.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ009": {
+    "business_code": "TIER1-BIZ009",
+    "business_name": "Placeholder Business Name",
+    "tier": "tier_1.html",
+    "status": "Not Purchased",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 0,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 9,
+        "name": "FiskerN",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "FiskerN found their way to the Fruit Stand at TBD #9 through an online job posting. They were looking for a fresh start and found it among the colorful array of fruits and friendly customers.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ010": {
+    "business_code": "TIER1-BIZ010",
+    "business_name": "Placeholder Business Name",
+    "tier": "tier_1.html",
+    "status": "Not Purchased",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 0,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 10,
+        "name": "Makisa",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "AnthonyS1337 joined the Fruit Stand at TBD #10 after a recommendation from a family member. They enjoy the peaceful mornings setting up the stand and the satisfaction of selling quality produce.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ011": {
+    "business_code": "TIER1-BIZ011",
+    "business_name": "Placeholder Business Name",
+    "tier": "tier_1.html",
+    "status": "Not Purchased",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 0,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 11,
+        "name": "AceTiger2K18",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "AceTiger2K18 discovered the Fruit Stand at TBD #11 while exploring new neighborhoods. They applied immediately, excited about the opportunity to work with fresh produce and meet new people daily.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER1-BIZ012": {
+    "business_code": "TIER1-BIZ012",
+    "business_name": "Placeholder Business Name",
+    "tier": "tier_1.html",
+    "status": "Not Purchased",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 0,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 12,
+        "name": "Camastrr",
+        "level": 1,
+        "wage": "$170",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "Camastrr joined the Fruit Stand at TBD #12 after seeing the help wanted sign. They were looking for a stable job and found a welcoming community among the fruit vendors of Los Santos.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER2-BIZ001": {
+    "business_code": "TIER2-BIZ001",
+    "business_name": "Palmino Fwy, Ron Alternates Wind Farm S #1",
+    "tier": "tier_2.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Yes",
+    "storage_capacity": 40000,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 13,
+        "name": "Bobitron5000",
+        "level": 6,
+        "wage": "$120",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "Bobitroon5000 joined the Toll Booth business at Palmino Fwy S #1 after years of experience in traffic management. They bring expertise and dedication to ensuring smooth operations on the highway.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 14,
+        "name": "Silver fox",
+        "level": 6,
+        "wage": "$120",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "Silver fox was recruited to the Toll Booth at Palmino Fwy S #1 for their exceptional customer service skills. They handle transactions with grace and keep the traffic flowing smoothly.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER2-BIZ002": {
+    "business_code": "TIER2-BIZ002",
+    "business_name": "Palmino Fwy, Ron Alternates Wind Farm N #2",
+    "tier": "tier_2.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Yes",
+    "storage_capacity": 40000,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 16,
+        "name": "LunarPheonixx",
+        "level": 2,
+        "wage": "$1200",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "LunarPheonixx came to the Toll Booth at Falmino Fwy N #2 with a background in customer relations. They excel at managing peak traffic hours and ensuring every driver has a smooth experience.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 15,
+        "name": "MrLife",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "MrLife joined the Toll Booth at Falmino Fwy N #2 as a new employee eager to learn. They're quickly adapting to the fast-paced environment and building relationships with regular commuters.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER3-BIZ001": {
+    "business_code": "TIER3-BIZ001",
+    "business_name": "Cool Bean Del Perro #1",
+    "tier": "tier_3.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Yes",
+    "storage_capacity": 100000,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 17,
+        "name": "AnthonyS1337",
+        "level": 10,
+        "wage": "$50",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "AnthonyS1337 joined the Coffee Shop after falling in love with the aroma and atmosphere. They bring passion for perfect espresso and create a welcoming space for every customer who walks through the door.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 19,
+        "name": "Aqualuvsyou",
+        "level": 10,
+        "wage": "$50",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "Aqualuvsyou joined the Coffee Shop with a dream of mastering the art of coffee making. They bring enthusiasm and attention to detail, ensuring every cup served meets the highest standards of quality.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 18,
+        "name": "Wiezbowski",
+        "level": 10,
+        "wage": "$50",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "Wiezbowski discovered the Coffee Shop opportunity through a friend's recommendation. They joined to share their love of coffee culture and create memorable experiences for customers seeking the perfect brew.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER3-BIZ002": {
+    "business_code": "TIER3-BIZ002",
+    "business_name": "BayCity Ave, Vescpucci Canals #2",
+    "tier": "tier_3.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "No",
+    "storage_capacity": 100000,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 22,
+        "name": "Controllable.",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "Controllable. joined the Coffee Shop after walking past the location and being captivated by the aroma. They applied immediately, excited to be part of a team that brings joy to customers through quality coffee and friendly service.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 20,
+        "name": "Sycron",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "Sycron joined the Coffee Shop at BayCity Ave, Vescpucci Canals #2 after discovering the job posting online. They were drawn to the vibrant coffee culture and the opportunity to learn the art of brewing while serving the community.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 21,
+        "name": "TekD.",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "",
+        "lore": "TekD. found their way to the Coffee Shop through a friend's recommendation. They were looking for a new career path and fell in love with the fast-paced environment and the satisfaction of crafting perfect coffee for customers.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER4-BIZ001": {
+    "business_code": "TIER4-BIZ001",
+    "business_name": "Plaice Place, Elysian Island #1",
+    "tier": "tier_4.html",
+    "status": "Open",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "No",
+    "storage_capacity": 80000,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 23,
+        "name": "OneLonelyDad",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "Best Friend",
+        "lore": "OneLonelyDad is the visionary founder and primary operator of the Plaice Place fishery. Starting from humble beginnings, they have built a reputation for sustainable fishing practices and exceptional quality seafood. Their dedication to the business ",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 26,
+        "name": "Miek",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "LifeV, FiveM",
+        "lore": "Miek is a skilled fisherman with years of experience navigating the waters around Elysian Island. Known for their patience and precision, Miek specializes in catching the finest quality fish. Their calm demeanor and expert knowledge of fishing techni",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 24,
+        "name": "Mr.Oscar",
+        "level": 2,
+        "wage": "$1200",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "LifeV, FiveM",
+        "lore": "Mr.Oscar brings a wealth of experience to the Plaice Place fishery. With a background in commercial fishing, they understand the business side of the operation as well as the technical aspects. Their leadership skills and dedication to quality have h",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 25,
+        "name": "Mr.Z",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "Completed",
+        "marketing_level": "",
+        "employed_by": "LifeV, FiveM",
+        "lore": "Mr.Z is a dedicated fisherman who joined Plaice Place to pursue their passion for sustainable fishing. Known for their hard work and attention to detail, Mr.Z ensures that every catch meets the highest standards. Their commitment to excellence and te",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER4-BIZ002": {
+    "business_code": "TIER4-BIZ002",
+    "business_name": "Fishery Lane, Gaulee #2",
+    "tier": "tier_4.html",
+    "status": "Open",
+    "can_collect_items": 1,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 80000,
+    "collection_storage": 91000,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 29,
+        "name": "funnyak472",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "At the clam lines near the Alamo Sea, funnyak472 races the sunrise, cracking crates and checking every shell while gulls circle above the distant Catfish Islands.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 30,
+        "name": "IonDABeast",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "IonDABeast tracks every net that comes in from the Alamo Sea, logging boat callsigns and marking which batches from beyond Catfish Islands get sent straight to premium buyers.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 28,
+        "name": "Kevnn",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "When the shuckers jam and the belts groan, Kevnn is already there with a wrench. They keep the Alamo Sea clam line humming as fog rolls in from the Catfish Islands.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 27,
+        "name": "TheRealMatrix",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "TheRealMatrix balances ice, trucks, and tide charts, timing each clam haul from the Alamo Sea so nothing spoils before it leaves the dock facing the Catfish Islands.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER4-BIZ003": {
+    "business_code": "TIER4-BIZ003",
+    "business_name": "Catfish View, San Chiaanski Mountain Range #3",
+    "tier": "tier_4.html",
+    "status": "Open",
+    "can_collect_items": 1,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 80000,
+    "collection_storage": 81000,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 31,
+        "name": "Exdr",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "Exdr scouts the beaches near the Alamo Sea at dawn, flagging the richest clam beds and radioing back to the factory as mist hides the outline of the Catfish Islands.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 32,
+        "name": "kimmy!",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "On the packing floor, kimmy! lines each box of Alamo Sea clams like a display case, stamping labels while watching barges slide past toward the Catfish Islands.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 33,
+        "name": "linda.biehl2",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "Clip‑board in hand, linda.biehl2 walks the clam plant aisles, checking temps and safety tags as the smell of brine drifts in from the Alamo Sea and the Catfish Islands beyond.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 34,
+        "name": "Snatchem",
+        "level": 1,
+        "wage": "$1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "USDF, Habbo",
+        "lore": "Long after sunset, Snatchem loads the last reefers bound inland, counting pallets of Alamo Sea clams while the lights of boats near Catfish Islands flicker on the water.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER4-BIZ004": {
+    "business_code": "TIER4-BIZ004",
+    "business_name": "Sustancia Rd, Palomino Highlands #4",
+    "tier": "tier_4.html",
+    "status": "Open",
+    "can_collect_items": 1,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "No",
+    "storage_capacity": 80000,
+    "collection_storage": 71000,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": [
+      {
+        "id": 37,
+        "name": "DaddyCool",
+        "level": 1,
+        "wage": "1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "First Day Public Release, TT FiveM",
+        "lore": "Daddy Cool oversees the clam harvesting operations at the factory, coordinating with fishing crews to maintain steady production flow. His years of experience keep the entire facility running smoothly and efficiently.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 35,
+        "name": "jorgeh31",
+        "level": 1,
+        "wage": "1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "First Day Public Release, TT FiveM",
+        "lore": "jorgeh31 works at the clam production facility, specializing in quality control. He ensures each harvested clam meets the highest standards before processing and distribution to local markets throughout the region.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 36,
+        "name": "Neanivea",
+        "level": 1,
+        "wage": "1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "First Day Public Release, TT FiveM",
+        "lore": "Neanivea manages the clam sorting station at the production facility, expertly categorizing clams by size and quality. Her keen eye for detail ensures only premium products reach the packaging department for distribution.",
+        "image_url": "images/default danny.png"
+      },
+      {
+        "id": 38,
+        "name": "tweety",
+        "level": 1,
+        "wage": "1000",
+        "training_status": "In Progress",
+        "marketing_level": "",
+        "employed_by": "First Day Public Release, TT FiveM",
+        "lore": "tweety handles all packaging and shipping logistics at the clam factory. Her exceptional organizational skills ensure timely delivery of fresh clams to restaurants and seafood markets across the entire region.",
+        "image_url": "images/default danny.png"
+      }
+    ]
+  },
+  "TIER5-BIZ001": {
+    "business_code": "TIER5-BIZ001",
+    "business_name": "Placeholder Business Name",
+    "tier": "tier_5.html",
+    "status": "Not Purchased",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 0,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": []
+  },
+  "TIER5-BIZ002": {
+    "business_code": "TIER5-BIZ002",
+    "business_name": "Placeholder Business Name",
+    "tier": "tier_5.html",
+    "status": "Not Purchased",
+    "can_collect_items": false,
+    "Business_level_at": 0,
+    "is_business_50": false,
+    "All_employees_max_level": "Unknown",
+    "storage_capacity": 0,
+    "collection_storage": 0,
+    "level_requirement": 1,
+    "location": "",
+    "slogan": "",
+    "employees": []
+  }
+}

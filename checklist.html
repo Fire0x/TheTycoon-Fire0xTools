@@ -1,0 +1,2589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Checklist - Fire0x Incorporated</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/SiteLogo.png">
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: var(--bg-color);
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        h1.glow-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            border-radius: 0.75rem;
+            padding: 0.625rem 1.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-info {
+            background: var(--info-gradient);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(245, 87, 108, 0.3);
+        }
+
+        .alert {
+            border-radius: 1rem;
+            border: none;
+            box-shadow: var(--card-shadow);
+            padding: 1.25rem 1.5rem;
+        }
+
+        .alert-secondary {
+            background: linear-gradient(135deg, rgba(108, 117, 125, 0.1) 0%, rgba(90, 98, 104, 0.1) 100%);
+            color: var(--text-color);
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+            border-left: 4px solid #4facfe;
+            color: var(--text-color);
+        }
+
+        .form-control, .form-select {
+            border-radius: 0.75rem;
+            border: 2px solid var(--card-border);
+            padding: 0.625rem 1rem;
+            transition: var(--transition);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .form-check-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 0.375rem;
+            border: 2px solid var(--card-border);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-check-label {
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
+        .stock-calc-container {
+            min-width: 200px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            border: 1px solid rgba(102, 126, 234, 0.15);
+        }
+
+        .stock-target-input {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .stock-needed-display-checklist {
+            text-align: center;
+            padding: 0.5rem;
+            min-height: 20px;
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: #11998e;
+            margin-top: 0.5rem;
+        }
+
+        .time-display {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            font-weight: 600;
+        }
+
+        .text-info {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .text-warning {
+            background: var(--warning-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .business-item {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(102, 126, 234, 0.02) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.15);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .business-item:hover {
+            transform: translateX(4px);
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .business-code {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .business-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        small.text-muted {
+            opacity: 0.7;
+            font-weight: 500;
+        }
+
+        hr {
+            opacity: 0.2;
+            margin: 1.25rem 0;
+        }
+
+        .spinner-border {
+            border-color: #667eea;
+            border-right-color: transparent;
+        }
+
+        .config-panel {
+            margin-bottom: 2rem;
+        }
+
+        .config-collapse-btn {
+            width: 100%;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .conversion-display {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .conversion-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .emoji-picker-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .emoji-btn {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji-btn:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            h1.glow-text {
+                font-size: 2rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#"><img src="images/SiteLogo.png" alt="Site Logo" style="height: 40px; margin-right: 10px;">Fire0x Incorporated</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="merchants.html">Traveling Merchants</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="checklist.html">Checklist</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="VehicleDeliveries.html">Vehicle Deliveries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="education_timer.html">Education Timer</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="glow-text">📋 Business Checklist</h1>
+            <p class="lead">Track all open businesses across all tiers</p>
+        </div>
+
+        <!-- Time Displays -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="time-display">
+                                    <strong>🕐 Brisbane, Australia:</strong> 
+                                    <div id="brisbane-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="time-display">
+                                    <strong>🕐 Eastern Time:</strong> 
+                                    <div id="eastern-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <span id="eastern-tz" class="text-muted small">EST</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="time-display">
+                                    <strong>🔄 Server Reboot:</strong> 
+                                    <div id="reboot-countdown" class="text-warning" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <small class="text-muted d-block mt-1">Next: <span id="reboot-time-et">3:00 AM EST</span> / <span id="reboot-time-brisbane">--:-- AEST</span></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Configuration Panel -->
+        <div class="card config-panel">
+            <div class="card-header">
+                <button class="btn btn-link config-collapse-btn text-decoration-none text-white" type="button" data-bs-toggle="collapse" data-bs-target="#configCollapse" aria-expanded="false" aria-controls="configCollapse">
+                    ⚙️ Configuration Management <span class="float-end">▼</span>
+                </button>
+            </div>
+            <div class="collapse" id="configCollapse">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h5>Tier Management</h5>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-primary" onclick="openAddTierModal()">➕ Add Tier</button>
+                            <button type="button" class="btn btn-info" onclick="openEditTierModal()">✏️ Edit Tier</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h5>Business Management</h5>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-primary" onclick="openAddBusinessModal()">➕ Add Business</button>
+                            <button type="button" class="btn btn-info" onclick="openEditBusinessModal()">✏️ Edit Business</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h5>Import/Export</h5>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-success" onclick="exportConfiguration()">📤 Export Configuration</button>
+                            <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Configuration</button>
+                            <button type="button" class="btn btn-info" onclick="generatePersonTableString()">📋 Generate Checklist</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-secondary" role="alert" id="loadingAlert">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Loading businesses from localStorage...
+        </div>
+
+        <!-- Dynamic Content Container -->
+        <div id="checklistContainer">
+            <!-- Content will be dynamically generated here -->
+        </div>
+
+        <!-- Summary -->
+        <div class="alert alert-info mt-4" role="alert" id="summaryAlert" style="display: none;">
+            <h5 class="alert-heading" style="font-weight: 700; font-size: 1.3rem; margin-bottom: 1rem;">📊 Summary</h5>
+            <p class="mb-0" id="summaryContent" style="font-size: 1.05rem; line-height: 1.8;">
+                <!-- Summary will be dynamically generated here -->
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-4 d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-primary" onclick="checkAll()">✅ Check All</button>
+            <button type="button" class="btn btn-secondary" onclick="uncheckAll()">❌ Uncheck All</button>
+            <button type="button" class="btn btn-info" onclick="saveProgress()">💾 Save Progress</button>
+            <button type="button" class="btn btn-danger" onclick="clearProgress()">🗑️ Clear Progress</button>
+        </div>
+    </main>
+
+    <!-- Tier Modal -->
+    <div class="modal fade" id="tierModal" tabindex="-1" aria-labelledby="tierModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tierModalLabel">Add/Edit Tier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="tierForm">
+                        <input type="hidden" id="tierId" value="">
+                        <div class="mb-3">
+                            <label for="tierName" class="form-label">Tier Name</label>
+                            <input type="text" class="form-control" id="tierName" required placeholder="e.g., Tier 1: Fruit Stand">
+                        </div>
+                        <div class="mb-3">
+                            <label for="tierIcon" class="form-label">Icon (Emoji)</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" id="tierIcon" placeholder="e.g., 🍎" maxlength="2">
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleEmojiPicker()" title="Show emoji picker">
+                                    😀
+                                </button>
+                            </div>
+                            <div id="emojiPicker" class="emoji-picker-container" style="display: none;">
+                                <div class="emoji-grid">
+                                    <!-- Food & Drink -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🍎')" title="Apple">🍎</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('☕')" title="Coffee">☕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🍔')" title="Burger">🍔</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🍕')" title="Pizza">🍕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🍰')" title="Cake">🍰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥤')" title="Drink">🥤</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🐟')" title="Fish">🐟</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥩')" title="Meat">🥩</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌾')" title="Wheat">🌾</button>
+                                    <!-- Buildings & Places -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏪')" title="Store">🏪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏭')" title="Factory">🏭</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏢')" title="Office">🏢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏨')" title="Hotel">🏨</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏦')" title="Bank">🏦</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏥')" title="Hospital">🏥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏫')" title="School">🏫</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏬')" title="Department Store">🏬</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏰')" title="Castle">🏰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏯')" title="Japanese Castle">🏯</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏛️')" title="Building">🏛️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛪')" title="Church">⛪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏗️')" title="Construction">🏗️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏠')" title="House">🏠</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏡')" title="House with Garden">🏡</button>
+                                    <!-- Vehicles -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚗')" title="Car">🚗</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚚')" title="Truck">🚚</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚢')" title="Ship">🚢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('✈️')" title="Plane">✈️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚁')" title="Helicopter">🚁</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚀')" title="Rocket">🚀</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚂')" title="Train">🚂</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚌')" title="Bus">🚌</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛽')" title="Gas">⛽</button>
+                                    <!-- Money & Business -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💰')" title="Money">💰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💎')" title="Diamond">💎</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💼')" title="Briefcase">💼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📊')" title="Chart">📊</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📈')" title="Growth">📈</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📦')" title="Package">📦</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛒')" title="Shopping">🛒</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛍️')" title="Shopping Bags">🛍️</button>
+                                    <!-- Entertainment -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎪')" title="Circus">🎪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎮')" title="Game">🎮</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎨')" title="Art">🎨</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎵')" title="Music">🎵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎭')" title="Theater">🎭</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎬')" title="Movie">🎬</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎰')" title="Slot">🎰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎲')" title="Dice">🎲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎫')" title="Ticket">🎫</button>
+                                    <!-- Technology -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📱')" title="Phone">📱</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💻')" title="Computer">💻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📺')" title="TV">📺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📻')" title="Radio">📻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📷')" title="Camera">📷</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎥')" title="Video">🎥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔧')" title="Tool">🔧</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⚙️')" title="Gear">⚙️</button>
+                                    <!-- Symbols & Status -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⭐')" title="Star">⭐</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔥')" title="Fire">🔥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⚡')" title="Lightning">⚡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎯')" title="Target">🎯</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏆')" title="Trophy">🏆</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👑')" title="Crown">👑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💍')" title="Ring">💍</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔑')" title="Key">🔑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎁')" title="Gift">🎁</button>
+                                    <!-- Nature -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌳')" title="Tree">🌳</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌍')" title="Globe">🌍</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗺️')" title="Map">🗺️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛰️')" title="Mountain">⛰️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌋')" title="Volcano">🌋</button>
+                                    <!-- Documents & Items -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📄')" title="Document">📄</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📝')" title="Memo">📝</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧪')" title="Science">🧪</button>
+                                    <!-- Landmarks -->
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗼')" title="Tokyo Tower">🗼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗽')" title="Statue of Liberty">🗽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛲')" title="Fountain">⛲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎡')" title="Ferris Wheel">🎡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎢')" title="Roller Coaster">🎢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏟️')" title="Stadium">🏟️</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tierColor" class="form-label">Color Class</label>
+                            <select class="form-select" id="tierColor">
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🍎')" title="Apple">🍎</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📄')" title="Document">📄</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('☕')" title="Coffee">☕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🐟')" title="Fish">🐟</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏪')" title="Store">🏪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💰')" title="Money">💰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚗')" title="Car">🚗</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏭')" title="Factory">🏭</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏢')" title="Office">🏢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏨')" title="Hotel">🏨</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🍔')" title="Burger">🍔</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🍕')" title="Pizza">🍕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🍰')" title="Cake">🍰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥤')" title="Drink">🥤</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛒')" title="Shopping">🛒</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📦')" title="Package">📦</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚚')" title="Truck">🚚</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛽')" title="Gas">⛽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏗️')" title="Construction">🏗️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌳')" title="Tree">🌳</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌾')" title="Wheat">🌾</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥩')" title="Meat">🥩</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧪')" title="Science">🧪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💎')" title="Diamond">💎</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⚡')" title="Lightning">⚡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔥')" title="Fire">🔥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⭐')" title="Star">⭐</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎯')" title="Target">🎯</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📊')" title="Chart">📊</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📈')" title="Growth">📈</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💼')" title="Briefcase">💼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎪')" title="Circus">🎪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎮')" title="Game">🎮</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎨')" title="Art">🎨</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎵')" title="Music">🎵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📱')" title="Phone">📱</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💻')" title="Computer">💻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔧')" title="Tool">🔧</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⚙️')" title="Gear">⚙️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔑')" title="Key">🔑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎁')" title="Gift">🎁</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏆')" title="Trophy">🏆</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👑')" title="Crown">👑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💍')" title="Ring">💍</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎲')" title="Dice">🎲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎰')" title="Slot">🎰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎫')" title="Ticket">🎫</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌍')" title="Globe">🌍</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗺️')" title="Map">🗺️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚢')" title="Ship">🚢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('✈️')" title="Plane">✈️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚁')" title="Helicopter">🚁</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏰')" title="Castle">🏰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏛️')" title="Building">🏛️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛪')" title="Church">⛪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎭')" title="Theater">🎭</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎬')" title="Movie">🎬</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📺')" title="TV">📺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📻')" title="Radio">📻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📷')" title="Camera">📷</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎥')" title="Video">🎥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎤')" title="Microphone">🎤</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎧')" title="Headphones">🎧</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎹')" title="Piano">🎹</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥁')" title="Drum">🥁</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎸')" title="Guitar">🎸</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎺')" title="Trumpet">🎺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎷')" title="Saxophone">🎷</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎻')" title="Violin">🎻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛍️')" title="Shopping Bags">🛍️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏦')" title="Bank">🏦</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏥')" title="Hospital">🏥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏫')" title="School">🏫</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏬')" title="Department Store">🏬</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏯')" title="Japanese Castle">🏯</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏰')" title="European Castle">🏰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗼')" title="Tokyo Tower">🗼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗽')" title="Statue of Liberty">🗽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛲')" title="Fountain">⛲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛺')" title="Tent">⛺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌋')" title="Volcano">🌋</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗻')" title="Mount Fuji">🗻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏔️')" title="Snow-Capped Mountain">🏔️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛰️')" title="Mountain">⛰️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏕️')" title="Camping">🏕️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏖️')" title="Beach with Umbrella">🏖️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏜️')" title="Desert">🏜️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏝️')" title="Desert Island">🏝️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏞️')" title="National Park">🏞️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏟️')" title="Stadium">🏟️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏠')" title="House">🏠</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏡')" title="House with Garden">🏡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏘️')" title="Houses">🏘️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏚️')" title="Derelict House">🏚️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏗️')" title="Building Construction">🏗️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏘️')" title="Houses">🏘️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏙️')" title="Cityscape">🏙️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌆')" title="Cityscape at Dusk">🌆</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌇')" title="Sunset">🌇</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌃')" title="Night with Stars">🌃</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌉')" title="Bridge at Night">🌉</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌌')" title="Milky Way">🌌</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎠')" title="Carousel Horse">🎠</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎡')" title="Ferris Wheel">🎡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎢')" title="Roller Coaster">🎢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💈')" title="Barber Pole">💈</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎪')" title="Circus Tent">🎪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚂')" title="Locomotive">🚂</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚃')" title="Railway Car">🚃</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚄')" title="High-Speed Train">🚄</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚅')" title="Bullet Train">🚅</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚆')" title="Train">🚆</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚇')" title="Metro">🚇</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚈')" title="Light Rail">🚈</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚉')" title="Station">🚉</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚊')" title="Tram">🚊</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚝')" title="Monorail">🚝</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚞')" title="Mountain Railway">🚞</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚋')" title="Tram Car">🚋</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚌')" title="Bus">🚌</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚍')" title="Oncoming Bus">🚍</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚎')" title="Trolleybus">🚎</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚐')" title="Minibus">🚐</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚑')" title="Ambulance">🚑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚒')" title="Fire Engine">🚒</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚓')" title="Police Car">🚓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚔')" title="Oncoming Police Car">🚔</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚕')" title="Taxi">🚕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚖')" title="Oncoming Taxi">🚖</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚗')" title="Automobile">🚗</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚘')" title="Oncoming Automobile">🚘</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚙')" title="Sport Utility Vehicle">🚙</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚚')" title="Delivery Truck">🚚</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚛')" title="Articulated Lorry">🚛</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚜')" title="Tractor">🚜</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏎️')" title="Racing Car">🏎️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏍️')" title="Motorcycle">🏍️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛵')" title="Motor Scooter">🛵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🦽')" title="Manual Wheelchair">🦽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🦼')" title="Motorized Wheelchair">🦼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛺')" title="Auto Rickshaw">🛺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚲')" title="Bicycle">🚲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛴')" title="Kick Scooter">🛴</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛹')" title="Skateboard">🛹</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛼')" title="Roller Skate">🛼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚁')" title="Helicopter">🚁</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛸')" title="Flying Saucer">🛸</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚀')" title="Rocket">🚀</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('✈️')" title="Airplane">✈️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛫')" title="Airplane Departure">🛫</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛬')" title="Airplane Arrival">🛬</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪂')" title="Parachute">🪂</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💺')" title="Seat">💺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚢')" title="Ship">🚢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛴️')" title="Ferry">⛴️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛥️')" title="Motor Boat">🛥️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛳️')" title="Passenger Ship">🛳️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛵')" title="Sailboat">⛵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚤')" title="Speedboat">🚤</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛶')" title="Canoe">🛶</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪝')" title="Hook">🪝</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⚓')" title="Anchor">⚓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛽')" title="Fuel Pump">⛽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚧')" title="Construction">🚧</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚦')" title="Vertical Traffic Light">🚦</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚥')" title="Horizontal Traffic Light">🚥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛑')" title="Stop Sign">🛑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚏')" title="Bus Stop">🚏</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗺️')" title="World Map">🗺️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗿')" title="Moai">🗿</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗽')" title="Statue of Liberty">🗽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗼')" title="Tokyo Tower">🗼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏰')" title="Castle">🏰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏯')" title="Japanese Castle">🏯</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏟️')" title="Stadium">🏟️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎡')" title="Ferris Wheel">🎡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎢')" title="Roller Coaster">🎢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎠')" title="Carousel Horse">🎠</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛲')" title="Fountain">⛲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛱️')" title="Beach Umbrella">⛱️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏖️')" title="Beach">🏖️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏝️')" title="Desert Island">🏝️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏜️')" title="Desert">🏜️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌋')" title="Volcano">🌋</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛰️')" title="Mountain">⛰️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏔️')" title="Snow-Capped Mountain">🏔️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗻')" title="Mount Fuji">🗻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏕️')" title="Camping">🏕️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛺')" title="Tent">⛺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏞️')" title="National Park">🏞️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛣️')" title="Motorway">🛣️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛤️')" title="Railway Track">🛤️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛢️')" title="Oil Drum">🛢️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛽')" title="Fuel Pump">⛽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚨')" title="Police Car Light">🚨</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚔')" title="Oncoming Police Car">🚔</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚍')" title="Oncoming Bus">🚍</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚘')" title="Oncoming Automobile">🚘</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚖')" title="Oncoming Taxi">🚖</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚡')" title="Aerial Tramway">🚡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚠')" title="Mountain Cableway">🚠</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚟')" title="Suspension Railway">🚟</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚃')" title="Railway Car">🚃</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚋')" title="Tram Car">🚋</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚞')" title="Mountain Railway">🚞</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚝')" title="Monorail">🚝</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚄')" title="High-Speed Train">🚄</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚅')" title="Bullet Train">🚅</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚈')" title="Light Rail">🚈</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚆')" title="Train">🚆</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚇')" title="Metro">🚇</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚊')" title="Tram">🚊</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚉')" title="Station">🚉</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚌')" title="Bus">🚌</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚎')" title="Trolleybus">🚎</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚐')" title="Minibus">🚐</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚑')" title="Ambulance">🚑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚒')" title="Fire Engine">🚒</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚓')" title="Police Car">🚓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚕')" title="Taxi">🚕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚗')" title="Automobile">🚗</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚙')" title="Sport Utility Vehicle">🚙</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚚')" title="Delivery Truck">🚚</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚛')" title="Articulated Lorry">🚛</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚜')" title="Tractor">🚜</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏎️')" title="Racing Car">🏎️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏍️')" title="Motorcycle">🏍️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛵')" title="Motor Scooter">🛵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🦽')" title="Manual Wheelchair">🦽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🦼')" title="Motorized Wheelchair">🦼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛺')" title="Auto Rickshaw">🛺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚲')" title="Bicycle">🚲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛴')" title="Kick Scooter">🛴</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛹')" title="Skateboard">🛹</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛼')" title="Roller Skate">🛼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚁')" title="Helicopter">🚁</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛸')" title="Flying Saucer">🛸</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚀')" title="Rocket">🚀</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('✈️')" title="Airplane">✈️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛫')" title="Airplane Departure">🛫</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛬')" title="Airplane Arrival">🛬</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪂')" title="Parachute">🪂</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💺')" title="Seat">💺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚢')" title="Ship">🚢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛴️')" title="Ferry">⛴️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛥️')" title="Motor Boat">🛥️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛳️')" title="Passenger Ship">🛳️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛵')" title="Sailboat">⛵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚤')" title="Speedboat">🚤</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛶')" title="Canoe">🛶</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪝')" title="Hook">🪝</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⚓')" title="Anchor">⚓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛽')" title="Fuel Pump">⛽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚧')" title="Construction">🚧</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚦')" title="Vertical Traffic Light">🚦</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚥')" title="Horizontal Traffic Light">🚥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛑')" title="Stop Sign">🛑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚏')" title="Bus Stop">🚏</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗺️')" title="World Map">🗺️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗿')" title="Moai">🗿</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗽')" title="Statue of Liberty">🗽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗼')" title="Tokyo Tower">🗼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏰')" title="Castle">🏰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏯')" title="Japanese Castle">🏯</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏟️')" title="Stadium">🏟️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎡')" title="Ferris Wheel">🎡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎢')" title="Roller Coaster">🎢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎠')" title="Carousel Horse">🎠</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛲')" title="Fountain">⛲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛱️')" title="Beach Umbrella">⛱️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏖️')" title="Beach">🏖️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏝️')" title="Desert Island">🏝️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏜️')" title="Desert">🏜️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🌋')" title="Volcano">🌋</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛰️')" title="Mountain">⛰️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏔️')" title="Snow-Capped Mountain">🏔️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🗻')" title="Mount Fuji">🗻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏕️')" title="Camping">🏕️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛺')" title="Tent">⛺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🏞️')" title="National Park">🏞️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛣️')" title="Motorway">🛣️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛤️')" title="Railway Track">🛤️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛢️')" title="Oil Drum">🛢️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚨')" title="Police Car Light">🚨</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎯')" title="Direct Hit">🎯</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎪')" title="Circus Tent">🎪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎭')" title="Performing Arts">🎭</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🖼️')" title="Framed Picture">🖼️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎨')" title="Artist Palette">🎨</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧵')" title="Thread">🧵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪡')" title="Sewing Needle">🪡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧶')" title="Yarn">🧶</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪢')" title="Knot">🪢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👓')" title="Glasses">👓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🕶️')" title="Sunglasses">🕶️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥽')" title="Goggles">🥽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥼')" title="Lab Coat">🥼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🦺')" title="Safety Vest">🦺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👔')" title="Necktie">👔</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👕')" title="T-Shirt">👕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👖')" title="Jeans">👖</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧣')" title="Scarf">🧣</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧤')" title="Gloves">🧤</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧥')" title="Coat">🧥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧦')" title="Socks">🧦</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👗')" title="Dress">👗</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👘')" title="Kimono">👘</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥻')" title="Sari">🥻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩱')" title="One-Piece Swimsuit">🩱</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩲')" title="Briefs">🩲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩳')" title="Shorts">🩳</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👙')" title="Bikini">👙</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👚')" title="Woman's Clothes">👚</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👛')" title="Purse">👛</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👜')" title="Handbag">👜</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👝')" title="Clutch Bag">👝</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛍️')" title="Shopping Bags">🛍️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎒')" title="Backpack">🎒</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩴')" title="Thong Sandal">🩴</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👞')" title="Man's Shoe">👞</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👟')" title="Running Shoe">👟</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥾')" title="Hiking Boot">🥾</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥿')" title="Flat Shoe">🥿</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👠')" title="High-Heeled Shoe">👠</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👡')" title="Woman's Sandal">👡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩰')" title="Ballet Shoes">🩰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👢')" title="Woman's Boot">👢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪮')" title="Hair Pick">🪮</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👑')" title="Crown">👑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👒')" title="Woman's Hat">👒</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎩')" title="Top Hat">🎩</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎓')" title="Graduation Cap">🎓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧢')" title="Billed Cap">🧢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪖')" title="Military Helmet">🪖</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛑️')" title="Rescue Worker's Helmet">⛑️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📿')" title="Prayer Beads">📿</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💄')" title="Lipstick">💄</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💍')" title="Ring">💍</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💎')" title="Gem Stone">💎</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔇')" title="Muted Speaker">🔇</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔈')" title="Speaker Low Volume">🔈</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔉')" title="Speaker Medium Volume">🔉</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔊')" title="Speaker High Volume">🔊</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📢')" title="Loudspeaker">📢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📣')" title="Megaphone">📣</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📯')" title="Postal Horn">📯</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔔')" title="Bell">🔔</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🔕')" title="Bell with Slash">🔕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎼')" title="Musical Score">🎼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎵')" title="Musical Note">🎵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎶')" title="Musical Notes">🎶</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎙️')" title="Studio Microphone">🎙️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎚️')" title="Level Slider">🎚️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎛️')" title="Control Knobs">🎛️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎤')" title="Microphone">🎤</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎧')" title="Headphone">🎧</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📻')" title="Radio">📻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎷')" title="Saxophone">🎷</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪗')" title="Accordion">🪗</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎸')" title="Guitar">🎸</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪕')" title="Banjo">🪕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎹')" title="Musical Keyboard">🎹</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥁')" title="Drum">🥁</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪘')" title="Long Drum">🪘</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎺')" title="Trumpet">🎺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎻')" title="Violin">🎻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪈')" title="Flute">🪈</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪇')" title="Maracas">🪇</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎪')" title="Circus Tent">🎪</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎭')" title="Performing Arts">🎭</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🖼️')" title="Framed Picture">🖼️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎨')" title="Artist Palette">🎨</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧵')" title="Thread">🧵</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪡')" title="Sewing Needle">🪡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧶')" title="Yarn">🧶</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪢')" title="Knot">🪢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👓')" title="Glasses">👓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🕶️')" title="Sunglasses">🕶️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥽')" title="Goggles">🥽</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥼')" title="Lab Coat">🥼</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🦺')" title="Safety Vest">🦺</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👔')" title="Necktie">👔</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👕')" title="T-Shirt">👕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👖')" title="Jeans">👖</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧣')" title="Scarf">🧣</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧤')" title="Gloves">🧤</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧥')" title="Coat">🧥</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧦')" title="Socks">🧦</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👗')" title="Dress">👗</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👘')" title="Kimono">👘</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥻')" title="Sari">🥻</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩱')" title="One-Piece Swimsuit">🩱</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩲')" title="Briefs">🩲</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩳')" title="Shorts">🩳</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👙')" title="Bikini">👙</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👚')" title="Woman's Clothes">👚</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👛')" title="Purse">👛</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👜')" title="Handbag">👜</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👝')" title="Clutch Bag">👝</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🛍️')" title="Shopping Bags">🛍️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎒')" title="Backpack">🎒</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩴')" title="Thong Sandal">🩴</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👞')" title="Man's Shoe">👞</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👟')" title="Running Shoe">👟</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥾')" title="Hiking Boot">🥾</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🥿')" title="Flat Shoe">🥿</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👠')" title="High-Heeled Shoe">👠</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👡')" title="Woman's Sandal">👡</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🩰')" title="Ballet Shoes">🩰</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👢')" title="Woman's Boot">👢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪮')" title="Hair Pick">🪮</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👑')" title="Crown">👑</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('👒')" title="Woman's Hat">👒</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎩')" title="Top Hat">🎩</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🎓')" title="Graduation Cap">🎓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🧢')" title="Billed Cap">🧢</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🪖')" title="Military Helmet">🪖</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('⛑️')" title="Rescue Worker's Helmet">⛑️</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('📿')" title="Prayer Beads">📿</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💄')" title="Lipstick">💄</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💍')" title="Ring">💍</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('💎')" title="Gem Stone">💎</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tierColor" class="form-label">Color Class</label>
+                            <select class="form-select" id="tierColor">
+                                <option value="bg-primary">Primary</option>
+                                <option value="bg-success">Success</option>
+                                <option value="bg-warning text-dark">Warning</option>
+                                <option value="bg-info">Info</option>
+                                <option value="bg-secondary">Secondary</option>
+                                <option value="bg-danger">Danger</option>
+                                <option value="bg-dark text-white">Dark</option>
+                                <option value="bg-light text-dark">Light</option>
+                                <option value="bg-white text-dark border">White</option>
+                                <option value="bg-primary bg-opacity-75 text-white">Primary (75% opacity)</option>
+                                <option value="bg-success bg-opacity-75 text-white">Success (75% opacity)</option>
+                                <option value="bg-info bg-opacity-75 text-white">Info (75% opacity)</option>
+                                <option value="bg-danger bg-opacity-75 text-white">Danger (75% opacity)</option>
+                                <option value="bg-warning bg-opacity-75 text-dark">Warning (75% opacity)</option>
+                                <option value="bg-secondary bg-opacity-75 text-white">Secondary (75% opacity)</option>
+                                <option value="bg-dark bg-opacity-75 text-white">Dark (75% opacity)</option>
+                                <option value="bg-primary bg-opacity-50 text-white">Primary (50% opacity)</option>
+                                <option value="bg-success bg-opacity-50 text-white">Success (50% opacity)</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTier()">Save Tier</button>
+                    <button type="button" class="btn btn-danger" id="deleteTierBtn" onclick="deleteTier()" style="display: none;">Delete Tier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Business Modal -->
+    <div class="modal fade" id="businessModal" tabindex="-1" aria-labelledby="businessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="businessModalLabel">Add/Edit Business</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="businessForm">
+                        <input type="hidden" id="businessCodeOriginal" value="">
+                        <div class="mb-3">
+                            <label for="businessCode" class="form-label">Business Code</label>
+                            <input type="text" class="form-control" id="businessCode" required placeholder="e.g., TIER1-BIZ001">
+                        </div>
+                        <div class="mb-3">
+                            <label for="businessName" class="form-label">Business Name</label>
+                            <input type="text" class="form-control" id="businessName" required placeholder="e.g., Route 68, Grand Senora Desert">
+                        </div>
+                        <div class="mb-3">
+                            <label for="businessTierId" class="form-label">Tier</label>
+                            <select class="form-select" id="businessTierId" required>
+                                <option value="">Select a tier...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="businessStatus" class="form-label">Status</label>
+                            <select class="form-select" id="businessStatus">
+                                <option value="Open">Open</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="businessMaxStock" class="form-label">Max Stock</label>
+                            <input type="number" class="form-control" id="businessMaxStock" value="0" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="businessCollectionStorage" class="form-label">Collection Storage</label>
+                            <input type="number" class="form-control" id="businessCollectionStorage" value="0" min="0">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="businessCanCollectItems">
+                            <label class="form-check-label" for="businessCanCollectItems">Can Collect Items</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveBusiness()">Save Business</button>
+                    <button type="button" class="btn btn-danger" id="deleteBusinessBtn" onclick="deleteBusiness()" style="display: none;">Delete Business</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import Configuration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> Importing will replace your current configuration. Make sure to export your current config first!
+                    </div>
+                    <div class="mb-3">
+                        <label for="importTextarea" class="form-label">Paste JSON Configuration:</label>
+                        <textarea class="form-control" id="importTextarea" rows="10" placeholder='{"tiers": [...], "businesses": [...]}'></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="importConfiguration()">Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export/Person Table Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">Export / Person Table String</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="copyToClipboard('exportTextarea')">📋 Copy to Clipboard</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exportTextarea" class="form-label">Generated String:</label>
+                        <textarea class="form-control" id="exportTextarea" rows="15" readonly></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+    <!-- Number Formatter (optional) -->
+    <script>
+        // Load number-formatter.js if available
+        (function() {
+            const script = document.createElement('script');
+            script.src = 'js/number-formatter.js';
+            script.onerror = function() {
+                console.warn('number-formatter.js not found, continuing without it');
+            };
+            document.head.appendChild(script);
+        })();
+    </script>
+    <!-- Config JS (optional - for migration only) -->
+    <script>
+        // Load config files if available (for migration purposes)
+        (function() {
+            const scripts = ['js/config-api.js', 'js/config.js'];
+            scripts.forEach(src => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onerror = function() {
+                    console.warn(`${src} not found, continuing without it`);
+                };
+                document.head.appendChild(script);
+            });
+        })();
+    </script>
+    <script>
+        // Wait a bit for config files to load, then set up fallback
+        setTimeout(function() {
+            if (typeof checklistConfig !== 'undefined' && !window.checklistConfigFromConfig) {
+                window.checklistConfigFromConfig = checklistConfig;
+            }
+        }, 100);
+    </script>
+    <!-- Checklist JS -->
+    <script>
+        // localStorage Configuration Data Structure
+        const CONFIG_STORAGE_KEY = 'checklistConfigData';
+        const CONFIG_VERSION = '1.0.0';
+        
+        // Global state
+        let checklistConfigData = null;
+
+        // Initialize configuration from localStorage or migrate from API
+        async function initializeConfig() {
+            const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
+            if (saved) {
+                try {
+                    checklistConfigData = JSON.parse(saved);
+                    if (!checklistConfigData.version) {
+                        checklistConfigData.version = CONFIG_VERSION;
+                        saveConfigToLocalStorage();
+                    }
+                    console.log('✅ Loaded configuration from localStorage');
+                    return true;
+                } catch (e) {
+                    console.error('Error parsing saved config:', e);
+                }
+            }
+            
+            // Try to migrate from API
+            return await migrateFromAPI();
+        }
+
+        // Load configuration from localStorage
+        function loadConfigFromLocalStorage() {
+            const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
+            if (saved) {
+                try {
+                    checklistConfigData = JSON.parse(saved);
+                    return checklistConfigData;
+                } catch (e) {
+                    console.error('Error loading config:', e);
+                }
+            }
+            return null;
+        }
+
+        // Save configuration to localStorage
+        function saveConfigToLocalStorage() {
+            if (checklistConfigData) {
+                checklistConfigData.version = CONFIG_VERSION;
+                localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(checklistConfigData));
+                console.log('✅ Saved configuration to localStorage');
+            }
+        }
+
+        // Get default empty configuration structure
+        function getDefaultConfig() {
+            return {
+                tiers: [],
+                businesses: [],
+                version: CONFIG_VERSION
+            };
+        }
+
+        // Migrate from API (one-time migration)
+        async function migrateFromAPI() {
+            try {
+                console.log('🔄 Attempting to migrate from API...');
+                
+                // Wait a bit for config files to potentially load
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                const response = await fetch('/n/businesses');
+                if (!response.ok) throw new Error('API not available');
+                
+                const allBusinesses = await response.json();
+                const config = getDefaultConfig();
+                
+                // Migrate tiers from checklistConfig (if available)
+                if (typeof checklistConfig !== 'undefined' && checklistConfig.tiers) {
+                    config.tiers = checklistConfig.tiers.map((tier, index) => ({
+                        id: index + 1,
+                        name: tier.name,
+                        icon: tier.icon || '',
+                        color: tier.color || 'bg-secondary',
+                        visible: true
+                    }));
+                } else {
+                    // Create default tiers if config not available
+                    console.warn('checklistConfig not available, creating empty tier structure');
+                }
+                
+                // Migrate businesses
+                config.businesses = allBusinesses.map(biz => ({
+                    businessCode: biz.business_code,
+                    businessName: biz.business_name || biz.business_code,
+                    tierId: biz.tier_id || null,
+                    status: biz.status || 'Open',
+                    maxStock: biz.storage_capacity || 0,
+                    collectionStorage: biz.collection_storage || 0,
+                    canCollectItems: biz.can_collect_items === true || biz.can_collect_items === 1 || biz.can_collect_items === '1'
+                }));
+                
+                checklistConfigData = config;
+                saveConfigToLocalStorage();
+                console.log('✅ Successfully migrated from API');
+                return true;
+            } catch (error) {
+                console.warn('⚠️ Could not migrate from API, using empty config:', error.message);
+                checklistConfigData = getDefaultConfig();
+                saveConfigToLocalStorage();
+                return false;
+            }
+        }
+
+        // Get business tiers (all tiers are visible)
+        function getBusinessTiers() {
+            if (!checklistConfigData || !checklistConfigData.tiers) return [];
+            return checklistConfigData.tiers;
+        }
+
+        // Load all businesses from localStorage
+        function loadAllBusinesses() {
+            if (!checklistConfigData) {
+                console.error('Configuration not initialized');
+                buildChecklist({});
+                return;
+            }
+            
+            // Group businesses by tier
+            const businessesByTier = {};
+            const tiers = getBusinessTiers();
+            
+            tiers.forEach(tier => {
+                const tierBusinesses = (checklistConfigData.businesses || [])
+                    .filter(biz => biz.tierId === tier.id && biz.status === 'Open')
+                    .map(biz => ({
+                        businessCode: biz.businessCode,
+                        businessName: biz.businessName,
+                        status: biz.status,
+                        tier: tier.name,
+                        maxStock: biz.maxStock,
+                        collectionStorage: biz.collectionStorage,
+                        canCollectItems: biz.canCollectItems,
+                        conversionRate: biz.conversionRate || tier.conversionRate
+                    }));
+                
+                businessesByTier[tier.name] = tierBusinesses;
+            });
+            
+            buildChecklist(businessesByTier);
+        }
+
+
+        // Build checklist HTML
+        function buildChecklist(businessesByTier) {
+            const container = document.getElementById('checklistContainer');
+            container.innerHTML = '';
+            
+            let totalOpen = 0;
+            const tierCounts = {};
+            const tiers = getBusinessTiers();
+            
+            tiers.forEach(tier => {
+                const businesses = businessesByTier[tier.name] || [];
+                const openBusinesses = businesses.filter(b => {
+                    if (b.status !== 'Open') return false;
+                    // Hide businesses with "Placeholder Business Name"
+                    const businessName = b.businessName || b.businessCode;
+                    return businessName !== 'Placeholder Business Name';
+                });
+                
+                if (openBusinesses.length > 0) {
+                    tierCounts[tier.name] = openBusinesses.length;
+                    totalOpen += openBusinesses.length;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'card mt-4 mb-4';
+                    card.innerHTML = `
+                        <div class="card-header ${tier.color}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">${tier.icon} ${tier.name}</h2>
+                                <button type="button" class="btn btn-sm btn-outline-light toggle-tier-btn" 
+                                        data-tier="${tier.name}"
+                                        title="Show all businesses in this tier">
+                                    👁️ Show All
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group" data-tier="${tier.name}">
+                                ${openBusinesses.map((biz, index) => {
+                                    const businessName = biz.businessName || biz.businessCode;
+                                    const hasCollection = biz.canCollectItems === true;
+                                    const colClass = hasCollection ? 'col-md-3' : 'col-md-4';
+                                    const maxStock = biz.maxStock || 0;
+                                    const collectionStorage = biz.collectionStorage || 0;
+                                    const maxStockDisplay = maxStock.toLocaleString('en-US');
+                                    const collectionDisplay = collectionStorage.toLocaleString('en-US');
+                                    
+                                    return `
+                                    <div class="business-item" data-business-code="${biz.businessCode}" data-tier="${tier.name}">
+                                        <div class="d-flex align-items-start">
+                                            <input class="form-check-input me-2 mt-1" type="checkbox" value="${biz.businessCode}" data-tier="${tier.name}" id="check-${tier.name}-${index}">
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <label class="form-check-label" for="check-${tier.name}-${index}">
+                                                        <span class="business-code">${biz.businessCode}</span>
+                                                        <span class="business-name"> - ${businessName}</span>
+                                                    </label>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary hide-business-btn" 
+                                                            data-business-code="${biz.businessCode}" 
+                                                            data-tier="${tier.name}"
+                                                            title="Hide business"
+                                                            style="border-radius: 0.5rem; padding: 0.25rem 0.5rem;">
+                                                        👁️
+                                                    </button>
+                                                </div>
+                                                <div class="mt-2 row g-2">
+                                                    <div class="${colClass}">
+                                                        <small class="text-muted d-block mb-1" style="font-weight: 600;">
+                                                            <strong>💰 Money:</strong>
+                                                        </small>
+                                                        <input type="text" 
+                                                               class="form-control form-control-sm money-input" 
+                                                               placeholder="Money" 
+                                                               data-tier="${tier.name}" 
+                                                               data-business-code="${biz.businessCode}"
+                                                               oninput="saveProgress();">
+                                                    </div>
+                                                    <div class="${colClass}">
+                                                        <small class="text-muted d-block mb-1" style="font-weight: 600;">
+                                                            <strong>📊 Stock (Max):</strong> ${maxStockDisplay}
+                                                        </small>
+                                                        <div class="stock-calc-container">
+                                                            <div class="input-group input-group-sm mb-1">
+                                                                <span class="input-group-text" style="font-weight: 600;">Current:</span>
+                                                        <input type="text" 
+                                                                       class="form-control form-control-sm stock-target-input" 
+                                                                       placeholder="0" 
+                                                               data-tier="${tier.name}" 
+                                                                       data-business-code="${biz.businessCode}"
+                                                                       data-max-stock="${maxStock}"
+                                                                       max="${maxStock}"
+                                                                       oninput="calculateStockNeededChecklist('${tier.name}', '${biz.businessCode}', ${maxStock});">
+                                                            </div>
+                                                            <div class="stock-needed-display-checklist" 
+                                                                 id="stock-needed-${tier.name}-${biz.businessCode}">
+                                                                <small class="text-muted">Enter current stock to calculate</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    ${hasCollection ? `
+                                                    <div class="${colClass}">
+                                                        <small class="text-muted d-block mb-1" style="font-weight: 600;">
+                                                            <strong>📦 Collection:</strong> ${collectionDisplay}
+                                                        </small>
+                                                        <input type="text" 
+                                                               class="form-control form-control-sm collection-input" 
+                                                               placeholder="Collection" 
+                                                               data-tier="${tier.name}" 
+                                                               data-business-code="${biz.businessCode}"
+                                                               oninput="saveProgress();">
+                                                    </div>
+                                                    ` : ''}
+                                                    <div class="${colClass}">
+                                                        <small class="text-muted d-block mb-1" style="font-weight: 600;">
+                                                            <strong>📝 Notes:</strong>
+                                                        </small>
+                                                        <textarea class="form-control form-control-sm notes-input" 
+                                                                  rows="1" 
+                                                                  placeholder="Add notes..." 
+                                                                  data-tier="${tier.name}" 
+                                                                  data-business-code="${biz.businessCode}"
+                                                                  oninput="saveProgress();"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+            
+            // Update summary
+            updateSummary(totalOpen, tierCounts);
+            
+            // Hide loading, show content
+            document.getElementById('loadingAlert').style.display = 'none';
+            document.getElementById('summaryAlert').style.display = 'block';
+            
+            // Re-initialize number formatting for dynamically created inputs
+            if (typeof initNumberFormatting === 'function') {
+                initNumberFormatting({ allowDecimals: true, selector: '.money-input, .stock-input, .collection-input' });
+                initNumberFormatting({ allowDecimals: false, selector: '.stock-target-input' });
+            }
+            
+            // Load saved progress
+            loadProgress();
+            
+            // Update tier toggle buttons after loading
+            tiers.forEach(tier => {
+                updateTierToggleButton(tier.name);
+            });
+        }
+
+        // Update summary
+        function updateSummary(total, tierCounts) {
+            const summaryContent = document.getElementById('summaryContent');
+            let summaryHTML = `<strong>Total Open Businesses:</strong> ${total}<br>`;
+            
+            const tiers = getBusinessTiers();
+            tiers.forEach(tier => {
+                if (tierCounts[tier.name]) {
+                    summaryHTML += `<strong>${tier.name}:</strong> ${tierCounts[tier.name]} business${tierCounts[tier.name] !== 1 ? 'es' : ''}<br>`;
+                }
+            });
+            
+            summaryContent.innerHTML = summaryHTML;
+        }
+
+        // Check all checkboxes
+        function checkAll() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = true);
+            saveProgress();
+        }
+
+        // Uncheck all checkboxes
+        function uncheckAll() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+            saveProgress();
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const notesInputs = document.querySelectorAll('.notes-input');
+            const moneyInputs = document.querySelectorAll('.money-input');
+            const stockInputs = document.querySelectorAll('.stock-input');
+            const collectionInputs = document.querySelectorAll('.collection-input');
+            const progress = {};
+            
+            // Save checkbox states
+            checkboxes.forEach(checkbox => {
+                const key = `${checkbox.dataset.tier}::${checkbox.value}`;
+                progress[key] = {
+                    checked: checkbox.checked,
+                    notes: '',
+                    money: '',
+                    stock: '',
+                    collection: ''
+                };
+            });
+            
+            // Save notes
+            notesInputs.forEach(input => {
+                const key = `${input.dataset.tier}::${input.dataset.businessCode}`;
+                if (progress[key]) {
+                    progress[key].notes = input.value;
+                } else {
+                    progress[key] = {
+                        checked: false,
+                        notes: input.value,
+                        money: '',
+                        stock: '',
+                        collection: ''
+                    };
+                }
+            });
+            
+            // Save money
+            moneyInputs.forEach(input => {
+                const key = `${input.dataset.tier}::${input.dataset.businessCode}`;
+                if (progress[key]) {
+                    progress[key].money = input.value;
+                } else {
+                    progress[key] = {
+                        checked: false,
+                        notes: '',
+                        money: input.value,
+                        stock: '',
+                        collection: ''
+                    };
+                }
+            });
+            
+            // Save stock target
+            const stockTargetInputs = document.querySelectorAll('.stock-target-input');
+            stockTargetInputs.forEach(input => {
+                const key = `${input.dataset.tier}::${input.dataset.businessCode}`;
+                if (progress[key]) {
+                    progress[key].stockTarget = input.value;
+                } else {
+                    progress[key] = {
+                        checked: false,
+                        notes: '',
+                        money: '',
+                        stockTarget: input.value,
+                        collection: ''
+                    };
+                }
+            });
+            
+            // Save collection
+            collectionInputs.forEach(input => {
+                const key = `${input.dataset.tier}::${input.dataset.businessCode}`;
+                if (progress[key]) {
+                    progress[key].collection = input.value;
+                } else {
+                    progress[key] = {
+                        checked: false,
+                        notes: '',
+                        money: '',
+                        stock: '',
+                        collection: input.value
+                    };
+                }
+            });
+            
+            // Save hidden businesses
+            const hiddenBusinesses = [];
+            document.querySelectorAll('.business-item[style*="display: none"]').forEach(item => {
+                hiddenBusinesses.push(`${item.dataset.tier}::${item.dataset.businessCode}`);
+            });
+            progress._hidden = hiddenBusinesses;
+            
+            localStorage.setItem('businessChecklist', JSON.stringify(progress));
+        }
+
+        // Get note for a business
+        function getNote(businessId, tierName) {
+            const saved = localStorage.getItem('businessChecklistNotes');
+            if (saved) {
+                const notes = JSON.parse(saved);
+                const key = `${tierName}::${businessId}`;
+                return notes[key] || '';
+            }
+            return '';
+        }
+
+        // Save note for a business
+        function saveNote(businessId, tierName, note) {
+            const saved = localStorage.getItem('businessChecklistNotes');
+            const notes = saved ? JSON.parse(saved) : {};
+            const key = `${tierName}::${businessId}`;
+            if (note && note.trim()) {
+                notes[key] = note.trim();
+            } else {
+                delete notes[key];
+            }
+            localStorage.setItem('businessChecklistNotes', JSON.stringify(notes));
+        }
+
+        // Save note from input field
+        function saveNoteFromInput(input) {
+            const businessId = input.dataset.businessId;
+            const tierName = input.dataset.tier;
+            const noteText = input.value;
+            saveNote(businessId, tierName, noteText);
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('businessChecklist');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                
+                // Load checkbox states
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    const key = `${checkbox.dataset.tier}::${checkbox.value}`;
+                    if (progress[key] !== undefined) {
+                        if (typeof progress[key] === 'boolean') {
+                            // Legacy format (just boolean)
+                        checkbox.checked = progress[key];
+                        } else {
+                            // New format (object with checked, notes, money, stock)
+                            checkbox.checked = progress[key].checked || false;
+                        }
+                    }
+                });
+                
+                // Load notes
+                const notesInputs = document.querySelectorAll('.notes-input');
+                notesInputs.forEach(input => {
+                    const key = `${input.dataset.tier}::${input.dataset.businessCode}`;
+                    if (progress[key] && typeof progress[key] === 'object') {
+                        if (progress[key].notes !== undefined) {
+                            input.value = progress[key].notes;
+                        }
+                    }
+                });
+                
+                // Load money
+                const moneyInputs = document.querySelectorAll('.money-input');
+                moneyInputs.forEach(input => {
+                    const key = `${input.dataset.tier}::${input.dataset.businessCode}`;
+                    if (progress[key] && typeof progress[key] === 'object') {
+                        if (progress[key].money !== undefined) {
+                            input.value = progress[key].money;
+                        }
+                    }
+                });
+                
+                // Load stock target and calculate
+                const stockTargetInputs = document.querySelectorAll('.stock-target-input');
+                stockTargetInputs.forEach(input => {
+                    const key = `${input.dataset.tier}::${input.dataset.businessCode}`;
+                    if (progress[key] && typeof progress[key] === 'object') {
+                        if (progress[key].stockTarget !== undefined) {
+                            input.value = progress[key].stockTarget;
+                            // Trigger calculation
+                            const maxStock = parseFloat(input.dataset.maxStock) || 0;
+                            calculateStockNeededChecklist(input.dataset.tier, input.dataset.businessCode, maxStock);
+                        }
+                    }
+                });
+                
+                // Load collection
+                const collectionInputs = document.querySelectorAll('.collection-input');
+                collectionInputs.forEach(input => {
+                    const key = `${input.dataset.tier}::${input.dataset.businessCode}`;
+                    if (progress[key] && typeof progress[key] === 'object') {
+                        if (progress[key].collection !== undefined) {
+                            input.value = progress[key].collection;
+                        }
+                    }
+                });
+                
+                // Load hidden businesses
+                if (progress._hidden && Array.isArray(progress._hidden)) {
+                    progress._hidden.forEach(key => {
+                        const [tier, businessCode] = key.split('::');
+                        const item = document.querySelector(`.business-item[data-tier="${tier}"][data-business-code="${businessCode}"]`);
+                        if (item) {
+                            item.style.display = 'none';
+                            const btn = item.querySelector('.hide-business-btn');
+                            if (btn) {
+                                btn.textContent = '👁️‍🗨️';
+                                btn.title = 'Show business';
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        // Clear progress
+        function clearProgress() {
+            if (confirm('Are you sure you want to clear all progress? This will clear checkboxes and notes. This cannot be undone.')) {
+                localStorage.removeItem('businessChecklist');
+                
+                // Uncheck all checkboxes
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => checkbox.checked = false);
+                
+                // Clear all notes textareas
+                const notesInputs = document.querySelectorAll('.notes-input');
+                notesInputs.forEach(input => input.value = '');
+                
+                // Clear all money inputs
+                const moneyInputs = document.querySelectorAll('.money-input');
+                moneyInputs.forEach(input => input.value = '');
+                
+                // Clear all stock target inputs
+                const stockTargetInputs = document.querySelectorAll('.stock-target-input');
+                stockTargetInputs.forEach(input => {
+                    input.value = '';
+                    const displayId = `stock-needed-${input.dataset.tier}-${input.dataset.businessCode}`;
+                    const display = document.getElementById(displayId);
+                    if (display) {
+                        display.innerHTML = '<small class="text-muted">Enter target to calculate</small>';
+                    }
+                });
+                
+                // Clear all collection inputs
+                const collectionInputs = document.querySelectorAll('.collection-input');
+                collectionInputs.forEach(input => input.value = '');
+                
+                // Show all hidden businesses
+                document.querySelectorAll('.business-item').forEach(item => {
+                    item.style.display = '';
+                    const btn = item.querySelector('.hide-business-btn');
+                    if (btn) {
+                        btn.textContent = '👁️';
+                        btn.title = 'Hide business';
+                    }
+                });
+            }
+        }
+        
+        // Toggle business visibility
+        function toggleBusinessVisibility(button) {
+            const businessCode = button.dataset.businessCode;
+            const tier = button.dataset.tier;
+            const item = document.querySelector(`.business-item[data-tier="${tier}"][data-business-code="${businessCode}"]`);
+            
+            if (item) {
+                if (item.style.display === 'none') {
+                    // Show business
+                    item.style.display = '';
+                    button.textContent = '👁️';
+                    button.title = 'Hide business';
+                } else {
+                    // Hide business
+                    item.style.display = 'none';
+                    button.textContent = '👁️‍🗨️';
+                    button.title = 'Show business';
+                }
+                saveProgress();
+                updateTierToggleButton(tier);
+            }
+        }
+        
+        // Toggle all businesses in a tier
+        function toggleTierVisibility(tier) {
+            const items = document.querySelectorAll(`.business-item[data-tier="${tier}"]`);
+            if (items.length === 0) return;
+            
+            // Check if all are hidden
+            const allHidden = Array.from(items).every(item => item.style.display === 'none');
+            
+            items.forEach(item => {
+                const businessCode = item.dataset.businessCode;
+                const hideBtn = item.querySelector(`.hide-business-btn[data-business-code="${businessCode}"]`);
+                
+                if (allHidden) {
+                    // Show all
+                    item.style.display = '';
+                    if (hideBtn) {
+                        hideBtn.textContent = '👁️';
+                        hideBtn.title = 'Hide business';
+                    }
+                } else {
+                    // Hide all
+                    item.style.display = 'none';
+                    if (hideBtn) {
+                        hideBtn.textContent = '👁️‍🗨️';
+                        hideBtn.title = 'Show business';
+                    }
+                }
+            });
+            
+            saveProgress();
+            updateTierToggleButton(tier);
+        }
+        
+        // Update tier toggle button text/state
+        function updateTierToggleButton(tier) {
+            const items = document.querySelectorAll(`.business-item[data-tier="${tier}"]`);
+            if (items.length === 0) return;
+            
+            const allHidden = Array.from(items).every(item => item.style.display === 'none');
+            const tierBtn = document.querySelector(`.toggle-tier-btn[data-tier="${tier}"]`);
+            
+            if (tierBtn) {
+                if (allHidden) {
+                    tierBtn.textContent = '👁️ Show All';
+                    tierBtn.title = 'Show all businesses in this tier';
+                } else {
+                    tierBtn.textContent = '👁️‍🗨️ Hide All';
+                    tierBtn.title = 'Hide all businesses in this tier';
+                }
+            }
+        }
+
+        // Auto-save on checkbox or notes change
+        document.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox' || 
+                e.target.classList.contains('notes-input') ||
+                e.target.classList.contains('money-input') ||
+                e.target.classList.contains('stock-input') ||
+                e.target.classList.contains('collection-input')) {
+                saveProgress();
+            }
+        });
+        
+        // Auto-save on notes/money/stock/collection input (with debounce for textarea and inputs)
+        let inputTimeout;
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('notes-input') ||
+                e.target.classList.contains('money-input') ||
+                e.target.classList.contains('stock-input') ||
+                e.target.classList.contains('collection-input')) {
+                clearTimeout(inputTimeout);
+                inputTimeout = setTimeout(() => {
+                    saveProgress();
+                }, 500); // Save 500ms after user stops typing
+            }
+        });
+        
+        // Handle hide/show button clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('hide-business-btn')) {
+                e.preventDefault();
+                toggleBusinessVisibility(e.target);
+            } else if (e.target.classList.contains('toggle-tier-btn')) {
+                e.preventDefault();
+                toggleTierVisibility(e.target.dataset.tier);
+            }
+        });
+
+        // Format time for a specific timezone
+        function formatTimeForTimezone(date, timezone, options = {}) {
+            const defaultOptions = {
+                timeZone: timezone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            return date.toLocaleString('en-US', { ...defaultOptions, ...options });
+        }
+
+        // Get Eastern Time zone abbreviation (EDT/EST)
+        function getEasternTimeZone() {
+            const now = new Date();
+            // Create a date in Eastern timezone
+            const easternDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            const utcDate = new Date(now.toLocaleString('en-US', { timeZone: 'UTC' }));
+            
+            // Calculate offset
+            const offset = (easternDate.getTime() - utcDate.getTime()) / (1000 * 60 * 60);
+            
+            // EDT is UTC-4, EST is UTC-5
+            return offset === -4 ? 'EDT' : 'EST';
+        }
+
+        // Get next 3 AM Eastern Time
+        function getNextRebootTime() {
+            const now = new Date();
+            
+            // Get current time in Eastern Timezone
+            const easternNowStr = now.toLocaleString('en-US', { 
+                timeZone: 'America/New_York',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            
+            // Parse: "MM/DD/YYYY, HH:MM:SS"
+            const [datePart, timePart] = easternNowStr.split(', ');
+            const [month, day, year] = datePart.split('/');
+            const [hour] = timePart.split(':');
+            
+            const currentHour = parseInt(hour);
+            
+            // Determine target date (today or tomorrow)
+            let targetYear = parseInt(year);
+            let targetMonth = parseInt(month);
+            let targetDay = parseInt(day);
+            
+            // If it's 3 AM or later, target is tomorrow
+            if (currentHour >= 3) {
+                const date = new Date(targetYear, targetMonth - 1, targetDay);
+                date.setDate(date.getDate() + 1);
+                targetYear = date.getFullYear();
+                targetMonth = date.getMonth() + 1;
+                targetDay = date.getDate();
+            }
+            
+            // Find the UTC time that corresponds to 3:00:00 AM Eastern on target date
+            // We'll try different UTC times and check which one gives us 3 AM Eastern
+            let bestMatch = null;
+            
+            // Try UTC times from 6 hours before to 6 hours after (Eastern is UTC-4 or UTC-5)
+            for (let utcOffset = -6; utcOffset <= 6; utcOffset++) {
+                const testUTC = new Date(Date.UTC(targetYear, targetMonth - 1, targetDay, 3 + utcOffset, 0, 0));
+                const testEastern = testUTC.toLocaleString('en-US', { 
+                    timeZone: 'America/New_York',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+                
+                const [testDatePart, testTimePart] = testEastern.split(', ');
+                const [testMonth, testDay, testYear] = testDatePart.split('/');
+                const [testHour] = testTimePart.split(':');
+                
+                // Check if this UTC time gives us 3 AM Eastern on the correct date
+                if (parseInt(testHour) === 3 && 
+                    parseInt(testMonth) === targetMonth && 
+                    parseInt(testDay) === targetDay && 
+                    parseInt(testYear) === targetYear) {
+                    bestMatch = testUTC;
+                    break;
+                }
+            }
+            
+            return bestMatch || new Date(); // Fallback to current time if not found
+        }
+
+        // Format countdown time
+        function formatCountdown(seconds) {
+            if (seconds <= 0) {
+                return '00:00:00';
+            }
+            
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        // Update reboot countdown
+        function updateRebootCountdown() {
+            const now = new Date();
+            const nextReboot = getNextRebootTime();
+            const diff = Math.floor((nextReboot - now) / 1000);
+            
+            const countdownElement = document.getElementById('reboot-countdown');
+            const rebootTimeETElement = document.getElementById('reboot-time-et');
+            const rebootTimeBrisbaneElement = document.getElementById('reboot-time-brisbane');
+            
+            if (countdownElement) {
+                if (diff <= 0) {
+                    countdownElement.textContent = '00:00:00';
+                    countdownElement.classList.add('text-danger');
+                } else {
+                    countdownElement.textContent = formatCountdown(diff);
+                    countdownElement.classList.remove('text-danger');
+                    countdownElement.classList.add('text-warning');
+                }
+            }
+            
+            if (rebootTimeETElement) {
+                // Format the next reboot time in Eastern - should always be 3:00 AM
+                const tz = getEasternTimeZone();
+                rebootTimeETElement.textContent = `3:00 AM ${tz}`;
+            }
+            
+            if (rebootTimeBrisbaneElement && nextReboot) {
+                // Format the next reboot time in Brisbane, Australia (no seconds)
+                const brisbaneTime = formatTimeForTimezone(nextReboot, 'Australia/Brisbane', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                const timePart = brisbaneTime.split(', ')[1] || brisbaneTime;
+                // Remove seconds if present (format: HH:MM:SS AM/PM -> HH:MM AM/PM)
+                const timeWithoutSeconds = timePart.replace(/:\d{2}(?=\s*[AP]M)/i, '');
+                rebootTimeBrisbaneElement.textContent = `${timeWithoutSeconds} AEST`;
+            }
+        }
+
+        // Update navbar times
+        function updateTimes() {
+            const now = new Date();
+            
+            // Brisbane/Australia time
+            const brisbaneTime = formatTimeForTimezone(now, 'Australia/Brisbane', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const brisbaneElement = document.getElementById('brisbane-time');
+            if (brisbaneElement) {
+                brisbaneElement.textContent = brisbaneTime.split(', ')[1] || brisbaneTime;
+            }
+            
+            // Eastern Time
+            const easternTime = formatTimeForTimezone(now, 'America/New_York', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const easternElement = document.getElementById('eastern-time');
+            const easternTZElement = document.getElementById('eastern-tz');
+            if (easternElement) {
+                easternElement.textContent = easternTime.split(', ')[1] || easternTime;
+            }
+            if (easternTZElement) {
+                easternTZElement.textContent = getEasternTimeZone();
+            }
+            
+            // Update reboot countdown
+            updateRebootCountdown();
+        }
+
+        // Auto-save notes on input blur (when user clicks away)
+        document.addEventListener('blur', function(e) {
+            if (e.target.classList.contains('form-control') && e.target.dataset.businessId) {
+                saveNoteFromInput(e.target);
+            }
+        }, true);
+
+        // Load businesses on page load
+        window.addEventListener('DOMContentLoaded', async function() {
+            updateTimes();
+            setInterval(updateTimes, 1000);
+            
+            // Initialize configuration (wait for it to complete)
+            await initializeConfig();
+            
+            // Load businesses (only after config is initialized)
+            if (checklistConfigData) {
+                loadAllBusinesses();
+            } else {
+                console.error('Failed to initialize configuration');
+                document.getElementById('loadingAlert').innerHTML = '<span class="text-danger">⚠️ Failed to initialize configuration. Please refresh the page or add tiers/businesses manually.</span>';
+            }
+        });
+        
+        // Also update on page load (in case DOMContentLoaded already fired)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                updateTimes();
+                setInterval(updateTimes, 1000);
+            });
+        } else {
+            updateTimes();
+            setInterval(updateTimes, 1000);
+            // If DOM already loaded, initialize immediately
+            (async function() {
+                await initializeConfig();
+                if (checklistConfigData) {
+                    loadAllBusinesses();
+                }
+            })();
+        }
+        
+        // Calculate stock needed for checklist
+        function calculateStockNeededChecklist(tierName, businessCode, maxStock) {
+            const displayId = `stock-needed-${tierName}-${businessCode}`;
+            const display = document.getElementById(displayId);
+            const input = document.querySelector(`.stock-target-input[data-tier="${tierName}"][data-business-code="${businessCode}"]`);
+            
+            if (!display || !input) return;
+            
+            const currentValue = input.value.replace(/,/g, '');
+            const current = parseFloat(currentValue) || 0;
+            
+            if (current === 0) {
+                display.innerHTML = '<small class="text-muted">Enter current stock to calculate</small>';
+                if (typeof saveProgress === 'function') {
+                    saveProgress();
+                }
+                return;
+            }
+            
+            // Validate: current cannot exceed max
+            if (current > maxStock) {
+                display.innerHTML = `<small class="text-danger"><strong>Error: Current (${current.toLocaleString('en-US')}) exceeds Max (${maxStock.toLocaleString('en-US')})</strong></small>`;
+                return;
+            }
+            
+            // Validate: current cannot be negative
+            if (current < 0) {
+                display.innerHTML = `<small class="text-danger"><strong>Error: Current cannot be negative</strong></small>`;
+                return;
+            }
+            
+            // Calculation: Max Stock - Current Stock = Needed
+            const needed = maxStock - current;
+            
+            let displayText = '';
+            if (needed === 0) {
+                displayText = '<small style="font-weight: 700; color: #28a745;">✅ Stock is full</small>';
+            } else {
+                displayText = `<small style="font-weight: 700; color: #11998e;"><strong>📊 Needed: ${needed.toLocaleString('en-US')}</strong></small>`;
+            }
+            
+            display.innerHTML = displayText;
+            
+            // Auto-save to localStorage only if value is valid
+            if (typeof saveProgress === 'function') {
+                saveProgress();
+            }
+        }
+
+        // Tier Management Functions
+        function openAddTierModal() {
+            document.getElementById('tierModalLabel').textContent = 'Add Tier';
+            document.getElementById('tierForm').reset();
+            document.getElementById('tierId').value = '';
+            document.getElementById('deleteTierBtn').style.display = 'none';
+            const modal = new bootstrap.Modal(document.getElementById('tierModal'));
+            modal.show();
+        }
+
+        function openEditTierModal() {
+            const tiers = checklistConfigData.tiers || [];
+            if (tiers.length === 0) {
+                alert('No tiers available to edit. Please add a tier first.');
+                return;
+            }
+            
+            const tierOptions = tiers.map(t => `${t.id}: ${t.name}`).join('\n');
+            const tierId = prompt(`Enter Tier ID to edit:\n\n${tierOptions}`);
+            if (!tierId) return;
+            
+            const tier = tiers.find(t => t.id === parseInt(tierId));
+            if (!tier) {
+                alert('Tier not found');
+                return;
+            }
+            
+            document.getElementById('tierModalLabel').textContent = 'Edit Tier';
+            document.getElementById('tierId').value = tier.id;
+            document.getElementById('tierName').value = tier.name;
+            document.getElementById('tierIcon').value = tier.icon || '';
+            document.getElementById('tierColor').value = tier.color || 'bg-secondary';
+            document.getElementById('deleteTierBtn').style.display = 'inline-block';
+            
+            const modal = new bootstrap.Modal(document.getElementById('tierModal'));
+            modal.show();
+        }
+
+        function saveTier() {
+            const id = document.getElementById('tierId').value;
+            const name = document.getElementById('tierName').value;
+            const icon = document.getElementById('tierIcon').value;
+            const color = document.getElementById('tierColor').value;
+            
+            if (!name.trim()) {
+                alert('Tier name is required');
+                return;
+            }
+            
+            if (!checklistConfigData.tiers) {
+                checklistConfigData.tiers = [];
+            }
+            
+            if (id) {
+                // Edit existing tier
+                const tierIndex = checklistConfigData.tiers.findIndex(t => t.id === parseInt(id));
+                if (tierIndex !== -1) {
+                    checklistConfigData.tiers[tierIndex] = {
+                        id: parseInt(id),
+                        name: name.trim(),
+                        icon: icon.trim(),
+                        color: color,
+                        visible: true
+                    };
+                }
+            } else {
+                // Add new tier
+                const maxId = checklistConfigData.tiers.length > 0 
+                    ? Math.max(...checklistConfigData.tiers.map(t => t.id))
+                    : 0;
+                checklistConfigData.tiers.push({
+                    id: maxId + 1,
+                    name: name.trim(),
+                    icon: icon.trim(),
+                    color: color,
+                    visible: true
+                });
+            }
+            
+            saveConfigToLocalStorage();
+            bootstrap.Modal.getInstance(document.getElementById('tierModal')).hide();
+            loadAllBusinesses();
+        }
+
+        function deleteTier() {
+            const id = document.getElementById('tierId').value;
+            if (!id) return;
+            
+            const tier = checklistConfigData.tiers.find(t => t.id === parseInt(id));
+            const tierName = tier ? tier.name : 'this tier';
+            const businessesInTier = (checklistConfigData.businesses || []).filter(b => b.tierId === parseInt(id));
+            const businessCount = businessesInTier.length;
+            
+            // First confirmation
+            if (!confirm(`⚠️ WARNING: You are about to delete "${tierName}".\n\nThis will PERMANENTLY delete:\n- The tier itself\n- ${businessCount} business${businessCount !== 1 ? 'es' : ''} in this tier\n\nThis action CANNOT be undone!\n\nAre you sure you want to continue?`)) {
+                return;
+            }
+            
+            // Second confirmation (EXTRA confirmation)
+            if (!confirm(`🚨 FINAL CONFIRMATION 🚨\n\nYou are about to PERMANENTLY DELETE:\n- Tier: "${tierName}"\n- ${businessCount} business${businessCount !== 1 ? 'es' : ''}\n\nThis will remove ALL data associated with this tier.\n\nType OK and click OK to confirm deletion, or Cancel to abort.`)) {
+                return;
+            }
+            
+            // Remove tier
+            checklistConfigData.tiers = checklistConfigData.tiers.filter(t => t.id !== parseInt(id));
+            
+            // Remove businesses in this tier
+            checklistConfigData.businesses = (checklistConfigData.businesses || []).filter(b => b.tierId !== parseInt(id));
+            
+            saveConfigToLocalStorage();
+            bootstrap.Modal.getInstance(document.getElementById('tierModal')).hide();
+            loadAllBusinesses();
+            
+            alert(`✅ Tier "${tierName}" and ${businessCount} business${businessCount !== 1 ? 'es' : ''} have been deleted.`);
+        }
+
+        // Business Management Functions
+        function openAddBusinessModal() {
+            document.getElementById('businessModalLabel').textContent = 'Add Business';
+            document.getElementById('businessForm').reset();
+            document.getElementById('businessCodeOriginal').value = '';
+            document.getElementById('deleteBusinessBtn').style.display = 'none';
+            
+            // Populate tier dropdown
+            const tierSelect = document.getElementById('businessTierId');
+            tierSelect.innerHTML = '<option value="">Select a tier...</option>';
+            (checklistConfigData.tiers || []).forEach(tier => {
+                const option = document.createElement('option');
+                option.value = tier.id;
+                option.textContent = tier.name;
+                tierSelect.appendChild(option);
+            });
+            
+            const modal = new bootstrap.Modal(document.getElementById('businessModal'));
+            modal.show();
+        }
+
+        function openEditBusinessModal() {
+            const businesses = checklistConfigData.businesses || [];
+            if (businesses.length === 0) {
+                alert('No businesses available to edit. Please add a business first.');
+                return;
+            }
+            
+            const businessOptions = businesses.map(b => `${b.businessCode}: ${b.businessName}`).join('\n');
+            const businessCode = prompt(`Enter Business Code to edit:\n\n${businessOptions}`);
+            if (!businessCode) return;
+            
+            const business = businesses.find(b => b.businessCode === businessCode.trim());
+            if (!business) {
+                alert('Business not found');
+                return;
+            }
+            
+            document.getElementById('businessModalLabel').textContent = 'Edit Business';
+            document.getElementById('businessCodeOriginal').value = business.businessCode;
+            document.getElementById('businessCode').value = business.businessCode;
+            document.getElementById('businessName').value = business.businessName;
+            document.getElementById('businessStatus').value = business.status || 'Open';
+            document.getElementById('businessMaxStock').value = business.maxStock || 0;
+            document.getElementById('businessCollectionStorage').value = business.collectionStorage || 0;
+            document.getElementById('businessCanCollectItems').checked = business.canCollectItems === true;
+            document.getElementById('deleteBusinessBtn').style.display = 'inline-block';
+            
+            // Populate tier dropdown
+            const tierSelect = document.getElementById('businessTierId');
+            tierSelect.innerHTML = '<option value="">Select a tier...</option>';
+            (checklistConfigData.tiers || []).forEach(tier => {
+                const option = document.createElement('option');
+                option.value = tier.id;
+                option.textContent = tier.name;
+                option.selected = tier.id === business.tierId;
+                tierSelect.appendChild(option);
+            });
+            
+            const modal = new bootstrap.Modal(document.getElementById('businessModal'));
+            modal.show();
+        }
+
+        function saveBusiness() {
+            const originalCode = document.getElementById('businessCodeOriginal').value;
+            const code = document.getElementById('businessCode').value.trim();
+            const name = document.getElementById('businessName').value.trim();
+            const tierId = document.getElementById('businessTierId').value;
+            const status = document.getElementById('businessStatus').value;
+            const maxStock = parseInt(document.getElementById('businessMaxStock').value) || 0;
+            const collectionStorage = parseInt(document.getElementById('businessCollectionStorage').value) || 0;
+            const canCollectItems = document.getElementById('businessCanCollectItems').checked;
+            
+            if (!code || !name || !tierId) {
+                alert('Business code, name, and tier are required');
+                return;
+            }
+            
+            if (!checklistConfigData.businesses) {
+                checklistConfigData.businesses = [];
+            }
+            
+            if (originalCode) {
+                // Edit existing business
+                const businessIndex = checklistConfigData.businesses.findIndex(b => b.businessCode === originalCode);
+                if (businessIndex !== -1) {
+                    checklistConfigData.businesses[businessIndex] = {
+                        businessCode: code,
+                        businessName: name,
+                        tierId: parseInt(tierId),
+                        status: status,
+                        maxStock: maxStock,
+                        collectionStorage: collectionStorage,
+                        canCollectItems: canCollectItems
+                    };
+                }
+            } else {
+                // Add new business
+                // Check if code already exists
+                if (checklistConfigData.businesses.find(b => b.businessCode === code)) {
+                    alert('Business code already exists');
+                    return;
+                }
+                
+                checklistConfigData.businesses.push({
+                    businessCode: code,
+                    businessName: name,
+                    tierId: parseInt(tierId),
+                    status: status,
+                    maxStock: maxStock,
+                    collectionStorage: collectionStorage,
+                    canCollectItems: canCollectItems
+                });
+            }
+            
+            saveConfigToLocalStorage();
+            bootstrap.Modal.getInstance(document.getElementById('businessModal')).hide();
+            loadAllBusinesses();
+        }
+
+        function deleteBusiness() {
+            const code = document.getElementById('businessCodeOriginal').value;
+            if (!code) return;
+            
+            const business = checklistConfigData.businesses.find(b => b.businessCode === code);
+            const businessName = business ? business.businessName : code;
+            
+            // First confirmation
+            if (!confirm(`⚠️ WARNING: You are about to delete business "${businessName}" (${code}).\n\nThis will PERMANENTLY delete:\n- Business code: ${code}\n- Business name: ${businessName}\n- All associated data\n\nThis action CANNOT be undone!\n\nAre you sure you want to continue?`)) {
+                return;
+            }
+            
+            // Second confirmation (EXTRA confirmation)
+            if (!confirm(`🚨 FINAL CONFIRMATION 🚨\n\nYou are about to PERMANENTLY DELETE:\n- Business Code: ${code}\n- Business Name: ${businessName}\n\nThis will remove ALL data for this business.\n\nType OK and click OK to confirm deletion, or Cancel to abort.`)) {
+                return;
+            }
+            
+            checklistConfigData.businesses = (checklistConfigData.businesses || []).filter(b => b.businessCode !== code);
+            saveConfigToLocalStorage();
+            bootstrap.Modal.getInstance(document.getElementById('businessModal')).hide();
+            loadAllBusinesses();
+            
+            alert(`✅ Business "${businessName}" (${code}) has been deleted.`);
+        }
+
+        // Import/Export Functions
+        function exportConfiguration() {
+            if (!checklistConfigData) {
+                alert('No configuration to export');
+                return;
+            }
+            
+            const exportData = JSON.stringify(checklistConfigData, null, 2);
+            document.getElementById('exportTextarea').value = exportData;
+            document.getElementById('exportModalLabel').textContent = 'Export Configuration';
+            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+            modal.show();
+        }
+
+        function openImportModal() {
+            document.getElementById('importTextarea').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('importModal'));
+            modal.show();
+        }
+
+        function importConfiguration() {
+            const importText = document.getElementById('importTextarea').value.trim();
+            if (!importText) {
+                alert('Please paste a configuration JSON string');
+                return;
+            }
+            
+            // Check if it looks like CSV (person table string) instead of JSON
+            if (importText.startsWith('Business Code') || importText.includes(',') && !importText.trim().startsWith('{') && !importText.trim().startsWith('[')) {
+                alert('Error: This looks like a CSV (Person Table String), not JSON.\n\nPlease use "Export Configuration" to get the JSON format, or paste a valid JSON configuration.');
+                return;
+            }
+            
+            try {
+                const imported = JSON.parse(importText);
+                
+                // Validate structure
+                if (!imported.tiers || !Array.isArray(imported.tiers)) {
+                    throw new Error('Invalid structure: tiers array is required');
+                }
+                if (!imported.businesses || !Array.isArray(imported.businesses)) {
+                    throw new Error('Invalid structure: businesses array is required');
+                }
+                
+                // Validate tier structure
+                imported.tiers.forEach((tier, index) => {
+                    if (!tier.id || !tier.name) {
+                        throw new Error(`Invalid tier at index ${index}: id and name are required`);
+                    }
+                });
+                
+                // Validate business structure
+                imported.businesses.forEach((biz, index) => {
+                    if (!biz.businessCode || !biz.businessName || biz.tierId === undefined) {
+                        throw new Error(`Invalid business at index ${index}: businessCode, businessName, and tierId are required`);
+                    }
+                });
+                
+                checklistConfigData = imported;
+                saveConfigToLocalStorage();
+                bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
+                alert('Configuration imported successfully!');
+                loadAllBusinesses();
+            } catch (error) {
+                if (error instanceof SyntaxError) {
+                    alert(`Import failed: Invalid JSON format.\n\nError: ${error.message}\n\nMake sure you are importing a JSON configuration, not a CSV (Person Table String).`);
+                } else {
+                    alert(`Import failed: ${error.message}`);
+                }
+                console.error('Import error:', error);
+            }
+        }
+
+        function generatePersonTableString() {
+            if (!checklistConfigData || !checklistConfigData.businesses) {
+                alert('No businesses available');
+                return;
+            }
+            
+            // Generate CSV format for checklist with all business data
+            let csv = 'Business Code,Business Name,Tier,Status,Max Stock,Collection Storage,Can Collect Items\n';
+            
+            // Include all businesses regardless of status
+            checklistConfigData.businesses.forEach(biz => {
+                const tier = (checklistConfigData.tiers || []).find(t => t.id === biz.tierId);
+                const tierName = tier ? tier.name : 'Unknown';
+                
+                // Properly escape CSV values (handle quotes and commas in business names)
+                const escapeCSV = (value) => {
+                    if (value === null || value === undefined) return '';
+                    const str = String(value);
+                    if (str.includes('"') || str.includes(',') || str.includes('\n')) {
+                        return `"${str.replace(/"/g, '""')}"`;
+                    }
+                    return str;
+                };
+                
+                csv += `${escapeCSV(biz.businessCode)},${escapeCSV(biz.businessName)},${escapeCSV(tierName)},${escapeCSV(biz.status || 'Open')},${biz.maxStock || 0},${biz.collectionStorage || 0},${escapeCSV(biz.canCollectItems ? 'Yes' : 'No')}\n`;
+            });
+            
+            document.getElementById('exportTextarea').value = csv;
+            document.getElementById('exportModalLabel').textContent = 'Generate Checklist (CSV)';
+            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+            modal.show();
+        }
+
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+
+        // Toggle emoji picker visibility
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emojiPicker');
+            if (picker.style.display === 'none') {
+                picker.style.display = 'block';
+            } else {
+                picker.style.display = 'none';
+            }
+        }
+
+        // Select emoji and insert into input
+        function selectEmoji(emoji) {
+            document.getElementById('tierIcon').value = emoji;
+            // Optionally close the picker after selection
+            // document.getElementById('emojiPicker').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
+
