@@ -133,7 +133,14 @@ function formatInputOnInput(input, allowDecimals = true) {
         return;
     }
     
-    // Format integer part with commas
+    // For number inputs, don't add commas - they don't support formatted values
+    if (input.type === 'number') {
+        // Number inputs should only contain numeric values (no commas)
+        input.value = cleaned;
+        return;
+    }
+    
+    // Format integer part with commas (only for text inputs)
     const formattedInteger = integerPart ? parseInt(integerPart.replace(/,/g, '') || '0', 10).toLocaleString('en-US') : '0';
     
     // Combine formatted integer with preserved decimal part
@@ -194,7 +201,15 @@ function initNumberFormatting(options = {}) {
         
         // Format on blur (when user leaves the field)
         input.addEventListener('blur', function() {
-            // Preserve trailing zeros in decimal part
+            // Number inputs should not be formatted with commas
+            if (this.type === 'number') {
+                // Just ensure it's a valid number
+                const num = parseFormattedNumber(this.value);
+                this.value = isNaN(num) ? '' : num.toString();
+                return;
+            }
+            
+            // Preserve trailing zeros in decimal part (for text inputs only)
             const value = this.value;
             if (inputAllowDecimals && value.includes('.')) {
                 const parts = value.split('.');
@@ -216,8 +231,8 @@ function initNumberFormatting(options = {}) {
             }
         });
         
-        // Format initial value if present
-        if (input.value) {
+        // Format initial value if present (skip number inputs)
+        if (input.value && input.type !== 'number') {
             const num = parseFormattedNumber(input.value);
             input.value = formatNumber(num, inputAllowDecimals);
         }

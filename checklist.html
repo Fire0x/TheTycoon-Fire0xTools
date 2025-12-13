@@ -735,11 +735,16 @@
     <footer class="bg-light py-3">
         <div class="container text-center">
             <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
+            <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
+                <!-- Version will be inserted here by version.js -->
+            </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Version Manager -->
+    <script src="js/version.js"></script>
     <!-- Theme JS -->
     <script src="js/theme.js"></script>
     <!-- Number Formatter (optional) -->
@@ -1909,39 +1914,66 @@
                 return;
             }
             
-            const businessOptions = businesses.map(b => `${b.businessCode}: ${b.businessName}`).join('\n');
-            const businessCode = prompt(`Enter Business Code to edit:\n\n${businessOptions}`);
-            if (!businessCode) return;
-            
-            const business = businesses.find(b => b.businessCode === businessCode.trim());
-            if (!business) {
-                alert('Business not found');
-                return;
-            }
-            
-            document.getElementById('businessModalLabel').textContent = 'Edit Business';
-            document.getElementById('businessCodeOriginal').value = business.businessCode;
-            document.getElementById('businessCode').value = business.businessCode;
-            document.getElementById('businessName').value = business.businessName;
-            document.getElementById('businessStatus').value = business.status || 'Open';
-            document.getElementById('businessMaxStock').value = business.maxStock || 0;
-            document.getElementById('businessCollectionStorage').value = business.collectionStorage || 0;
-            document.getElementById('businessCanCollectItems').checked = business.canCollectItems === true;
-            document.getElementById('deleteBusinessBtn').style.display = 'inline-block';
-            
-            // Populate tier dropdown
-            const tierSelect = document.getElementById('businessTierId');
-            tierSelect.innerHTML = '<option value="">Select a tier...</option>';
-            (checklistConfigData.tiers || []).forEach(tier => {
-                const option = document.createElement('option');
-                option.value = tier.id;
-                option.textContent = tier.name;
-                option.selected = tier.id === business.tierId;
-                tierSelect.appendChild(option);
-            });
-            
-            const modal = new bootstrap.Modal(document.getElementById('businessModal'));
-            modal.show();
+            // Use setTimeout to defer the prompt and avoid blocking the click handler
+            setTimeout(() => {
+                // Limit the number of businesses shown in prompt to avoid performance issues
+                const maxDisplay = 50;
+                const displayBusinesses = businesses.slice(0, maxDisplay);
+                const remainingCount = businesses.length - maxDisplay;
+                
+                let businessOptions = displayBusinesses.map(b => `${b.businessCode}: ${b.businessName}`).join('\n');
+                if (remainingCount > 0) {
+                    businessOptions += `\n\n... and ${remainingCount} more business${remainingCount !== 1 ? 'es' : ''}`;
+                }
+                
+                const businessCode = prompt(`Enter Business Code to edit:\n\n${businessOptions}`);
+                if (!businessCode) return;
+                
+                const business = businesses.find(b => b.businessCode === businessCode.trim());
+                if (!business) {
+                    alert('Business not found');
+                    return;
+                }
+                
+                // Populate form fields
+                document.getElementById('businessModalLabel').textContent = 'Edit Business';
+                document.getElementById('businessCodeOriginal').value = business.businessCode;
+                document.getElementById('businessCode').value = business.businessCode;
+                document.getElementById('businessName').value = business.businessName;
+                document.getElementById('businessStatus').value = business.status || 'Open';
+                document.getElementById('businessMaxStock').value = business.maxStock || 0;
+                document.getElementById('businessCollectionStorage').value = business.collectionStorage || 0;
+                document.getElementById('businessCanCollectItems').checked = business.canCollectItems === true;
+                document.getElementById('deleteBusinessBtn').style.display = 'inline-block';
+                
+                // Populate tier dropdown efficiently
+                const tierSelect = document.getElementById('businessTierId');
+                const tiers = checklistConfigData.tiers || [];
+                
+                // Use DocumentFragment for better performance
+                const fragment = document.createDocumentFragment();
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Select a tier...';
+                fragment.appendChild(defaultOption);
+                
+                tiers.forEach(tier => {
+                    const option = document.createElement('option');
+                    option.value = tier.id;
+                    option.textContent = tier.name;
+                    if (tier.id === business.tierId) {
+                        option.selected = true;
+                    }
+                    fragment.appendChild(option);
+                });
+                
+                tierSelect.innerHTML = '';
+                tierSelect.appendChild(fragment);
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('businessModal'));
+                modal.show();
+            }, 0);
         }
 
         function saveBusiness() {
