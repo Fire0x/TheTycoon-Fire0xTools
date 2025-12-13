@@ -393,7 +393,7 @@ Cancel Training</pre>
             try {
                 saveToLocalStorage();
                 document.getElementById('pasteInput').value = '';
-                loadFromLocalStorage();
+                renderTimers(); // Render directly instead of reloading from localStorage
                 alert(`Successfully added ${parsed.length} training(s)!`);
             } catch (error) {
                 console.error('Error in parseAndSave:', error);
@@ -533,7 +533,7 @@ Cancel Training</pre>
                 const key = name.toLowerCase().replace(/\s+/g, '-');
                 delete trainings[key];
                 saveToLocalStorage();
-                loadFromLocalStorage();
+                renderTimers(); // Render directly instead of reloading from localStorage
             } catch (error) {
                 console.error('Error cancelling training:', error);
                 alert('Failed to cancel training. Please try again.');
