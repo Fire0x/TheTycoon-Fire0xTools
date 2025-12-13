@@ -1415,11 +1415,13 @@
         // Build checklist HTML
         function buildChecklist(businessesByTier) {
             const container = document.getElementById('checklistContainer');
-            container.innerHTML = '';
             
             let totalOpen = 0;
             const tierCounts = {};
             const tiers = getBusinessTiers();
+            
+            // Use DocumentFragment for batch DOM updates to reduce reflows
+            const fragment = document.createDocumentFragment();
             
             tiers.forEach(tier => {
                 const businesses = businessesByTier[tier.name] || [];
@@ -1543,9 +1545,13 @@
                             </div>
                         </div>
                     `;
-                    container.appendChild(card);
+                    fragment.appendChild(card);
                 }
             });
+            
+            // Batch DOM update - clear and append fragment in one operation
+            container.innerHTML = '';
+            container.appendChild(fragment);
             
             // Update summary
             updateSummary(totalOpen, tierCounts);
@@ -2257,7 +2263,14 @@
             document.getElementById('tierForm').reset();
             document.getElementById('tierId').value = '';
             document.getElementById('deleteTierBtn').style.display = 'none';
-            const modal = new bootstrap.Modal(document.getElementById('tierModal'));
+            const modalElement = document.getElementById('tierModal');
+            const modal = new bootstrap.Modal(modalElement);
+            
+            // Ensure proper aria-hidden handling
+            modalElement.addEventListener('shown.bs.modal', function() {
+                modalElement.setAttribute('aria-hidden', 'false');
+            }, { once: true });
+            
             modal.show();
         }
 
@@ -2285,7 +2298,14 @@
             document.getElementById('tierColor').value = tier.color || 'bg-secondary';
             document.getElementById('deleteTierBtn').style.display = 'inline-block';
             
-            const modal = new bootstrap.Modal(document.getElementById('tierModal'));
+            const modalElement = document.getElementById('tierModal');
+            const modal = new bootstrap.Modal(modalElement);
+            
+            // Ensure proper aria-hidden handling
+            modalElement.addEventListener('shown.bs.modal', function() {
+                modalElement.setAttribute('aria-hidden', 'false');
+            }, { once: true });
+            
             modal.show();
         }
 
@@ -2356,8 +2376,19 @@
             }
             
             saveConfigToLocalStorage();
-            bootstrap.Modal.getInstance(document.getElementById('tierModal')).hide();
-            loadAllBusinesses();
+            const tierModal = bootstrap.Modal.getInstance(document.getElementById('tierModal'));
+            if (tierModal) {
+                // Remove focus from any focused element before hiding
+                const focusedElement = document.activeElement;
+                if (focusedElement && tierModal._element.contains(focusedElement)) {
+                    focusedElement.blur();
+                }
+                tierModal.hide();
+            }
+            // Defer reload to avoid blocking UI - use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                loadAllBusinesses();
+            });
         }
 
         function deleteTier() {
@@ -2399,8 +2430,19 @@
             checklistConfigData.businesses = (checklistConfigData.businesses || []).filter(b => b.tierId !== parseInt(id));
             
             saveConfigToLocalStorage();
-            bootstrap.Modal.getInstance(document.getElementById('tierModal')).hide();
-            loadAllBusinesses();
+            const tierModal = bootstrap.Modal.getInstance(document.getElementById('tierModal'));
+            if (tierModal) {
+                // Remove focus from any focused element before hiding
+                const focusedElement = document.activeElement;
+                if (focusedElement && tierModal._element.contains(focusedElement)) {
+                    focusedElement.blur();
+                }
+                tierModal.hide();
+            }
+            // Defer reload to avoid blocking UI
+            setTimeout(() => {
+                loadAllBusinesses();
+            }, 0);
             
             alert(`✅ Tier "${tierName}" and ${businessCount} business${businessCount !== 1 ? 'es' : ''} have been deleted.`);
         }
@@ -2596,8 +2638,19 @@
             }
             
             saveConfigToLocalStorage();
-            bootstrap.Modal.getInstance(document.getElementById('businessModal')).hide();
-            loadAllBusinesses();
+            const businessModal = bootstrap.Modal.getInstance(document.getElementById('businessModal'));
+            if (businessModal) {
+                // Remove focus from any focused element before hiding
+                const focusedElement = document.activeElement;
+                if (focusedElement && businessModal._element.contains(focusedElement)) {
+                    focusedElement.blur();
+                }
+                businessModal.hide();
+            }
+            // Defer reload to avoid blocking UI - use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                loadAllBusinesses();
+            });
         }
 
         function deleteBusiness() {
@@ -2632,8 +2685,19 @@
             
             checklistConfigData.businesses = (checklistConfigData.businesses || []).filter(b => b.businessCode !== code);
             saveConfigToLocalStorage();
-            bootstrap.Modal.getInstance(document.getElementById('businessModal')).hide();
-            loadAllBusinesses();
+            const businessModal = bootstrap.Modal.getInstance(document.getElementById('businessModal'));
+            if (businessModal) {
+                // Remove focus from any focused element before hiding
+                const focusedElement = document.activeElement;
+                if (focusedElement && businessModal._element.contains(focusedElement)) {
+                    focusedElement.blur();
+                }
+                businessModal.hide();
+            }
+            // Defer reload to avoid blocking UI - use requestAnimationFrame for better performance
+            requestAnimationFrame(() => {
+                loadAllBusinesses();
+            });
             
             alert(`✅ Business "${businessName}" (${code}) has been deleted.`);
         }
@@ -2698,9 +2762,20 @@
                 
                 checklistConfigData = imported;
                 saveConfigToLocalStorage();
-                bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
+                const importModal = bootstrap.Modal.getInstance(document.getElementById('importModal'));
+                if (importModal) {
+                    // Remove focus from any focused element before hiding
+                    const focusedElement = document.activeElement;
+                    if (focusedElement && importModal._element.contains(focusedElement)) {
+                        focusedElement.blur();
+                    }
+                    importModal.hide();
+                }
                 alert('Configuration imported successfully!');
-                loadAllBusinesses();
+                // Defer reload to avoid blocking UI - use requestAnimationFrame for better performance
+                requestAnimationFrame(() => {
+                    loadAllBusinesses();
+                });
             } catch (error) {
                 if (error instanceof SyntaxError) {
                     alert(`Import failed: Invalid JSON format.\n\nError: ${error.message}\n\nMake sure you are importing a JSON configuration, not a CSV (Person Table String).`);
