@@ -785,6 +785,58 @@
     </script>
     <!-- Checklist JS -->
     <script>
+        // Debug mode flag
+        const DEBUG_STORAGE_KEY = 'checklist_debug_enabled';
+        let debugEnabled = false;
+        
+        // Initialize debug mode from storage
+        function initDebugMode() {
+            const stored = localStorage.getItem(DEBUG_STORAGE_KEY);
+            debugEnabled = stored === 'true';
+            updateDebugToggleUI();
+        }
+        
+        // Toggle debug mode
+        function toggleDebug() {
+            debugEnabled = !debugEnabled;
+            localStorage.setItem(DEBUG_STORAGE_KEY, debugEnabled.toString());
+            updateDebugToggleUI();
+            debugLog('Debug mode ' + (debugEnabled ? 'ENABLED' : 'DISABLED'));
+        }
+        
+        // Update debug toggle button UI
+        function updateDebugToggleUI() {
+            const btn = document.getElementById('debugToggleBtn');
+            const text = document.getElementById('debugToggleText');
+            if (btn && text) {
+                if (debugEnabled) {
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-warning');
+                    text.textContent = '🔍 Debug: ON';
+                } else {
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-outline-secondary');
+                    text.textContent = '🔍 Debug: OFF';
+                }
+            }
+        }
+        
+        // Debug logging function
+        function debugLog(...args) {
+            if (debugEnabled) {
+                console.log('[Checklist Debug]', ...args);
+            }
+        }
+        
+        // Debug error logging function
+        function debugError(...args) {
+            if (debugEnabled) {
+                console.error('[Checklist Debug]', ...args);
+            } else {
+                console.error(...args);
+            }
+        }
+        
         // localStorage Configuration Data Structure
         const CONFIG_STORAGE_KEY = 'checklistConfigData';
         const CONFIG_VERSION = '1.0.0';
