@@ -190,6 +190,9 @@ Merchant #2
                     <div class="mt-3">
                         <button class="btn btn-primary" onclick="parseAndSave()">Parse & Save Merchants</button>
                         <button class="btn btn-danger" onclick="clearAllMerchants()">Clear All Merchants</button>
+                        <button class="btn btn-outline-secondary btn-sm ms-2" id="debugToggleBtn" onclick="toggleDebug()">
+                            <span id="debugToggleText">🔍 Debug: OFF</span>
+                        </button>
                     </div>
                 </div>
 
@@ -242,11 +245,63 @@ Merchant #2
     <!-- Theme JS -->
     <script src="js/theme.js"></script>
     <script>
-        // Storage key
+        // Storage keys
         const STORAGE_KEY = 'traveling_merchants';
+        const DEBUG_STORAGE_KEY = 'merchants_debug_enabled';
         
         // Store merchants data
         let merchants = {};
+        
+        // Debug mode flag
+        let debugEnabled = false;
+        
+        // Initialize debug mode from storage
+        function initDebugMode() {
+            const stored = localStorage.getItem(DEBUG_STORAGE_KEY);
+            debugEnabled = stored === 'true';
+            updateDebugToggleUI();
+        }
+        
+        // Toggle debug mode
+        function toggleDebug() {
+            debugEnabled = !debugEnabled;
+            localStorage.setItem(DEBUG_STORAGE_KEY, debugEnabled.toString());
+            updateDebugToggleUI();
+            debugLog('Debug mode ' + (debugEnabled ? 'ENABLED' : 'DISABLED'));
+        }
+        
+        // Update debug toggle button UI
+        function updateDebugToggleUI() {
+            const btn = document.getElementById('debugToggleBtn');
+            const text = document.getElementById('debugToggleText');
+            if (btn && text) {
+                if (debugEnabled) {
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-warning');
+                    text.textContent = '🔍 Debug: ON';
+                } else {
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-outline-secondary');
+                    text.textContent = '🔍 Debug: OFF';
+                }
+            }
+        }
+        
+        // Debug logging function
+        function debugLog(...args) {
+            if (debugEnabled) {
+                console.log('[Merchants Debug]', ...args);
+            }
+        }
+        
+        // Debug error logging function
+        function debugError(...args) {
+            if (debugEnabled) {
+                console.error('[Merchants Debug]', ...args);
+            } else {
+                console.error(...args);
+            }
+        }
 
         // Format AEST date/time
         function formatAESTDateTime(date) {
@@ -303,6 +358,7 @@ Merchant #2
 
         // Parse pasted text
         function parseMerchantData(text) {
+            debugLog('Parsing merchant data, input length:', text.length);
             const merchants = [];
             
             // Normalize the text: remove "×" separators, "Set Waypoint" buttons
@@ -314,6 +370,7 @@ Merchant #2
             
             // Split by separators first (Set Waypoint markers)
             let blocks = normalizedText.split(/\n\s*---SEPARATOR---\s*\n/).filter(block => block.trim());
+            debugLog('Initial blocks found:', blocks.length);
             
             // If no separators found or only one block, try alternative splitting methods
             if (blocks.length <= 1) {
@@ -349,13 +406,17 @@ Merchant #2
                 
                 if (newBlocks.length > 1) {
                     blocks = newBlocks;
+                    debugLog('Split by merchant numbers, found:', blocks.length, 'blocks');
                 } else if (blocks.length === 1) {
                     // Last resort: split by triple newlines
                     blocks = normalizedText.split(/\n\s*\n\s*\n/).filter(block => block.trim());
+                    debugLog('Split by triple newlines, found:', blocks.length, 'blocks');
                 }
             }
             
-            blocks.forEach(block => {
+            debugLog('Processing', blocks.length, 'merchant blocks');
+            blocks.forEach((block, index) => {
+                debugLog(`Processing block ${index + 1}/${blocks.length}`);
                 const lines = block.split('\n')
                     .map(l => l.trim())
                     .filter(l => l && !l.match(/^📍 Set Waypoint$/i) && !l.match(/Set Waypoint/i) && l !== '×' && l !== '📍');
@@ -473,7 +534,7 @@ Merchant #2
                 const rotationSeconds = rotationTimeStr ? parseTimeToSeconds(rotationTimeStr) : 0;
                 
                 if (itemName && merchantNum && rotationSeconds > 0) {
-                    merchants.push({
+                    const merchant = {
                         emoji: emoji,
                         itemName: itemName,
                         merchantNumber: parseInt(merchantNum),
@@ -484,16 +545,22 @@ Merchant #2
                         secondsRemaining: rotationSeconds,
                         originalRemaining: rotationSeconds,
                         startTime: new Date().toISOString()
-                    });
+                    };
+                    merchants.push(merchant);
+                    debugLog('Parsed merchant:', merchant.merchantNumber, '-', merchant.itemName, '- Rotation:', rotationTimeStr);
+                } else {
+                    debugLog('Skipped invalid merchant block - itemName:', itemName, 'merchantNum:', merchantNum, 'rotationSeconds:', rotationSeconds);
                 }
             });
             
+            debugLog('Total merchants parsed:', merchants.length);
             return merchants;
         }
 
         // Save to localStorage
         function saveToStorage() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(merchants));
+            debugLog('Saved merchants to localStorage');
         }
 
         // Load from localStorage
@@ -518,8 +585,9 @@ Merchant #2
                         merchant.startTime = startTime.toISOString();
                     });
                     saveToStorage();
+                    debugLog('Loaded merchants from storage:', Object.keys(merchants).length, 'merchants');
                 } catch (e) {
-                    console.error('Error loading from storage:', e);
+                    debugError('Error loading from storage:', e);
                     merchants = {};
                 }
             }
@@ -528,12 +596,14 @@ Merchant #2
         // Parse and save
         function parseAndSave() {
             const input = document.getElementById('pasteInput').value;
+            debugLog('parseAndSave called, input length:', input.length);
             if (!input.trim()) {
                 alert('Please paste merchant data first!');
                 return;
             }
             
             const parsed = parseMerchantData(input);
+            debugLog('Parsed merchants:', parsed.length);
             if (parsed.length === 0) {
                 alert('No valid merchant data found. Please check the format.');
                 return;
@@ -542,6 +612,7 @@ Merchant #2
             // Add or update merchants
             parsed.forEach(merchant => {
                 const key = `merchant-${merchant.merchantNumber}`;
+                const isUpdate = merchants[key] !== undefined;
                 // Ensure originalRemaining is set
                 if (!merchant.originalRemaining) {
                     merchant.originalRemaining = merchant.secondsRemaining;
@@ -549,9 +620,11 @@ Merchant #2
                 // Reset startTime to now when updating
                 merchant.startTime = new Date().toISOString();
                 merchants[key] = merchant;
+                debugLog(isUpdate ? 'Updated' : 'Added', 'merchant:', key);
             });
             
             saveToStorage();
+            debugLog('Saved to storage, total merchants:', Object.keys(merchants).length);
             document.getElementById('pasteInput').value = '';
             renderMerchants();
             renderMerchantsRotation(); // Update rotation section
@@ -935,9 +1008,13 @@ Merchant #2
         // Remove merchant
         function removeMerchant(key) {
             const merchant = merchants[key];
-            if (!merchant) return;
+            if (!merchant) {
+                debugLog('Attempted to remove non-existent merchant:', key);
+                return;
+            }
             
             if (confirm(`Are you sure you want to remove Merchant #${merchant.merchantNumber} (${merchant.itemName})?`)) {
+                debugLog('Removing merchant:', key, merchant.itemName);
                 delete merchants[key];
                 saveToStorage();
                 renderMerchants();
@@ -948,12 +1025,15 @@ Merchant #2
 
         // Clear all merchants
         function clearAllMerchants() {
-            if (Object.keys(merchants).length === 0) {
+            const count = Object.keys(merchants).length;
+            debugLog('clearAllMerchants called, current count:', count);
+            if (count === 0) {
                 alert('No merchants to clear.');
                 return;
             }
             
             if (confirm('Are you sure you want to clear ALL merchants?')) {
+                debugLog('Clearing all merchants');
                 merchants = {};
                 saveToStorage();
                 renderMerchants();
@@ -964,12 +1044,14 @@ Merchant #2
         }
 
         // Initialize
+        initDebugMode();
         loadFromStorage();
         renderMerchants();
         updateAESTTime();
         setInterval(updateAESTTime, 1000);
         updateTimers();
         setInterval(updateTimers, 1000);
+        debugLog('Page initialized');
     </script>
 </body>
 </html>
