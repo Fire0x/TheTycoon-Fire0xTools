@@ -1867,7 +1867,20 @@
             }
             
             // Second confirmation (EXTRA confirmation)
-            if (!confirm(`🚨 FINAL CONFIRMATION 🚨\n\nYou are about to PERMANENTLY DELETE:\n- Tier: "${tierName}"\n- ${businessCount} business${businessCount !== 1 ? 'es' : ''}\n\nThis will remove ALL data associated with this tier.\n\nType OK and click OK to confirm deletion, or Cancel to abort.`)) {
+            if (!confirm(`🚨 FINAL CONFIRMATION 🚨\n\nYou are about to PERMANENTLY DELETE:\n- Tier: "${tierName}"\n- ${businessCount} business${businessCount !== 1 ? 'es' : ''}\n\nThis will remove ALL data associated with this tier.\n\nClick OK to proceed to the final confirmation step.`)) {
+                return;
+            }
+            
+            // Third confirmation - require typing confirmation phrase
+            const confirmationPhrase = "I want to remove";
+            const userInput = prompt(`🚨 TYPE TO CONFIRM DELETION 🚨\n\nTo confirm deletion of:\n- Tier: "${tierName}"\n- ${businessCount} business${businessCount !== 1 ? 'es' : ''}\n\nPlease type exactly: "${confirmationPhrase}"\n\n(Click Cancel to abort)`);
+            
+            if (userInput === null) {
+                return; // User clicked Cancel
+            }
+            
+            if (userInput.trim() !== confirmationPhrase) {
+                alert(`❌ Confirmation failed!\n\nYou typed: "${userInput}"\n\nExpected: "${confirmationPhrase}"\n\nDeletion cancelled.`);
                 return;
             }
             
@@ -2044,7 +2057,20 @@
             }
             
             // Second confirmation (EXTRA confirmation)
-            if (!confirm(`🚨 FINAL CONFIRMATION 🚨\n\nYou are about to PERMANENTLY DELETE:\n- Business Code: ${code}\n- Business Name: ${businessName}\n\nThis will remove ALL data for this business.\n\nType OK and click OK to confirm deletion, or Cancel to abort.`)) {
+            if (!confirm(`🚨 FINAL CONFIRMATION 🚨\n\nYou are about to PERMANENTLY DELETE:\n- Business Code: ${code}\n- Business Name: ${businessName}\n\nThis will remove ALL data for this business.\n\nClick OK to proceed to the final confirmation step.`)) {
+                return;
+            }
+            
+            // Third confirmation - require typing confirmation phrase
+            const confirmationPhrase = "I want to remove";
+            const userInput = prompt(`🚨 TYPE TO CONFIRM DELETION 🚨\n\nTo confirm deletion of:\n- Business Code: ${code}\n- Business Name: ${businessName}\n\nPlease type exactly: "${confirmationPhrase}"\n\n(Click Cancel to abort)`);
+            
+            if (userInput === null) {
+                return; // User clicked Cancel
+            }
+            
+            if (userInput.trim() !== confirmationPhrase) {
+                alert(`❌ Confirmation failed!\n\nYou typed: "${userInput}"\n\nExpected: "${confirmationPhrase}"\n\nDeletion cancelled.`);
                 return;
             }
             
