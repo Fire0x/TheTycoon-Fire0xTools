@@ -5,15 +5,15 @@
 
 const VersionManager = {
     // Website overall version
-    website: '1.0.0',
+    website: '0.0.1',
     
     // Individual page versions
     pages: {
-        'index.html': '1.0.0',
-        'merchants.html': '1.0.0',
-        'checklist.html': '1.0.0',
-        'VehicleDeliveries.html': '1.0.0',
-        'education_timer.html': '1.0.0'
+        'index.html': '0.0.1',
+        'merchants.html': '0.0.2',
+        'checklist.html': '0.0.3',
+        'VehicleDeliveries.html': '0.0.4',
+        'education_timer.html': '0.0.2'
     },
     
     /**
@@ -61,7 +61,9 @@ const VersionManager = {
             footer.appendChild(versionDisplay);
         }
         
-        versionDisplay.innerHTML = `Website Version: <strong>${this.getWebsiteVersion()}</strong>`;
+        const websiteVersion = this.getWebsiteVersion();
+        const pageVersion = this.getCurrentPageVersion();
+        versionDisplay.innerHTML = `Website Version: <strong>${websiteVersion}</strong> | Page Version: <strong>${pageVersion}</strong>`;
     },
     
     /**
