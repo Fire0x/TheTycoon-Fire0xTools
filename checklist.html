@@ -389,8 +389,8 @@
                         <div class="row text-center">
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <div class="time-display">
-                                    <strong>🕐 Brisbane, Australia:</strong> 
-                                    <div id="brisbane-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <strong>🕐 Local time:</strong> 
+                                    <div id="local-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
@@ -1642,16 +1642,16 @@
         function updateTimes() {
             const now = new Date();
             
-            // Brisbane/Australia time
-            const brisbaneTime = formatTimeForTimezone(now, 'Australia/Brisbane', {
+            // Local time
+            const localTime = now.toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
             });
-            const brisbaneElement = document.getElementById('brisbane-time');
-            if (brisbaneElement) {
-                brisbaneElement.textContent = brisbaneTime.split(', ')[1] || brisbaneTime;
+            const localTimeElement = document.getElementById('local-time');
+            if (localTimeElement) {
+                localTimeElement.textContent = localTime;
             }
             
             // Eastern Time
