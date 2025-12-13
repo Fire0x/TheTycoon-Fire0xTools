@@ -404,7 +404,7 @@
                                 <div class="time-display">
                                     <strong>🔄 Server Reboot:</strong> 
                                     <div id="reboot-countdown" class="text-warning" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
-                                    <small class="text-muted d-block mt-1">Next: <span id="reboot-time-et">3:00 AM EST</span> / <span id="reboot-time-brisbane">--:-- AEST</span></small>
+                                    <small class="text-muted d-block mt-1">Next: <span id="reboot-time-et">3:00 AM EST</span> / <span id="reboot-time-local">--:--</span></small>
                                 </div>
                             </div>
                         </div>
@@ -815,8 +815,11 @@
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🚑')" title="Ambulance">🚑</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🚒')" title="Fire Engine">🚒</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🚓')" title="Police Car">🚓</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚔')" title="Oncoming Police Car">🚔</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🚕')" title="Taxi">🚕</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚖')" title="Oncoming Taxi">🚖</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🚗')" title="Automobile">🚗</button>
+                                    <button type="button" class="emoji-btn" onclick="selectEmoji('🚘')" title="Oncoming Automobile">🚘</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🚙')" title="Sport Utility Vehicle">🚙</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🚚')" title="Delivery Truck">🚚</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🚛')" title="Articulated Lorry">🚛</button>
@@ -2033,7 +2036,7 @@
             
             const countdownElement = document.getElementById('reboot-countdown');
             const rebootTimeETElement = document.getElementById('reboot-time-et');
-            const rebootTimeBrisbaneElement = document.getElementById('reboot-time-brisbane');
+            const rebootTimeLocalElement = document.getElementById('reboot-time-local');
             
             if (countdownElement) {
                 if (diff <= 0) {
@@ -2052,17 +2055,17 @@
                 rebootTimeETElement.textContent = `3:00 AM ${tz}`;
             }
             
-            if (rebootTimeBrisbaneElement && nextReboot) {
-                // Format the next reboot time in Brisbane, Australia (no seconds)
-                const brisbaneTime = formatTimeForTimezone(nextReboot, 'Australia/Brisbane', {
+            if (rebootTimeLocalElement && nextReboot) {
+                // Format the next reboot time in user's local timezone
+                const localTimeOptions = {
                     hour: 'numeric',
                     minute: '2-digit',
                     hour12: true
-                });
-                const timePart = brisbaneTime.split(', ')[1] || brisbaneTime;
-                // Remove seconds if present (format: HH:MM:SS AM/PM -> HH:MM AM/PM)
-                const timeWithoutSeconds = timePart.replace(/:\d{2}(?=\s*[AP]M)/i, '');
-                rebootTimeBrisbaneElement.textContent = `${timeWithoutSeconds} AEST`;
+                };
+                const localTime = nextReboot.toLocaleTimeString('en-US', localTimeOptions);
+                // Get timezone abbreviation if possible
+                const timeZoneName = Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).formatToParts(nextReboot).find(part => part.type === 'timeZoneName')?.value || '';
+                rebootTimeLocalElement.textContent = `${localTime} ${timeZoneName}`;
             }
         }
 
