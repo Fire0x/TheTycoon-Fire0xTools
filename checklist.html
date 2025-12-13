@@ -761,17 +761,15 @@
     </script>
     <!-- Config JS (optional - for migration only) -->
     <script>
-        // Load config files if available (for migration purposes)
+        // Load config.js if available (for migration purposes)
+        // Note: config-api.js removed - not needed since page uses localStorage
         (function() {
-            const scripts = ['js/config-api.js', 'js/config.js'];
-            scripts.forEach(src => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onerror = function() {
-                    console.warn(`${src} not found, continuing without it`);
-                };
-                document.head.appendChild(script);
-            });
+            const script = document.createElement('script');
+            script.src = 'js/config.js';
+            script.onerror = function() {
+                console.warn('config.js not found, continuing without it');
+            };
+            document.head.appendChild(script);
         })();
     </script>
     <script>

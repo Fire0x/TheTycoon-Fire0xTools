@@ -2,7 +2,9 @@
 // This file provides the same interface as config.js but fetches data from the API
 // Falls back to config.js if API is unavailable
 
-const API_BASE_URL = 'http://localhost:3000/api';
+// Only use API in development (localhost), skip in production
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_BASE_URL = isDevelopment ? 'http://localhost:3000/api' : null;
 
 // Cache for API data
 let apiDataCache = {
@@ -13,12 +15,20 @@ let apiDataCache = {
 
 // Fetch from API with error handling
 async function fetchFromAPI(endpoint) {
+    // Skip API calls in production
+    if (!API_BASE_URL || !isDevelopment) {
+        return null;
+    }
+    
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return await response.json();
     } catch (error) {
-        console.warn(`API fetch failed for ${endpoint}, using fallback:`, error.message);
+        // Only log warnings in development
+        if (isDevelopment) {
+            console.warn(`API fetch failed for ${endpoint}, using fallback:`, error.message);
+        }
         return null;
     }
 }
@@ -106,12 +116,14 @@ function getChecklistConfigFromAPI() {
     };
 }
 
-// Initialize API data on page load
+// Initialize API data on page load (only in development)
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadAPIData();
-    
-    // Trigger a custom event when data is loaded
-    window.dispatchEvent(new CustomEvent('apiDataLoaded'));
+    // Only attempt API calls in development
+    if (isDevelopment && API_BASE_URL) {
+        await loadAPIData();
+        // Trigger a custom event when data is loaded
+        window.dispatchEvent(new CustomEvent('apiDataLoaded'));
+    }
 });
 
 // Export functions (same interface as config.js)
