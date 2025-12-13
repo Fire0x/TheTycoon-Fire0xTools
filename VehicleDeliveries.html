@@ -34,6 +34,19 @@
             color: var(--text-color) !important;
             border: 1px solid var(--card-border);
         }
+        kbd {
+            display: inline-block;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-color);
+            text-align: center;
+            background-color: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 0.25rem;
+            box-shadow: inset 0 -1px 0 var(--card-border);
+        }
     </style>
 </head>
 <body>
@@ -71,124 +84,33 @@
         <h1 class="glow-text">🚗 Vehicle Deliveries</h1>
         <p class="lead">Track event and regular vehicle deliveries</p>
 
-        <!-- Event Vehicles Section -->
-        <div class="card mt-4 mb-4">
-            <div class="card-header bg-primary text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn btn-link text-white p-0 me-2" onclick="toggleViewMode('eventVehicles')" style="text-decoration: none; font-size: 1.2rem;" title="Toggle view/edit mode">
-                            <span id="eventVehiclesViewIcon">👁️</span>
-                        </button>
-                        <h2 class="mb-0">🎉 Event Vehicles</h2>
-                        <span id="eventVehiclesViewMode" class="badge bg-light text-dark ms-2" style="display: none;">View Only</span>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-light btn-sm" id="eventVehiclesAddBtn" onclick="addEventVehicle()">
-                            ➕ Add New Event
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover" id="eventVehiclesTable">
-                        <thead>
-                            <tr>
-                                <th>Event Name</th>
-                                <th>Status</th>
-                                <th>Last Updated</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="eventVehiclesBody">
-                            <tr>
-                                <td colspan="4" class="text-center">
-                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                    Loading event vehicles...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-3">
-                    <button type="button" class="btn btn-success" id="eventVehiclesSaveBtn" onclick="saveEventVehicles()">
-                        💾 Save Changes
-                    </button>
-                    <span id="eventVehiclesStatus" class="ms-3"></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Normal Vehicles Section -->
-        <div class="card mt-4 mb-4">
-            <div class="card-header bg-secondary text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn btn-link text-white p-0 me-2" onclick="toggleViewMode('normalVehicles')" style="text-decoration: none; font-size: 1.2rem;" title="Toggle view/edit mode">
-                            <span id="normalVehiclesViewIcon">👁️</span>
-                        </button>
-                        <h2 class="mb-0">🚙 Regular Vehicles</h2>
-                        <span id="normalVehiclesViewMode" class="badge bg-light text-dark ms-2" style="display: none;">View Only</span>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-light btn-sm" id="normalVehiclesAddBtn" onclick="showAddNormalVehicleModal()">
-                            ➕ Add New Vehicle
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover" id="normalVehiclesTable">
-                        <thead>
-                            <tr>
-                                <th>Dealer</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                                <th>Last Updated</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="normalVehiclesBody">
-                            <tr>
-                                <td colspan="5" class="text-center">
-                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                    Loading vehicles...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-3">
-                    <button type="button" class="btn btn-success" id="normalVehiclesSaveBtn" onclick="saveNormalVehicles()">
-                        💾 Save Changes
-                    </button>
-                    <span id="normalVehiclesStatus" class="ms-3"></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add Normal Vehicle Modal -->
-        <div class="modal fade" id="addNormalVehicleModal" tabindex="-1" aria-labelledby="addNormalVehicleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addNormalVehicleModalLabel">Add New Vehicle</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
+        <!-- How to Use Section -->
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <div class="card shadow-sm mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3" style="color: var(--text-color);">📖 How to Use This Page</h5>
                         <div class="mb-3">
-                            <label for="newVehicleDealer" class="form-label">Dealer</label>
-                            <input type="text" class="form-control" id="newVehicleDealer" placeholder="Enter dealer name">
+                            <h6 class="mb-2"><strong>Step 1: In-Game</strong></h6>
+                            <p class="mb-2">Navigate to a Vehicle Dealer and go to the Vehicle Section.</p>
+                            
+                            <h6 class="mb-2"><strong>Step 2: Copy the Data</strong></h6>
+                            <p class="mb-2">Select all the vehicle progress data that appears:</p>
+                            <ul class="mb-3">
+                                <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd></li>
+                                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then <kbd>Cmd</kbd> + <kbd>C</kbd></li>
+                            </ul>
+                            
+                            <h6 class="mb-2"><strong>Step 3: Paste on This Page</strong></h6>
+                            <p class="mb-2">Click in the text area below and paste your data:</p>
+                            <ul class="mb-3">
+                                <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
+                                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
+                            </ul>
+                            
+                            <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
+                            <p class="mb-0">Click the <span class="badge bg-primary">✨ Parse & Save Progress</span> button to add them to your tracker!</p>
                         </div>
-                        <div class="mb-3">
-                            <label for="newVehicleType" class="form-label">Type</label>
-                            <input type="text" class="form-control" id="newVehicleType" placeholder="Enter vehicle type">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" onclick="addNormalVehicleFromModal()">Add Vehicle</button>
                     </div>
                 </div>
             </div>
@@ -276,6 +198,9 @@ SANCTUS
                         <button class="btn btn-outline-danger btn-lg" onclick="clearAllVehicleProgress()">
                             <span>🗑️</span> Clear All Progress
                         </button>
+                        <button class="btn btn-outline-secondary btn-sm ms-2 align-self-center" id="debugToggleBtn" onclick="toggleDebug()">
+                            <span id="debugToggleText">🔍 Debug: OFF</span>
+                        </button>
                     </div>
                 </div>
 
@@ -319,6 +244,58 @@ SANCTUS
 
         // Status options
         const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Completed', 'Did Not Complete'];
+        
+        // Debug mode flag
+        const DEBUG_STORAGE_KEY = 'vehicle_deliveries_debug_enabled';
+        let debugEnabled = false;
+        
+        // Initialize debug mode from storage
+        function initDebugMode() {
+            const stored = localStorage.getItem(DEBUG_STORAGE_KEY);
+            debugEnabled = stored === 'true';
+            updateDebugToggleUI();
+        }
+        
+        // Toggle debug mode
+        function toggleDebug() {
+            debugEnabled = !debugEnabled;
+            localStorage.setItem(DEBUG_STORAGE_KEY, debugEnabled.toString());
+            updateDebugToggleUI();
+            debugLog('Debug mode ' + (debugEnabled ? 'ENABLED' : 'DISABLED'));
+        }
+        
+        // Update debug toggle button UI
+        function updateDebugToggleUI() {
+            const btn = document.getElementById('debugToggleBtn');
+            const text = document.getElementById('debugToggleText');
+            if (btn && text) {
+                if (debugEnabled) {
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-warning');
+                    text.textContent = '🔍 Debug: ON';
+                } else {
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-outline-secondary');
+                    text.textContent = '🔍 Debug: OFF';
+                }
+            }
+        }
+        
+        // Debug logging function
+        function debugLog(...args) {
+            if (debugEnabled) {
+                console.log('[Vehicle Deliveries Debug]', ...args);
+            }
+        }
+        
+        // Debug error logging function
+        function debugError(...args) {
+            if (debugEnabled) {
+                console.error('[Vehicle Deliveries Debug]', ...args);
+            } else {
+                console.error(...args);
+            }
+        }
 
         // Load event vehicles
         async function loadEventVehicles() {
@@ -328,7 +305,7 @@ SANCTUS
                 eventVehicles = await response.json();
                 renderEventVehicles();
             } catch (error) {
-                console.error('Error loading event vehicles:', error);
+                debugError('Error loading event vehicles:', error);
                 document.getElementById('eventVehiclesBody').innerHTML = 
                     '<tr><td colspan="4" class="text-center text-danger">Error loading event vehicles</td></tr>';
             }
@@ -419,17 +396,17 @@ SANCTUS
         // Load normal vehicles
         async function loadNormalVehicles() {
             try {
-                console.log('🔍 [DEBUG] Loading normal vehicles from API...');
+                debugLog('Loading normal vehicles from API...');
                 const response = await fetch(`${API_BASE}/normal-vehicles`);
                 if (!response.ok) throw new Error('Failed to fetch normal vehicles');
                 normalVehicles = await response.json();
-                console.log('🔍 [DEBUG] Loaded normal vehicles:', normalVehicles.length);
+                debugLog('Loaded normal vehicles:', normalVehicles.length);
                 normalVehicles.forEach((vehicle, index) => {
-                    console.log(`  [${index}] ID: ${vehicle.id}, Dealer: ${vehicle.dealer}, Date: "${vehicle.last_updated}"`);
+                    debugLog(`  [${index}] ID: ${vehicle.id}, Dealer: ${vehicle.dealer}, Date: "${vehicle.last_updated}"`);
                 });
                 renderNormalVehicles();
             } catch (error) {
-                console.error('❌ [DEBUG] Error loading normal vehicles:', error);
+                debugError('Error loading normal vehicles:', error);
                 const tbody = document.getElementById('normalVehiclesBody');
                 if (tbody) {
                     tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading vehicles</td></tr>';
@@ -574,20 +551,20 @@ SANCTUS
             statusEl.textContent = 'Saving...';
             statusEl.className = 'ms-3 text-info';
 
-            console.log('🔍 [DEBUG] saveEventVehicles - Starting save process');
-            console.log('🔍 [DEBUG] Total vehicles to process:', eventVehicles.length);
+            debugLog('saveEventVehicles - Starting save process');
+            debugLog('Total vehicles to process:', eventVehicles.length);
 
             try {
                 const promises = [];
 
                 for (const vehicle of eventVehicles) {
-                    console.log(`🔍 [DEBUG] Processing vehicle ID: ${vehicle.id}, Name: ${vehicle.event_name}`);
+                    debugLog(`Processing vehicle ID: ${vehicle.id}, Name: ${vehicle.event_name}`);
                     
                     if (vehicle.id.toString().startsWith('new-')) {
                         // Create new
                         const rawDate = getEventVehicleValue(vehicle.id, 'event-date-input');
                         const dateValue = rawDate && rawDate.trim() !== '' ? rawDate.trim() : null;
-                        console.log(`🔍 [DEBUG] Creating new vehicle - Raw date input: "${rawDate}", Processed date: "${dateValue}"`);
+                        debugLog(`Creating new vehicle - Raw date input: "${rawDate}", Processed date: "${dateValue}"`);
                         
                         promises.push(
                             fetch(`${API_BASE}/event-vehicles`, {
@@ -608,10 +585,10 @@ SANCTUS
                         const rawDate = getEventVehicleValue(vehicle.id, 'event-date-input');
                         const date = rawDate && rawDate.trim() !== '' ? rawDate.trim() : null;
                         
-                        console.log(`🔍 [DEBUG] Updating vehicle ${vehicle.id}:`);
-                        console.log(`  - Raw date input: "${rawDate}"`);
-                        console.log(`  - Processed date: "${date}"`);
-                        console.log(`  - Stored date: "${vehicle.last_updated}"`);
+                        debugLog(`Updating vehicle ${vehicle.id}:`);
+                        debugLog(`  - Raw date input: "${rawDate}"`);
+                        debugLog(`  - Processed date: "${date}"`);
+                        debugLog(`  - Stored date: "${vehicle.last_updated}"`);
 
                         if (name !== vehicle.event_name) {
                             promises.push(
@@ -636,13 +613,13 @@ SANCTUS
                         const storedDateStr = vehicle.last_updated ? formatDateForInput(vehicle.last_updated) : '';
                         const inputDateStr = date || '';
                         
-                        console.log(`  - Stored date (formatted): "${storedDateStr}"`);
-                        console.log(`  - Input date (formatted): "${inputDateStr}"`);
-                        console.log(`  - Dates match: ${inputDateStr === storedDateStr}`);
+                        debugLog(`  - Stored date (formatted): "${storedDateStr}"`);
+                        debugLog(`  - Input date (formatted): "${inputDateStr}"`);
+                        debugLog(`  - Dates match: ${inputDateStr === storedDateStr}`);
                         
                         // Only update if dates are different
                         if (inputDateStr !== storedDateStr) {
-                            console.log(`  ✅ [DEBUG] Date changed - will update to: "${date}"`);
+                            debugLog(`  ✅ Date changed - will update to: "${date}"`);
                             // Send the date exactly as entered (YYYY-MM-DD format) or null
                             promises.push(
                                 fetch(`${API_BASE}/event-vehicles/${vehicle.id}/date`, {
@@ -651,19 +628,19 @@ SANCTUS
                                     body: JSON.stringify({ last_updated: date })
                                 }).then(async (response) => {
                                     const result = await response.json();
-                                    console.log(`  ✅ [DEBUG] Date update response for ${vehicle.id}:`, result);
+                                    debugLog(`  ✅ Date update response for ${vehicle.id}:`, result);
                                     return response;
                                 })
                             );
                         } else {
-                            console.log(`  ⏭️ [DEBUG] Date unchanged - skipping update`);
+                            debugLog(`  ⏭️ Date unchanged - skipping update`);
                         }
                     }
                 }
 
-                console.log(`🔍 [DEBUG] Executing ${promises.length} update/create operations`);
+                debugLog(`Executing ${promises.length} update/create operations`);
                 await Promise.all(promises);
-                console.log('✅ [DEBUG] All operations completed successfully');
+                debugLog('✅ All operations completed successfully');
                 
                 statusEl.textContent = '✅ Saved successfully!';
                 statusEl.className = 'ms-3 text-success';
@@ -672,10 +649,10 @@ SANCTUS
                 }, 3000);
                 
                 // Reload data
-                console.log('🔍 [DEBUG] Reloading event vehicles data...');
+                debugLog('Reloading event vehicles data...');
                 await loadEventVehicles();
             } catch (error) {
-                console.error('Error saving event vehicles:', error);
+                debugError('Error saving event vehicles:', error);
                 statusEl.textContent = '❌ Error saving changes';
                 statusEl.className = 'ms-3 text-danger';
             }
@@ -741,13 +718,13 @@ SANCTUS
                         const storedDateStr = vehicle.last_updated ? formatDateForInput(vehicle.last_updated) : '';
                         const inputDateStr = date || '';
                         
-                        console.log(`  - Stored date (formatted): "${storedDateStr}"`);
-                        console.log(`  - Input date (formatted): "${inputDateStr}"`);
-                        console.log(`  - Dates match: ${inputDateStr === storedDateStr}`);
+                        debugLog(`  - Stored date (formatted): "${storedDateStr}"`);
+                        debugLog(`  - Input date (formatted): "${inputDateStr}"`);
+                        debugLog(`  - Dates match: ${inputDateStr === storedDateStr}`);
                         
                         // Only update if dates are different
                         if (inputDateStr !== storedDateStr) {
-                            console.log(`  ✅ [DEBUG] Date changed - will update to: "${date}"`);
+                            debugLog(`  ✅ Date changed - will update to: "${date}"`);
                             // Send the date exactly as entered (YYYY-MM-DD format) or null
                             promises.push(
                                 fetch(`${API_BASE}/normal-vehicles/${vehicle.id}/date`, {
@@ -756,19 +733,19 @@ SANCTUS
                                     body: JSON.stringify({ last_updated: date })
                                 }).then(async (response) => {
                                     const result = await response.json();
-                                    console.log(`  ✅ [DEBUG] Date update response for ${vehicle.id}:`, result);
+                                    debugLog(`  ✅ Date update response for ${vehicle.id}:`, result);
                                     return response;
                                 })
                             );
                         } else {
-                            console.log(`  ⏭️ [DEBUG] Date unchanged - skipping update`);
+                            debugLog(`  ⏭️ Date unchanged - skipping update`);
                         }
                     }
                 }
 
-                console.log(`🔍 [DEBUG] Executing ${promises.length} update/create operations`);
+                debugLog(`Executing ${promises.length} update/create operations`);
                 await Promise.all(promises);
-                console.log('✅ [DEBUG] All operations completed successfully');
+                debugLog('✅ All operations completed successfully');
                 
                 statusEl.textContent = '✅ Saved successfully!';
                 statusEl.className = 'ms-3 text-success';
@@ -777,10 +754,10 @@ SANCTUS
                 }, 3000);
                 
                 // Reload data
-                console.log('🔍 [DEBUG] Reloading normal vehicles data...');
+                debugLog('Reloading normal vehicles data...');
                 await loadNormalVehicles();
             } catch (error) {
-                console.error('Error saving normal vehicles:', error);
+                debugError('Error saving normal vehicles:', error);
                 statusEl.textContent = '❌ Error saving changes';
                 statusEl.className = 'ms-3 text-danger';
             }
@@ -805,7 +782,7 @@ SANCTUS
                     await loadEventVehicles();
                 }
             } catch (error) {
-                console.error('Error deleting event vehicle:', error);
+                debugError('Error deleting event vehicle:', error);
                 alert('Error deleting event vehicle');
             }
         }
@@ -829,7 +806,7 @@ SANCTUS
                     await loadNormalVehicles();
                 }
             } catch (error) {
-                console.error('Error deleting normal vehicle:', error);
+                debugError('Error deleting normal vehicle:', error);
                 alert('Error deleting vehicle');
             }
         }
@@ -896,6 +873,7 @@ SANCTUS
 
         // Parse vehicle progress data from pasted text
         function parseVehicleProgress(text) {
+            debugLog('Parsing vehicle progress data, input length:', text.length);
             const vehicles = [];
             const lines = text.split('\n').map(l => l.trim()).filter(l => l);
             
@@ -961,12 +939,17 @@ SANCTUS
                 });
             }
             
+            debugLog('Parsed vehicles:', vehicles.length);
+            vehicles.forEach((v, idx) => {
+                debugLog(`  [${idx}] ${v.name}: ${v.current}/${v.total}, Reputation: ${v.reputation || 'N/A'}, Unlocked: ${v.unlocked}`);
+            });
             return vehicles;
         }
 
         // Save vehicle progress to localStorage
         function saveVehicleProgress() {
             localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(vehicleProgress));
+            debugLog('Saved vehicle progress to localStorage');
         }
 
         // Load vehicle progress from localStorage
@@ -975,22 +958,27 @@ SANCTUS
             if (stored) {
                 try {
                     vehicleProgress = JSON.parse(stored);
+                    debugLog('Loaded vehicle progress from storage:', Object.keys(vehicleProgress).length, 'vehicles');
                 } catch (e) {
-                    console.error('Error loading vehicle progress:', e);
+                    debugError('Error loading vehicle progress:', e);
                     vehicleProgress = {};
                 }
+            } else {
+                debugLog('No vehicle progress found in storage');
             }
         }
 
         // Parse and save vehicle progress
         function parseAndSaveVehicleProgress() {
             const input = document.getElementById('vehicleProgressInput').value;
+            debugLog('parseAndSaveVehicleProgress called, input length:', input.length);
             if (!input.trim()) {
                 alert('Please paste vehicle progress data first!');
                 return;
             }
             
             const parsed = parseVehicleProgress(input);
+            debugLog('Parsed vehicles:', parsed.length);
             if (parsed.length === 0) {
                 alert('No valid vehicle progress data found. Please check the format.');
                 return;
@@ -999,10 +987,13 @@ SANCTUS
             // Add or update vehicles
             parsed.forEach(vehicle => {
                 const key = vehicle.name.toLowerCase().replace(/\s+/g, '-');
+                const isUpdate = vehicleProgress[key] !== undefined;
                 vehicleProgress[key] = vehicle;
+                debugLog(isUpdate ? 'Updated' : 'Added', 'vehicle:', key, vehicle.name);
             });
             
             saveVehicleProgress();
+            debugLog('Saved to localStorage, total vehicles:', Object.keys(vehicleProgress).length);
             document.getElementById('vehicleProgressInput').value = '';
             renderVehicleProgress();
             
@@ -1011,11 +1002,13 @@ SANCTUS
 
         // Render vehicle progress cards
         function renderVehicleProgress() {
+            debugLog('Rendering vehicle progress');
             const container = document.getElementById('vehicleProgressContainer');
             const emptyState = document.getElementById('vehicleProgressEmptyState');
             const summary = document.getElementById('progressSummary');
             
             const keys = Object.keys(vehicleProgress);
+            debugLog('Total vehicles to render:', keys.length);
             
             if (keys.length === 0) {
                 container.innerHTML = '';
@@ -1052,6 +1045,8 @@ SANCTUS
             document.getElementById('highestRep').textContent = highestRep.toLocaleString('en-US');
             document.getElementById('totalVehiclesNeeded').textContent = totalNeeded;
             document.getElementById('unlockedCount').textContent = unlockedCount;
+            
+            debugLog('Summary - Highest Rep:', highestRep, 'Total Needed:', totalNeeded, 'Unlocked:', unlockedCount);
             
             // Render cards
             container.innerHTML = keys.map(key => {
@@ -1113,12 +1108,15 @@ SANCTUS
 
         // Clear all vehicle progress
         function clearAllVehicleProgress() {
-            if (Object.keys(vehicleProgress).length === 0) {
+            const count = Object.keys(vehicleProgress).length;
+            debugLog('clearAllVehicleProgress called, current count:', count);
+            if (count === 0) {
                 alert('No vehicle progress to clear.');
                 return;
             }
             
             if (confirm('Are you sure you want to clear ALL vehicle progress?')) {
+                debugLog('Clearing all vehicle progress');
                 vehicleProgress = {};
                 saveVehicleProgress();
                 renderVehicleProgress();
@@ -1186,16 +1184,18 @@ SANCTUS
                     });
                 }
             } catch (e) {
-                console.error('Error loading view mode state:', e);
+                debugError('Error loading view mode state:', e);
             }
         }
 
         window.addEventListener('DOMContentLoaded', function() {
+            initDebugMode();
             loadViewModeState();
             loadEventVehicles();
             loadNormalVehicles();
             loadVehicleProgress();
             renderVehicleProgress();
+            debugLog('Page initialized');
         });
     </script>
 </body>
