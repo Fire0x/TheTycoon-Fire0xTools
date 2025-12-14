@@ -493,7 +493,6 @@
                                     <li><strong>Tier:</strong> Select which tier this business belongs to</li>
                                     <li><strong>Max Stock:</strong> Maximum stock capacity for this business</li>
                                     <li><strong>Collection Storage:</strong> Maximum collection storage capacity</li>
-                                    <li><strong>Notes:</strong> <em>Optional</em> - Add notes to help remember which business this is, such as employee names or other identifying information. Hover over the ℹ️ icon for more details. This makes it easy to identify businesses when you have multiple locations.</li>
                                 </ul>
                                 
                                 <h6 class="mb-2"><strong>Step 3: Track Your Progress</strong></h6>
@@ -1144,21 +1143,12 @@
                     <form id="businessForm">
                         <input type="hidden" id="businessCodeOriginal" value="">
                         <div class="mb-3">
-                            <label for="businessCode" class="form-label">Business Code <span class="text-danger">*</span></label>
+                            <label for="businessCode" class="form-label">Business Code</label>
                             <input type="text" class="form-control" id="businessCode" required placeholder="e.g., TIER1-BIZ001">
-                            <small class="form-text text-muted">Required: A unique identifier for this business</small>
                         </div>
                         <div class="mb-3">
                             <label for="businessName" class="form-label">Business Name</label>
                             <input type="text" class="form-control" id="businessName" required placeholder="e.g., Route 68, Grand Senora Desert">
-                        </div>
-                        <div class="mb-3">
-                            <label for="businessNotes" class="form-label">
-                                Notes
-                                <span class="text-muted" style="cursor: help;" title="Use this field to remember which business this is, such as employee names or other identifying information. This helps you easily identify businesses when tracking multiple locations." data-bs-toggle="tooltip" data-bs-placement="right">ℹ️</span>
-                            </label>
-                            <textarea class="form-control" id="businessNotes" rows="2" placeholder="e.g., Employee: John Smith, or Location notes..."></textarea>
-                            <small class="form-text text-muted">Optional: Add notes to help remember which business this is (e.g., employee names)</small>
                         </div>
                         <div class="mb-3">
                             <label for="businessTierId" class="form-label">Tier</label>
@@ -1425,8 +1415,7 @@
                         maxStock: biz.maxStock,
                         collectionStorage: biz.collectionStorage,
                         canCollectItems: biz.canCollectItems,
-                        conversionRate: biz.conversionRate || tier.conversionRate,
-                        notes: biz.notes || ''
+                        conversionRate: biz.conversionRate || tier.conversionRate
                     }));
                 
                 businessesByTier[tier.name] = tierBusinesses;
@@ -1483,7 +1472,6 @@
                                     const collectionStorage = biz.collectionStorage || 0;
                                     const maxStockDisplay = maxStock.toLocaleString('en-US');
                                     const collectionDisplay = collectionStorage.toLocaleString('en-US');
-                                    const businessNotes = biz.notes || '';
                                     
                                     return `
                                     <div class="business-item" data-business-code="${biz.businessCode}" data-tier="${tier.name}">
@@ -1491,19 +1479,10 @@
                                             <input class="form-check-input me-2 mt-1" type="checkbox" value="${biz.businessCode}" data-tier="${tier.name}" id="check-${tier.name}-${index}">
                                             <div class="flex-grow-1">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                                    <div class="flex-grow-1">
-                                                        <label class="form-check-label" for="check-${tier.name}-${index}">
-                                                            <span class="business-code fw-bold" style="color: var(--primary-color, #667eea);">${biz.businessCode}</span>
-                                                            ${businessName && businessName !== biz.businessCode ? `<span class="business-name"> - ${businessName}</span>` : ''}
-                                                        </label>
-                                                        ${businessNotes ? `
-                                                        <div class="mt-1">
-                                                            <small class="text-muted" style="font-style: italic; display: block;">
-                                                                <span class="text-info">ℹ️</span> ${businessNotes}
-                                                            </small>
-                                                        </div>
-                                                        ` : ''}
-                                                    </div>
+                                                    <label class="form-check-label" for="check-${tier.name}-${index}">
+                                                        <span class="business-code">${biz.businessCode}</span>
+                                                        <span class="business-name"> - ${businessName}</span>
+                                                    </label>
                                                     <button type="button" class="btn btn-sm btn-outline-secondary hide-business-btn" 
                                                             data-business-code="${biz.businessCode}" 
                                                             data-tier="${tier.name}"
@@ -2534,7 +2513,6 @@
             // Set default values for number inputs
             document.getElementById('businessMaxStock').value = '0';
             document.getElementById('businessCollectionStorage').value = '0';
-            document.getElementById('businessNotes').value = '';
             
             // Populate tier dropdown
             const tierSelect = document.getElementById('businessTierId');
@@ -2549,14 +2527,11 @@
             const modalElement = document.getElementById('businessModal');
             const modal = new bootstrap.Modal(modalElement);
             
-            // Initialize number formatting and tooltips after modal is fully shown
+            // Initialize number formatting after modal is fully shown
             modalElement.addEventListener('shown.bs.modal', function() {
                 if (typeof initNumberFormatting === 'function') {
                     initNumberFormatting({ allowDecimals: false, selector: '#businessMaxStock, #businessCollectionStorage' });
                 }
-                // Initialize Bootstrap tooltips
-                const tooltipTriggerList = modalElement.querySelectorAll('[data-bs-toggle="tooltip"]');
-                tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
             }, { once: true });
             
             modal.show();
@@ -2604,7 +2579,6 @@
                 document.getElementById('businessCollectionStorage').value = typeof formatNumber === 'function' ? formatNumber(collectionStorage, false) : collectionStorage.toString();
                 
             document.getElementById('businessCanCollectItems').checked = business.canCollectItems === true;
-            document.getElementById('businessNotes').value = business.notes || '';
                 
             document.getElementById('deleteBusinessBtn').style.display = 'inline-block';
             
@@ -2636,14 +2610,11 @@
                 const modalElement = document.getElementById('businessModal');
                 const modal = new bootstrap.Modal(modalElement);
                 
-                // Initialize number formatting and tooltips after modal is fully shown
+                // Initialize number formatting after modal is fully shown
                 modalElement.addEventListener('shown.bs.modal', function() {
                     if (typeof initNumberFormatting === 'function') {
                         initNumberFormatting({ allowDecimals: false, selector: '#businessMaxStock, #businessCollectionStorage' });
                     }
-                    // Initialize Bootstrap tooltips
-                    const tooltipTriggerList = modalElement.querySelectorAll('[data-bs-toggle="tooltip"]');
-                    tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
                 }, { once: true });
                 
             modal.show();
@@ -2668,7 +2639,6 @@
                 : parseInt(collectionStorageValue.replace(/,/g, '')) || 0;
             
             const canCollectItems = document.getElementById('businessCanCollectItems').checked;
-            const notes = document.getElementById('businessNotes').value.trim();
             
             if (!code || !name || !tierId) {
                 alert('Business code, name, and tier are required');
@@ -2701,8 +2671,7 @@
                         status: status,
                         maxStock: maxStock,
                         collectionStorage: collectionStorage,
-                        canCollectItems: canCollectItems,
-                        notes: notes
+                        canCollectItems: canCollectItems
                     };
                 }
             } else {
@@ -2880,7 +2849,7 @@
             }
             
             // Generate CSV format for checklist with all business data
-            let csv = 'Business Code,Business Name,Tier,Status,Max Stock,Collection Storage,Can Collect Items,Notes\n';
+            let csv = 'Business Code,Business Name,Tier,Status,Max Stock,Collection Storage,Can Collect Items\n';
             
             // Include all businesses regardless of status
             checklistConfigData.businesses.forEach(biz => {
@@ -2897,7 +2866,7 @@
                     return str;
                 };
                 
-                csv += `${escapeCSV(biz.businessCode)},${escapeCSV(biz.businessName)},${escapeCSV(tierName)},${escapeCSV(biz.status || 'Open')},${biz.maxStock || 0},${biz.collectionStorage || 0},${escapeCSV(biz.canCollectItems ? 'Yes' : 'No')},${escapeCSV(biz.notes || '')}\n`;
+                csv += `${escapeCSV(biz.businessCode)},${escapeCSV(biz.businessName)},${escapeCSV(tierName)},${escapeCSV(biz.status || 'Open')},${biz.maxStock || 0},${biz.collectionStorage || 0},${escapeCSV(biz.canCollectItems ? 'Yes' : 'No')}\n`;
             });
             
             document.getElementById('exportTextarea').value = csv;
