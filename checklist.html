@@ -369,6 +369,20 @@
             transform: scale(1.1);
         }
 
+        kbd {
+            display: inline-block;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text-color);
+            text-align: center;
+            background-color: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 0.25rem;
+            box-shadow: inset 0 -1px 0 var(--card-border);
+        }
+
         @media (max-width: 768px) {
             h1.glow-text {
                 font-size: 2rem;
@@ -454,6 +468,52 @@
                 </div>
             </div>
         </div>
+
+        <!-- How to Use Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                            <span>📖 How to Use This Page</span>
+                            <span class="float-end" id="howToUseToggle">▼</span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="howToUseCollapse">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="mb-2"><strong>Step 1: Set Up Your Tiers</strong></h6>
+                                <p class="mb-2">Click on <strong>⚙️ Configuration Management</strong> above to expand it, then click <span class="badge bg-primary">➕ Add Tier</span> to create your first tier. Give it a name (e.g., "Tier 1: Fruit Stand"), choose an icon (emoji), and select a color.</p>
+                                
+                                <h6 class="mb-2"><strong>Step 2: Add Businesses</strong></h6>
+                                <p class="mb-2">In the Configuration Management panel, click <span class="badge bg-primary">➕ Add Business</span> to add businesses to your tiers. Fill in:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Business Code:</strong> A unique identifier (e.g., "TIER1-BIZ001")</li>
+                                    <li><strong>Business Name:</strong> The location or name (e.g., "Route 68, Grand Senora Desert")</li>
+                                    <li><strong>Tier:</strong> Select which tier this business belongs to</li>
+                                    <li><strong>Max Stock:</strong> Maximum stock capacity for this business</li>
+                                    <li><strong>Collection Storage:</strong> Maximum collection storage capacity</li>
+                                </ul>
+                                
+                                <h6 class="mb-2"><strong>Step 3: Track Your Progress</strong></h6>
+                                <p class="mb-2">Once businesses are added, they will appear in the checklist below. You can:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Check off businesses:</strong> Click the checkbox when you've completed a task</li>
+                                    <li><strong>Add Money:</strong> Enter the current money amount in the Money field</li>
+                                    <li><strong>Track Stock:</strong> Enter current stock to see how much more is needed to reach max</li>
+                                    <li><strong>Track Collection:</strong> Enter collection storage amounts (if applicable)</li>
+                                    <li><strong>Add Notes:</strong> Add any notes or reminders for each business</li>
+                                </ul>
+                                
+                                <h6 class="mb-2"><strong>Step 4: Save & Export</strong></h6>
+                                <p class="mb-0">All your progress is automatically saved to your browser. Use <span class="badge bg-success">📤 Export Configuration</span> to backup your setup, or <span class="badge bg-info">📋 Generate Checklist</span> to create a CSV report.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Configuration Panel -->
         <div class="card config-panel">
             <div class="card-header">
@@ -1158,15 +1218,17 @@
         <div class="container text-center">
             <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
             <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
-                <!-- Version will be inserted here by version.js -->
+                <!-- Version will be inserted here by site-config.js -->
             </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="js/bootstrap.bundle.min.js"></script>
-    <!-- Version Manager -->
-    <script src="js/version.js"></script>
+    <!-- Site Configuration & Version Manager -->
+    <script src="js/site-config.js"></script>
+    <!-- Navbar Manager -->
+    <script src="js/navbar.js"></script>
     <!-- Theme JS -->
     <script src="js/theme.js"></script>
     <!-- Number Formatter (optional) -->
@@ -1180,27 +1242,6 @@
             };
             document.head.appendChild(script);
         })();
-    </script>
-    <!-- Config JS (optional - for migration only) -->
-    <script>
-        // Load config.js if available (for migration purposes)
-        // Note: config-api.js removed - not needed since page uses localStorage
-        (function() {
-            const script = document.createElement('script');
-            script.src = 'js/config.js';
-            script.onerror = function() {
-                console.warn('config.js not found, continuing without it');
-            };
-            document.head.appendChild(script);
-        })();
-    </script>
-    <script>
-        // Wait a bit for config files to load, then set up fallback
-        setTimeout(function() {
-            if (typeof checklistConfig !== 'undefined' && !window.checklistConfigFromConfig) {
-                window.checklistConfigFromConfig = checklistConfig;
-            }
-        }, 100);
     </script>
     <!-- Checklist JS -->
     <script>
@@ -2120,9 +2161,52 @@
             }
         }, true);
 
+        // How to Use Section Collapse State
+        const HOW_TO_USE_STORAGE_KEY = 'checklist_how_to_use_expanded';
+        
+        // Initialize How to Use collapse state
+        function initHowToUseCollapse() {
+            const stored = localStorage.getItem(HOW_TO_USE_STORAGE_KEY);
+            const shouldExpand = stored === null ? true : stored === 'true'; // Default to expanded
+            
+            const collapseElement = document.getElementById('howToUseCollapse');
+            const toggleIcon = document.getElementById('howToUseToggle');
+            const toggleButton = document.querySelector('[data-bs-target="#howToUseCollapse"]');
+            
+            if (collapseElement) {
+                const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                    toggle: false
+                });
+                
+                if (!shouldExpand) {
+                    bsCollapse.hide();
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+                } else {
+                    bsCollapse.show();
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+                }
+                
+                // Listen for collapse events
+                collapseElement.addEventListener('shown.bs.collapse', function() {
+                    localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'true');
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+                });
+                
+                collapseElement.addEventListener('hidden.bs.collapse', function() {
+                    localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'false');
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+                });
+            }
+        }
+
         // Load businesses on page load
         window.addEventListener('DOMContentLoaded', async function() {
             initDebugMode();
+            initHowToUseCollapse();
             debugLog('Page initialized');
             
             updateTimes();
