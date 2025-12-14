@@ -180,7 +180,7 @@ const VersionManager = {
         'merchants.html': '0.0.6',
         'checklist.html': '0.1.3',
         'VehicleDeliveries.html': '0.0.9',
-        'education_timer.html': '0.0.6'
+        'education_timer.html': '0.0.7'
     },
     
     /**

@@ -660,12 +660,27 @@ Cancel Training</pre>
         }
 
         // Initialize
-        initHowToUseCollapse();
-        loadFromLocalStorage();
-        updateAESTTime();
-        setInterval(updateAESTTime, 1000);
-        updateTimers();
-        setInterval(updateTimers, 1000);
+        // Wait for DOM and Bootstrap to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                initHowToUseCollapse();
+                loadFromLocalStorage();
+                updateAESTTime();
+                setInterval(updateAESTTime, 1000);
+                updateTimers();
+                setInterval(updateTimers, 1000);
+            });
+        } else {
+            // DOM already loaded, wait a bit for Bootstrap
+            setTimeout(function() {
+                initHowToUseCollapse();
+                loadFromLocalStorage();
+                updateAESTTime();
+                setInterval(updateAESTTime, 1000);
+                updateTimers();
+                setInterval(updateTimers, 1000);
+            }, 100);
+        }
         
         // Auto-save timers periodically (every 30 seconds)
         setInterval(() => {
