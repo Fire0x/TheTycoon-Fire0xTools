@@ -204,18 +204,6 @@ Cancel Training</pre>
             </div>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-light py-3">
-        <div class="container text-center">
-            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <!-- Theme JS -->
-    <script src="js/theme.js"></script>
     <script>
         // localStorage key for storing trainings
         const STORAGE_KEY = 'educationTimers';
@@ -692,6 +680,13 @@ Cancel Training</pre>
         
         // Initialize How to Use collapse state
         function initHowToUseCollapse() {
+            // Ensure Bootstrap is available
+            if (typeof bootstrap === 'undefined') {
+                console.warn('Bootstrap not available yet, retrying...');
+                setTimeout(initHowToUseCollapse, 100);
+                return;
+            }
+            
             const stored = localStorage.getItem(HOW_TO_USE_STORAGE_KEY);
             const shouldExpand = stored === null ? true : stored === 'true'; // Default to expanded
             
@@ -699,61 +694,69 @@ Cancel Training</pre>
             const toggleIcon = document.getElementById('howToUseToggle');
             const toggleButton = document.querySelector('[data-bs-target="#howToUseCollapse"]');
             
-            if (collapseElement) {
-                const bsCollapse = new bootstrap.Collapse(collapseElement, {
+            if (!collapseElement) {
+                console.warn('Collapse element not found');
+                return;
+            }
+            
+            // Get or create Bootstrap Collapse instance
+            let bsCollapse = bootstrap.Collapse.getInstance(collapseElement);
+            if (!bsCollapse) {
+                bsCollapse = new bootstrap.Collapse(collapseElement, {
                     toggle: false
                 });
-                
-                if (!shouldExpand) {
-                    bsCollapse.hide();
-                    if (toggleIcon) toggleIcon.textContent = '▶';
-                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
-                } else {
-                    bsCollapse.show();
-                    if (toggleIcon) toggleIcon.textContent = '▼';
-                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
-                }
-                
-                // Listen for collapse events
-                collapseElement.addEventListener('shown.bs.collapse', function() {
-                    localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'true');
-                    if (toggleIcon) toggleIcon.textContent = '▼';
-                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
-                });
-                
-                collapseElement.addEventListener('hidden.bs.collapse', function() {
-                    localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'false');
-                    if (toggleIcon) toggleIcon.textContent = '▶';
-                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
-                });
             }
+            
+            // Set initial state
+            if (!shouldExpand) {
+                bsCollapse.hide();
+                if (toggleIcon) toggleIcon.textContent = '▶';
+                if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+            } else {
+                bsCollapse.show();
+                if (toggleIcon) toggleIcon.textContent = '▼';
+                if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+            }
+            
+            // Listen for collapse events
+            collapseElement.addEventListener('shown.bs.collapse', function() {
+                localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'true');
+                if (toggleIcon) toggleIcon.textContent = '▼';
+                if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+            });
+            
+            collapseElement.addEventListener('hidden.bs.collapse', function() {
+                localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'false');
+                if (toggleIcon) toggleIcon.textContent = '▶';
+                if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+            });
         }
 
         // Initialize
         // Wait for DOM and Bootstrap to be ready
+        function initializePage() {
+            initDebugMode();
+            // Wait for Bootstrap to be available
+            if (typeof bootstrap === 'undefined') {
+                setTimeout(initializePage, 50);
+                return;
+            }
+            initHowToUseCollapse();
+            debugLog('Page initialized');
+            loadFromLocalStorage();
+            updateAESTTime();
+            setInterval(updateAESTTime, 1000);
+            updateTimers();
+            setInterval(updateTimers, 1000);
+        }
+        
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
-                initDebugMode();
-                initHowToUseCollapse();
-                debugLog('Page initialized');
-                loadFromLocalStorage();
-                updateAESTTime();
-                setInterval(updateAESTTime, 1000);
-                updateTimers();
-                setInterval(updateTimers, 1000);
+                initializePage();
             });
         } else {
-            // DOM already loaded, wait a bit for Bootstrap
-            setTimeout(function() {
-                initDebugMode();
-                initHowToUseCollapse();
-                debugLog('Page initialized');
-                loadFromLocalStorage();
-                updateAESTTime();
-                setInterval(updateAESTTime, 1000);
-                updateTimers();
-                setInterval(updateTimers, 1000);
-            }, 100);
+            // DOM already loaded, wait for Bootstrap
+            initializePage();
         }
         
         // Auto-save timers periodically (every 30 seconds)
@@ -776,6 +779,8 @@ Cancel Training</pre>
 
     <!-- Bootstrap JS -->
     <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
     <!-- Site Configuration & Version Manager -->
     <script src="js/site-config.js"></script>
     <!-- Navbar Manager -->

@@ -117,6 +117,7 @@ const SiteConfig = {
     /**
      * Initialize footer copyright and disclaimer
      * Updates all footer copyright text and adds disclaimer
+     * Ensures copyright is at the top of the footer
      */
     initFooterCopyright() {
         const footers = document.querySelectorAll('footer');
@@ -130,28 +131,25 @@ const SiteConfig = {
                 // Check if it contains copyright indicators
                 const text = p.textContent;
                 return text.includes('©') || text.includes('&copy;') || 
-                       (text.includes('Copyright') && text.includes('Fire0x'));
+                       (text.includes('Copyright') && text.includes('Fire0x')) ||
+                       (text.includes('Fire0x Incorporated') && text.includes('The Tycoon'));
             });
             
-            // Update only the first copyright paragraph found, or create one if none exists
-            if (copyrightParagraphs.length > 0) {
-                // Update only the first one to avoid duplicates
-                copyrightParagraphs[0].innerHTML = this.getCopyrightText();
-                // Remove any additional copyright paragraphs to prevent duplicates
-                for (let i = 1; i < copyrightParagraphs.length; i++) {
-                    copyrightParagraphs[i].remove();
-                }
+            // Remove all existing copyright paragraphs first
+            copyrightParagraphs.forEach(p => p.remove());
+            
+            // Create copyright paragraph at the top of footer
+            const copyrightP = document.createElement('p');
+            copyrightP.innerHTML = this.getCopyrightText();
+            copyrightP.style.textAlign = 'center';
+            
+            // Insert at the very top of footer content (inside container if it exists)
+            const container = footer.querySelector('.container') || footer;
+            const firstChild = container.firstElementChild || container.firstChild;
+            if (firstChild) {
+                container.insertBefore(copyrightP, firstChild);
             } else {
-                // If no copyright paragraph found, create one
-                const copyrightP = document.createElement('p');
-                copyrightP.innerHTML = this.getCopyrightText();
-                // Insert before version-display if it exists, otherwise at the beginning
-                const versionDisplay = footer.querySelector('#version-display');
-                if (versionDisplay) {
-                    footer.insertBefore(copyrightP, versionDisplay);
-                } else {
-                    footer.insertBefore(copyrightP, footer.firstChild);
-                }
+                container.appendChild(copyrightP);
             }
             
             // Add or update disclaimer (only one)
@@ -168,7 +166,8 @@ const SiteConfig = {
                 if (versionDisplay) {
                     versionDisplay.parentNode.insertBefore(disclaimerP, versionDisplay.nextSibling);
                 } else {
-                    footer.appendChild(disclaimerP);
+                    const container = footer.querySelector('.container') || footer;
+                    container.appendChild(disclaimerP);
                 }
             } else {
                 disclaimerP.style.textAlign = 'center';
@@ -203,7 +202,7 @@ const VersionManager = {
         'merchants.html': '0.0.6',
         'checklist.html': '0.1.3',
         'VehicleDeliveries.html': '0.0.9',
-        'education_timer.html': '0.0.8'
+        'education_timer.html': '0.0.9'
     },
     
     /**
