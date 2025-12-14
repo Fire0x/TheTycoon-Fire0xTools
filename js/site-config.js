@@ -145,7 +145,10 @@ const SiteConfig = {
                 disclaimerP.style.fontSize = '0.75rem';
                 disclaimerP.style.color = '#6c757d';
                 disclaimerP.style.marginTop = '0.5rem';
+                disclaimerP.style.textAlign = 'center';
                 footer.appendChild(disclaimerP);
+            } else {
+                disclaimerP.style.textAlign = 'center';
             }
             disclaimerP.textContent = this.getDisclaimerText();
         });
