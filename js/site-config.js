@@ -200,7 +200,7 @@ const VersionManager = {
     pages: {
         'index.html': '0.0.3',
         'merchants.html': '0.0.6',
-        'checklist.html': '0.1.3',
+        'checklist.html': '0.1.4',
         'VehicleDeliveries.html': '0.1.3',
         'education_timer.html': '0.0.9'
     },
