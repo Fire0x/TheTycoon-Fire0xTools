@@ -194,7 +194,7 @@ const SiteConfig = {
 
 const VersionManager = {
     // Website overall version
-    website: '0.1.3',
+    website: '0.1.4',
     
     // Individual page versions
     pages: {

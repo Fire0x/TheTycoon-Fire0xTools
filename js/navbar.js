@@ -8,27 +8,27 @@ const NavbarManager = {
     menuItems: [
         {
             href: 'index.html',
-            text: 'Home',
+            text: '🏠 Home',
             id: 'nav-home'
         },
         {
             href: 'merchants.html',
-            text: 'Traveling Merchants',
+            text: '🛒 Traveling Merchants',
             id: 'nav-merchants'
         },
         {
             href: 'checklist.html',
-            text: 'Checklist',
+            text: '✅️ Checklist',
             id: 'nav-checklist'
         },
         {
             href: 'VehicleDeliveries.html',
-            text: 'Vehicle Deliveries',
+            text: '🚚 Vehicle Deliveries',
             id: 'nav-vehicles'
         },
         {
             href: 'education_timer.html',
-            text: 'Education Timer',
+            text: '🎓 Education Timer',
             id: 'nav-education'
         }
     ],
