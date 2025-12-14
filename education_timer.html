@@ -211,7 +211,7 @@ Cancel Training</pre>
         
         // Store trainings data (loaded from localStorage)
         let trainings = {};
-        
+
         // Debug mode flag
         let debugEnabled = false;
         
@@ -743,11 +743,11 @@ Cancel Training</pre>
             }
             initHowToUseCollapse();
             debugLog('Page initialized');
-            loadFromLocalStorage();
-            updateAESTTime();
-            setInterval(updateAESTTime, 1000);
-            updateTimers();
-            setInterval(updateTimers, 1000);
+        loadFromLocalStorage();
+        updateAESTTime();
+        setInterval(updateAESTTime, 1000);
+        updateTimers();
+        setInterval(updateTimers, 1000);
         }
         
         if (document.readyState === 'loading') {
