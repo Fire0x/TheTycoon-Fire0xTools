@@ -970,7 +970,7 @@
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🎫')" title="Ticket">🎫</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🎖️')" title="Medal">🎖️</button>
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🎗️')" title="Reminder Ribbon">🎗️</button>
-                                    </div>
+                                </div>
                                     <div class="emoji-category" data-category="nature">🌳 Nature</div>
                                     <div class="emoji-grid" data-category="nature">
                                     <button type="button" class="emoji-btn" onclick="selectEmoji('🌳')" title="Tree">🌳</button>
@@ -2435,7 +2435,7 @@
             }
             // Defer reload to avoid blocking UI - use requestAnimationFrame for better performance
             requestAnimationFrame(() => {
-                loadAllBusinesses();
+            loadAllBusinesses();
             });
         }
 
@@ -2489,7 +2489,7 @@
             }
             // Defer reload to avoid blocking UI
             setTimeout(() => {
-                loadAllBusinesses();
+            loadAllBusinesses();
             }, 0);
             
             alert(`✅ Tier "${tierName}" and ${businessCount} business${businessCount !== 1 ? 'es' : ''} have been deleted.`);
@@ -2548,21 +2548,21 @@
                     businessOptions += `\n\n... and ${remainingCount} more business${remainingCount !== 1 ? 'es' : ''}`;
                 }
                 
-                const businessCode = prompt(`Enter Business Code to edit:\n\n${businessOptions}`);
-                if (!businessCode) return;
-                
-                const business = businesses.find(b => b.businessCode === businessCode.trim());
-                if (!business) {
-                    alert('Business not found');
-                    return;
-                }
-                
+            const businessCode = prompt(`Enter Business Code to edit:\n\n${businessOptions}`);
+            if (!businessCode) return;
+            
+            const business = businesses.find(b => b.businessCode === businessCode.trim());
+            if (!business) {
+                alert('Business not found');
+                return;
+            }
+            
                 // Populate form fields
-                document.getElementById('businessModalLabel').textContent = 'Edit Business';
-                document.getElementById('businessCodeOriginal').value = business.businessCode;
-                document.getElementById('businessCode').value = business.businessCode;
-                document.getElementById('businessName').value = business.businessName;
-                document.getElementById('businessStatus').value = business.status || 'Open';
+            document.getElementById('businessModalLabel').textContent = 'Edit Business';
+            document.getElementById('businessCodeOriginal').value = business.businessCode;
+            document.getElementById('businessCode').value = business.businessCode;
+            document.getElementById('businessName').value = business.businessName;
+            document.getElementById('businessStatus').value = business.status || 'Open';
                 
                 // Format numbers with commas for display
                 const maxStock = business.maxStock || 0;
@@ -2570,12 +2570,12 @@
                 document.getElementById('businessMaxStock').value = typeof formatNumber === 'function' ? formatNumber(maxStock, false) : maxStock.toString();
                 document.getElementById('businessCollectionStorage').value = typeof formatNumber === 'function' ? formatNumber(collectionStorage, false) : collectionStorage.toString();
                 
-                document.getElementById('businessCanCollectItems').checked = business.canCollectItems === true;
+            document.getElementById('businessCanCollectItems').checked = business.canCollectItems === true;
                 
-                document.getElementById('deleteBusinessBtn').style.display = 'inline-block';
-                
+            document.getElementById('deleteBusinessBtn').style.display = 'inline-block';
+            
                 // Populate tier dropdown efficiently
-                const tierSelect = document.getElementById('businessTierId');
+            const tierSelect = document.getElementById('businessTierId');
                 const tiers = checklistConfigData.tiers || [];
                 
                 // Use DocumentFragment for better performance
@@ -2586,9 +2586,9 @@
                 fragment.appendChild(defaultOption);
                 
                 tiers.forEach(tier => {
-                    const option = document.createElement('option');
-                    option.value = tier.id;
-                    option.textContent = tier.name;
+                const option = document.createElement('option');
+                option.value = tier.id;
+                option.textContent = tier.name;
                     if (tier.id === business.tierId) {
                         option.selected = true;
                     }
@@ -2609,7 +2609,7 @@
                     }
                 }, { once: true });
                 
-                modal.show();
+            modal.show();
             }, 0);
         }
 
@@ -2697,7 +2697,7 @@
             }
             // Defer reload to avoid blocking UI - use requestAnimationFrame for better performance
             requestAnimationFrame(() => {
-                loadAllBusinesses();
+            loadAllBusinesses();
             });
         }
 
@@ -2744,7 +2744,7 @@
             }
             // Defer reload to avoid blocking UI - use requestAnimationFrame for better performance
             requestAnimationFrame(() => {
-                loadAllBusinesses();
+            loadAllBusinesses();
             });
             
             alert(`✅ Business "${businessName}" (${code}) has been deleted.`);
@@ -2822,7 +2822,7 @@
                 alert('Configuration imported successfully!');
                 // Defer reload to avoid blocking UI - use requestAnimationFrame for better performance
                 requestAnimationFrame(() => {
-                    loadAllBusinesses();
+                loadAllBusinesses();
                 });
             } catch (error) {
                 if (error instanceof SyntaxError) {

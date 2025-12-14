@@ -177,22 +177,21 @@ SANCTUS
                     </div>
                 </div>
 
-                <!-- Summary Statistics -->
-                <div class="card mb-4" id="summaryStatisticsCard" style="background-color: var(--card-bg); border: 1px solid var(--card-border); display: none;">
-                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-link text-decoration-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#summaryStatisticsCollapse" aria-expanded="true" aria-controls="summaryStatisticsCollapse" style="color: var(--text-color); font-weight: 600;">
-                                <span>📊 Summary Statistics</span>
-                                <span class="ms-2" id="summaryStatisticsToggle">▼</span>
-                            </button>
-                            <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showAllSummaryCards()" title="Show all hidden summary cards">
-                                <span>👁️</span> Show All Cards
-                            </button>
-                        </div>
+                <!-- Summary Statistics Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3" id="summaryHeader" style="display: none;">
+                    <h5 class="mb-0">📊 Summary Statistics</h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showAllSummaryCards()" title="Show all hidden summary cards">
+                            <span>👁️</span> Show All Cards
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" id="summaryToggleBtn" onclick="toggleSummary()">
+                            <span id="summaryToggleIcon">▼</span> <span id="summaryToggleText">Hide Summary</span>
+                        </button>
                     </div>
-                    <div class="collapse show" id="summaryStatisticsCollapse">
-                        <div class="card-body">
-                            <div class="row mb-4" id="progressSummary" style="display: none;">
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="row mb-4" id="progressSummary" style="display: none;">
                     <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-highestRep">
                         <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%); border: none; position: relative;">
                             <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('highestRep')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
@@ -244,7 +243,6 @@ SANCTUS
                                 </p>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
 
@@ -474,8 +472,7 @@ SANCTUS
                 container.innerHTML = '';
                 emptyState.style.display = 'block';
                 summary.style.display = 'none';
-                const summaryCard = document.getElementById('summaryStatisticsCard');
-                if (summaryCard) summaryCard.style.display = 'none';
+                if (summaryHeader) summaryHeader.style.display = 'none';
                 // Update summary to show 0s
                 document.getElementById('highestRep').textContent = '0';
                 document.getElementById('totalVehiclesNeeded').textContent = '0';
@@ -485,11 +482,8 @@ SANCTUS
             }
             
             emptyState.style.display = 'none';
-            const summaryCard = document.getElementById('summaryStatisticsCard');
-            const summary = document.getElementById('progressSummary');
-            if (summaryCard) summaryCard.style.display = 'block';
-            if (summary) summary.style.display = 'flex';
-            initSummaryStatisticsCollapse();
+            if (summaryHeader) summaryHeader.style.display = 'flex';
+            updateSummaryVisibility();
             
             // Calculate statistics
             let highestRep = 0;
@@ -599,51 +593,43 @@ SANCTUS
             }
         }
 
-        // Summary Statistics Collapse State
-        const SUMMARY_STATISTICS_STORAGE_KEY = 'vehicle_deliveries_summary_statistics_expanded';
+        // Summary Statistics Toggle State
+        const SUMMARY_STORAGE_KEY = 'vehicle_deliveries_summary_expanded';
+        let summaryExpanded = true; // Default to expanded
         
-        // Initialize Summary Statistics collapse state
-        function initSummaryStatisticsCollapse() {
-            const stored = localStorage.getItem(SUMMARY_STATISTICS_STORAGE_KEY);
-            const shouldExpand = stored === null ? true : stored === 'true'; // Default to expanded
+        // Toggle summary visibility
+        function toggleSummary() {
+            summaryExpanded = !summaryExpanded;
+            localStorage.setItem(SUMMARY_STORAGE_KEY, summaryExpanded.toString());
+            updateSummaryVisibility();
+            debugLog('Summary toggled:', summaryExpanded ? 'shown' : 'hidden');
+        }
+        
+        // Update summary visibility based on state
+        function updateSummaryVisibility() {
+            const summaryEl = document.getElementById('progressSummary');
+            const header = document.getElementById('summaryHeader');
+            const toggleIcon = document.getElementById('summaryToggleIcon');
+            const toggleText = document.getElementById('summaryToggleText');
             
-            const collapseElement = document.getElementById('summaryStatisticsCollapse');
-            const toggleIcon = document.getElementById('summaryStatisticsToggle');
-            const toggleButton = document.querySelector('[data-bs-target="#summaryStatisticsCollapse"]');
-            const summary = document.getElementById('progressSummary');
-            
-            if (collapseElement) {
-                const bsCollapse = new bootstrap.Collapse(collapseElement, {
-                    toggle: false
-                });
-                
-                if (!shouldExpand) {
-                    bsCollapse.hide();
-                    if (toggleIcon) toggleIcon.textContent = '▶';
-                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
-                    if (summary) summary.style.display = 'none';
+            if (summaryEl && header) {
+                if (summaryExpanded) {
+                    summaryEl.style.display = 'flex';
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleText) toggleText.textContent = 'Hide Summary';
                 } else {
-                    bsCollapse.show();
-                    if (toggleIcon) toggleIcon.textContent = '▼';
-                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
-                    if (summary) summary.style.display = 'flex';
-                }
-                
-                // Listen for collapse events
-                collapseElement.addEventListener('shown.bs.collapse', function() {
-                    localStorage.setItem(SUMMARY_STATISTICS_STORAGE_KEY, 'true');
-                    if (toggleIcon) toggleIcon.textContent = '▼';
-                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
-                    if (summary) summary.style.display = 'flex';
-                });
-                
-                collapseElement.addEventListener('hidden.bs.collapse', function() {
-                    localStorage.setItem(SUMMARY_STATISTICS_STORAGE_KEY, 'false');
+                    summaryEl.style.display = 'none';
                     if (toggleIcon) toggleIcon.textContent = '▶';
-                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
-                    if (summary) summary.style.display = 'none';
-                });
+                    if (toggleText) toggleText.textContent = 'Show Summary';
+                }
             }
+        }
+        
+        // Initialize summary toggle state
+        function initSummaryToggle() {
+            const stored = localStorage.getItem(SUMMARY_STORAGE_KEY);
+            summaryExpanded = stored === null ? true : stored === 'true'; // Default to expanded
+            updateSummaryVisibility();
         }
         
         // Individual Summary Card Visibility State
@@ -697,10 +683,10 @@ SANCTUS
                     } else {
                         cardElement.style.display = 'block';
                         if (toggleIcon) toggleIcon.textContent = '👁️';
-                    }
+                            }
+                        }
+                    });
                 }
-            });
-        }
         
         // Show all summary cards (reset visibility)
         function showAllSummaryCards() {
@@ -767,6 +753,7 @@ SANCTUS
 
         window.addEventListener('DOMContentLoaded', function() {
             initDebugMode();
+            initSummaryToggle();
             initSummaryCardsVisibility();
             initHowToUseCollapse();
             loadVehicleProgress();
