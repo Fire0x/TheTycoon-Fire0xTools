@@ -121,23 +121,40 @@ const SiteConfig = {
     initFooterCopyright() {
         const footers = document.querySelectorAll('footer');
         footers.forEach(footer => {
-            // Find copyright paragraph (usually contains "&copy;")
-            const copyrightParagraphs = Array.from(footer.querySelectorAll('p')).filter(p => 
-                p.textContent.includes('©') || p.textContent.includes('&copy;') || p.textContent.includes('Copyright')
-            );
+            // Find copyright paragraph (exclude disclaimer paragraph)
+            // Only look for paragraphs that are NOT the disclaimer
+            const allParagraphs = Array.from(footer.querySelectorAll('p'));
+            const copyrightParagraphs = allParagraphs.filter(p => {
+                // Skip if it's the disclaimer paragraph
+                if (p.id === 'site-disclaimer') return false;
+                // Check if it contains copyright indicators
+                const text = p.textContent;
+                return text.includes('©') || text.includes('&copy;') || 
+                       (text.includes('Copyright') && text.includes('Fire0x'));
+            });
             
+            // Update only the first copyright paragraph found, or create one if none exists
             if (copyrightParagraphs.length > 0) {
-                copyrightParagraphs.forEach(p => {
-                    p.innerHTML = this.getCopyrightText();
-                });
+                // Update only the first one to avoid duplicates
+                copyrightParagraphs[0].innerHTML = this.getCopyrightText();
+                // Remove any additional copyright paragraphs to prevent duplicates
+                for (let i = 1; i < copyrightParagraphs.length; i++) {
+                    copyrightParagraphs[i].remove();
+                }
             } else {
                 // If no copyright paragraph found, create one
                 const copyrightP = document.createElement('p');
                 copyrightP.innerHTML = this.getCopyrightText();
-                footer.insertBefore(copyrightP, footer.firstChild);
+                // Insert before version-display if it exists, otherwise at the beginning
+                const versionDisplay = footer.querySelector('#version-display');
+                if (versionDisplay) {
+                    footer.insertBefore(copyrightP, versionDisplay);
+                } else {
+                    footer.insertBefore(copyrightP, footer.firstChild);
+                }
             }
             
-            // Add or update disclaimer
+            // Add or update disclaimer (only one)
             let disclaimerP = footer.querySelector('#site-disclaimer');
             if (!disclaimerP) {
                 disclaimerP = document.createElement('p');
@@ -146,7 +163,13 @@ const SiteConfig = {
                 disclaimerP.style.color = '#6c757d';
                 disclaimerP.style.marginTop = '0.5rem';
                 disclaimerP.style.textAlign = 'center';
-                footer.appendChild(disclaimerP);
+                // Insert after version-display if it exists, otherwise at the end
+                const versionDisplay = footer.querySelector('#version-display');
+                if (versionDisplay) {
+                    versionDisplay.parentNode.insertBefore(disclaimerP, versionDisplay.nextSibling);
+                } else {
+                    footer.appendChild(disclaimerP);
+                }
             } else {
                 disclaimerP.style.textAlign = 'center';
             }
@@ -180,7 +203,7 @@ const VersionManager = {
         'merchants.html': '0.0.6',
         'checklist.html': '0.1.3',
         'VehicleDeliveries.html': '0.0.9',
-        'education_timer.html': '0.0.7'
+        'education_timer.html': '0.0.8'
     },
     
     /**

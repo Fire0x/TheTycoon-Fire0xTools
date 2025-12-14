@@ -186,6 +186,9 @@ Cancel Training</pre>
                     <div class="mt-3">
                         <button class="btn btn-primary" onclick="parseAndSave()">Parse & Save Trainings</button>
                         <button class="btn btn-danger" onclick="clearAllTrainings()">Clear All Trainings</button>
+                        <button class="btn btn-outline-secondary btn-sm ms-2" id="debugToggleBtn" onclick="toggleDebug()">
+                            <span id="debugToggleText">🔍 Debug: OFF</span>
+                        </button>
                     </div>
                 </div>
 
@@ -216,9 +219,61 @@ Cancel Training</pre>
     <script>
         // localStorage key for storing trainings
         const STORAGE_KEY = 'educationTimers';
+        const DEBUG_STORAGE_KEY = 'education_timer_debug_enabled';
         
         // Store trainings data (loaded from localStorage)
         let trainings = {};
+        
+        // Debug mode flag
+        let debugEnabled = false;
+        
+        // Initialize debug mode from storage
+        function initDebugMode() {
+            const stored = localStorage.getItem(DEBUG_STORAGE_KEY);
+            debugEnabled = stored === 'true';
+            updateDebugToggleUI();
+        }
+        
+        // Toggle debug mode
+        function toggleDebug() {
+            debugEnabled = !debugEnabled;
+            localStorage.setItem(DEBUG_STORAGE_KEY, debugEnabled.toString());
+            updateDebugToggleUI();
+            debugLog('Debug mode ' + (debugEnabled ? 'ENABLED' : 'DISABLED'));
+        }
+        
+        // Update debug toggle button UI
+        function updateDebugToggleUI() {
+            const btn = document.getElementById('debugToggleBtn');
+            const text = document.getElementById('debugToggleText');
+            if (btn && text) {
+                if (debugEnabled) {
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-warning');
+                    text.textContent = '🔍 Debug: ON';
+                } else {
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-outline-secondary');
+                    text.textContent = '🔍 Debug: OFF';
+                }
+            }
+        }
+        
+        // Debug logging function
+        function debugLog(...args) {
+            if (debugEnabled) {
+                console.log('[Education Timer Debug]', ...args);
+            }
+        }
+        
+        // Debug error logging function
+        function debugError(...args) {
+            if (debugEnabled) {
+                console.error('[Education Timer Debug]', ...args);
+            } else {
+                console.error(...args);
+            }
+        }
 
         // Format local date/time
         function formatAESTDateTime(date) {
@@ -278,6 +333,7 @@ Cancel Training</pre>
 
         // Parse pasted text
         function parseTrainingData(text) {
+            debugLog('Parsing training data, input length:', text.length);
             const trainings = [];
             
             // Split by blank lines OR "Cancel Training" lines to separate different trainings
@@ -359,6 +415,7 @@ Cancel Training</pre>
                 });
             }
             
+            debugLog('Total trainings parsed:', trainings.length);
             return trainings;
         }
 
@@ -369,6 +426,7 @@ Cancel Training</pre>
                 if (!saved) {
                     trainings = {};
                     renderTimers();
+                    debugLog('No saved trainings found');
                     return;
                 }
                 
@@ -392,9 +450,10 @@ Cancel Training</pre>
                     };
                 });
                 
+                debugLog('Loaded trainings from localStorage:', Object.keys(trainings).length, 'trainings');
                 renderTimers();
             } catch (error) {
-                console.error('Error loading from localStorage:', error);
+                debugError('Error loading from localStorage:', error);
                 trainings = {};
                 renderTimers();
             }
@@ -412,9 +471,10 @@ Cancel Training</pre>
                 }));
                 
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(timersArray));
-                console.log('✅ Saved trainings to localStorage');
+                debugLog('✅ Saved trainings to localStorage');
+                if (!debugEnabled) console.log('✅ Saved trainings to localStorage');
             } catch (error) {
-                console.error('Error saving to localStorage:', error);
+                debugError('Error saving to localStorage:', error);
                 throw error;
             }
         }
@@ -422,12 +482,14 @@ Cancel Training</pre>
         // Parse and save
         function parseAndSave() {
             const input = document.getElementById('pasteInput').value;
+            debugLog('parseAndSave called, input length:', input.length);
             if (!input.trim()) {
                 alert('Please paste training data first!');
                 return;
             }
             
             const parsed = parseTrainingData(input);
+            debugLog('Parsed trainings:', parsed.length);
             if (parsed.length === 0) {
                 alert('No valid training data found. Please check the format.');
                 return;
@@ -436,6 +498,7 @@ Cancel Training</pre>
             // Add parsed trainings to existing trainings
             parsed.forEach(training => {
                 const key = training.name.toLowerCase().replace(/\s+/g, '-');
+                const isUpdate = trainings[key] !== undefined;
                 trainings[key] = {
                     name: training.name,
                     level: training.level,
@@ -443,15 +506,17 @@ Cancel Training</pre>
                     originalRemaining: training.originalRemaining || training.secondsRemaining,
                     startTime: training.startTime || new Date().toISOString()
                 };
+                debugLog(isUpdate ? 'Updated' : 'Added', 'training:', key);
             });
             
             try {
                 saveToLocalStorage();
+                debugLog('Saved to storage, total trainings:', Object.keys(trainings).length);
                 document.getElementById('pasteInput').value = '';
                 renderTimers(); // Render directly instead of reloading from localStorage
                 alert(`Successfully added ${parsed.length} training(s)!`);
             } catch (error) {
-                console.error('Error in parseAndSave:', error);
+                debugError('Error in parseAndSave:', error);
                 alert(`Failed to save trainings: ${error.message || 'Unknown error'}. Please check the console for details.`);
             }
         }
@@ -586,18 +651,22 @@ Cancel Training</pre>
             
             try {
                 const key = name.toLowerCase().replace(/\s+/g, '-');
+                debugLog('Cancelling training:', key);
                 delete trainings[key];
                 saveToLocalStorage();
                 renderTimers(); // Render directly instead of reloading from localStorage
+                debugLog('Training cancelled successfully');
             } catch (error) {
-                console.error('Error cancelling training:', error);
+                debugError('Error cancelling training:', error);
                 alert('Failed to cancel training. Please try again.');
             }
         }
 
         // Clear all trainings
         function clearAllTrainings() {
-            if (Object.keys(trainings).length === 0) {
+            const count = Object.keys(trainings).length;
+            debugLog('clearAllTrainings called, current count:', count);
+            if (count === 0) {
                 alert('No trainings to clear.');
                 return;
             }
@@ -607,12 +676,13 @@ Cancel Training</pre>
             }
             
             try {
+                debugLog('Clearing all trainings');
                 trainings = {};
                 localStorage.removeItem(STORAGE_KEY);
                 renderTimers();
                 alert('All trainings cleared!');
             } catch (error) {
-                console.error('Error clearing trainings:', error);
+                debugError('Error clearing trainings:', error);
                 alert('Failed to clear trainings. Please try again.');
             }
         }
@@ -663,7 +733,9 @@ Cancel Training</pre>
         // Wait for DOM and Bootstrap to be ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
+                initDebugMode();
                 initHowToUseCollapse();
+                debugLog('Page initialized');
                 loadFromLocalStorage();
                 updateAESTTime();
                 setInterval(updateAESTTime, 1000);
@@ -673,7 +745,9 @@ Cancel Training</pre>
         } else {
             // DOM already loaded, wait a bit for Bootstrap
             setTimeout(function() {
+                initDebugMode();
                 initHowToUseCollapse();
+                debugLog('Page initialized');
                 loadFromLocalStorage();
                 updateAESTTime();
                 setInterval(updateAESTTime, 1000);
