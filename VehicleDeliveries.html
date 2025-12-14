@@ -177,10 +177,26 @@ SANCTUS
                     </div>
                 </div>
 
+                <!-- Summary Statistics Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3" id="summaryHeader" style="display: none;">
+                    <h5 class="mb-0">📊 Summary Statistics</h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showAllSummaryCards()" title="Show all hidden summary cards">
+                            <span>👁️</span> Show All Cards
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" id="summaryToggleBtn" onclick="toggleSummary()">
+                            <span id="summaryToggleIcon">▼</span> <span id="summaryToggleText">Hide Summary</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Summary Statistics -->
                 <div class="row mb-4" id="progressSummary" style="display: none;">
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%); border: none;">
+                    <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-highestRep">
+                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%); border: none; position: relative;">
+                            <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('highestRep')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
+                                <span id="toggleIcon-highestRep">👁️</span>
+                            </button>
                             <div class="card-body text-center d-flex flex-column justify-content-center">
                                 <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">🏆 Highest Reputation Needed</h5>
                                 <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="highestRep">
@@ -189,8 +205,11 @@ SANCTUS
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); border: none;">
+                    <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-totalVehiclesNeeded">
+                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); border: none; position: relative;">
+                            <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('totalVehiclesNeeded')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
+                                <span id="toggleIcon-totalVehiclesNeeded">👁️</span>
+                            </button>
                             <div class="card-body text-center d-flex flex-column justify-content-center">
                                 <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">📦 Total Vehicles Needed</h5>
                                 <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="totalVehiclesNeeded">
@@ -199,8 +218,24 @@ SANCTUS
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #dda0dd 0%, #ba55d3 100%); border: none;">
+                    <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-deliveriesLeft">
+                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); border: none; position: relative;">
+                            <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('deliveriesLeft')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
+                                <span id="toggleIcon-deliveriesLeft">👁️</span>
+                            </button>
+                            <div class="card-body text-center d-flex flex-column justify-content-center">
+                                <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">🚚 Deliveries Left</h5>
+                                <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="deliveriesLeft">
+                                    0
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-unlockedCount">
+                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #dda0dd 0%, #ba55d3 100%); border: none; position: relative;">
+                            <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('unlockedCount')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
+                                <span id="toggleIcon-unlockedCount">👁️</span>
+                            </button>
                             <div class="card-body text-center d-flex flex-column justify-content-center">
                                 <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">✅ Unlocked Vehicles</h5>
                                 <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="unlockedCount">
@@ -431,29 +466,41 @@ SANCTUS
             const keys = Object.keys(vehicleProgress);
             debugLog('Total vehicles to render:', keys.length);
             
+            const summaryHeader = document.getElementById('summaryHeader');
+            
             if (keys.length === 0) {
                 container.innerHTML = '';
                 emptyState.style.display = 'block';
                 summary.style.display = 'none';
+                if (summaryHeader) summaryHeader.style.display = 'none';
                 // Update summary to show 0s
                 document.getElementById('highestRep').textContent = '0';
                 document.getElementById('totalVehiclesNeeded').textContent = '0';
+                document.getElementById('deliveriesLeft').textContent = '0';
                 document.getElementById('unlockedCount').textContent = '0';
                 return;
             }
             
             emptyState.style.display = 'none';
-            summary.style.display = 'flex';
+            if (summaryHeader) summaryHeader.style.display = 'flex';
+            updateSummaryVisibility();
             
             // Calculate statistics
             let highestRep = 0;
-            let totalNeeded = 0;
+            let totalVehiclesNeeded = 0;
             let unlockedCount = 0;
+            let totalDeliveriesLeft = 0;
             
             keys.forEach(key => {
                 const vehicle = vehicleProgress[key];
-                if (!vehicle.unlocked) {
-                    totalNeeded++;
+                const current = vehicle.current || 0;
+                const total = vehicle.total || 0;
+                const remaining = total - current; // Recalculate remaining: total - current
+                const unlocked = current >= total; // Recalculate unlocked status
+                
+                if (!unlocked) {
+                    totalVehiclesNeeded++;
+                    totalDeliveriesLeft += remaining; // Sum of (total - current) for all unlocked vehicles
                     if (vehicle.reputation && vehicle.reputation > highestRep) {
                         highestRep = vehicle.reputation;
                     }
@@ -464,10 +511,11 @@ SANCTUS
             
             // Update summary
             document.getElementById('highestRep').textContent = highestRep.toLocaleString('en-US');
-            document.getElementById('totalVehiclesNeeded').textContent = totalNeeded;
+            document.getElementById('totalVehiclesNeeded').textContent = totalVehiclesNeeded;
+            document.getElementById('deliveriesLeft').textContent = totalDeliveriesLeft.toLocaleString('en-US');
             document.getElementById('unlockedCount').textContent = unlockedCount;
             
-            debugLog('Summary - Highest Rep:', highestRep, 'Total Needed:', totalNeeded, 'Unlocked:', unlockedCount);
+            debugLog('Summary - Highest Rep:', highestRep, 'Total Needed:', totalNeeded, 'Deliveries Left:', deliveriesLeft, 'Unlocked:', unlockedCount);
             
             // Render cards
             container.innerHTML = keys.map(key => {
@@ -545,6 +593,122 @@ SANCTUS
             }
         }
 
+        // Summary Statistics Toggle State
+        const SUMMARY_STORAGE_KEY = 'vehicle_deliveries_summary_expanded';
+        let summaryExpanded = true; // Default to expanded
+        
+        // Toggle summary visibility
+        function toggleSummary() {
+            summaryExpanded = !summaryExpanded;
+            localStorage.setItem(SUMMARY_STORAGE_KEY, summaryExpanded.toString());
+            updateSummaryVisibility();
+            debugLog('Summary toggled:', summaryExpanded ? 'shown' : 'hidden');
+        }
+        
+        // Update summary visibility based on state
+        function updateSummaryVisibility() {
+            const summary = document.getElementById('progressSummary');
+            const header = document.getElementById('summaryHeader');
+            const toggleIcon = document.getElementById('summaryToggleIcon');
+            const toggleText = document.getElementById('summaryToggleText');
+            
+            if (summary && header) {
+                if (summaryExpanded) {
+                    summary.style.display = 'flex';
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleText) toggleText.textContent = 'Hide Summary';
+                } else {
+                    summary.style.display = 'none';
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleText) toggleText.textContent = 'Show Summary';
+                }
+            }
+        }
+        
+        // Initialize summary toggle state
+        function initSummaryToggle() {
+            const stored = localStorage.getItem(SUMMARY_STORAGE_KEY);
+            summaryExpanded = stored === null ? true : stored === 'true'; // Default to expanded
+            updateSummaryVisibility();
+        }
+        
+        // Individual Summary Card Visibility State
+        const SUMMARY_CARDS_STORAGE_KEY = 'vehicle_deliveries_summary_cards_visibility';
+        
+        // Toggle individual summary card visibility
+        function toggleSummaryCard(cardId) {
+            const cardElement = document.getElementById(`summaryCard-${cardId}`);
+            const toggleIcon = document.getElementById(`toggleIcon-${cardId}`);
+            
+            if (!cardElement) return;
+            
+            // Get current visibility state
+            const stored = localStorage.getItem(SUMMARY_CARDS_STORAGE_KEY);
+            const visibility = stored ? JSON.parse(stored) : {};
+            const isVisible = visibility[cardId] !== false; // Default to visible
+            
+            // Toggle visibility
+            if (isVisible) {
+                cardElement.style.display = 'none';
+                if (toggleIcon) toggleIcon.textContent = '👁️‍🗨️';
+                visibility[cardId] = false;
+            } else {
+                cardElement.style.display = 'block';
+                if (toggleIcon) toggleIcon.textContent = '👁️';
+                visibility[cardId] = true;
+            }
+            
+            // Save state
+            localStorage.setItem(SUMMARY_CARDS_STORAGE_KEY, JSON.stringify(visibility));
+            debugLog('Toggled card:', cardId, 'Visible:', !isVisible);
+        }
+        
+        // Initialize individual summary card visibility
+        function initSummaryCardsVisibility() {
+            const stored = localStorage.getItem(SUMMARY_CARDS_STORAGE_KEY);
+            const visibility = stored ? JSON.parse(stored) : {};
+            
+            const cardIds = ['highestRep', 'totalVehiclesNeeded', 'deliveriesLeft', 'unlockedCount'];
+            
+            cardIds.forEach(cardId => {
+                const cardElement = document.getElementById(`summaryCard-${cardId}`);
+                const toggleIcon = document.getElementById(`toggleIcon-${cardId}`);
+                
+                if (cardElement) {
+                    const isVisible = visibility[cardId] !== false; // Default to visible
+                    
+                    if (!isVisible) {
+                        cardElement.style.display = 'none';
+                        if (toggleIcon) toggleIcon.textContent = '👁️‍🗨️';
+                    } else {
+                        cardElement.style.display = 'block';
+                        if (toggleIcon) toggleIcon.textContent = '👁️';
+                    }
+                }
+            });
+        }
+        
+        // Show all summary cards (reset visibility)
+        function showAllSummaryCards() {
+            const cardIds = ['highestRep', 'totalVehiclesNeeded', 'deliveriesLeft', 'unlockedCount'];
+            const visibility = {};
+            
+            cardIds.forEach(cardId => {
+                const cardElement = document.getElementById(`summaryCard-${cardId}`);
+                const toggleIcon = document.getElementById(`toggleIcon-${cardId}`);
+                
+                if (cardElement) {
+                    cardElement.style.display = 'block';
+                    if (toggleIcon) toggleIcon.textContent = '👁️';
+                    visibility[cardId] = true;
+                }
+            });
+            
+            // Save state (all visible)
+            localStorage.setItem(SUMMARY_CARDS_STORAGE_KEY, JSON.stringify(visibility));
+            debugLog('Show all summary cards called');
+        }
+
         // How to Use Section Collapse State
         const HOW_TO_USE_STORAGE_KEY = 'vehicle_deliveries_how_to_use_expanded';
         
@@ -589,6 +753,8 @@ SANCTUS
 
         window.addEventListener('DOMContentLoaded', function() {
             initDebugMode();
+            initSummaryToggle();
+            initSummaryCardsVisibility();
             initHowToUseCollapse();
             loadVehicleProgress();
             renderVehicleProgress();
