@@ -1281,8 +1281,11 @@
                 }
             }
             
-            // Try to migrate from API
-            return await migrateFromAPI();
+            // No saved config - use default empty config
+            checklistConfigData = getDefaultConfig();
+            saveConfigToLocalStorage();
+            debugLog('✅ Created default empty configuration');
+            return true;
         }
 
         // Load configuration from localStorage
@@ -1317,59 +1320,6 @@
             };
         }
 
-        // Migrate from API (one-time migration)
-        async function migrateFromAPI() {
-            try {
-                debugLog('🔄 Attempting to migrate from API...');
-                
-                // Wait a bit for config files to potentially load
-                await new Promise(resolve => setTimeout(resolve, 200));
-                
-                const response = await fetch('/n/businesses');
-                if (!response.ok) throw new Error('API not available');
-                
-                const allBusinesses = await response.json();
-                const config = getDefaultConfig();
-                
-                // Migrate tiers from checklistConfig (if available)
-                if (typeof checklistConfig !== 'undefined' && checklistConfig.tiers) {
-                    config.tiers = checklistConfig.tiers.map((tier, index) => ({
-                        id: index + 1,
-                        name: tier.name,
-                        icon: tier.icon || '',
-                        color: tier.color || 'bg-secondary',
-                        visible: true
-                    }));
-                } else {
-                    // Create default tiers if config not available
-                    debugLog('checklistConfig not available, creating empty tier structure');
-                    if (!debugEnabled) console.warn('checklistConfig not available, creating empty tier structure');
-                }
-                
-                // Migrate businesses
-                config.businesses = allBusinesses.map(biz => ({
-                    businessCode: biz.business_code,
-                    businessName: biz.business_name || biz.business_code,
-                    tierId: biz.tier_id || null,
-                    status: biz.status || 'Open',
-                    maxStock: biz.storage_capacity || 0,
-                    collectionStorage: biz.collection_storage || 0,
-                    canCollectItems: biz.can_collect_items === true || biz.can_collect_items === 1 || biz.can_collect_items === '1'
-                }));
-                
-                checklistConfigData = config;
-                saveConfigToLocalStorage();
-                debugLog('✅ Successfully migrated from API');
-                if (!debugEnabled) console.log('✅ Successfully migrated from API');
-                return true;
-            } catch (error) {
-                debugError('⚠️ Could not migrate from API, using empty config:', error.message);
-                if (!debugEnabled) console.warn('⚠️ Could not migrate from API, using empty config:', error.message);
-                checklistConfigData = getDefaultConfig();
-                saveConfigToLocalStorage();
-                return false;
-            }
-        }
 
         // Get business tiers (all tiers are visible)
         function getBusinessTiers() {
