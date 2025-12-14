@@ -1144,8 +1144,9 @@
                     <form id="businessForm">
                         <input type="hidden" id="businessCodeOriginal" value="">
                         <div class="mb-3">
-                            <label for="businessCode" class="form-label">Business Code</label>
+                            <label for="businessCode" class="form-label">Business Code <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="businessCode" required placeholder="e.g., TIER1-BIZ001">
+                            <small class="form-text text-muted">Required: A unique identifier for this business</small>
                         </div>
                         <div class="mb-3">
                             <label for="businessName" class="form-label">Business Name</label>
@@ -1492,8 +1493,8 @@
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                                     <div class="flex-grow-1">
                                                         <label class="form-check-label" for="check-${tier.name}-${index}">
-                                                            <span class="business-code">${biz.businessCode}</span>
-                                                            <span class="business-name"> - ${businessName}</span>
+                                                            <span class="business-code fw-bold" style="color: var(--primary-color, #667eea);">${biz.businessCode}</span>
+                                                            ${businessName && businessName !== biz.businessCode ? `<span class="business-name"> - ${businessName}</span>` : ''}
                                                         </label>
                                                         ${businessNotes ? `
                                                         <div class="mt-1">
