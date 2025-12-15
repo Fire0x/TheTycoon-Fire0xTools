@@ -756,8 +756,24 @@
             color: #0b85ff; /* Navy blue */
         }
 
+        [data-theme="dark"] .rent-price-display {
+            color: #60a5fa !important; /* Lighter blue for dark mode - better contrast */
+        }
+
         .eastern-date {
             color: #0b85ff; /* Navy blue */
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        [data-theme="dark"] .eastern-date {
+            color: #60a5fa !important; /* Lighter blue for dark mode - better contrast */
+        }
+
+        /* Ensure eastern dates are visible in small text */
+        small .eastern-date {
+            font-size: inherit;
+            font-weight: 600;
         }
 
         .rent-price-edit {
@@ -1468,7 +1484,7 @@
     <script>
         // localStorage Configuration Data Structure
         const APARTMENTS_STORAGE_KEY = 'apartmentsData';
-        const APARTMENTS_VERSION = '1.0.0';
+        const APARTMENTS_VERSION = '1.0.1';
         
         let apartments = [];
         
@@ -2363,21 +2379,28 @@
             
             debugLog('Review saved successfully:', newReview);
             
-            // Reload reviews and overview
+            // Reload reviews modal first (most important)
             viewReviews(apartmentId);
-            // Reload apartments to update rating
-            loadApartments();
-            loadAllApartments(); // Refresh card view
-            loadOverallRating(); // Update overall rating
-            // Refresh reviews and overview tabs if active
-            const reviewsTab = document.getElementById('reviews-tab');
-            const overviewTab = document.getElementById('overview-tab');
-            if (reviewsTab && reviewsTab.classList.contains('active')) {
-                loadAllReviews();
-            }
-            if (overviewTab && overviewTab.classList.contains('active')) {
-                loadOverview();
-            }
+            
+            // Batch DOM updates to improve performance
+            requestAnimationFrame(() => {
+                // Reload apartments to update rating
+                loadApartments();
+                loadAllApartments(); // Refresh card view
+                loadOverallRating(); // Update overall rating
+                
+                // Refresh reviews and overview tabs if active (defer non-critical)
+                setTimeout(() => {
+                    const reviewsTab = document.getElementById('reviews-tab');
+                    const overviewTab = document.getElementById('overview-tab');
+                    if (reviewsTab && reviewsTab.classList.contains('active')) {
+                        loadAllReviews();
+                    }
+                    if (overviewTab && overviewTab.classList.contains('active')) {
+                        loadOverview();
+                    }
+                }, 50);
+            });
         }
 
         // Delete review
@@ -2396,21 +2419,28 @@
             apartment.reviews = apartment.reviews.filter(review => review.id !== reviewId);
             saveApartmentsToLocalStorage();
             
-            // Reload reviews and overview
+            // Reload reviews modal first (most important)
             viewReviews(apartmentId);
-            // Reload apartments to update rating
-            loadApartments();
-            loadAllApartments(); // Refresh card view
-            loadOverallRating(); // Update overall rating
-            // Refresh reviews and overview tabs if active
-            const reviewsTab = document.getElementById('reviews-tab');
-            const overviewTab = document.getElementById('overview-tab');
-            if (reviewsTab && reviewsTab.classList.contains('active')) {
-                loadAllReviews();
-            }
-            if (overviewTab && overviewTab.classList.contains('active')) {
-                loadOverview();
-            }
+            
+            // Batch DOM updates to improve performance
+            requestAnimationFrame(() => {
+                // Reload apartments to update rating
+                loadApartments();
+                loadAllApartments(); // Refresh card view
+                loadOverallRating(); // Update overall rating
+                
+                // Refresh reviews and overview tabs if active (defer non-critical)
+                setTimeout(() => {
+                    const reviewsTab = document.getElementById('reviews-tab');
+                    const overviewTab = document.getElementById('overview-tab');
+                    if (reviewsTab && reviewsTab.classList.contains('active')) {
+                        loadAllReviews();
+                    }
+                    if (overviewTab && overviewTab.classList.contains('active')) {
+                        loadOverview();
+                    }
+                }, 50);
+            });
         }
 
         // Edit review (show edit form)
@@ -2524,21 +2554,28 @@
             
             debugLog('Review updated successfully:', apartment.reviews[reviewIndex]);
             
-            // Reload reviews and overview
+            // Reload reviews modal first (most important)
             viewReviews(apartmentId);
-            // Reload apartments to update rating
-            loadApartments();
-            loadAllApartments(); // Refresh card view
-            loadOverallRating(); // Update overall rating
-            // Refresh reviews and overview tabs if active
-            const reviewsTab = document.getElementById('reviews-tab');
-            const overviewTab = document.getElementById('overview-tab');
-            if (reviewsTab && reviewsTab.classList.contains('active')) {
-                loadAllReviews();
-            }
-            if (overviewTab && overviewTab.classList.contains('active')) {
-                loadOverview();
-            }
+            
+            // Batch DOM updates to improve performance
+            requestAnimationFrame(() => {
+                // Reload apartments to update rating
+                loadApartments();
+                loadAllApartments(); // Refresh card view
+                loadOverallRating(); // Update overall rating
+                
+                // Refresh reviews and overview tabs if active (defer non-critical)
+                setTimeout(() => {
+                    const reviewsTab = document.getElementById('reviews-tab');
+                    const overviewTab = document.getElementById('overview-tab');
+                    if (reviewsTab && reviewsTab.classList.contains('active')) {
+                        loadAllReviews();
+                    }
+                    if (overviewTab && overviewTab.classList.contains('active')) {
+                        loadOverview();
+                    }
+                }, 50);
+            });
         }
 
 
@@ -2929,16 +2966,22 @@
 
         // Save apartment
         function saveApartment() {
-            const form = document.getElementById('apartmentForm');
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                debugLog('Form validation failed');
-                return;
-            }
-            
-            const ownedNumberEl = document.getElementById('ownedNumber');
-            const ownedNumberInput = ownedNumberEl ? ownedNumberEl.value.trim() : '';
-            const ownedNumber = ownedNumberInput ? parseInt(ownedNumberInput) : null;
+            try {
+                const form = document.getElementById('apartmentForm');
+                if (!form) {
+                    alert('Form not found');
+                    return;
+                }
+                
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    debugLog('Form validation failed');
+                    return;
+                }
+                
+                const ownedNumberEl = document.getElementById('ownedNumber');
+                const ownedNumberInput = ownedNumberEl ? ownedNumberEl.value.trim() : '';
+                const ownedNumber = ownedNumberInput ? parseInt(ownedNumberInput) : null;
             
             const locationEl = document.getElementById('location');
             const apartmentNameEl = document.getElementById('apartmentName');
@@ -3073,17 +3116,31 @@
                 document.body.style.paddingRight = '';
             }, 100);
             
-            loadApartments();
-            loadAllApartments(); // Refresh card view
-            loadAllApartmentsForSelector(); // Update selector
-            // Refresh overview if on overview tab
-            const overviewTab = document.getElementById('overview-tab');
-            if (overviewTab && overviewTab.classList.contains('active')) {
-                loadOverview();
-            }
+            // Batch DOM updates to improve performance
+            requestAnimationFrame(() => {
+                loadApartments();
+                loadAllApartments(); // Refresh card view
+                loadAllApartmentsForSelector(); // Update selector
+                
+                // Refresh overview if on overview tab (defer non-critical)
+                setTimeout(() => {
+                    const overviewTab = document.getElementById('overview-tab');
+                    if (overviewTab && overviewTab.classList.contains('active')) {
+                        loadOverview();
+                    }
+                }, 50);
+            });
+            
             // Reset selector
-            document.getElementById('apartmentSelector').value = '';
-            document.getElementById('saveApartmentBtn').style.display = 'none';
+            const selector = document.getElementById('apartmentSelector');
+            if (selector) selector.value = '';
+            const saveBtn = document.getElementById('saveApartmentBtn');
+            if (saveBtn) saveBtn.style.display = 'none';
+            } catch (error) {
+                console.error('Error saving apartment:', error);
+                alert('An error occurred while saving the apartment. Please try again.\n\nError: ' + error.message);
+                debugLog('Save apartment error:', error);
+            }
         }
 
         // Delete apartment
@@ -3185,6 +3242,17 @@
             const cleaned = value.toString().replace(/,/g, '');
             const parsed = parseFloat(cleaned);
             return isNaN(parsed) ? null : parsed;
+        }
+
+        // Format number with commas (for display)
+        function formatNumber(value) {
+            if (!value && value !== 0) return '0';
+            const num = parseFloat(value);
+            if (isNaN(num)) return '0';
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
 
         // Convert datetime-local input to MySQL DATETIME format (YYYY-MM-DD HH:MM:SS)
@@ -3333,17 +3401,17 @@
                                                 <strong>Purchased Price:</strong> ${apt.purchased_price ? formatNumber(apt.purchased_price) : 'N/A'}
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <strong>Renting Price:</strong> <span style="color: navy; font-weight: 700;">${apt.renting_out_price ? formatNumber(apt.renting_out_price) : 'N/A'}</span>
+                                                <strong>Renting Price:</strong> <span class="rent-price-display" style="font-weight: 700;">${apt.renting_out_price ? formatNumber(apt.renting_out_price) : 'N/A'}</span>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <strong>Due Date:</strong><br>
                                                 Local: ${dueDateLocal}<br>
-                                                <span class="eastern-date" style="color: purple;">Eastern: ${dueDateEastern} ${easternTZ}</span>
+                                                <span class="eastern-date">Eastern: ${dueDateEastern} ${easternTZ}</span>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <strong>Clean Time:</strong><br>
                                                 Local: ${cleanTimeLocal}<br>
-                                                <span class="eastern-date" style="color: purple;">Eastern: ${cleanTimeEastern} ${easternTZ}</span>
+                                                <span class="eastern-date">Eastern: ${cleanTimeEastern} ${easternTZ}</span>
                                             </div>
                                             ${apt.apartment_description ? `
                                             <div class="col-md-12 mb-3">
@@ -3482,17 +3550,17 @@
                                                 <strong>Purchased Price:</strong> ${apt.purchased_price ? formatNumber(apt.purchased_price) : 'N/A'}
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <strong>Renting Price:</strong> <span style="color: navy; font-weight: 700;">${apt.renting_out_price ? formatNumber(apt.renting_out_price) : 'N/A'}</span>
+                                                <strong>Renting Price:</strong> <span class="rent-price-display" style="font-weight: 700;">${apt.renting_out_price ? formatNumber(apt.renting_out_price) : 'N/A'}</span>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <strong>Due Date:</strong><br>
                                                 Local: ${dueDateLocal}<br>
-                                                <span class="eastern-date" style="color: purple;">Eastern: ${dueDateEastern} ${easternTZ}</span>
+                                                <span class="eastern-date">Eastern: ${dueDateEastern} ${easternTZ}</span>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <strong>Clean Time:</strong><br>
                                                 Local: ${cleanTimeLocal}<br>
-                                                <span class="eastern-date" style="color: purple;">Eastern: ${cleanTimeEastern} ${easternTZ}</span>
+                                                <span class="eastern-date">Eastern: ${cleanTimeEastern} ${easternTZ}</span>
                                             </div>
                                             ${apt.apartment_description ? `
                                             <div class="col-md-12 mb-3">
