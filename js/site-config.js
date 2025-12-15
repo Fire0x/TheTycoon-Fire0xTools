@@ -9,7 +9,7 @@
 
 const SiteConfig = {
     // Site branding information
-    siteName: 'Fire0x Incorporated - The Tycoons Staff Only - TESTING SITE',
+    siteName: 'TheTycoon - Fire0x Tools - The Tycoons Staff Only',
     siteLogo: {
         path: 'images/SiteLogo.png',
         alt: 'Site Logo',
