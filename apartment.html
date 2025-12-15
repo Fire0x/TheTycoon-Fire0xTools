@@ -3000,6 +3000,20 @@
             
             const now = new Date();
             
+            // Validate that cleaning time and due date are not the same
+            if (dueDateValue && cleanTimeValue) {
+                const dueDate = new Date(dueDateValue);
+                const cleanTime = new Date(cleanTimeValue);
+                
+                // Check if they are the same (within 1 minute tolerance)
+                const timeDiff = Math.abs(dueDate.getTime() - cleanTime.getTime());
+                if (timeDiff < 60000) { // Less than 1 minute difference
+                    alert('Error: Cleaning time and due date cannot be the same time. Please adjust one of them.');
+                    debugLog('Validation failed: cleaning time and due date are the same');
+                    return;
+                }
+            }
+            
             // If new rent date is set and clean time is expired, clear the clean time
             if (dueDateValue) {
                 const dueDate = new Date(dueDateValue);
