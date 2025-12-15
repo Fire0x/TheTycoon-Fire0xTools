@@ -38,6 +38,9 @@ const NavbarManager = {
         }
     ],
     
+    // Excluded HTML files (will not appear in navbar)
+    excludedPages: ['checklist-1.html', 'Version Control/checklist.html'],
+    
     /**
      * Get current page filename
      * @returns {string} Current page filename (e.g., 'index.html')
@@ -59,6 +62,33 @@ const NavbarManager = {
     },
     
     /**
+     * Check if a page is excluded from the navbar
+     * @param {string} href - The href of the menu item
+     * @returns {boolean} True if the page is excluded
+     */
+    isExcluded(href) {
+        return this.excludedPages.includes(href);
+    },
+    
+    /**
+     * Add a page to the exclusion list
+     * @param {string} href - The href of the page to exclude (e.g., 'page.html')
+     */
+    excludePage(href) {
+        if (!this.excludedPages.includes(href)) {
+            this.excludedPages.push(href);
+        }
+    },
+    
+    /**
+     * Remove a page from the exclusion list
+     * @param {string} href - The href of the page to include again
+     */
+    includePage(href) {
+        this.excludedPages = this.excludedPages.filter(page => page !== href);
+    },
+    
+    /**
      * Generate navbar HTML
      * @returns {string} Navbar HTML
      */
@@ -68,7 +98,10 @@ const NavbarManager = {
         const logoAlt = window.SiteConfig ? window.SiteConfig.getSiteLogoAlt() : 'Site Logo';
         const logoHeight = window.SiteConfig ? window.SiteConfig.getSiteLogoHeight() : '40px';
         
-        const menuItemsHTML = this.menuItems.map(item => {
+        // Filter out excluded pages
+        const visibleMenuItems = this.menuItems.filter(item => !this.isExcluded(item.href));
+        
+        const menuItemsHTML = visibleMenuItems.map(item => {
             const isActive = this.isActivePage(item.href);
             const activeClass = isActive ? 'active' : '';
             const ariaCurrent = isActive ? ' aria-current="page"' : '';
