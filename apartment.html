@@ -956,6 +956,21 @@
             </div>
         </div>
 
+        <!-- Export/Import Section -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0">Export/Import</h3>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-success" onclick="exportApartments()">📤 Export Apartments</button>
+                    <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Apartments</button>
+                    <button type="button" class="btn btn-info" onclick="exportTimers()">⏱️ Export Timers</button>
+                    <button type="button" class="btn btn-secondary" onclick="openImportTimersModal()">⏱️ Import Timers</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Tab Navigation -->
         <ul class="nav nav-tabs mb-4" id="apartmentTabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -1287,6 +1302,80 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export/Import Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">Export Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="copyToClipboard('exportTextarea')">📋 Copy to Clipboard</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exportTextarea" class="form-label">Exported Data:</label>
+                        <textarea class="form-control" id="exportTextarea" rows="15" readonly></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import Apartments</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> Importing will create new apartments or update existing ones based on IDs. Make sure to export your current data first!
+                    </div>
+                    <div class="mb-3">
+                        <label for="importTextarea" class="form-label">Paste JSON Data:</label>
+                        <textarea class="form-control" id="importTextarea" rows="10" placeholder='[{"id": 1, "location": "...", ...}]'></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="importApartments()">Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Timers Modal -->
+    <div class="modal fade" id="importTimersModal" tabindex="-1" aria-labelledby="importTimersModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importTimersModalLabel">Import Timers</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> This will update due_date and clean_time for apartments. Make sure to export your current timers first!
+                    </div>
+                    <div class="mb-3">
+                        <label for="importTimersTextarea" class="form-label">Paste JSON Data:</label>
+                        <textarea class="form-control" id="importTimersTextarea" rows="10" placeholder='[{"apartment_id": 1, "due_date": "...", "clean_time": "..."}]'></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="importTimers()">Import</button>
                 </div>
             </div>
         </div>
@@ -3527,6 +3616,299 @@
             } catch (error) {
                 console.error('Error loading overview:', error);
                 debugLog('ERROR loading overview:', error);
+            }
+        }
+
+        // Export/Import Functions
+
+        // Export all apartments
+        async function exportApartments() {
+            try {
+                const response = await fetch(API_BASE);
+                if (!response.ok) throw new Error('Failed to load apartments');
+                const allApartments = await response.json();
+                
+                // Include reviews for each apartment
+                const apartmentsWithReviews = await Promise.all(allApartments.map(async (apt) => {
+                    try {
+                        const reviewsResponse = await fetch(`${API_BASE}/${apt.id}/reviews`);
+                        if (reviewsResponse.ok) {
+                            apt.reviews = await reviewsResponse.json();
+                        } else {
+                            apt.reviews = [];
+                        }
+                    } catch (error) {
+                        debugLog(`Error loading reviews for apartment ${apt.id}:`, error);
+                        apt.reviews = [];
+                    }
+                    return apt;
+                }));
+                
+                const exportData = {
+                    apartments: apartmentsWithReviews,
+                    export_date: new Date().toISOString(),
+                    version: '1.0.0'
+                };
+                
+                const exportJson = JSON.stringify(exportData, null, 2);
+                document.getElementById('exportTextarea').value = exportJson;
+                document.getElementById('exportModalLabel').textContent = 'Export Apartments';
+                const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Error exporting apartments:', error);
+                debugLog('ERROR exporting apartments:', error);
+                alert('Error exporting apartments: ' + error.message);
+            }
+        }
+
+        // Export timers only (due_date and clean_time)
+        async function exportTimers() {
+            try {
+                const response = await fetch(API_BASE);
+                if (!response.ok) throw new Error('Failed to load apartments');
+                const allApartments = await response.json();
+                
+                const timers = allApartments.map(apt => ({
+                    apartment_id: apt.id,
+                    apartment_name: apt.apartment_name || apt.location || 'Unnamed',
+                    owned_number: apt.owned_number,
+                    due_date: apt.due_date,
+                    clean_time: apt.clean_time
+                })).filter(timer => timer.due_date || timer.clean_time); // Only include apartments with timers
+                
+                const exportData = {
+                    timers: timers,
+                    export_date: new Date().toISOString(),
+                    version: '1.0.0'
+                };
+                
+                const exportJson = JSON.stringify(exportData, null, 2);
+                document.getElementById('exportTextarea').value = exportJson;
+                document.getElementById('exportModalLabel').textContent = 'Export Timers';
+                const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Error exporting timers:', error);
+                debugLog('ERROR exporting timers:', error);
+                alert('Error exporting timers: ' + error.message);
+            }
+        }
+
+        // Open import modal
+        function openImportModal() {
+            document.getElementById('importTextarea').value = '';
+            document.getElementById('importModalLabel').textContent = 'Import Apartments';
+            const modal = new bootstrap.Modal(document.getElementById('importModal'));
+            modal.show();
+        }
+
+        // Open import timers modal
+        function openImportTimersModal() {
+            document.getElementById('importTimersTextarea').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('importTimersModal'));
+            modal.show();
+        }
+
+        // Import apartments
+        async function importApartments() {
+            const importText = document.getElementById('importTextarea').value.trim();
+            if (!importText) {
+                alert('Please paste JSON data');
+                return;
+            }
+            
+            try {
+                const imported = JSON.parse(importText);
+                
+                // Handle both formats: array of apartments or object with apartments array
+                const apartmentsToImport = Array.isArray(imported) ? imported : (imported.apartments || []);
+                
+                if (!Array.isArray(apartmentsToImport) || apartmentsToImport.length === 0) {
+                    throw new Error('Invalid format: Expected an array of apartments or an object with an apartments array');
+                }
+                
+                let successCount = 0;
+                let errorCount = 0;
+                const errors = [];
+                
+                // Import each apartment
+                for (const aptData of apartmentsToImport) {
+                    try {
+                        // Extract reviews if present
+                        const reviews = aptData.reviews || [];
+                        delete aptData.reviews; // Remove reviews from apartment data
+                        
+                        let response;
+                        if (aptData.id) {
+                            // Update existing apartment
+                            const { id, ...apartmentData } = aptData;
+                            response = await fetch(`${API_BASE}/${id}`, {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(apartmentData)
+                            });
+                        } else {
+                            // Create new apartment
+                            response = await fetch(API_BASE, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(aptData)
+                            });
+                        }
+                        
+                        if (!response.ok) {
+                            const error = await response.json();
+                            throw new Error(error.message || 'Failed to save apartment');
+                        }
+                        
+                        const savedApartment = await response.json();
+                        
+                        // Import reviews if any
+                        if (reviews.length > 0 && savedApartment.id) {
+                            for (const review of reviews) {
+                                try {
+                                    const reviewResponse = await fetch(`${API_BASE}/${savedApartment.id}/reviews`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            rating: review.rating,
+                                            comment: review.comment
+                                        })
+                                    });
+                                    if (!reviewResponse.ok) {
+                                        debugLog(`Failed to import review for apartment ${savedApartment.id}`);
+                                    }
+                                } catch (error) {
+                                    debugLog(`Error importing review:`, error);
+                                }
+                            }
+                        }
+                        
+                        successCount++;
+                    } catch (error) {
+                        errorCount++;
+                        errors.push(`Apartment ${aptData.apartment_name || aptData.id || 'Unknown'}: ${error.message}`);
+                        debugLog('Error importing apartment:', aptData, error);
+                    }
+                }
+                
+                const importModal = bootstrap.Modal.getInstance(document.getElementById('importModal'));
+                if (importModal) {
+                    importModal.hide();
+                }
+                
+                let message = `Import completed!\n\nSuccess: ${successCount}\nErrors: ${errorCount}`;
+                if (errors.length > 0 && errors.length <= 10) {
+                    message += '\n\nErrors:\n' + errors.join('\n');
+                } else if (errors.length > 10) {
+                    message += '\n\nFirst 10 errors:\n' + errors.slice(0, 10).join('\n');
+                }
+                alert(message);
+                
+                // Reload apartments
+                await loadApartments();
+                await loadAllApartments();
+                await loadAllApartmentsForSelector();
+            } catch (error) {
+                if (error instanceof SyntaxError) {
+                    alert(`Import failed: Invalid JSON format.\n\nError: ${error.message}`);
+                } else {
+                    alert(`Import failed: ${error.message}`);
+                }
+                debugLog('Import error:', error);
+            }
+        }
+
+        // Import timers only
+        async function importTimers() {
+            const importText = document.getElementById('importTimersTextarea').value.trim();
+            if (!importText) {
+                alert('Please paste JSON data');
+                return;
+            }
+            
+            try {
+                const imported = JSON.parse(importText);
+                
+                // Handle both formats: array of timers or object with timers array
+                const timersToImport = Array.isArray(imported) ? imported : (imported.timers || []);
+                
+                if (!Array.isArray(timersToImport) || timersToImport.length === 0) {
+                    throw new Error('Invalid format: Expected an array of timers or an object with a timers array');
+                }
+                
+                let successCount = 0;
+                let errorCount = 0;
+                const errors = [];
+                
+                // Import each timer
+                for (const timerData of timersToImport) {
+                    try {
+                        if (!timerData.apartment_id) {
+                            throw new Error('Missing apartment_id');
+                        }
+                        
+                        const updateData = {};
+                        if (timerData.due_date) updateData.due_date = timerData.due_date;
+                        if (timerData.clean_time) updateData.clean_time = timerData.clean_time;
+                        
+                        if (Object.keys(updateData).length === 0) {
+                            continue; // Skip if no timer data
+                        }
+                        
+                        const response = await fetch(`${API_BASE}/${timerData.apartment_id}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(updateData)
+                        });
+                        
+                        if (!response.ok) {
+                            const error = await response.json();
+                            throw new Error(error.message || 'Failed to update timers');
+                        }
+                        
+                        successCount++;
+                    } catch (error) {
+                        errorCount++;
+                        errors.push(`Apartment ID ${timerData.apartment_id || 'Unknown'}: ${error.message}`);
+                        debugLog('Error importing timer:', timerData, error);
+                    }
+                }
+                
+                const importTimersModal = bootstrap.Modal.getInstance(document.getElementById('importTimersModal'));
+                if (importTimersModal) {
+                    importTimersModal.hide();
+                }
+                
+                let message = `Timer import completed!\n\nSuccess: ${successCount}\nErrors: ${errorCount}`;
+                if (errors.length > 0 && errors.length <= 10) {
+                    message += '\n\nErrors:\n' + errors.join('\n');
+                } else if (errors.length > 10) {
+                    message += '\n\nFirst 10 errors:\n' + errors.slice(0, 10).join('\n');
+                }
+                alert(message);
+                
+                // Reload apartments
+                await loadApartments();
+                await loadAllApartments();
+            } catch (error) {
+                if (error instanceof SyntaxError) {
+                    alert(`Import failed: Invalid JSON format.\n\nError: ${error.message}`);
+                } else {
+                    alert(`Import failed: ${error.message}`);
+                }
+                debugLog('Timer import error:', error);
+            }
+        }
+
+        // Copy to clipboard helper
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            if (textarea) {
+                textarea.select();
+                document.execCommand('copy');
+                alert('Copied to clipboard!');
             }
         }
 

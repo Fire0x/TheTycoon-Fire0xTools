@@ -228,7 +228,7 @@ const SiteConfig = {
 
 const VersionManager = {
     // Website overall version
-    website: '0.1.4',
+    website: '0.1.5',
     
     // Individual page versions
     pages: {
@@ -237,7 +237,7 @@ const VersionManager = {
         'checklist.html': '0.1.6',
         'VehicleDeliveries.html': '0.1.4',
         'education_timer.html': '0.1.0',
-        'apartment.html': '0.0.1'
+        'apartment.html': '0.0.2'
     },
     
     /**
