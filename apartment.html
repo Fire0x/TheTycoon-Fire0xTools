@@ -888,6 +888,87 @@
             <p class="lead">Manage your apartments, rental due dates, and cleaning schedules</p>
         </div>
 
+        <!-- How to Use Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                            <span>📖 How to Use This Page</span>
+                            <span class="float-end" id="howToUseToggle">▼</span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="howToUseCollapse">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="mb-2"><strong>Step 1: Add an Apartment</strong></h6>
+                                <p class="mb-2">Select <strong>"➕ Create New Apartment"</strong> from the dropdown menu, or click <span class="badge bg-primary">➕ Create New Apartment</span> in the selector. Fill in the required fields:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Location:</strong> The area where the apartment is located (e.g., "Del Perrro")</li>
+                                    <li><strong>Apartment Name:</strong> A descriptive name (e.g., "Ocean Breeze Suite #1")</li>
+                                    <li><strong>Apartment No.:</strong> The apartment number</li>
+                                    <li><strong>Owned Number:</strong> Leave empty to auto-assign, or enter a sequential number</li>
+                                    <li><strong>Postal:</strong> <em>Optional</em> - Postal code</li>
+                                    <li><strong>Class:</strong> <em>Optional</em> - Apartment class (e.g., Luxury, Standard)</li>
+                                    <li><strong>Description:</strong> <em>Optional</em> - Additional notes about the apartment</li>
+                                    <li><strong>Prices:</strong> <em>Optional</em> - Purchased price and renting out price</li>
+                                </ul>
+                                
+                                <h6 class="mb-2"><strong>Step 2: Set Rental Due Dates</strong></h6>
+                                <p class="mb-2">Set when rent is due using the <strong>Due Date (Rent)</strong> field:</p>
+                                <ul class="mb-3">
+                                    <li>Click <span class="badge bg-success">Rent Out</span> to set it to current Brisbane time + 7 days</li>
+                                    <li>Click <span class="badge bg-info">+7 Days</span> to add 7 days to a manually entered date</li>
+                                    <li>Or manually enter a date and time</li>
+                                    <li>The date will be displayed in Local and Eastern time zones</li>
+                                </ul>
+                                
+                                <h6 class="mb-2"><strong>Step 3: Set Cleaning Times</strong></h6>
+                                <p class="mb-2">Set when cleaning is due using the <strong>Clean Time</strong> field:</p>
+                                <ul class="mb-3">
+                                    <li>Click <span class="badge bg-success">Clean Now +4h</span> to set it to current local time + 4 hours</li>
+                                    <li>Or manually enter a date and time</li>
+                                    <li><strong>Note:</strong> Cleaning time and due date cannot be the same time</li>
+                                </ul>
+                                
+                                <h6 class="mb-2"><strong>Step 4: Manage Apartments</strong></h6>
+                                <p class="mb-2">Once apartments are added, you can:</p>
+                                <ul class="mb-3">
+                                    <li><strong>View All Apartments:</strong> See all apartments in card format with tabs for Info and Reviews</li>
+                                    <li><strong>Edit Apartments:</strong> Click <span class="badge bg-primary">Edit</span> to modify apartment details</li>
+                                    <li><strong>Add Reviews:</strong> Click <span class="badge bg-info">Reviews</span> to add and manage reviews with ratings (0.5-5 stars)</li>
+                                    <li><strong>Edit Rent Price:</strong> Click the ✏️ icon next to the rent price in the table to quickly edit it</li>
+                                    <li><strong>Hide/Show Apartments:</strong> Use checkboxes in the "All Apartments" section to toggle visibility</li>
+                                    <li><strong>Lock Apartments:</strong> Use <span class="badge bg-secondary">🔒 Lock All</span> to prevent accidental edits</li>
+                                </ul>
+                                
+                                <h6 class="mb-2"><strong>Step 5: Export/Import Data</strong></h6>
+                                <p class="mb-2">Backup and restore your apartment data:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Export Apartments:</strong> Click <span class="badge bg-success">📤 Export Apartments</span> to backup apartment data</li>
+                                    <li><strong>Export Timers:</strong> Click <span class="badge bg-info">⏱️ Export Timers</span> to backup due dates and clean times</li>
+                                    <li><strong>Export Reviews:</strong> Click <span class="badge bg-primary">⭐ Export Reviews</span> to backup all reviews</li>
+                                    <li><strong>Export All Data:</strong> Click <span class="badge bg-success">📦 Export All Data</span> to backup everything at once</li>
+                                    <li><strong>Import:</strong> Use the corresponding import buttons to restore your data</li>
+                                    <li>Copy the JSON text using <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd> (or <kbd>Cmd</kbd> + <kbd>A</kbd> / <kbd>Cmd</kbd> + <kbd>C</kbd> on Mac)</li>
+                                </ul>
+                                
+                                <h6 class="mb-2"><strong>Step 6: View Statistics</strong></h6>
+                                <p class="mb-2">Check the <strong>Overview</strong> tab to see:</p>
+                                <ul class="mb-3">
+                                    <li>Total number of apartments</li>
+                                    <li>Overall rating across all apartments</li>
+                                    <li>Total number of reviews</li>
+                                </ul>
+                                
+                                <p class="mb-0"><strong>💡 Tip:</strong> All data is automatically saved to your browser's localStorage. The page will show alerts for apartments with rent due soon or cleaning overdue. Use the <span class="badge bg-secondary">🐛 Debug</span> button to enable debug logging in the browser console.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Actions Needed Alert -->
         <div id="actionsNeededAlert" class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none; margin-bottom: 1.5rem;">
             <h5 class="alert-heading mb-3">⚠️ Actions Needed</h5>
@@ -4460,6 +4541,44 @@
             
             // Initialize apartments from localStorage
             initializeApartmentsData();
+            
+            // Initialize "How to Use" collapse toggle
+            const HOW_TO_USE_STORAGE_KEY = 'apartmentHowToUseExpanded';
+            const stored = localStorage.getItem(HOW_TO_USE_STORAGE_KEY);
+            const shouldExpand = stored === null ? true : stored === 'true'; // Default to expanded
+            
+            const collapseElement = document.getElementById('howToUseCollapse');
+            const toggleIcon = document.getElementById('howToUseToggle');
+            const toggleButton = document.querySelector('[data-bs-target="#howToUseCollapse"]');
+            
+            if (collapseElement) {
+                const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                    toggle: false
+                });
+                
+                if (!shouldExpand) {
+                    bsCollapse.hide();
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+                } else {
+                    bsCollapse.show();
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+                }
+                
+                // Listen for collapse events
+                collapseElement.addEventListener('shown.bs.collapse', function() {
+                    localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'true');
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+                });
+                
+                collapseElement.addEventListener('hidden.bs.collapse', function() {
+                    localStorage.setItem(HOW_TO_USE_STORAGE_KEY, 'false');
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+                });
+            }
             
             // Fix modal accessibility issues by ensuring proper focus management
             const modals = ['exportModal', 'importModal', 'importTimersModal', 'importReviewsModal', 'importAllModal', 'apartmentModal', 'reviewsModal'];
