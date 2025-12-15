@@ -467,7 +467,7 @@
         }
 
         .review-date .eastern-date {
-            color: #764ba2 !important; /* Purple */
+            color: #c79bf3 !important; /* Purple */
             font-weight: 600 !important;
             opacity: 1 !important;
             padding: 0.25rem 0.5rem;
@@ -753,11 +753,11 @@
 
         .rent-price-display {
             font-weight: 600;
-            color: #001f3f; /* Navy blue */
+            color: #0b85ff; /* Navy blue */
         }
 
         .eastern-date {
-            color: #764ba2; /* Purple */
+            color: #0b85ff; /* Navy blue */
         }
 
         .rent-price-edit {
@@ -967,6 +967,8 @@
                     <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Apartments</button>
                     <button type="button" class="btn btn-info" onclick="exportTimers()">⏱️ Export Timers</button>
                     <button type="button" class="btn btn-secondary" onclick="openImportTimersModal()">⏱️ Import Timers</button>
+                    <button type="button" class="btn btn-primary" onclick="exportReviews()">⭐ Export Reviews</button>
+                    <button type="button" class="btn btn-danger" onclick="openImportReviewsModal()">⭐ Import Reviews</button>
                 </div>
             </div>
         </div>
@@ -1376,6 +1378,31 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="importTimers()">Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Reviews Modal -->
+    <div class="modal fade" id="importReviewsModal" tabindex="-1" aria-labelledby="importReviewsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importReviewsModalLabel">Import Reviews</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning:</strong> This will add or update reviews for apartments. Reviews with existing IDs will be updated, new reviews will be added. Make sure to export your current reviews first!
+                    </div>
+                    <div class="mb-3">
+                        <label for="importReviewsTextarea" class="form-label">Paste JSON Data:</label>
+                        <textarea class="form-control" id="importReviewsTextarea" rows="10" placeholder='[{"id": 1234567890, "apartment_id": 1, "rating": 5, "comment": "...", "created_at": "...", "updated_at": "..."}]'></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="importReviews()">Import</button>
                 </div>
             </div>
         </div>
@@ -3683,6 +3710,13 @@
 
         // Export/Import Functions
 
+        // Helper function to get or create modal instance
+        function getOrCreateModal(elementId) {
+            const element = document.getElementById(elementId);
+            if (!element) return null;
+            return bootstrap.Modal.getOrCreateInstance(element);
+        }
+
         // Export all apartments
         function exportApartments() {
             const exportData = {
@@ -3694,8 +3728,10 @@
             const exportJson = JSON.stringify(exportData, null, 2);
             document.getElementById('exportTextarea').value = exportJson;
             document.getElementById('exportModalLabel').textContent = 'Export Apartments';
-            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
-            modal.show();
+            const modal = getOrCreateModal('exportModal');
+            if (modal) {
+                modal.show();
+            }
         }
 
         // Export timers only (due_date and clean_time)
@@ -3717,23 +3753,72 @@
             const exportJson = JSON.stringify(exportData, null, 2);
             document.getElementById('exportTextarea').value = exportJson;
             document.getElementById('exportModalLabel').textContent = 'Export Timers';
-            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
-            modal.show();
+            const modal = getOrCreateModal('exportModal');
+            if (modal) {
+                modal.show();
+            }
+        }
+
+        // Export reviews only
+        function exportReviews() {
+            // Collect all reviews from all apartments
+            const allReviews = [];
+            apartments.forEach(apt => {
+                const reviews = apt.reviews || [];
+                reviews.forEach(review => {
+                    allReviews.push({
+                        id: review.id,
+                        apartment_id: review.apartment_id || apt.id,
+                        rating: review.rating,
+                        comment: review.comment,
+                        created_at: review.created_at,
+                        updated_at: review.updated_at
+                    });
+                });
+            });
+            
+            const exportData = {
+                reviews: allReviews,
+                export_date: new Date().toISOString(),
+                version: '1.0.0',
+                total_reviews: allReviews.length
+            };
+            
+            const exportJson = JSON.stringify(exportData, null, 2);
+            document.getElementById('exportTextarea').value = exportJson;
+            document.getElementById('exportModalLabel').textContent = 'Export Reviews';
+            const modal = getOrCreateModal('exportModal');
+            if (modal) {
+                modal.show();
+            }
         }
 
         // Open import modal
         function openImportModal() {
             document.getElementById('importTextarea').value = '';
             document.getElementById('importModalLabel').textContent = 'Import Apartments';
-            const modal = new bootstrap.Modal(document.getElementById('importModal'));
-            modal.show();
+            const modal = getOrCreateModal('importModal');
+            if (modal) {
+                modal.show();
+            }
         }
 
         // Open import timers modal
         function openImportTimersModal() {
             document.getElementById('importTimersTextarea').value = '';
-            const modal = new bootstrap.Modal(document.getElementById('importTimersModal'));
-            modal.show();
+            const modal = getOrCreateModal('importTimersModal');
+            if (modal) {
+                modal.show();
+            }
+        }
+
+        // Open import reviews modal
+        function openImportReviewsModal() {
+            document.getElementById('importReviewsTextarea').value = '';
+            const modal = getOrCreateModal('importReviewsModal');
+            if (modal) {
+                modal.show();
+            }
         }
 
         // Import apartments
@@ -3893,6 +3978,108 @@
             }
         }
 
+        // Import reviews only
+        function importReviews() {
+            const importText = document.getElementById('importReviewsTextarea').value.trim();
+            if (!importText) {
+                alert('Please paste JSON data');
+                return;
+            }
+            
+            try {
+                const imported = JSON.parse(importText);
+                
+                // Handle both formats: array of reviews or object with reviews array
+                const reviewsToImport = Array.isArray(imported) ? imported : (imported.reviews || []);
+                
+                if (!Array.isArray(reviewsToImport) || reviewsToImport.length === 0) {
+                    throw new Error('Invalid format: Expected an array of reviews or an object with a reviews array');
+                }
+                
+                let successCount = 0;
+                let errorCount = 0;
+                const errors = [];
+                
+                // Import each review
+                for (const reviewData of reviewsToImport) {
+                    try {
+                        if (!reviewData.apartment_id) {
+                            throw new Error('Missing apartment_id');
+                        }
+                        
+                        const apartment = getApartmentById(reviewData.apartment_id);
+                        if (!apartment) {
+                            throw new Error(`Apartment with ID ${reviewData.apartment_id} not found`);
+                        }
+                        
+                        // Initialize reviews array if it doesn't exist
+                        if (!apartment.reviews) {
+                            apartment.reviews = [];
+                        }
+                        
+                        // Check if review with this ID already exists
+                        const existingReviewIndex = apartment.reviews.findIndex(r => r.id === reviewData.id);
+                        
+                        if (existingReviewIndex !== -1) {
+                            // Update existing review
+                            apartment.reviews[existingReviewIndex] = {
+                                ...apartment.reviews[existingReviewIndex],
+                                rating: reviewData.rating,
+                                comment: reviewData.comment || null,
+                                updated_at: reviewData.updated_at || new Date().toISOString(),
+                                created_at: reviewData.created_at || apartment.reviews[existingReviewIndex].created_at
+                            };
+                        } else {
+                            // Add new review
+                            const newReview = {
+                                id: reviewData.id || Date.now() + Math.random(), // Use provided ID or generate new one
+                                apartment_id: reviewData.apartment_id,
+                                rating: reviewData.rating,
+                                comment: reviewData.comment || null,
+                                created_at: reviewData.created_at || new Date().toISOString(),
+                                updated_at: reviewData.updated_at || new Date().toISOString()
+                            };
+                            apartment.reviews.push(newReview);
+                        }
+                        
+                        successCount++;
+                    } catch (error) {
+                        errorCount++;
+                        errors.push(`Review ID ${reviewData.id || 'Unknown'} (Apartment ID ${reviewData.apartment_id || 'Unknown'}): ${error.message}`);
+                        debugLog('Error importing review:', reviewData, error);
+                    }
+                }
+                
+                saveApartmentsToLocalStorage();
+                
+                const importReviewsModal = bootstrap.Modal.getInstance(document.getElementById('importReviewsModal'));
+                if (importReviewsModal) {
+                    importReviewsModal.hide();
+                }
+                
+                let message = `Review import completed!\n\nSuccess: ${successCount}\nErrors: ${errorCount}`;
+                if (errors.length > 0 && errors.length <= 10) {
+                    message += '\n\nErrors:\n' + errors.join('\n');
+                } else if (errors.length > 10) {
+                    message += '\n\nFirst 10 errors:\n' + errors.slice(0, 10).join('\n');
+                }
+                alert(message);
+                
+                // Reload apartments and reviews
+                loadApartments();
+                loadAllApartments();
+                loadAllReviews();
+                loadOverview();
+            } catch (error) {
+                if (error instanceof SyntaxError) {
+                    alert(`Import failed: Invalid JSON format.\n\nError: ${error.message}`);
+                } else {
+                    alert(`Import failed: ${error.message}`);
+                }
+                debugLog('Review import error:', error);
+            }
+        }
+
         // Copy to clipboard helper
         function copyToClipboard(elementId) {
             const textarea = document.getElementById(elementId);
@@ -3909,6 +4096,21 @@
             
             // Initialize apartments from localStorage
             initializeApartmentsData();
+            
+            // Fix modal accessibility issues by ensuring proper focus management
+            const modals = ['exportModal', 'importModal', 'importTimersModal', 'importReviewsModal', 'apartmentModal', 'reviewsModal'];
+            modals.forEach(modalId => {
+                const modalElement = document.getElementById(modalId);
+                if (modalElement) {
+                    // Remove focus from close button when modal is hidden
+                    modalElement.addEventListener('hidden.bs.modal', function() {
+                        const closeButton = this.querySelector('.btn-close');
+                        if (closeButton && document.activeElement === closeButton) {
+                            closeButton.blur();
+                        }
+                    });
+                }
+            });
             
             // Initialize debug button state
             const debugBtn = document.getElementById('debugToggleBtn');
