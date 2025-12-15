@@ -232,11 +232,11 @@ const VersionManager = {
     
     // Individual page versions
     pages: {
-        'index.html': '0.0.3',
-        'merchants.html': '0.0.6',
-        'checklist.html': '0.1.5',
-        'VehicleDeliveries.html': '0.1.3',
-        'education_timer.html': '0.0.9',
+        'index.html': '0.0.4',
+        'merchants.html': '0.0.7',
+        'checklist.html': '0.1.6',
+        'VehicleDeliveries.html': '0.1.4',
+        'education_timer.html': '0.1.0',
         'apartment.html': '0.0.1'
     },
     
