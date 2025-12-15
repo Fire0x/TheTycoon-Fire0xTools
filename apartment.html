@@ -962,13 +962,18 @@
                 <h3 class="mb-0">Export/Import</h3>
             </div>
             <div class="card-body">
-                <div class="d-flex flex-wrap gap-2">
+                <div class="d-flex flex-wrap gap-2 mb-3">
                     <button type="button" class="btn btn-success" onclick="exportApartments()">📤 Export Apartments</button>
                     <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Apartments</button>
                     <button type="button" class="btn btn-info" onclick="exportTimers()">⏱️ Export Timers</button>
                     <button type="button" class="btn btn-secondary" onclick="openImportTimersModal()">⏱️ Import Timers</button>
                     <button type="button" class="btn btn-primary" onclick="exportReviews()">⭐ Export Reviews</button>
                     <button type="button" class="btn btn-danger" onclick="openImportReviewsModal()">⭐ Import Reviews</button>
+                </div>
+                <hr>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-success btn-lg" onclick="exportAll()">📦 Export All Data</button>
+                    <button type="button" class="btn btn-warning btn-lg" onclick="openImportAllModal()">📦 Import All Data</button>
                 </div>
             </div>
         </div>
@@ -1403,6 +1408,37 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="importReviews()">Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import All Data Modal -->
+    <div class="modal fade" id="importAllModal" tabindex="-1" aria-labelledby="importAllModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importAllModalLabel">Import All Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong>⚠️ Warning:</strong> This will import apartments, timers, and reviews all at once. This operation will:
+                        <ul class="mb-0 mt-2">
+                            <li>Create new apartments or update existing ones based on IDs</li>
+                            <li>Update due_date and clean_time for apartments</li>
+                            <li>Add or update reviews for apartments</li>
+                        </ul>
+                        <strong class="mt-2 d-block">Make sure to export your current data first!</strong>
+                    </div>
+                    <div class="mb-3">
+                        <label for="importAllTextarea" class="form-label">Paste JSON Data:</label>
+                        <textarea class="form-control" id="importAllTextarea" rows="15" placeholder='{"apartments": [...], "timers": [...], "reviews": [...]}'></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="importAll()">Import All</button>
                 </div>
             </div>
         </div>
@@ -2992,9 +3028,23 @@
                 // Create new apartment
                 debugLog('Creating new apartment');
                 const newId = apartments.length > 0 ? Math.max(...apartments.map(apt => apt.id || 0)) + 1 : 1;
+                
+                // Auto-assign owned_number if not provided
+                let finalOwnedNumber = ownedNumber;
+                if (finalOwnedNumber === null || finalOwnedNumber === undefined) {
+                    // Get the maximum owned_number value (latest owned number)
+                    const ownedNumbers = apartments
+                        .filter(apt => apt.owned_number !== null && apt.owned_number !== undefined)
+                        .map(apt => apt.owned_number);
+                    const maxOwnedNumber = ownedNumbers.length > 0 ? Math.max(...ownedNumbers) : 0;
+                    finalOwnedNumber = maxOwnedNumber + 1;
+                    debugLog('Auto-assigned owned_number:', finalOwnedNumber);
+                }
+                
                 savedApartment = {
                     id: newId,
                     ...apartmentData,
+                    owned_number: finalOwnedNumber,
                     reviews: []
                 };
                 apartments.push(savedApartment);
@@ -3821,6 +3871,238 @@
             }
         }
 
+        // Export all data (apartments, timers, and reviews)
+        function exportAll() {
+            // Collect all apartments
+            const apartmentsData = apartments.map(apt => {
+                const { reviews, ...aptWithoutReviews } = apt;
+                return aptWithoutReviews;
+            });
+            
+            // Collect all timers
+            const timers = apartments.map(apt => ({
+                apartment_id: apt.id,
+                apartment_name: apt.apartment_name || apt.location || 'Unnamed',
+                owned_number: apt.owned_number,
+                due_date: apt.due_date,
+                clean_time: apt.clean_time
+            })).filter(timer => timer.due_date || timer.clean_time);
+            
+            // Collect all reviews
+            const allReviews = [];
+            apartments.forEach(apt => {
+                const reviews = apt.reviews || [];
+                reviews.forEach(review => {
+                    allReviews.push({
+                        id: review.id,
+                        apartment_id: review.apartment_id || apt.id,
+                        rating: review.rating,
+                        comment: review.comment,
+                        created_at: review.created_at,
+                        updated_at: review.updated_at
+                    });
+                });
+            });
+            
+            const exportData = {
+                apartments: apartmentsData,
+                timers: timers,
+                reviews: allReviews,
+                export_date: new Date().toISOString(),
+                version: '1.0.0',
+                total_apartments: apartmentsData.length,
+                total_timers: timers.length,
+                total_reviews: allReviews.length
+            };
+            
+            const exportJson = JSON.stringify(exportData, null, 2);
+            document.getElementById('exportTextarea').value = exportJson;
+            document.getElementById('exportModalLabel').textContent = 'Export All Data';
+            const modal = getOrCreateModal('exportModal');
+            if (modal) {
+                modal.show();
+            }
+        }
+
+        // Open import all modal
+        function openImportAllModal() {
+            document.getElementById('importAllTextarea').value = '';
+            const modal = getOrCreateModal('importAllModal');
+            if (modal) {
+                modal.show();
+            }
+        }
+
+        // Import all data (apartments, timers, and reviews)
+        function importAll() {
+            const importText = document.getElementById('importAllTextarea').value.trim();
+            if (!importText) {
+                alert('Please paste JSON data');
+                return;
+            }
+            
+            try {
+                const imported = JSON.parse(importText);
+                
+                let apartmentsImported = 0;
+                let apartmentsUpdated = 0;
+                let apartmentsErrors = 0;
+                let timersImported = 0;
+                let timersErrors = 0;
+                let reviewsImported = 0;
+                let reviewsUpdated = 0;
+                let reviewsErrors = 0;
+                const errors = [];
+                
+                // Import apartments first
+                if (imported.apartments && Array.isArray(imported.apartments)) {
+                    for (const aptData of imported.apartments) {
+                        try {
+                            // Extract reviews if present (will be imported separately)
+                            const reviews = aptData.reviews || [];
+                            delete aptData.reviews;
+                            
+                            if (aptData.id) {
+                                // Update existing apartment
+                                const apartmentIndex = apartments.findIndex(apt => apt.id === aptData.id);
+                                if (apartmentIndex === -1) {
+                                    throw new Error('Apartment not found');
+                                }
+                                apartments[apartmentIndex] = { ...apartments[apartmentIndex], ...aptData };
+                                apartmentsUpdated++;
+                            } else {
+                                // Create new apartment
+                                const newId = apartments.length > 0 ? Math.max(...apartments.map(apt => apt.id || 0)) + 1 : 1;
+                                apartments.push({
+                                    id: newId,
+                                    ...aptData,
+                                    reviews: []
+                                });
+                                apartmentsImported++;
+                            }
+                        } catch (error) {
+                            apartmentsErrors++;
+                            errors.push(`Apartment ${aptData.apartment_name || aptData.id || 'Unknown'}: ${error.message}`);
+                            debugLog('Error importing apartment:', aptData, error);
+                        }
+                    }
+                }
+                
+                // Import timers
+                if (imported.timers && Array.isArray(imported.timers)) {
+                    for (const timerData of imported.timers) {
+                        try {
+                            if (!timerData.apartment_id) {
+                                throw new Error('Missing apartment_id');
+                            }
+                            
+                            const apartment = getApartmentById(timerData.apartment_id);
+                            if (!apartment) {
+                                throw new Error('Apartment not found');
+                            }
+                            
+                            if (timerData.due_date) apartment.due_date = timerData.due_date;
+                            if (timerData.clean_time) apartment.clean_time = timerData.clean_time;
+                            
+                            timersImported++;
+                        } catch (error) {
+                            timersErrors++;
+                            errors.push(`Timer (Apartment ID ${timerData.apartment_id || 'Unknown'}): ${error.message}`);
+                            debugLog('Error importing timer:', timerData, error);
+                        }
+                    }
+                }
+                
+                // Import reviews
+                if (imported.reviews && Array.isArray(imported.reviews)) {
+                    for (const reviewData of imported.reviews) {
+                        try {
+                            if (!reviewData.apartment_id) {
+                                throw new Error('Missing apartment_id');
+                            }
+                            
+                            const apartment = getApartmentById(reviewData.apartment_id);
+                            if (!apartment) {
+                                throw new Error(`Apartment with ID ${reviewData.apartment_id} not found`);
+                            }
+                            
+                            // Initialize reviews array if it doesn't exist
+                            if (!apartment.reviews) {
+                                apartment.reviews = [];
+                            }
+                            
+                            // Check if review with this ID already exists
+                            const existingReviewIndex = apartment.reviews.findIndex(r => r.id === reviewData.id);
+                            
+                            if (existingReviewIndex !== -1) {
+                                // Update existing review
+                                apartment.reviews[existingReviewIndex] = {
+                                    ...apartment.reviews[existingReviewIndex],
+                                    rating: reviewData.rating,
+                                    comment: reviewData.comment || null,
+                                    updated_at: reviewData.updated_at || new Date().toISOString(),
+                                    created_at: reviewData.created_at || apartment.reviews[existingReviewIndex].created_at
+                                };
+                                reviewsUpdated++;
+                            } else {
+                                // Add new review
+                                const newReview = {
+                                    id: reviewData.id || Date.now() + Math.random(),
+                                    apartment_id: reviewData.apartment_id,
+                                    rating: reviewData.rating,
+                                    comment: reviewData.comment || null,
+                                    created_at: reviewData.created_at || new Date().toISOString(),
+                                    updated_at: reviewData.updated_at || new Date().toISOString()
+                                };
+                                apartment.reviews.push(newReview);
+                                reviewsImported++;
+                            }
+                        } catch (error) {
+                            reviewsErrors++;
+                            errors.push(`Review ID ${reviewData.id || 'Unknown'} (Apartment ID ${reviewData.apartment_id || 'Unknown'}): ${error.message}`);
+                            debugLog('Error importing review:', reviewData, error);
+                        }
+                    }
+                }
+                
+                saveApartmentsToLocalStorage();
+                
+                const importAllModal = bootstrap.Modal.getInstance(document.getElementById('importAllModal'));
+                if (importAllModal) {
+                    importAllModal.hide();
+                }
+                
+                let message = `Import All completed!\n\n`;
+                message += `Apartments: ${apartmentsImported} created, ${apartmentsUpdated} updated, ${apartmentsErrors} errors\n`;
+                message += `Timers: ${timersImported} imported, ${timersErrors} errors\n`;
+                message += `Reviews: ${reviewsImported} created, ${reviewsUpdated} updated, ${reviewsErrors} errors`;
+                
+                if (errors.length > 0) {
+                    if (errors.length <= 10) {
+                        message += '\n\nErrors:\n' + errors.join('\n');
+                    } else {
+                        message += '\n\nFirst 10 errors:\n' + errors.slice(0, 10).join('\n');
+                    }
+                }
+                
+                alert(message);
+                
+                // Reload everything
+                loadApartments();
+                loadAllApartments();
+                loadAllApartmentsForSelector();
+                loadAllReviews();
+                loadOverview();
+            } catch (error) {
+                if (error instanceof SyntaxError) {
+                    alert(`Import failed: Invalid JSON format.\n\nError: ${error.message}`);
+                } else {
+                    alert(`Import failed: ${error.message}`);
+                }
+                debugLog('Import all error:', error);
+            }
+        }
+
         // Import apartments
         function importApartments() {
             const importText = document.getElementById('importTextarea').value.trim();
@@ -4098,7 +4380,7 @@
             initializeApartmentsData();
             
             // Fix modal accessibility issues by ensuring proper focus management
-            const modals = ['exportModal', 'importModal', 'importTimersModal', 'importReviewsModal', 'apartmentModal', 'reviewsModal'];
+            const modals = ['exportModal', 'importModal', 'importTimersModal', 'importReviewsModal', 'importAllModal', 'apartmentModal', 'reviewsModal'];
             modals.forEach(modalId => {
                 const modalElement = document.getElementById(modalId);
                 if (modalElement) {

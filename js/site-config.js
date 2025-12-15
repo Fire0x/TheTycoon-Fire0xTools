@@ -239,7 +239,7 @@ const VersionManager = {
         'checklist.html': '0.1.6',
         'VehicleDeliveries.html': '0.1.4',
         'education_timer.html': '0.1.0',
-        'apartment.html': '0.0.4'
+        'apartment.html': '0.0.5'
     },
     
     /**
