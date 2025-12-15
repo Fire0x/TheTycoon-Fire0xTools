@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/SiteLogo.png">
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar will be inserted here by navbar.js -->
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="glow-text">Information</h1>
+            <p class="lead">Your comprehensive information and documentation hub.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                
+                <!-- 
+                    ============================================
+                    HOW TO ADD NEW CONTENT
+                    ============================================
+                    
+                    To add a new section:
+                    1. Copy one of the card sections below
+                    2. Replace the content inside the card-body div
+                    3. Update the card-header title
+                    4. Use the formatting examples below as reference
+                    
+                    Formatting Guide:
+                    - Headings: Use <h2> through <h6> tags
+                    - Paragraphs: Use <p> tags
+                    - Bold text: <strong>text</strong> or <b>text</b>
+                    - Italic text: <em>text</em> or <i>text</i>
+                    - Links: <a href="url">link text</a>
+                    - Bullet lists: <ul><li>item</li></ul>
+                    - Numbered lists: <ol><li>item</li></ol>
+                    - Code inline: <code>code</code>
+                    - Code block: <pre><code>code block</code></pre>
+                    - Blockquote: <blockquote>quote</blockquote>
+                    - Horizontal rule: <hr>
+                -->
+
+                <!-- Example Section: Headings -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">Headings</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Use headings to organize your content hierarchically. The main page title uses h1, section titles use h2, subsections use h3, and so on.</p>
+                        
+                        <h2>Heading Level 2 (h2)</h2>
+                        <h3>Heading Level 3 (h3)</h3>
+                        <h4>Heading Level 4 (h4)</h4>
+                        <h5>Heading Level 5 (h5)</h5>
+                        <h6>Heading Level 6 (h6)</h6>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;h2&gt;Section Title&lt;/h2&gt;
+&lt;h3&gt;Subsection Title&lt;/h3&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Paragraphs -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h2 class="mb-0">Paragraphs</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Paragraphs are the basic building blocks of text content. Use them to write regular text, descriptions, and explanations.</p>
+                        
+                        <p>This is a regular paragraph. You can write multiple sentences here. Paragraphs automatically wrap to fit the container width.</p>
+                        
+                        <p>You can have multiple paragraphs in a row. Each paragraph will have spacing between them for better readability.</p>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;p&gt;This is a paragraph with regular text content.&lt;/p&gt;
+&lt;p&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Text Formatting -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="mb-0">Text Formatting</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>You can format text to emphasize important information or highlight specific content.</p>
+                        
+                        <p>This is <strong>bold text</strong> using the &lt;strong&gt; tag.</p>
+                        <p>This is <em>italic text</em> using the &lt;em&gt; tag.</p>
+                        <p>You can combine <strong>bold</strong> and <em>italic</em> formatting: <strong><em>bold and italic</em></strong>.</p>
+                        <p>This is <mark>highlighted text</mark> using the &lt;mark&gt; tag.</p>
+                        <p>This is <small>smaller text</small> using the &lt;small&gt; tag.</p>
+                        <p>This is <del>deleted text</del> using the &lt;del&gt; tag.</p>
+                        <p>This is <ins>inserted text</ins> using the &lt;ins&gt; tag.</p>
+                        <p>This is <sub>subscript</sub> and this is <sup>superscript</sup> text.</p>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;p&gt;This is &lt;strong&gt;bold text&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;This is &lt;em&gt;italic text&lt;/em&gt;.&lt;/p&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Bullet Point Lists -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h2 class="mb-0">Bullet Point Lists</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Use unordered lists (bullet points) to present items that don't have a specific order or sequence.</p>
+                        
+                        <h4>Simple List</h4>
+                        <ul>
+                            <li>First item</li>
+                            <li>Second item</li>
+                            <li>Third item</li>
+                        </ul>
+                        
+                        <h4>List with Formatting</h4>
+                        <ul>
+                            <li><strong>Bold item</strong> with description</li>
+                            <li><em>Italic item</em> with description</li>
+                            <li>Item with <a href="#links">a link</a></li>
+                        </ul>
+                        
+                        <h4>Nested List</h4>
+                        <ul>
+                            <li>Main item 1
+                                <ul>
+                                    <li>Sub-item 1.1</li>
+                                    <li>Sub-item 1.2</li>
+                                </ul>
+                            </li>
+                            <li>Main item 2
+                                <ul>
+                                    <li>Sub-item 2.1</li>
+                                    <li>Sub-item 2.2</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;ul&gt;
+    &lt;li&gt;First item&lt;/li&gt;
+    &lt;li&gt;Second item&lt;/li&gt;
+    &lt;li&gt;Third item&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Numbered Lists -->
+                <div class="card mb-4">
+                    <div class="card-header bg-danger text-white">
+                        <h2 class="mb-0">Numbered Lists</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Use ordered lists (numbered lists) when items have a specific sequence or order that matters.</p>
+                        
+                        <h4>Simple Numbered List</h4>
+                        <ol>
+                            <li>First step</li>
+                            <li>Second step</li>
+                            <li>Third step</li>
+                        </ol>
+                        
+                        <h4>List with Formatting</h4>
+                        <ol>
+                            <li><strong>Step one:</strong> Do this first</li>
+                            <li><strong>Step two:</strong> Then do this</li>
+                            <li><strong>Step three:</strong> Finally, do this</li>
+                        </ol>
+                        
+                        <h4>Nested Numbered List</h4>
+                        <ol>
+                            <li>Main step 1
+                                <ol>
+                                    <li>Sub-step 1.1</li>
+                                    <li>Sub-step 1.2</li>
+                                </ol>
+                            </li>
+                            <li>Main step 2
+                                <ol>
+                                    <li>Sub-step 2.1</li>
+                                    <li>Sub-step 2.2</li>
+                                </ol>
+                            </li>
+                        </ol>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;ol&gt;
+    &lt;li&gt;First step&lt;/li&gt;
+    &lt;li&gt;Second step&lt;/li&gt;
+    &lt;li&gt;Third step&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Links -->
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="mb-0" id="links">Links</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Links allow users to navigate to other pages or external websites.</p>
+                        
+                        <h4>Internal Links</h4>
+                        <p>Link to other pages on this site: <a href="index.html">Home Page</a>, <a href="checklist.html">Checklist</a>, <a href="merchants.html">Merchants</a>.</p>
+                        
+                        <h4>External Links</h4>
+                        <p>Link to external websites: <a href="https://example.com" target="_blank" rel="noopener noreferrer">Example Website</a> (opens in new tab).</p>
+                        
+                        <h4>Links with Formatting</h4>
+                        <p>You can combine links with other formatting: <strong><a href="index.html">Bold Link</a></strong> or <em><a href="index.html">Italic Link</a></em>.</p>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;!-- Internal link --&gt;
+&lt;a href="index.html"&gt;Home Page&lt;/a&gt;
+
+&lt;!-- External link (opens in new tab) --&gt;
+&lt;a href="https://example.com" target="_blank" rel="noopener noreferrer"&gt;External Site&lt;/a&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Code Blocks -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h2 class="mb-0">Code Blocks</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Use code blocks to display code snippets, commands, or technical information.</p>
+                        
+                        <h4>Inline Code</h4>
+                        <p>Use <code>&lt;code&gt;</code> for inline code snippets like function names or commands: <code>console.log()</code> or <code>/merchants</code>.</p>
+                        
+                        <h4>Code Blocks</h4>
+                        <p>Use <code>&lt;pre&gt;&lt;code&gt;</code> for multi-line code blocks:</p>
+                        <pre><code>function example() {
+    console.log("Hello, World!");
+    return true;
+}</code></pre>
+                        
+                        <h4>Command Examples</h4>
+                        <pre><code>/merchants
+/checklist
+/vehicles</code></pre>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;!-- Inline code --&gt;
+&lt;p&gt;Use &lt;code&gt;console.log()&lt;/code&gt; to print.&lt;/p&gt;
+
+&lt;!-- Code block --&gt;
+&lt;pre&gt;&lt;code&gt;function example() {
+    return true;
+}&lt;/code&gt;&lt;/pre&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Blockquotes -->
+                <div class="card mb-4">
+                    <div class="card-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white;">
+                        <h2 class="mb-0">Blockquotes</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Use blockquotes to highlight quotes, important notes, or callouts.</p>
+                        
+                        <blockquote class="blockquote">
+                            <p>This is a blockquote. Use it to highlight important information, quotes, or special notes.</p>
+                            <footer class="blockquote-footer">Optional citation or source</footer>
+                        </blockquote>
+                        
+                        <blockquote class="blockquote">
+                            <p>You can have multiple blockquotes on a page. Each one will be visually distinct.</p>
+                        </blockquote>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;blockquote class="blockquote"&gt;
+    &lt;p&gt;This is a quote or important note.&lt;/p&gt;
+    &lt;footer class="blockquote-footer"&gt;Optional source&lt;/footer&gt;
+&lt;/blockquote&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Horizontal Rules -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light text-dark">
+                        <h2 class="mb-0">Horizontal Rules</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Use horizontal rules to visually separate sections of content.</p>
+                        
+                        <p>Content above the rule.</p>
+                        <hr>
+                        <p>Content below the rule.</p>
+                        
+                        <p class="mt-3"><strong>HTML Example:</strong></p>
+                        <pre><code>&lt;p&gt;Content above&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Content below&lt;/p&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Example Section: Mixed Content -->
+                <div class="card mb-4">
+                    <div class="card-header" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%); color: white;">
+                        <h2 class="mb-0">Mixed Content Example</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Here's an example combining multiple formatting elements:</p>
+                        
+                        <h3>Getting Started Guide</h3>
+                        <p>This guide will help you get started with <strong>The Tycoon</strong> tools. Follow these steps:</p>
+                        
+                        <ol>
+                            <li><strong>First Step:</strong> Visit the <a href="checklist.html">Checklist</a> page</li>
+                            <li><strong>Second Step:</strong> Set up your businesses
+                                <ul>
+                                    <li>Create tiers</li>
+                                    <li>Add businesses to each tier</li>
+                                    <li>Configure settings</li>
+                                </ul>
+                            </li>
+                            <li><strong>Third Step:</strong> Start tracking your progress</li>
+                        </ol>
+                        
+                        <h4>Important Notes</h4>
+                        <blockquote class="blockquote">
+                            <p>Remember to use the <code>/merchants</code> command in-game to import merchant data.</p>
+                        </blockquote>
+                        
+                        <hr>
+                        
+                        <p>For more information, check out the <a href="index.html">home page</a>.</p>
+                        
+                        <p class="mt-3"><strong>HTML Structure:</strong></p>
+                        <pre><code>&lt;h3&gt;Section Title&lt;/h3&gt;
+&lt;p&gt;Introduction paragraph.&lt;/p&gt;
+&lt;ol&gt;
+    &lt;li&gt;&lt;strong&gt;Step:&lt;/strong&gt; Description&lt;/li&gt;
+    &lt;li&gt;Another step
+        &lt;ul&gt;
+            &lt;li&gt;Sub-item&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+    &lt;p&gt;Important note&lt;/p&gt;
+&lt;/blockquote&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Template Section: Copy this to add new content -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">Template: Add Your Content Here</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- 
+                            COPY THIS CARD SECTION TO ADD NEW CONTENT
+                            
+                            Steps:
+                            1. Copy the entire <div class="card mb-4"> section above
+                            2. Paste it below this template section
+                            3. Update the card-header title
+                            4. Replace this content with your own
+                            5. Use the formatting examples above as reference
+                        -->
+                        
+                        <h3>Your Section Title</h3>
+                        <p>Start writing your content here. You can use any of the formatting options shown in the examples above.</p>
+                        
+                        <ul>
+                            <li>Add bullet points</li>
+                            <li>Or numbered lists</li>
+                            <li>Include <strong>bold</strong> or <em>italic</em> text</li>
+                        </ul>
+                        
+                        <p>Add more paragraphs, links, code blocks, or any other content as needed.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
+            <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
+                <!-- Version will be inserted here by site-config.js -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Site Configuration & Version Manager -->
+    <script src="js/site-config.js"></script>
+    <!-- Navbar Manager -->
+    <script src="js/navbar.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+</body>
+</html>
+

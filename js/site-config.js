@@ -30,6 +30,7 @@ const SiteConfig = {
     // Page titles mapping
     pageTitles: {
         'index.html': 'Home',
+        'Info.html': 'Information',
         'merchants.html': 'Traveling Merchants',
         'checklist.html': 'Business Checklist',
         'checklist-1.html': 'Business Checklist',
@@ -233,6 +234,7 @@ const VersionManager = {
     // Individual page versions
     pages: {
         'index.html': '0.0.4',
+        'Info.html': '0.1.0',
         'merchants.html': '0.0.7',
         'checklist.html': '0.1.6',
         'VehicleDeliveries.html': '0.1.4',

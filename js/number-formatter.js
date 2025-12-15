@@ -205,7 +205,7 @@ function initNumberFormatting(options = {}) {
             if (this.type === 'number') {
                 // Just ensure it's a valid number
                 const num = parseFormattedNumber(this.value);
-                this.value = isNaN(num) ? '' : num.toString();
+                this.value = (num === null || num === undefined || isNaN(num)) ? '' : num.toString();
                 return;
             }
             

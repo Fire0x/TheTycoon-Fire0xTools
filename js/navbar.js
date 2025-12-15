@@ -12,14 +12,14 @@ const NavbarManager = {
             id: 'nav-home'
         },
         {
+            href: 'Info.html',
+            text: 'ℹ️ Info',
+            id: 'nav-info'
+        },
+        {
             href: 'merchants.html',
             text: '🛒 Traveling Merchants',
             id: 'nav-merchants'
-        },
-        {
-            href: 'checklist.html',
-            text: '✅️ Checklist',
-            id: 'nav-checklist'
         },
         {
             href: 'VehicleDeliveries.html',
@@ -32,9 +32,13 @@ const NavbarManager = {
             id: 'nav-education'
         },
         {
-            href: 'apartment.html',
-            text: '🏠 Apartment Management',
-            id: 'nav-apartment'
+            type: 'dropdown',
+            text: 'Busineses',
+            id: 'businessDropdown',
+            items: [
+                {text: '🏠 Apartment Management', href: 'apartment.html'},
+                {text: '🏠 Business Checklist', href: 'checklist.html'},
+            ]
         }
     ],
     
