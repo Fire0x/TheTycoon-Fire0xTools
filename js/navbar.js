@@ -30,6 +30,11 @@ const NavbarManager = {
             href: 'education_timer.html',
             text: '🎓 Education Timer',
             id: 'nav-education'
+        },
+        {
+            href: 'apartment.html',
+            text: '🏠 Apartment Management',
+            id: 'nav-apartment'
         }
     ],
     

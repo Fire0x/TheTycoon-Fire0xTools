@@ -1,0 +1,3694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartment Management</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/SiteLogo.png">
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --info-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            --secondary-gradient: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: var(--bg-color);
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-bottom: 2px solid rgba(99, 102, 241, 0.25);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .section-card {
+            margin-bottom: 2rem;
+        }
+
+        h1.glow-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            border-radius: 0.75rem;
+            padding: 0.625rem 1.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-gradient);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4);
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        }
+
+        .btn-info {
+            background: var(--info-gradient);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+        }
+
+        .btn-warning {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+        }
+
+        .time-display {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            font-weight: 600;
+        }
+
+        .text-info {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .text-warning {
+            background: var(--warning-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        .text-success {
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        /* Modern background gradients for card headers */
+        .bg-primary {
+            background: var(--primary-gradient) !important;
+        }
+
+        .bg-secondary {
+            background: var(--secondary-gradient) !important;
+        }
+
+        .bg-success {
+            background: var(--success-gradient) !important;
+        }
+
+        .bg-info {
+            background: var(--info-gradient) !important;
+        }
+
+        .bg-warning {
+            background: var(--warning-gradient) !important;
+        }
+
+        .bg-danger {
+            background: var(--danger-gradient) !important;
+        }
+
+        .apartment-item {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(102, 126, 234, 0.02) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.15);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .apartment-item:hover {
+            transform: translateX(4px);
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control, .form-select {
+            border-radius: 0.75rem;
+            border: 2px solid var(--card-border);
+            padding: 0.625rem 1rem;
+            transition: var(--transition);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-color);
+            opacity: 0.5;
+        }
+
+        textarea.form-control {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .table {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+
+        .timezone-display {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.25rem;
+            position: relative;
+        }
+
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+
+        .star-rating .star-label {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+            user-select: none;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Half-star support - clickable halves */
+        .star-rating .star-label::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            width: 50%;
+            overflow: hidden;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .star-rating .star-half-left,
+        .star-rating .star-half-right {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .star-rating .star-half-left {
+            left: 0;
+        }
+
+        .star-rating .star-half-right {
+            right: 0;
+        }
+        
+        .star-rating .star-label {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Default: all stars grey */
+        .star-rating .star-label {
+            color: #ddd;
+        }
+        
+        /* Hover effect: fill from left */
+        .star-rating .star-label:hover,
+        .star-rating .star-label:hover ~ .star-label {
+            color: #ffc107;
+        }
+        
+        /* JavaScript will handle the checked state coloring */
+        
+        /* Half-star display styling */
+        .half-star {
+            position: relative;
+            display: inline-block;
+            font-size: inherit;
+            width: 1em;
+            height: 1em;
+            line-height: 1;
+            overflow: hidden;
+        }
+        
+        .half-star::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            color: #ffc107;
+            display: block;
+            text-align: left;
+        }
+        
+        .half-star::after {
+            content: '☆';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            color: #ddd;
+            display: block;
+            text-align: right;
+        }
+
+        .review-item {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(102, 126, 234, 0.03) 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .review-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .review-item:hover::before {
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .review-item {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(102, 126, 234, 0.12) 100%);
+            border-color: rgba(102, 126, 234, 0.25);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .review-item:hover {
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+
+        .review-rating {
+            color: #ffc107;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-bottom: 0.75rem;
+            text-shadow: 0 2px 4px rgba(255, 193, 7, 0.4);
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-radius: 0.5rem;
+        }
+
+        [data-theme="dark"] .review-rating {
+            text-shadow: 0 2px 6px rgba(255, 193, 7, 0.6);
+            background: rgba(255, 193, 7, 0.15);
+        }
+
+        .reviews-list .review-rating {
+            margin-bottom: 1rem;
+        }
+
+        .review-date {
+            font-size: 0.875rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .review-item:hover .review-date {
+            border-bottom-color: rgba(102, 126, 234, 0.2);
+        }
+
+        [data-theme="dark"] .review-item:hover .review-date {
+            border-bottom-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .review-date .eastern-date {
+            color: #764ba2 !important; /* Purple */
+            font-weight: 600 !important;
+            opacity: 1 !important;
+            padding: 0.25rem 0.5rem;
+            background: rgba(118, 75, 162, 0.1);
+            border-radius: 0.375rem;
+            font-size: 0.85rem;
+        }
+
+        [data-theme="dark"] .review-date .eastern-date {
+            color: #a78bfa !important; /* Lighter purple for dark mode */
+            background: rgba(167, 139, 250, 0.15);
+        }
+
+        .review-item p {
+            color: var(--text-color);
+            margin-top: 1rem;
+            margin-bottom: 0;
+            line-height: 1.75;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .reviews-list .review-item p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-color);
+            margin-top: 1.25rem;
+            padding: 1rem 1.25rem;
+            background: rgba(102, 126, 234, 0.03);
+            border-radius: 0.75rem;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .reviews-list .review-item:hover p {
+            background: rgba(102, 126, 234, 0.06);
+            border-left-color: rgba(102, 126, 234, 0.4);
+            padding-left: 1.5rem;
+            transform: translateX(2px);
+        }
+
+        [data-theme="dark"] .reviews-list .review-item p {
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        [data-theme="dark"] .reviews-list .review-item:hover p {
+            background: rgba(102, 126, 234, 0.12);
+            border-left-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .review-item .text-muted {
+            color: var(--text-color);
+            opacity: 0.65;
+        }
+
+        .review-item .btn {
+            border-radius: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .review-item .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .reviews-list .review-item {
+            margin-bottom: 0;
+        }
+
+        .reviews-list .review-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Enhanced review item styling for All Apartments section */
+        .reviews-list .review-item {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(102, 126, 234, 0.05) 100%);
+            border-left: 3px solid transparent;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .reviews-list .review-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 1rem 0 0 1rem;
+        }
+
+        .reviews-list .review-item:hover::after {
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .reviews-list .review-item {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(102, 126, 234, 0.15) 100%);
+        }
+
+
+        #reviewsContainer .text-muted {
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        [data-theme="dark"] #reviewsContainer .text-muted {
+            color: #cccccc;
+            opacity: 0.8;
+        }
+
+        .review-edit-form {
+            margin-top: 1rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(102, 126, 234, 0.05) 100%);
+            border-radius: 0.75rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .review-edit-form:hover {
+            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        [data-theme="dark"] .review-edit-form {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-color: rgba(102, 126, 234, 0.35);
+        }
+
+        [data-theme="dark"] .review-edit-form:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .review-edit-stars {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .review-edit-stars input[type="radio"] {
+            display: none;
+        }
+
+        .review-edit-stars .star-label {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+            user-select: none;
+        }
+
+        [data-theme="dark"] .review-edit-stars .star-label {
+            color: #666;
+        }
+
+        [data-theme="dark"] .review-edit-stars .star-label:hover,
+        [data-theme="dark"] .review-edit-stars input[type="radio"]:checked ~ .star-label {
+            color: #ffc107;
+        }
+
+        .review-edit-stars input[type="radio"]:checked ~ .star-label {
+            color: #ffc107;
+        }
+
+        .review-edit-stars .star-label:hover,
+        .review-edit-stars .star-label:hover ~ .star-label {
+            color: #ffc107;
+        }
+
+        .rating-overview {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(102, 126, 234, 0.15);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        [data-theme="dark"] .rating-overview {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .rating-breakdown-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .rating-breakdown-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .rating-breakdown-label {
+            width: 80px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .rating-breakdown-bar {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+        }
+
+        [data-theme="dark"] .rating-breakdown-bar {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .rating-breakdown-bar {
+            flex: 1;
+            height: 24px;
+            background-color: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            margin: 0 1rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .rating-breakdown-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.5rem;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .rating-breakdown-count {
+            width: 60px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .overview-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        [data-theme="dark"] .overview-stats {
+            border-bottom-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-top: 0.25rem;
+        }
+
+        .rent-price-display {
+            font-weight: 600;
+            color: #001f3f; /* Navy blue */
+        }
+
+        .eastern-date {
+            color: #764ba2; /* Purple */
+        }
+
+        .rent-price-edit {
+            margin-top: 0.25rem;
+        }
+
+        .rent-price-input {
+            max-width: 150px;
+        }
+
+
+        /* Modal Dark Mode Styles */
+        .modal-content {
+            background-color: var(--card-bg);
+            border-color: var(--card-border);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .modal-header {
+            background-color: var(--card-bg);
+            border-bottom-color: var(--card-border);
+            color: var(--text-color);
+        }
+
+        .modal-title {
+            color: var(--text-color);
+        }
+
+        .modal-body {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .modal-footer {
+            background-color: var(--card-bg);
+            border-top-color: var(--card-border);
+        }
+
+        .btn-close {
+            filter: invert(0);
+            opacity: 0.5;
+        }
+
+        [data-theme="dark"] .btn-close {
+            filter: invert(1);
+            opacity: 0.7;
+        }
+
+        [data-theme="dark"] .btn-close:hover {
+            opacity: 1;
+        }
+
+        .form-label {
+            color: var(--text-color);
+        }
+
+        .input-group .btn {
+            border-color: var(--card-border);
+        }
+
+        [data-theme="dark"] .input-group .btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .input-group .btn:hover {
+            background-color: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+        }
+
+        /* Modal backdrop for dark mode */
+        [data-theme="dark"] .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Ensure all modals use dark mode */
+        #reviewsModal .modal-content,
+        #reviewsModal .modal-header,
+        #reviewsModal .modal-body,
+        #reviewsModal .modal-footer {
+            background-color: var(--card-bg);
+            border-color: var(--card-border);
+            color: var(--text-color);
+        }
+
+        #reviewsModal .modal-title {
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            h1.glow-text {
+                font-size: 2rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="glow-text">🏠 Apartment Management</h1>
+            <p class="lead">Manage your apartments, rental due dates, and cleaning schedules</p>
+        </div>
+
+        <!-- Actions Needed Alert -->
+        <div id="actionsNeededAlert" class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none; margin-bottom: 1.5rem;">
+            <h5 class="alert-heading mb-3">⚠️ Actions Needed</h5>
+            <div id="actionsNeededContent">
+                <!-- Actions will be populated here -->
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Time Displays -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="time-display">
+                                    <strong>🕐 Local Time:</strong> 
+                                    <div id="local-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="time-display">
+                                    <strong>🕐 Eastern Time:</strong> 
+                                    <div id="eastern-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <span id="eastern-tz" class="text-muted small">EST</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="time-display">
+                                    <strong>📅 Current Date:</strong> 
+                                    <div id="current-date" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--/--/----</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apartments Summary -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h3 class="mb-0">
+                            <span class="text-info">🏢 Apartments Owned by Fire0x Incorporated:</span>
+                            <span id="apartmentCount" class="text-info" style="font-size: 2rem; font-weight: 700; margin-left: 0.5rem;">0</span>
+                            <span class="ms-3" style="font-size: 1.5rem;">
+                                <span id="overallRating" class="text-warning">⭐ --</span>
+                                <small class="text-muted ms-1" id="overallRatingText">(Overall Rating)</small>
+                            </span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apartment Selector -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Select Apartment</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="apartmentSelector" class="form-label">Apartment</label>
+                        <select class="form-select" id="apartmentSelector" onchange="loadApartmentData()">
+                            <option value="">-- Select or Create Apartment --</option>
+                            <option value="new">➕ Create New Apartment</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end gap-2">
+                        <button type="button" class="btn btn-success" id="saveApartmentBtn" onclick="saveApartmentFromSelector()" style="display: none;">
+                            💾 Save Apartment
+                        </button>
+                        <button type="button" class="btn btn-light btn-sm" id="debugToggleBtn" onclick="toggleDebugMode()" title="Toggle debug logging to console">
+                            🐛 Debug: OFF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs mb-4" id="apartmentTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="apartments-tab" data-bs-toggle="tab" data-bs-target="#apartments" type="button" role="tab">
+                    Apartments
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                    Reviews
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                    Overview
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="apartmentTabsContent">
+            <!-- Apartments Tab -->
+            <div class="tab-pane fade show active" id="apartments" role="tabpanel">
+                <div class="card section-card">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">Apartments</h3>
+                            <button type="button" class="btn btn-light btn-sm" id="toggleTableBtn" onclick="toggleApartmentsTable()" title="Toggle table visibility">
+                                🙈 Hide Table
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="loadingAlert" class="alert alert-secondary" role="alert">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Loading apartments...
+                        </div>
+                        <div id="apartmentsTableContainer" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Owned #</th>
+                                            <th>Location</th>
+                                            <th>Apartment Name</th>
+                                            <th>Apartment No.</th>
+                                            <th>Postal</th>
+                                            <th>Class</th>
+                                            <th>Purchased Price</th>
+                                            <th>Renting Price</th>
+                                            <th>Due Date</th>
+                                            <th>Clean Time</th>
+                                            <th>Rating</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="apartmentsTableBody">
+                                        <!-- Apartments will be dynamically inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="noApartmentsAlert" class="alert alert-info" role="alert" style="display: none;">
+                            No apartments found. Click "Add Apartment" to get started.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Apartments Section (like All Businesses by Tier) -->
+                <div class="card mt-4">
+                    <div class="card-header bg-secondary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">All Apartments</h3>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-light" onclick="showAllApartments()" title="Show All Apartments">
+                                    👁️ Show All
+                                </button>
+                                <button class="btn btn-sm btn-light" onclick="hideAllApartments()" title="Hide All Apartments">
+                                    🙈 Hide All
+                                </button>
+                                <button class="btn btn-sm btn-light" onclick="lockAllApartments()" title="Lock All Apartments">
+                                    🔒 Lock All
+                                </button>
+                                <button class="btn btn-sm btn-light" onclick="unlockAllApartments()" title="Unlock All Apartments">
+                                    🔓 Unlock All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Filter Controls -->
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label me-2">Show Apartments:</label>
+                                <div id="apartmentVisibilityControls" class="d-flex flex-wrap gap-2">
+                                    <!-- Apartment checkboxes will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div id="allApartmentsContainer">
+                            <p class="text-muted text-center">Loading apartments...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div class="tab-pane fade" id="reviews" role="tabpanel">
+                <div class="card section-card">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0">All Reviews</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="allReviewsContainer">
+                            <p class="text-muted text-center">Loading reviews...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-pane fade" id="overview" role="tabpanel">
+                <div class="card section-card">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="mb-0">Overview & Statistics</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="overviewContainer">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="card h-100 shadow-sm border-0" style="background: var(--primary-gradient);">
+                                        <div class="card-body text-white text-center">
+                                            <div class="mb-3" style="font-size: 3rem;">🏠</div>
+                                            <h5 class="card-title mb-2" style="opacity: 0.95;">Total Apartments</h5>
+                                            <p class="card-text mb-0" style="font-size: 3rem; font-weight: 700;" id="overviewTotalApartments">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100 shadow-sm border-0" style="background: var(--warning-gradient);">
+                                        <div class="card-body text-white text-center">
+                                            <div class="mb-3" style="font-size: 3rem;">⭐</div>
+                                            <h5 class="card-title mb-2" style="opacity: 0.95;">Overall Rating</h5>
+                                            <p class="card-text mb-0" style="font-size: 2.5rem; font-weight: 700;" id="overviewOverallRating">--</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100 shadow-sm border-0" style="background: var(--info-gradient);">
+                                        <div class="card-body text-white text-center">
+                                            <div class="mb-3" style="font-size: 3rem;">📝</div>
+                                            <h5 class="card-title mb-2" style="opacity: 0.95;">Total Reviews</h5>
+                                            <p class="card-text mb-0" style="font-size: 3rem; font-weight: 700;" id="overviewTotalReviews">0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Apartment Modal -->
+    <div class="modal fade" id="apartmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="apartmentModalTitle">Add Apartment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="apartmentForm">
+                        <input type="hidden" id="apartmentId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="location" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="apartmentName" class="form-label">Apartment Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="apartmentName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="apartmentNo" class="form-label">Apartment No. <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="apartmentNo" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="ownedNumber" class="form-label">Owned Number</label>
+                                <input type="number" class="form-control" id="ownedNumber" placeholder="Auto-assigned if empty">
+                                <small class="form-text text-muted">Sequential number for apartments owned by Fire0x Incorporated</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="postal" class="form-label">Postal</label>
+                                <input type="text" class="form-control" id="postal">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="apartmentClass" class="form-label">Class</label>
+                            <input type="text" class="form-control" id="apartmentClass" placeholder="e.g., Luxury, Standard, Economy">
+                        </div>
+                        <div class="mb-3">
+                            <label for="apartmentDescription" class="form-label">Apartment Description</label>
+                            <textarea class="form-control" id="apartmentDescription" rows="3"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="purchasedPrice" class="form-label">Purchased Price</label>
+                                <input type="text" class="form-control money-input" id="purchasedPrice" placeholder="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="rentingOutPrice" class="form-label">Renting out Price</label>
+                                <input type="text" class="form-control money-input" id="rentingOutPrice" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dueDate" class="form-label">Due Date (Rent)</label>
+                            <div class="input-group">
+                                <input type="datetime-local" class="form-control" id="dueDate">
+                                <button type="button" class="btn btn-success" onclick="setRentOutNow()">Rent Out</button>
+                                <button type="button" class="btn btn-info" onclick="addSevenDays()">+7 Days</button>
+                            </div>
+                            <small class="form-text text-muted timezone-display">
+                                Local: <span id="dueDateLocal">--</span> | 
+                                Eastern: <span id="dueDateEastern">--</span>
+                            </small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cleanTime" class="form-label">Clean Time</label>
+                            <div class="input-group">
+                                <input type="datetime-local" class="form-control" id="cleanTime">
+                                <button type="button" class="btn btn-success" onclick="setCleanNow()">Clean Now +4h</button>
+                            </div>
+                            <small class="form-text text-muted timezone-display">
+                                Local: <span id="cleanTimeLocal">--</span> | 
+                                Brisbane: <span id="cleanTimeBrisbane">--</span> | 
+                                Eastern: <span id="cleanTimeEastern" class="eastern-date">--</span>
+                            </small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveApartment()">Save Apartment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Modal -->
+    <div class="modal fade" id="reviewsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewsModalTitle">Apartment Reviews</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="ratingOverviewContainer">
+                        <div class="text-center">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Loading rating overview...
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="reviewsContainer">
+                        <div class="text-center">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Loading reviews...
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>Add New Review</h6>
+                    <form id="reviewForm">
+                        <input type="hidden" id="reviewApartmentId">
+                        <div class="mb-3">
+                            <label for="reviewRating" class="form-label">Rating <span class="text-danger">*</span></label>
+                            <div class="star-rating" id="reviewStarRating">
+                                <input type="radio" id="star10" name="rating" value="5">
+                                <label for="star10" class="star-label" data-rating="5">
+                                    <span class="star-half-left" data-rating="4.5" onclick="selectHalfStar(4.5)"></span>
+                                    <span class="star-half-right" data-rating="5" onclick="selectHalfStar(5)"></span>
+                                    ★
+                                </label>
+                                <input type="radio" id="star9" name="rating" value="4.5">
+                                <input type="radio" id="star8" name="rating" value="4">
+                                <label for="star8" class="star-label" data-rating="4">
+                                    <span class="star-half-left" data-rating="3.5" onclick="selectHalfStar(3.5)"></span>
+                                    <span class="star-half-right" data-rating="4" onclick="selectHalfStar(4)"></span>
+                                    ★
+                                </label>
+                                <input type="radio" id="star7" name="rating" value="3.5">
+                                <input type="radio" id="star6" name="rating" value="3">
+                                <label for="star6" class="star-label" data-rating="3">
+                                    <span class="star-half-left" data-rating="2.5" onclick="selectHalfStar(2.5)"></span>
+                                    <span class="star-half-right" data-rating="3" onclick="selectHalfStar(3)"></span>
+                                    ★
+                                </label>
+                                <input type="radio" id="star5" name="rating" value="2.5">
+                                <input type="radio" id="star4" name="rating" value="2">
+                                <label for="star4" class="star-label" data-rating="2">
+                                    <span class="star-half-left" data-rating="1.5" onclick="selectHalfStar(1.5)"></span>
+                                    <span class="star-half-right" data-rating="2" onclick="selectHalfStar(2)"></span>
+                                    ★
+                                </label>
+                                <input type="radio" id="star3" name="rating" value="1.5">
+                                <input type="radio" id="star2" name="rating" value="1">
+                                <label for="star2" class="star-label" data-rating="1">
+                                    <span class="star-half-left" data-rating="0.5" onclick="selectHalfStar(0.5)"></span>
+                                    <span class="star-half-right" data-rating="1" onclick="selectHalfStar(1)"></span>
+                                    ★
+                                </label>
+                                <input type="radio" id="star1" name="rating" value="0.5">
+                                <input type="hidden" id="selectedRating" name="selectedRating" value="" required>
+                            </div>
+                            <small class="form-text text-muted">Click a star to rate (0.5-5 stars, click left half for half-star)</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reviewComment" class="form-label">Comment</label>
+                            <textarea class="form-control" id="reviewComment" rows="4" placeholder="Share your thoughts about this apartment..."></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveReview()">Submit Review</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
+            <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
+                <!-- Version will be inserted here by site-config.js -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+    <!-- Site Config JS -->
+    <script src="js/site-config.js"></script>
+    <!-- Navbar Manager -->
+    <script src="js/navbar.js"></script>
+    <!-- Number Formatter -->
+    <script src="js/number-formatter.js"></script>
+    <!-- Apartment Management JS -->
+    <script>
+        const API_BASE = '/n/apartments';
+        let apartments = [];
+        
+        // Debug mode - can be toggled via localStorage or UI
+        let DEBUG_MODE = localStorage.getItem('apartmentDebugMode') === 'true';
+        
+        // Track hidden and locked apartments
+        let hiddenApartments = JSON.parse(localStorage.getItem('hiddenApartments') || '[]');
+        let lockedApartments = JSON.parse(localStorage.getItem('lockedApartments') || '[]');
+        
+        // Debug logging function
+        function debugLog(...args) {
+            if (DEBUG_MODE) {
+                console.log('[APARTMENT DEBUG]', ...args);
+            }
+        }
+        
+        // Toggle debug mode
+        function toggleDebugMode() {
+            DEBUG_MODE = !DEBUG_MODE;
+            localStorage.setItem('apartmentDebugMode', DEBUG_MODE.toString());
+            const debugBtn = document.getElementById('debugToggleBtn');
+            if (debugBtn) {
+                debugBtn.textContent = DEBUG_MODE ? '🐛 Debug: ON' : '🐛 Debug: OFF';
+                debugBtn.classList.toggle('btn-warning', DEBUG_MODE);
+                debugBtn.classList.toggle('btn-secondary', !DEBUG_MODE);
+            }
+            debugLog('Debug mode', DEBUG_MODE ? 'ENABLED' : 'DISABLED');
+        }
+
+        // Toggle apartments table visibility
+        function toggleApartmentsTable() {
+            const tableContainer = document.getElementById('apartmentsTableContainer');
+            const toggleBtn = document.getElementById('toggleTableBtn');
+            
+            if (tableContainer && toggleBtn) {
+                const isVisible = tableContainer.style.display !== 'none';
+                tableContainer.style.display = isVisible ? 'none' : 'block';
+                toggleBtn.textContent = isVisible ? '👁️ Show Table' : '🙈 Hide Table';
+                toggleBtn.title = isVisible ? 'Show table' : 'Hide table';
+                
+                // Save state to localStorage
+                localStorage.setItem('apartmentsTableVisible', (!isVisible).toString());
+            }
+        }
+
+        // Format date as DD MMM YYYY (e.g., "15 Jan 2025")
+        function formatDateDDMMMYYYY(date) {
+            if (!date || isNaN(date.getTime())) return '--';
+            const day = String(date.getDate()).padStart(2, '0');
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear();
+            return `${day} ${month} ${year}`;
+        }
+
+        // Format date with time as DD MMM YYYY HH:MM (e.g., "15 Jan 2025 14:30")
+        function formatDateDDMMMYYYYWithTime(date, timezone = null) {
+            if (!date || isNaN(date.getTime())) return '--';
+            const d = timezone ? new Date(date.toLocaleString('en-US', { timeZone: timezone })) : date;
+            const day = String(d.getDate()).padStart(2, '0');
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const month = monthNames[d.getMonth()];
+            const year = d.getFullYear();
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${day} ${month} ${year} ${hours}:${minutes}`;
+        }
+
+        // Format local date/time as DD MMM YYYY HH:MM (e.g., "15 Jan 2025 14:30")
+        // Similar to education_timer.html's formatAESTDateTime but for local time
+        function formatLocalDateDDMMMYYYYWithTime(date) {
+            if (!date || isNaN(date.getTime())) return '--';
+            const day = String(date.getDate()).padStart(2, '0');
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${day} ${month} ${year} ${hours}:${minutes}`;
+        }
+
+        // Format time for a specific timezone
+        function formatTimeForTimezone(date, timezone, options = {}) {
+            const defaultOptions = {
+                timeZone: timezone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            return date.toLocaleString('en-US', { ...defaultOptions, ...options });
+        }
+
+        // Get Eastern Time zone abbreviation (EDT/EST)
+        function getEasternTimeZone() {
+            const now = new Date();
+            const easternDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            const utcDate = new Date(now.toLocaleString('en-US', { timeZone: 'UTC' }));
+            const offset = (easternDate.getTime() - utcDate.getTime()) / (1000 * 60 * 60);
+            return offset === -4 ? 'EDT' : 'EST';
+        }
+
+        // Convert Brisbane time to local timezone datetime-local format
+        function brisbaneToLocalDatetime(brisbaneDate) {
+            if (!brisbaneDate) return '';
+            const date = new Date(brisbaneDate);
+            
+            // Get Brisbane time components
+            const brisbaneStr = formatTimeForTimezone(date, 'Australia/Brisbane', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+            
+            // Parse: "MM/DD/YYYY, HH:MM"
+            const [datePart, timePart] = brisbaneStr.split(', ');
+            const [month, day, year] = datePart.split('/');
+            const [hour, minute] = timePart.split(':');
+            
+            // Create a date string in ISO format
+            const isoStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00`;
+            
+            // Create a date object - we need to find the UTC time that corresponds to this Brisbane time
+            // Use a helper: create date assuming it's UTC, then adjust
+            // Brisbane is UTC+10 (no DST), so we subtract 10 hours from UTC to get Brisbane time
+            // Therefore, to convert Brisbane to UTC: add 10 hours
+            const utcDate = new Date(Date.UTC(year, month - 1, day, parseInt(hour), parseInt(minute)));
+            // Adjust: if we want Brisbane time YYYY-MM-DD HH:MM, the UTC time is 10 hours earlier
+            utcDate.setUTCHours(utcDate.getUTCHours() - 10);
+            
+            // Now convert UTC to local time (JavaScript Date automatically handles this)
+            const localDate = new Date(utcDate);
+            
+            // Format as datetime-local (YYYY-MM-DDTHH:mm) - this uses local timezone
+            const yearLocal = localDate.getFullYear();
+            const monthLocal = String(localDate.getMonth() + 1).padStart(2, '0');
+            const dayLocal = String(localDate.getDate()).padStart(2, '0');
+            const hourLocal = String(localDate.getHours()).padStart(2, '0');
+            const minuteLocal = String(localDate.getMinutes()).padStart(2, '0');
+            
+            return `${yearLocal}-${monthLocal}-${dayLocal}T${hourLocal}:${minuteLocal}`;
+        }
+
+        // Convert local datetime-local to Brisbane time for display (with full date)
+        function localDatetimeToBrisbane(localDatetime) {
+            if (!localDatetime) return '--';
+            // Parse local datetime-local (this is in user's local timezone)
+            const [datePart, timePart] = localDatetime.split('T');
+            const [year, month, day] = datePart.split('-');
+            const [hour, minute] = timePart.split(':');
+            
+            // Create date object in local timezone
+            const localDate = new Date(year, month - 1, day, hour, minute);
+            
+            // Format for Brisbane display (full date and time)
+            return formatTimeForTimezone(localDate, 'Australia/Brisbane', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }) || '--';
+        }
+        
+        // Convert local datetime-local to local time for display (with full date)
+        function localDatetimeToLocal(localDatetime) {
+            if (!localDatetime) return '--';
+            // Parse local datetime-local
+            const [datePart, timePart] = localDatetime.split('T');
+            const [year, month, day] = datePart.split('-');
+            const [hour, minute] = timePart.split(':');
+            
+            // Create date object in local timezone
+            const localDate = new Date(year, month - 1, day, hour, minute);
+            
+            // Format for local display (full date and time)
+            const options = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            };
+            return localDate.toLocaleString('en-US', options) || '--';
+        }
+
+        // Convert datetime-local to Eastern time for display (with full date)
+        function localDatetimeToEastern(localDatetime) {
+            if (!localDatetime) return '--';
+            const [datePart, timePart] = localDatetime.split('T');
+            const [year, month, day] = datePart.split('-');
+            const [hour, minute] = timePart.split(':');
+            
+            const dateStr = `${year}-${month}-${day}T${hour}:${minute}:00`;
+            const date = new Date(dateStr);
+            
+            return formatTimeForTimezone(date, 'America/New_York', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }) || '--';
+        }
+
+        // Update timezone displays for form fields
+        function updateTimezoneDisplays() {
+            const dueDate = document.getElementById('dueDate').value;
+            const cleanTime = document.getElementById('cleanTime').value;
+            
+            if (dueDate) {
+                document.getElementById('dueDateLocal').textContent = localDatetimeToLocal(dueDate);
+                document.getElementById('dueDateEastern').textContent = localDatetimeToEastern(dueDate);
+            } else {
+                document.getElementById('dueDateLocal').textContent = '--';
+                document.getElementById('dueDateEastern').textContent = '--';
+            }
+            
+            if (cleanTime) {
+                document.getElementById('cleanTimeLocal').textContent = localDatetimeToLocal(cleanTime);
+                document.getElementById('cleanTimeEastern').textContent = localDatetimeToEastern(cleanTime);
+            } else {
+                document.getElementById('cleanTimeLocal').textContent = '--';
+                document.getElementById('cleanTimeEastern').textContent = '--';
+            }
+        }
+
+        // Set rent out to current Brisbane time + 7 days
+        function setRentOutNow() {
+            const now = new Date();
+            // Get current Brisbane time
+            const brisbaneNow = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Brisbane' }));
+            // Add 7 days
+            brisbaneNow.setDate(brisbaneNow.getDate() + 7);
+            // Set to input
+            document.getElementById('dueDate').value = brisbaneToLocalDatetime(brisbaneNow);
+            updateTimezoneDisplays();
+        }
+
+        // Add 7 days to manually entered due date
+        function addSevenDays() {
+            const dueDateInput = document.getElementById('dueDate');
+            if (!dueDateInput.value) {
+                alert('Please enter a due date first');
+                return;
+            }
+            const [datePart, timePart] = dueDateInput.value.split('T');
+            const [year, month, day] = datePart.split('-');
+            const [hour, minute] = timePart.split(':');
+            
+            const date = new Date(year, month - 1, day, hour, minute);
+            date.setDate(date.getDate() + 7);
+            
+            const newDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            const newTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            dueDateInput.value = `${newDate}T${newTime}`;
+            updateTimezoneDisplays();
+        }
+
+        // Set clean time to current local time + 4 hours
+        function setCleanNow() {
+            const now = new Date();
+            // Add 4 hours to current local time
+            const futureDate = new Date(now);
+            futureDate.setHours(futureDate.getHours() + 4);
+            // Format as datetime-local (YYYY-MM-DDTHH:mm)
+            const year = futureDate.getFullYear();
+            const month = String(futureDate.getMonth() + 1).padStart(2, '0');
+            const day = String(futureDate.getDate()).padStart(2, '0');
+            const hours = String(futureDate.getHours()).padStart(2, '0');
+            const minutes = String(futureDate.getMinutes()).padStart(2, '0');
+            document.getElementById('cleanTime').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            updateTimezoneDisplays();
+        }
+
+        // Update navbar times
+        function updateTimes() {
+            const now = new Date();
+            
+            // Local time
+            const localTime = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const localElement = document.getElementById('local-time');
+            if (localElement) {
+                localElement.textContent = localTime;
+            }
+            
+            // Eastern Time
+            const easternTime = formatTimeForTimezone(now, 'America/New_York', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const easternElement = document.getElementById('eastern-time');
+            const easternTZElement = document.getElementById('eastern-tz');
+            if (easternElement) {
+                easternElement.textContent = easternTime.split(', ')[1] || easternTime;
+            }
+            if (easternTZElement) {
+                easternTZElement.textContent = getEasternTimeZone();
+            }
+            
+            // Current date
+            const currentDate = now.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            const currentDateElement = document.getElementById('current-date');
+            if (currentDateElement) {
+                currentDateElement.textContent = currentDate;
+            }
+        }
+
+        // Load all apartments for selector
+        async function loadAllApartmentsForSelector() {
+            try {
+                const response = await fetch(API_BASE);
+                if (!response.ok) throw new Error('Failed to load apartments');
+                const allApartments = await response.json();
+                const selector = document.getElementById('apartmentSelector');
+                if (!selector) return;
+                
+                selector.innerHTML = '<option value="">-- Select or Create Apartment --</option><option value="new">➕ Create New Apartment</option>';
+                
+                // Sort by owned_number
+                allApartments.sort((a, b) => {
+                    if (a.owned_number === null || a.owned_number === undefined) return 1;
+                    if (b.owned_number === null || b.owned_number === undefined) return -1;
+                    return a.owned_number - b.owned_number;
+                });
+                
+                allApartments.forEach(apt => {
+                    const option = document.createElement('option');
+                    option.value = apt.id;
+                    const ownedNum = apt.owned_number || '--';
+                    option.textContent = `Owned ${ownedNum} - ${apt.apartment_name || apt.location || 'Unnamed'}`;
+                    selector.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading apartments for selector:', error);
+                debugLog('ERROR loading apartments for selector:', error);
+            }
+        }
+
+        // Load apartment data when selected
+        async function loadApartmentData() {
+            const apartmentId = document.getElementById('apartmentSelector').value;
+            if (!apartmentId || apartmentId === 'new') {
+                if (apartmentId === 'new') {
+                    openAddModal();
+                    // Show the modal
+                    const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
+                    modal.show();
+                }
+                document.getElementById('saveApartmentBtn').style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/${apartmentId}`);
+                if (!response.ok) throw new Error('Failed to load apartment');
+                const apartment = await response.json();
+                
+                // Ensure apartment is in the apartments array for editApartment to work
+                const existingIndex = apartments.findIndex(apt => apt.id === apartment.id);
+                if (existingIndex >= 0) {
+                    apartments[existingIndex] = apartment;
+                } else {
+                    apartments.push(apartment);
+                }
+                
+                // Populate the form with apartment data
+                editApartment(apartment.id);
+                // Show the modal
+                const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
+                modal.show();
+                
+                document.getElementById('saveApartmentBtn').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading apartment data:', error);
+                debugLog('ERROR loading apartment data:', error);
+                alert('Error loading apartment: ' + error.message);
+                // Reset selector on error
+                const selector = document.getElementById('apartmentSelector');
+                if (selector) {
+                    selector.value = '';
+                }
+            }
+        }
+
+        // Save apartment from selector (wrapper for saveApartment)
+        async function saveApartmentFromSelector() {
+            await saveApartment();
+            // Reload selector after save
+            await loadAllApartmentsForSelector();
+        }
+
+        // Check for actions needed on apartments
+        function checkActionsNeeded() {
+            const now = new Date();
+            const actions = [];
+            
+            apartments.forEach(apt => {
+                // Check rent due date
+                if (apt.due_date) {
+                    const dueDate = new Date(apt.due_date);
+                    const hoursUntilDue = (dueDate - now) / (1000 * 60 * 60);
+                    
+                    if (hoursUntilDue < 0) {
+                        // Past due
+                        const daysPastDue = Math.floor(Math.abs(hoursUntilDue) / 24);
+                        actions.push({
+                            type: 'rent-due',
+                            severity: 'danger',
+                            message: `🏠 <strong>${escapeHtml(apt.apartment_name || apt.location || 'Apartment')}</strong> rent is <strong>${daysPastDue} day${daysPastDue !== 1 ? 's' : ''} overdue</strong>`,
+                            apartmentId: apt.id
+                        });
+                    } else if (hoursUntilDue <= 24) {
+                        // Due within 24 hours
+                        const hours = Math.floor(hoursUntilDue);
+                        actions.push({
+                            type: 'rent-due',
+                            severity: 'warning',
+                            message: `🏠 <strong>${escapeHtml(apt.apartment_name || apt.location || 'Apartment')}</strong> rent is due in <strong>${hours} hour${hours !== 1 ? 's' : ''}</strong>`,
+                            apartmentId: apt.id
+                        });
+                    } else if (hoursUntilDue <= 48) {
+                        // Due within 48 hours
+                        const days = Math.floor(hoursUntilDue / 24);
+                        actions.push({
+                            type: 'rent-due',
+                            severity: 'info',
+                            message: `🏠 <strong>${escapeHtml(apt.apartment_name || apt.location || 'Apartment')}</strong> rent is due in <strong>${days} day${days !== 1 ? 's' : ''}</strong>`,
+                            apartmentId: apt.id
+                        });
+                    }
+                }
+                
+                // Check clean time
+                if (apt.clean_time) {
+                    const cleanTime = new Date(apt.clean_time);
+                    const hoursUntilClean = (cleanTime - now) / (1000 * 60 * 60);
+                    
+                    if (hoursUntilClean < 0) {
+                        // Past due for cleaning
+                        const hoursPastDue = Math.floor(Math.abs(hoursUntilClean));
+                        actions.push({
+                            type: 'clean-due',
+                            severity: 'danger',
+                            message: `🧹 <strong>${escapeHtml(apt.apartment_name || apt.location || 'Apartment')}</strong> cleaning is <strong>${hoursPastDue} hour${hoursPastDue !== 1 ? 's' : ''} overdue</strong>`,
+                            apartmentId: apt.id
+                        });
+                    } else if (hoursUntilClean <= 4) {
+                        // Due for cleaning within 4 hours
+                        const hours = Math.floor(hoursUntilClean);
+                        actions.push({
+                            type: 'clean-due',
+                            severity: 'warning',
+                            message: `🧹 <strong>${escapeHtml(apt.apartment_name || apt.location || 'Apartment')}</strong> cleaning is due in <strong>${hours} hour${hours !== 1 ? 's' : ''}</strong>`,
+                            apartmentId: apt.id
+                        });
+                    }
+                }
+            });
+            
+            // Display actions if any
+            const alertContainer = document.getElementById('actionsNeededAlert');
+            const alertContent = document.getElementById('actionsNeededContent');
+            
+            if (!alertContainer || !alertContent) return;
+            
+            if (actions.length > 0) {
+                // Group by severity
+                const dangerActions = actions.filter(a => a.severity === 'danger');
+                const warningActions = actions.filter(a => a.severity === 'warning');
+                const infoActions = actions.filter(a => a.severity === 'info');
+                
+                let html = '';
+                
+                if (dangerActions.length > 0) {
+                    html += '<div class="mb-2"><strong class="text-danger">🔴 Urgent:</strong><ul class="mb-0 mt-1">';
+                    dangerActions.forEach(action => {
+                        html += `<li>${action.message}</li>`;
+                    });
+                    html += '</ul></div>';
+                }
+                
+                if (warningActions.length > 0) {
+                    html += '<div class="mb-2"><strong class="text-warning">🟡 Important:</strong><ul class="mb-0 mt-1">';
+                    warningActions.forEach(action => {
+                        html += `<li>${action.message}</li>`;
+                    });
+                    html += '</ul></div>';
+                }
+                
+                if (infoActions.length > 0) {
+                    html += '<div class="mb-2"><strong class="text-info">ℹ️ Upcoming:</strong><ul class="mb-0 mt-1">';
+                    infoActions.forEach(action => {
+                        html += `<li>${action.message}</li>`;
+                    });
+                    html += '</ul></div>';
+                }
+                
+                alertContent.innerHTML = html;
+                alertContainer.style.display = 'block';
+                
+                // Update alert class based on highest severity
+                alertContainer.className = 'alert alert-dismissible fade show';
+                if (dangerActions.length > 0) {
+                    alertContainer.classList.add('alert-danger');
+                } else if (warningActions.length > 0) {
+                    alertContainer.classList.add('alert-warning');
+                } else {
+                    alertContainer.classList.add('alert-info');
+                }
+            } else {
+                alertContainer.style.display = 'none';
+            }
+        }
+
+        // Load all apartments
+        async function loadApartments() {
+            try {
+                const response = await fetch(API_BASE);
+                if (!response.ok) throw new Error('Failed to load apartments');
+                apartments = await response.json();
+                renderApartments();
+                // Also update selector
+                await loadAllApartmentsForSelector();
+                document.getElementById('loadingAlert').style.display = 'none';
+                document.getElementById('apartmentsTableContainer').style.display = 'block';
+                if (apartments.length === 0) {
+                    document.getElementById('noApartmentsAlert').style.display = 'block';
+                } else {
+                    document.getElementById('noApartmentsAlert').style.display = 'none';
+                }
+                // Check for actions needed after loading
+                checkActionsNeeded();
+            } catch (error) {
+                console.error('Error loading apartments:', error);
+                debugLog('ERROR loading apartments:', error);
+                document.getElementById('loadingAlert').innerHTML = 
+                    '<span class="text-danger">Error loading apartments. Please refresh the page.</span>';
+            }
+        }
+
+        // Load apartment rating
+        async function loadApartmentRating(apartmentId) {
+            debugLog('Loading rating for apartment:', apartmentId);
+            try {
+                const response = await fetch(`${API_BASE}/${apartmentId}/reviews/average`);
+                if (!response.ok) {
+                    debugLog('Failed to load rating, status:', response.status);
+                    return;
+                }
+                const stats = await response.json();
+                debugLog('Rating stats for apartment', apartmentId, ':', stats);
+                const ratingCell = document.getElementById(`rating-${apartmentId}`);
+                if (ratingCell && stats.review_count > 0) {
+                    const avgRating = parseFloat(stats.average_rating).toFixed(1);
+                    ratingCell.innerHTML = `${avgRating} ⭐ (${stats.review_count} review${stats.review_count !== 1 ? 's' : ''})`;
+                    debugLog('Updated rating display:', avgRating, 'stars,', stats.review_count, 'reviews');
+                } else if (ratingCell) {
+                    ratingCell.innerHTML = 'No reviews';
+                    debugLog('No reviews for apartment:', apartmentId);
+                }
+            } catch (error) {
+                console.error('Error loading apartment rating:', error);
+                debugLog('ERROR loading apartment rating:', error);
+            }
+        }
+
+        // View reviews for an apartment
+        async function viewReviews(apartmentId) {
+            debugLog('Viewing reviews for apartment:', apartmentId);
+            const apartment = apartments.find(apt => apt.id === apartmentId);
+            if (!apartment) {
+                debugLog('ERROR: Apartment not found:', apartmentId);
+                return;
+            }
+            
+            document.getElementById('reviewsModalTitle').textContent = 
+                `Reviews - ${apartment.apartment_name || apartment.apartment_no || 'Apartment'}`;
+            document.getElementById('reviewApartmentId').value = apartmentId;
+            document.getElementById('reviewForm').reset();
+            
+            // Load rating overview and reviews
+            try {
+                debugLog('Fetching reviews data for apartment:', apartmentId);
+                const [reviewsRes, breakdownRes, averageRes] = await Promise.all([
+                    fetch(`${API_BASE}/${apartmentId}/reviews`),
+                    fetch(`${API_BASE}/${apartmentId}/reviews/breakdown`),
+                    fetch(`${API_BASE}/${apartmentId}/reviews/average`)
+                ]);
+                
+                debugLog('API Responses:', {
+                    reviews: reviewsRes.status,
+                    breakdown: breakdownRes.status,
+                    average: averageRes.status
+                });
+                
+                if (!reviewsRes.ok) throw new Error('Failed to load reviews');
+                if (!breakdownRes.ok) throw new Error('Failed to load rating breakdown');
+                if (!averageRes.ok) throw new Error('Failed to load average rating');
+                
+                const reviews = await reviewsRes.json();
+                const breakdown = await breakdownRes.json();
+                const average = await averageRes.json();
+                
+                debugLog('Loaded reviews data:', { reviews: reviews.length, breakdown, average });
+                
+                renderRatingOverview(breakdown, average);
+                renderReviews(reviews);
+                debugLog('Reviews modal rendered');
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                debugLog('ERROR loading reviews:', error);
+                document.getElementById('reviewsContainer').innerHTML = 
+                    '<div class="alert alert-danger">Error loading reviews. Please try again.</div>';
+                document.getElementById('ratingOverviewContainer').innerHTML = 
+                    '<div class="alert alert-danger">Error loading rating overview. Please try again.</div>';
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('reviewsModal'));
+            modal.show();
+        }
+
+        // Render rating overview
+        function renderRatingOverview(breakdown, average) {
+            const container = document.getElementById('ratingOverviewContainer');
+            
+            const totalReviews = Object.values(breakdown).reduce((sum, count) => sum + count, 0);
+            const avgRating = average.average_rating ? parseFloat(average.average_rating).toFixed(1) : '0.0';
+            
+            if (totalReviews === 0) {
+                container.innerHTML = `
+                    <div class="rating-overview">
+                        <div class="text-center text-muted">
+                            <p class="mb-0">No reviews yet. Be the first to review!</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Calculate percentages for each rating
+            const percentages = {};
+            Object.keys(breakdown).forEach(rating => {
+                percentages[rating] = totalReviews > 0 ? (breakdown[rating] / totalReviews * 100).toFixed(0) : 0;
+            });
+            
+            let breakdownHtml = '';
+            // Show from 5 stars to 1 star
+            for (let i = 5; i >= 1; i--) {
+                const count = breakdown[i] || 0;
+                const percentage = percentages[i] || 0;
+                const stars = formatStars(i);
+                
+                breakdownHtml += `
+                    <div class="rating-breakdown-item">
+                        <div class="rating-breakdown-label">${stars}</div>
+                        <div class="rating-breakdown-bar">
+                            <div class="rating-breakdown-fill" style="width: ${percentage}%">
+                                ${count > 0 ? count : ''}
+                            </div>
+                        </div>
+                        <div class="rating-breakdown-count">${count}</div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = `
+                <div class="rating-overview">
+                    <div class="overview-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${avgRating}</div>
+                            <div class="stat-label">Average Rating</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${totalReviews}</div>
+                            <div class="stat-label">Total Reviews</div>
+                        </div>
+                    </div>
+                    <h6 class="mb-3">Rating Distribution</h6>
+                    ${breakdownHtml}
+                </div>
+            `;
+        }
+
+        // Render reviews
+        function renderReviews(reviews) {
+            const container = document.getElementById('reviewsContainer');
+            
+            if (reviews.length === 0) {
+                container.innerHTML = '<p class="text-muted">No reviews yet. Be the first to review!</p>';
+                return;
+            }
+            
+            // Load average rating
+            const apartmentId = document.getElementById('reviewApartmentId').value;
+            loadApartmentRating(parseInt(apartmentId));
+            
+            let html = '<h6>All Reviews</h6>';
+            reviews.forEach(review => {
+                const date = new Date(review.created_at);
+                const dateStr = formatDateDDMMMYYYYWithTime(date);
+                
+                // Format Eastern time
+                const easternDateStr = formatDateDDMMMYYYYWithTime(date, 'America/New_York');
+                const easternTZ = getEasternTimeZone();
+                
+                const stars = formatStars(review.rating);
+                
+                html += `
+                    <div class="review-item" id="review-item-${review.id}">
+                        <div class="review-display" id="review-display-${review.id}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="flex-grow-1">
+                                    <div class="review-rating">${stars}</div>
+                                    <div class="review-date">
+                                        ${dateStr}
+                                        <span class="eastern-date">Eastern: ${easternDateStr} ${easternTZ}</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-primary" onclick="editReview(${review.id}, ${review.rating})" title="Edit review">
+                                        <span style="font-size: 1rem;">✏️</span> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.id}, ${review.apartment_id})" title="Delete review">
+                                        <span style="font-size: 1rem;">🗑️</span> Delete
+                                    </button>
+                                </div>
+                            </div>
+                            ${review.comment ? `<p>${escapeHtml(review.comment)}</p>` : '<p class="text-muted"><em>No comment</em></p>'}
+                        </div>
+                        <div class="review-edit-form" id="review-edit-${review.id}" style="display: none;" data-original-rating="${review.rating}" data-original-comment="${escapeHtml(review.comment || '')}">
+                            <div class="mb-2">
+                                <label class="form-label small">Rating</label>
+                                <div class="review-edit-stars star-rating" id="edit-star-rating-${review.id}">
+                                    <input type="radio" id="edit-star10-${review.id}" name="edit-rating-${review.id}" value="5">
+                                    <label for="edit-star10-${review.id}" class="star-label" data-rating="5">
+                                        <span class="star-half-left" data-rating="4.5" onclick="selectEditHalfStar(${review.id}, 4.5)"></span>
+                                        <span class="star-half-right" data-rating="5" onclick="selectEditHalfStar(${review.id}, 5)"></span>
+                                        ★
+                                    </label>
+                                    <input type="radio" id="edit-star9-${review.id}" name="edit-rating-${review.id}" value="4.5">
+                                    <input type="radio" id="edit-star8-${review.id}" name="edit-rating-${review.id}" value="4">
+                                    <label for="edit-star8-${review.id}" class="star-label" data-rating="4">
+                                        <span class="star-half-left" data-rating="3.5" onclick="selectEditHalfStar(${review.id}, 3.5)"></span>
+                                        <span class="star-half-right" data-rating="4" onclick="selectEditHalfStar(${review.id}, 4)"></span>
+                                        ★
+                                    </label>
+                                    <input type="radio" id="edit-star7-${review.id}" name="edit-rating-${review.id}" value="3.5">
+                                    <input type="radio" id="edit-star6-${review.id}" name="edit-rating-${review.id}" value="3">
+                                    <label for="edit-star6-${review.id}" class="star-label" data-rating="3">
+                                        <span class="star-half-left" data-rating="2.5" onclick="selectEditHalfStar(${review.id}, 2.5)"></span>
+                                        <span class="star-half-right" data-rating="3" onclick="selectEditHalfStar(${review.id}, 3)"></span>
+                                        ★
+                                    </label>
+                                    <input type="radio" id="edit-star5-${review.id}" name="edit-rating-${review.id}" value="2.5">
+                                    <input type="radio" id="edit-star4-${review.id}" name="edit-rating-${review.id}" value="2">
+                                    <label for="edit-star4-${review.id}" class="star-label" data-rating="2">
+                                        <span class="star-half-left" data-rating="1.5" onclick="selectEditHalfStar(${review.id}, 1.5)"></span>
+                                        <span class="star-half-right" data-rating="2" onclick="selectEditHalfStar(${review.id}, 2)"></span>
+                                        ★
+                                    </label>
+                                    <input type="radio" id="edit-star3-${review.id}" name="edit-rating-${review.id}" value="1.5">
+                                    <input type="radio" id="edit-star2-${review.id}" name="edit-rating-${review.id}" value="1">
+                                    <label for="edit-star2-${review.id}" class="star-label" data-rating="1">
+                                        <span class="star-half-left" data-rating="0.5" onclick="selectEditHalfStar(${review.id}, 0.5)"></span>
+                                        <span class="star-half-right" data-rating="1" onclick="selectEditHalfStar(${review.id}, 1)"></span>
+                                        ★
+                                    </label>
+                                    <input type="hidden" id="edit-selected-rating-${review.id}" value="">
+                                </div>
+                                <small class="form-text text-muted">Click a star to rate (0.5-5 stars, click left half for half-star)</small>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Comment</label>
+                                <textarea class="form-control form-control-sm" id="edit-comment-${review.id}" rows="3" placeholder="Share your thoughts...">${escapeHtml(review.comment || '')}</textarea>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-success" onclick="saveReviewEdit(${review.id}, ${review.apartment_id})">Save</button>
+                                <button class="btn btn-sm btn-secondary" onclick="cancelReviewEdit(${review.id})">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Save review
+        async function saveReview() {
+            const apartmentId = parseInt(document.getElementById('reviewApartmentId').value);
+            if (!apartmentId) {
+                alert('Please select an apartment');
+                return;
+            }
+            
+            // Check for half-star rating first, then fall back to radio button
+            const selectedRatingInput = document.getElementById('selectedRating');
+            let rating = 0;
+            if (selectedRatingInput && selectedRatingInput.value) {
+                rating = parseFloat(selectedRatingInput.value);
+            } else {
+                const checkedRadio = document.querySelector('input[name="rating"]:checked');
+                if (checkedRadio) {
+                    rating = parseFloat(checkedRadio.value);
+                }
+            }
+            
+            if (rating === 0 || isNaN(rating)) {
+                alert('Please select a rating');
+                return;
+            }
+            
+            const comment = document.getElementById('reviewComment').value.trim() || null;
+            
+            debugLog('Saving review:', { apartmentId, rating, comment });
+            
+            try {
+                const response = await fetch(`${API_BASE}/${apartmentId}/reviews`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rating, comment })
+                });
+                
+                debugLog('Review API response:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    debugLog('API Error:', error);
+                    throw new Error(error.message || 'Failed to save review');
+                }
+                
+                const savedReview = await response.json();
+                debugLog('Review saved successfully:', savedReview);
+                
+                // Reload reviews and overview
+                await viewReviews(apartmentId);
+                // Reload apartments to update rating
+                await loadApartments();
+                await loadAllApartments(); // Refresh card view
+                await loadOverallRating(); // Update overall rating
+                // Refresh reviews and overview tabs if active
+                const reviewsTab = document.getElementById('reviews-tab');
+                const overviewTab = document.getElementById('overview-tab');
+                if (reviewsTab && reviewsTab.classList.contains('active')) {
+                    await loadAllReviews();
+                }
+                if (overviewTab && overviewTab.classList.contains('active')) {
+                    await loadOverview();
+                }
+            } catch (error) {
+                console.error('Error saving review:', error);
+                debugLog('ERROR saving review:', error);
+                alert('Error saving review: ' + error.message);
+            }
+        }
+
+        // Delete review
+        async function deleteReview(reviewId, apartmentId) {
+            if (!confirm('Are you sure you want to delete this review?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/reviews/${reviewId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to delete review');
+                }
+                
+                // Reload reviews and overview
+                await viewReviews(apartmentId);
+                // Reload apartments to update rating
+                await loadApartments();
+                await loadAllApartments(); // Refresh card view
+                await loadOverallRating(); // Update overall rating
+                // Refresh reviews and overview tabs if active
+                const reviewsTab = document.getElementById('reviews-tab');
+                const overviewTab = document.getElementById('overview-tab');
+                if (reviewsTab && reviewsTab.classList.contains('active')) {
+                    await loadAllReviews();
+                }
+                if (overviewTab && overviewTab.classList.contains('active')) {
+                    await loadOverview();
+                }
+            } catch (error) {
+                console.error('Error deleting review:', error);
+                debugLog('ERROR deleting review:', error);
+                alert('Error deleting review: ' + error.message);
+            }
+        }
+
+        // Edit review (show edit form)
+        function editReview(reviewId, currentRating) {
+            const displayDiv = document.getElementById(`review-display-${reviewId}`);
+            const editDiv = document.getElementById(`review-edit-${reviewId}`);
+            
+            if (displayDiv && editDiv) {
+                // Set current rating (support half stars)
+                const numRating = parseFloat(currentRating);
+                const ratingInput = document.querySelector(`input[name="edit-rating-${reviewId}"][value="${numRating}"]`);
+                if (ratingInput) {
+                    ratingInput.checked = true;
+                } else {
+                    // Try to find closest full star
+                    const fullStarRating = Math.round(numRating);
+                    const fallbackInput = document.querySelector(`input[name="edit-rating-${reviewId}"][value="${fullStarRating}"]`);
+                    if (fallbackInput) {
+                        fallbackInput.checked = true;
+                    }
+                }
+                
+                // Set hidden input for half stars
+                const hiddenInput = document.getElementById(`edit-selected-rating-${reviewId}`);
+                if (hiddenInput) {
+                    hiddenInput.value = numRating;
+                }
+                
+                // Comment is already set in the textarea from initial render
+                
+                // Show edit form, hide display
+                displayDiv.style.display = 'none';
+                editDiv.style.display = 'block';
+                
+                // Update star colors
+                updateEditStarColors(reviewId);
+            }
+        }
+
+        // Cancel review edit
+        function cancelReviewEdit(reviewId) {
+            const displayDiv = document.getElementById(`review-display-${reviewId}`);
+            const editDiv = document.getElementById(`review-edit-${reviewId}`);
+            
+            if (displayDiv && editDiv) {
+                // Get original values from data attributes
+                const originalRating = parseInt(editDiv.getAttribute('data-original-rating')) || 1;
+                const originalComment = editDiv.getAttribute('data-original-comment') || '';
+                
+                // Reset rating
+                const ratingInput = document.getElementById(`edit-star${originalRating}-${reviewId}`);
+                if (ratingInput) {
+                    ratingInput.checked = true;
+                }
+                
+                // Reset comment
+                const commentTextarea = document.getElementById(`edit-comment-${reviewId}`);
+                if (commentTextarea) {
+                    commentTextarea.value = originalComment;
+                }
+                
+                // Show display, hide edit form
+                displayDiv.style.display = 'block';
+                editDiv.style.display = 'none';
+            }
+        }
+
+        // Save review edit
+        async function saveReviewEdit(reviewId, apartmentId) {
+            debugLog('Saving review edit:', { reviewId, apartmentId });
+            // Check for half-star rating first, then fall back to radio button
+            const selectedRatingInput = document.getElementById(`edit-selected-rating-${reviewId}`);
+            let rating = 0;
+            if (selectedRatingInput && selectedRatingInput.value) {
+                rating = parseFloat(selectedRatingInput.value);
+            } else {
+                const ratingInput = document.querySelector(`input[name="edit-rating-${reviewId}"]:checked`);
+                if (ratingInput) {
+                    rating = parseFloat(ratingInput.value);
+                }
+            }
+            
+            if (rating === 0) {
+                debugLog('ERROR: No rating selected');
+                alert('Please select a rating');
+                return;
+            }
+            
+            const commentTextarea = document.getElementById(`edit-comment-${reviewId}`);
+            const comment = commentTextarea ? commentTextarea.value.trim() || null : null;
+            
+            debugLog('Review edit data:', { rating, comment });
+            
+            try {
+                const response = await fetch(`${API_BASE}/reviews/${reviewId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rating, comment })
+                });
+                
+                debugLog('Review edit API response:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    debugLog('API Error:', error);
+                    throw new Error(error.message || 'Failed to update review');
+                }
+                
+                const updatedReview = await response.json();
+                debugLog('Review updated successfully:', updatedReview);
+                
+                // Reload reviews and overview
+                await viewReviews(apartmentId);
+                // Reload apartments to update rating
+                await loadApartments();
+                await loadAllApartments(); // Refresh card view
+                await loadOverallRating(); // Update overall rating
+                // Refresh reviews and overview tabs if active
+                const reviewsTab = document.getElementById('reviews-tab');
+                const overviewTab = document.getElementById('overview-tab');
+                if (reviewsTab && reviewsTab.classList.contains('active')) {
+                    await loadAllReviews();
+                }
+                if (overviewTab && overviewTab.classList.contains('active')) {
+                    await loadOverview();
+                }
+            } catch (error) {
+                console.error('Error updating review:', error);
+                debugLog('ERROR updating review:', error);
+                alert('Error updating review: ' + error.message);
+            }
+        }
+
+
+        // Load overall rating across all apartments
+        async function loadOverallRating() {
+            try {
+                const response = await fetch(`${API_BASE}/reviews/overall-average`);
+                if (!response.ok) {
+                    debugLog('Failed to load overall rating, status:', response.status);
+                    // Set default display on error
+                    const overallRatingEl = document.getElementById('overallRating');
+                    const overallRatingTextEl = document.getElementById('overallRatingText');
+                    if (overallRatingEl) {
+                        overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
+                    }
+                    if (overallRatingTextEl) {
+                        overallRatingTextEl.textContent = '(Overall Rating)';
+                    }
+                    return;
+                }
+                const stats = await response.json();
+                debugLog('Overall rating stats:', stats);
+                
+                const overallRatingEl = document.getElementById('overallRating');
+                const overallRatingTextEl = document.getElementById('overallRatingText');
+                
+                if (overallRatingEl) {
+                    // Check if we have reviews and a valid average rating
+                    const reviewCount = parseInt(stats.review_count) || 0;
+                    const avgRating = stats.average_rating != null ? parseFloat(stats.average_rating) : null;
+                    
+                    if (reviewCount > 0 && avgRating != null && !isNaN(avgRating)) {
+                        const avgRatingFormatted = avgRating.toFixed(1);
+                        const stars = formatStars(avgRating);
+                        overallRatingEl.innerHTML = `<span class="text-warning" style="font-size: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;">${stars} <strong>${avgRatingFormatted}</strong></span>`;
+                        if (overallRatingTextEl) {
+                            overallRatingTextEl.textContent = `(${reviewCount} review${reviewCount !== 1 ? 's' : ''})`;
+                        }
+                    } else {
+                        overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
+                        if (overallRatingTextEl) {
+                            overallRatingTextEl.textContent = '(Overall Rating)';
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading overall rating:', error);
+                debugLog('ERROR loading overall rating:', error);
+                // Set default display on error
+                const overallRatingEl = document.getElementById('overallRating');
+                const overallRatingTextEl = document.getElementById('overallRatingText');
+                if (overallRatingEl) {
+                    overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
+                }
+                if (overallRatingTextEl) {
+                    overallRatingTextEl.textContent = '(Overall Rating)';
+                }
+            }
+        }
+
+        // Update apartment counter display
+        function updateApartmentCounterDisplay() {
+            const countElement = document.getElementById('apartmentCount');
+            if (countElement) {
+                // Get the maximum owned_number value (latest owned number)
+                const ownedNumbers = apartments
+                    .filter(apt => apt.owned_number !== null && apt.owned_number !== undefined)
+                    .map(apt => apt.owned_number);
+                const maxOwnedNumber = ownedNumbers.length > 0 ? Math.max(...ownedNumbers) : 0;
+                countElement.textContent = maxOwnedNumber;
+            }
+            // Also update overall rating
+            loadOverallRating();
+        }
+
+        // Render apartments table
+        function renderApartments() {
+            const tbody = document.getElementById('apartmentsTableBody');
+            tbody.innerHTML = '';
+            
+            // Update apartment count for Fire0x Incorporated
+            updateApartmentCounterDisplay();
+            
+            apartments.forEach(apt => {
+                const row = document.createElement('tr');
+                
+                // Format dates for display (with full date and time) - using local time
+                const dueDateLocal = apt.due_date ? formatLocalDateDDMMMYYYYWithTime(new Date(apt.due_date)) : '--';
+                const dueDateEastern = apt.due_date ? formatDateDDMMMYYYYWithTime(new Date(apt.due_date), 'America/New_York') : '--';
+                const cleanTimeLocal = apt.clean_time ? formatLocalDateDDMMMYYYYWithTime(new Date(apt.clean_time)) : '--';
+                const cleanTimeEastern = apt.clean_time ? formatDateDDMMMYYYYWithTime(new Date(apt.clean_time), 'America/New_York') : '--';
+                
+                // Format prices
+                const purchasedPrice = apt.purchased_price ? parseFloat(apt.purchased_price).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) : '--';
+                const rentingPrice = apt.renting_out_price ? parseFloat(apt.renting_out_price).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) : '--';
+                
+                // Get rating (will be loaded asynchronously)
+                const ratingDisplay = apt.average_rating ? 
+                    `${parseFloat(apt.average_rating).toFixed(1)} ⭐ (${apt.review_count || 0} reviews)` : 
+                    'No reviews';
+                
+                row.innerHTML = `
+                    <td><strong>${apt.owned_number || '--'}</strong></td>
+                    <td>${escapeHtml(apt.location || '--')}</td>
+                    <td>${escapeHtml(apt.apartment_name || '--')}</td>
+                    <td>${escapeHtml(apt.apartment_no || '--')}</td>
+                    <td>${escapeHtml(apt.postal || '--')}</td>
+                    <td>${escapeHtml(apt.apartment_class || '--')}</td>
+                    <td>$${purchasedPrice}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="rent-price-display me-2" id="rent-price-display-${apt.id}">$${rentingPrice}</span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editRentPrice(${apt.id}, ${apt.renting_out_price || 0})" title="Edit rent price">
+                                ✏️
+                            </button>
+                        </div>
+                        <div class="rent-price-edit" id="rent-price-edit-${apt.id}" style="display: none;">
+                            <div class="input-group input-group-sm mt-1">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control form-control-sm money-input rent-price-input" 
+                                       id="rent-price-input-${apt.id}" 
+                                       value="${apt.renting_out_price || ''}" 
+                                       placeholder="0.00">
+                                <button class="btn btn-sm btn-success" onclick="saveRentPrice(${apt.id})" title="Save">
+                                    ✓
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="cancelRentPriceEdit(${apt.id}, ${apt.renting_out_price || 0})" title="Cancel">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div>${dueDateLocal}</div>
+                        <small class="eastern-date">${dueDateEastern}</small>
+                    </td>
+                    <td>
+                        <div>${cleanTimeLocal}</div>
+                        <small class="eastern-date">${cleanTimeEastern}</small>
+                    </td>
+                    <td id="rating-${apt.id}">${ratingDisplay}</td>
+                    <td>
+                        ${lockedApartments.includes(apt.id) ? '' : `
+                            <button class="btn btn-sm btn-primary" onclick="editApartment(${apt.id})">Edit</button>
+                        `}
+                        <button class="btn btn-sm btn-info" onclick="viewReviews(${apt.id})">Reviews</button>
+                        ${lockedApartments.includes(apt.id) ? '' : `
+                            <button class="btn btn-sm btn-danger" onclick="deleteApartment(${apt.id})">Delete</button>
+                        `}
+        <!--Disabling button to lock/unlock apartments                <button class="btn btn-sm btn-${lockedApartments.includes(apt.id) ? 'warning' : 'secondary'}" onclick="toggleApartmentLock(${apt.id})" title="${lockedApartments.includes(apt.id) ? 'Unlock' : 'Lock'} Apartment">
+                            ${lockedApartments.includes(apt.id) ? '🔓 Unlock' : '🔒 Lock'}
+                        </button> -->
+                    </td>
+                `;
+                
+                // Load rating asynchronously
+                loadApartmentRating(apt.id);
+                tbody.appendChild(row);
+            });
+            
+            // Re-initialize number formatting for dynamically created inputs
+            if (typeof initNumberFormatting === 'function') {
+                initNumberFormatting({ allowDecimals: true, selector: '.money-input, .rent-price-input' }); // Allow decimals for money/price inputs
+            }
+        }
+
+        // Format stars with half-star support
+        function formatStars(rating) {
+            if (!rating || rating === 0) {
+                return '☆☆☆☆☆';
+            }
+            
+            const numRating = parseFloat(rating);
+            const fullStars = Math.floor(numRating);
+            const remainder = numRating % 1;
+            // Show half star if remainder is 0.3 or more (rounds to 0.5) or between 0.25 and 0.75
+            const hasHalfStar = remainder >= 0.25 && remainder < 0.75;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let stars = '★'.repeat(fullStars);
+            
+            if (hasHalfStar) {
+                // Use blue star for half-star rating
+                stars += '<span style="color: #0d6efd;">★</span>';
+            }
+            
+            stars += '☆'.repeat(emptyStars);
+            
+            return stars;
+        }
+
+        // Select half star rating
+        function selectHalfStar(rating) {
+            if (event) event.stopPropagation();
+            const hiddenInput = document.getElementById('selectedRating');
+            if (hiddenInput) {
+                hiddenInput.value = rating;
+            }
+            
+            // Uncheck all radio buttons
+            document.querySelectorAll('input[name="rating"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Check the appropriate radio button
+            const radio = document.querySelector(`input[name="rating"][value="${rating}"]`);
+            if (radio) {
+                radio.checked = true;
+            }
+            
+            // Update star colors
+            updateStarColors();
+        }
+
+        // Select half star for edit form
+        function selectEditHalfStar(reviewId, rating) {
+            if (event) event.stopPropagation();
+            const hiddenInput = document.getElementById(`edit-selected-rating-${reviewId}`);
+            if (hiddenInput) {
+                hiddenInput.value = rating;
+            }
+            
+            // Uncheck all radio buttons for this review
+            document.querySelectorAll(`input[name="edit-rating-${reviewId}"]`).forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Check the appropriate radio button
+            const radio = document.querySelector(`input[name="edit-rating-${reviewId}"][value="${rating}"]`);
+            if (radio) {
+                radio.checked = true;
+            }
+            
+            // Update star colors for this edit form
+            updateEditStarColors(reviewId);
+        }
+
+        // Update star colors for edit form
+        function updateEditStarColors(reviewId) {
+            const ratingContainer = document.getElementById(`edit-star-rating-${reviewId}`);
+            if (!ratingContainer) return;
+            
+            // Get selected rating
+            const selectedRadio = ratingContainer.querySelector(`input[name="edit-rating-${reviewId}"]:checked`);
+            const selectedHidden = document.getElementById(`edit-selected-rating-${reviewId}`);
+            let selectedRating = 0;
+            
+            if (selectedHidden && selectedHidden.value) {
+                selectedRating = parseFloat(selectedHidden.value);
+            } else if (selectedRadio) {
+                selectedRating = parseFloat(selectedRadio.value);
+            }
+            
+            if (selectedRating === 0) {
+                // No rating selected, reset all stars to grey
+                const labels = ratingContainer.querySelectorAll('.star-label');
+                labels.forEach(label => {
+                    label.style.color = '#ddd';
+                });
+                return;
+            }
+            
+            // Update star colors
+            const labels = ratingContainer.querySelectorAll('.star-label');
+            labels.forEach((label, index) => {
+                const starRating = parseFloat(label.getAttribute('data-rating')) || (5 - index);
+                if (selectedRating >= starRating) {
+                    label.style.color = '#ffc107';
+                } else {
+                    label.style.color = '#ddd';
+                }
+            });
+        }
+
+        // Initialize star ratings with half-star support
+        function initStarRatings() {
+            const starRatings = document.querySelectorAll('.star-rating');
+            starRatings.forEach(ratingContainer => {
+                const labels = ratingContainer.querySelectorAll('.star-label');
+                labels.forEach((label, index) => {
+                    // Add click handlers for full stars
+                    label.addEventListener('click', function(e) {
+                        if (e.target === label || e.target.closest('.star-half-right')) {
+                            const rating = parseFloat(label.getAttribute('data-rating'));
+                            if (rating) {
+                                selectHalfStar(rating);
+                            }
+                        }
+                    });
+                });
+                
+                // Update colors on load
+                updateStarColors();
+            });
+        }
+
+        // Update star colors based on selected rating
+        function updateStarColors() {
+            const starRatings = document.querySelectorAll('.star-rating');
+            starRatings.forEach(ratingContainer => {
+                // Get selected rating
+                const selectedRadio = ratingContainer.querySelector('input[name="rating"]:checked');
+                const selectedHidden = document.getElementById('selectedRating');
+                let selectedRating = 0;
+                
+                if (selectedHidden && selectedHidden.value) {
+                    selectedRating = parseFloat(selectedHidden.value);
+                } else if (selectedRadio) {
+                    selectedRating = parseFloat(selectedRadio.value);
+                }
+                
+                if (selectedRating === 0) {
+                    // No rating selected, reset all stars to grey
+                    const labels = ratingContainer.querySelectorAll('.star-label');
+                    labels.forEach(label => {
+                        label.style.color = '#ddd';
+                    });
+                    return;
+                }
+                
+                // Update star colors
+                const labels = ratingContainer.querySelectorAll('.star-label');
+                labels.forEach((label, index) => {
+                    const starRating = parseFloat(label.getAttribute('data-rating')) || (5 - index);
+                    if (selectedRating >= starRating) {
+                        label.style.color = '#ffc107';
+                    } else if (selectedRating >= starRating - 0.5) {
+                        // Half star - we'll handle this with CSS
+                        label.style.color = '#ffc107';
+                    } else {
+                        label.style.color = '#ddd';
+                    }
+                });
+            });
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('apartmentModalTitle').textContent = 'Add Apartment';
+            document.getElementById('apartmentForm').reset();
+            const apartmentIdEl = document.getElementById('apartmentId');
+            const ownedNumberEl = document.getElementById('ownedNumber');
+            if (apartmentIdEl) apartmentIdEl.value = '';
+            if (ownedNumberEl) ownedNumberEl.value = ''; // Will be auto-assigned
+            updateTimezoneDisplays();
+        }
+
+        // Edit apartment
+        async function editApartment(id) {
+            const apartment = apartments.find(apt => apt.id === id);
+            if (!apartment) return;
+            
+            document.getElementById('apartmentModalTitle').textContent = 'Edit Apartment';
+            const apartmentIdEl = document.getElementById('apartmentId');
+            const locationEl = document.getElementById('location');
+            const apartmentNameEl = document.getElementById('apartmentName');
+            const apartmentNoEl = document.getElementById('apartmentNo');
+            const ownedNumberEl = document.getElementById('ownedNumber');
+            const postalEl = document.getElementById('postal');
+            const apartmentClassEl = document.getElementById('apartmentClass');
+            
+            if (apartmentIdEl) apartmentIdEl.value = apartment.id;
+            if (locationEl) locationEl.value = apartment.location || '';
+            if (apartmentNameEl) apartmentNameEl.value = apartment.apartment_name || '';
+            if (apartmentNoEl) apartmentNoEl.value = apartment.apartment_no || '';
+            if (ownedNumberEl) ownedNumberEl.value = apartment.owned_number || '';
+            if (postalEl) postalEl.value = apartment.postal || '';
+            if (apartmentClassEl) apartmentClassEl.value = apartment.apartment_class || '';
+            
+            const apartmentDescriptionEl = document.getElementById('apartmentDescription');
+            const purchasedPriceEl = document.getElementById('purchasedPrice');
+            const rentingOutPriceEl = document.getElementById('rentingOutPrice');
+            
+            if (apartmentDescriptionEl) apartmentDescriptionEl.value = apartment.apartment_description || '';
+            if (purchasedPriceEl) purchasedPriceEl.value = apartment.purchased_price || '';
+            if (rentingOutPriceEl) rentingOutPriceEl.value = apartment.renting_out_price || '';
+            
+            // Convert dates to local datetime format
+            const dueDateEl = document.getElementById('dueDate');
+            const cleanTimeEl = document.getElementById('cleanTime');
+            
+            if (dueDateEl) {
+                if (apartment.due_date) {
+                    dueDateEl.value = brisbaneToLocalDatetime(apartment.due_date);
+                } else {
+                    dueDateEl.value = '';
+                }
+            }
+            
+            if (cleanTimeEl) {
+                if (apartment.clean_time) {
+                    cleanTimeEl.value = brisbaneToLocalDatetime(apartment.clean_time);
+                } else {
+                    cleanTimeEl.value = '';
+                }
+            }
+            
+            updateTimezoneDisplays();
+            
+            const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
+            modal.show();
+        }
+
+        // Save apartment
+        async function saveApartment() {
+            const form = document.getElementById('apartmentForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                debugLog('Form validation failed');
+                return;
+            }
+            
+            const ownedNumberEl = document.getElementById('ownedNumber');
+            const ownedNumberInput = ownedNumberEl ? ownedNumberEl.value.trim() : '';
+            const ownedNumber = ownedNumberInput ? parseInt(ownedNumberInput) : null;
+            
+            const locationEl = document.getElementById('location');
+            const apartmentNameEl = document.getElementById('apartmentName');
+            const apartmentNoEl = document.getElementById('apartmentNo');
+            const postalEl = document.getElementById('postal');
+            const apartmentClassEl = document.getElementById('apartmentClass');
+            const apartmentDescriptionEl = document.getElementById('apartmentDescription');
+            const purchasedPriceEl = document.getElementById('purchasedPrice');
+            const rentingOutPriceEl = document.getElementById('rentingOutPrice');
+            const dueDateEl = document.getElementById('dueDate');
+            const cleanTimeEl = document.getElementById('cleanTime');
+            
+            // Get the date values
+            let dueDateValue = dueDateEl && dueDateEl.value ? formatDateTimeForMySQL(dueDateEl.value) : null;
+            let cleanTimeValue = cleanTimeEl && cleanTimeEl.value ? formatDateTimeForMySQL(cleanTimeEl.value) : null;
+            
+            const now = new Date();
+            
+            // If new rent date is set and clean time is expired, clear the clean time
+            if (dueDateValue) {
+                const dueDate = new Date(dueDateValue);
+                if (cleanTimeValue) {
+                    const cleanTime = new Date(cleanTimeValue);
+                    if (cleanTime < now) {
+                        // Clean time is expired, clear it
+                        cleanTimeValue = null;
+                        if (cleanTimeEl) {
+                            cleanTimeEl.value = '';
+                            debugLog('Cleared expired clean time because new rent date was set');
+                            updateTimezoneDisplays(); // Update the display
+                        }
+                    }
+                }
+            }
+            
+            // If clean time is set and rent time is expired, clear the rent time
+            if (cleanTimeValue) {
+                const cleanTime = new Date(cleanTimeValue);
+                if (dueDateValue) {
+                    const dueDate = new Date(dueDateValue);
+                    if (dueDate < now) {
+                        // Rent time is expired, clear it
+                        dueDateValue = null;
+                        if (dueDateEl) {
+                            dueDateEl.value = '';
+                            debugLog('Cleared expired rent date because clean time was set');
+                            updateTimezoneDisplays(); // Update the display
+                        }
+                    }
+                }
+            }
+            
+            const apartmentData = {
+                location: locationEl ? locationEl.value.trim() : '',
+                apartment_name: apartmentNameEl ? apartmentNameEl.value.trim() : '',
+                apartment_no: apartmentNoEl ? apartmentNoEl.value.trim() : '',
+                owned_number: ownedNumber,
+                postal: postalEl ? postalEl.value.trim() || null : null,
+                apartment_class: apartmentClassEl ? apartmentClassEl.value.trim() || null : null,
+                apartment_description: apartmentDescriptionEl ? apartmentDescriptionEl.value.trim() || null : null,
+                purchased_price: purchasedPriceEl ? parseFormattedNumber(purchasedPriceEl.value) || null : null,
+                renting_out_price: rentingOutPriceEl ? parseFormattedNumber(rentingOutPriceEl.value) || null : null,
+                due_date: dueDateValue,
+                clean_time: cleanTimeValue
+            };
+            
+            debugLog('Saving apartment with data:', apartmentData);
+            
+            try {
+                const id = document.getElementById('apartmentId').value;
+                let response;
+                
+                if (id) {
+                    // Update
+                    debugLog('Updating apartment ID:', id);
+                    response = await fetch(`${API_BASE}/${id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(apartmentData)
+                    });
+                } else {
+                    // Create
+                    debugLog('Creating new apartment');
+                    response = await fetch(API_BASE, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(apartmentData)
+                    });
+                }
+                
+                debugLog('API Response:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    debugLog('API Error:', error);
+                    throw new Error(error.message || 'Failed to save apartment');
+                }
+                
+                const savedApartment = await response.json();
+                debugLog('Apartment saved successfully:', savedApartment);
+                
+                // Close modal and reload
+                const modal = bootstrap.Modal.getInstance(document.getElementById('apartmentModal'));
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Wait a bit for modal to start closing, then clean up backdrop
+                setTimeout(() => {
+                    // Ensure modal backdrop is removed
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                    
+                    // Remove modal-open class from body if it exists
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }, 100);
+                
+                await loadApartments();
+                await loadAllApartments(); // Refresh card view
+                await loadAllApartmentsForSelector(); // Update selector
+                // Refresh overview if on overview tab
+                const overviewTab = document.getElementById('overview-tab');
+                if (overviewTab && overviewTab.classList.contains('active')) {
+                    await loadOverview();
+                }
+                // Reset selector
+                document.getElementById('apartmentSelector').value = '';
+                document.getElementById('saveApartmentBtn').style.display = 'none';
+            } catch (error) {
+                console.error('Error saving apartment:', error);
+                debugLog('ERROR saving apartment:', error);
+                alert('Error saving apartment: ' + error.message);
+            }
+        }
+
+        // Delete apartment
+        async function deleteApartment(id) {
+            if (!confirm('Are you sure you want to delete this apartment?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to delete apartment');
+                }
+                
+                await loadApartments();
+                await loadAllApartments(); // Refresh card view
+                await loadAllApartmentsForSelector(); // Update selector
+                // Refresh overview if on overview tab
+                const overviewTab = document.getElementById('overview-tab');
+                if (overviewTab && overviewTab.classList.contains('active')) {
+                    await loadOverview();
+                }
+            } catch (error) {
+                console.error('Error deleting apartment:', error);
+                debugLog('ERROR deleting apartment:', error);
+                alert('Error deleting apartment: ' + error.message);
+            }
+        }
+
+        // Edit rent price (show edit form)
+        function editRentPrice(apartmentId, currentPrice) {
+            const displayDiv = document.getElementById(`rent-price-display-${apartmentId}`);
+            const editDiv = document.getElementById(`rent-price-edit-${apartmentId}`);
+            const input = document.getElementById(`rent-price-input-${apartmentId}`);
+            
+            if (displayDiv && editDiv && input) {
+                displayDiv.parentElement.style.display = 'none';
+                editDiv.style.display = 'block';
+                input.focus();
+                input.select();
+            }
+        }
+
+        // Cancel rent price edit
+        function cancelRentPriceEdit(apartmentId, originalPrice) {
+            const displayDiv = document.getElementById(`rent-price-display-${apartmentId}`);
+            const editDiv = document.getElementById(`rent-price-edit-${apartmentId}`);
+            const input = document.getElementById(`rent-price-input-${apartmentId}`);
+            
+            if (displayDiv && editDiv && input) {
+                input.value = originalPrice || '';
+                displayDiv.parentElement.style.display = 'flex';
+                editDiv.style.display = 'none';
+            }
+        }
+
+        // Save rent price
+        async function saveRentPrice(apartmentId) {
+            debugLog('Saving rent price for apartment:', apartmentId);
+            const input = document.getElementById(`rent-price-input-${apartmentId}`);
+            const displayDiv = document.getElementById(`rent-price-display-${apartmentId}`);
+            const editDiv = document.getElementById(`rent-price-edit-${apartmentId}`);
+            
+            if (!input || !displayDiv || !editDiv) {
+                debugLog('ERROR: Missing elements for rent price edit');
+                return;
+            }
+            
+            const priceValue = parseFormattedNumber(input.value);
+            debugLog('Parsed price value:', priceValue);
+            
+            // Allow empty value (null)
+            const priceToSave = priceValue !== null ? priceValue : null;
+            debugLog('Price to save:', priceToSave);
+            
+            try {
+                const response = await fetch(`${API_BASE}/${apartmentId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ renting_out_price: priceToSave })
+                });
+                
+                debugLog('Rent price API response:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    debugLog('API Error:', error);
+                    throw new Error(error.message || 'Failed to update rent price');
+                }
+                
+                // Update display
+                const formattedPrice = priceToSave ? parseFloat(priceToSave).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) : '--';
+                displayDiv.textContent = `$${formattedPrice}`;
+                debugLog('Updated display with formatted price:', formattedPrice);
+                
+                // Hide edit form, show display
+                displayDiv.parentElement.style.display = 'flex';
+                editDiv.style.display = 'none';
+                
+                // Update the apartment in the local array
+                const apartment = apartments.find(apt => apt.id === apartmentId);
+                if (apartment) {
+                    apartment.renting_out_price = priceToSave;
+                    debugLog('Updated apartment in local array');
+                }
+            } catch (error) {
+                console.error('Error saving rent price:', error);
+                debugLog('ERROR saving rent price:', error);
+                alert('Error saving rent price: ' + error.message);
+            }
+        }
+
+        // Parse formatted number (remove commas)
+        function parseFormattedNumber(value) {
+            if (!value) return null;
+            const cleaned = value.toString().replace(/,/g, '');
+            const parsed = parseFloat(cleaned);
+            return isNaN(parsed) ? null : parsed;
+        }
+
+        // Convert datetime-local input to MySQL DATETIME format (YYYY-MM-DD HH:MM:SS)
+        function formatDateTimeForMySQL(datetimeLocalValue) {
+            if (!datetimeLocalValue) return null;
+            
+            // datetime-local format is: YYYY-MM-DDTHH:MM
+            // We need to convert to: YYYY-MM-DD HH:MM:SS
+            const [datePart, timePart] = datetimeLocalValue.split('T');
+            if (!datePart || !timePart) return null;
+            
+            // Add seconds if not present
+            const timeWithSeconds = timePart.includes(':') && timePart.split(':').length === 2 
+                ? timePart + ':00' 
+                : timePart;
+            
+            return `${datePart} ${timeWithSeconds}`;
+        }
+
+        // Load all apartments in card format (like All Businesses by Tier)
+        async function loadAllApartments() {
+            const container = document.getElementById('allApartmentsContainer');
+            if (!container) return;
+            
+            try {
+                container.innerHTML = '<p class="text-muted text-center">Loading apartments...</p>';
+                
+                // Load all apartments
+                const response = await fetch(API_BASE);
+                if (!response.ok) throw new Error('Failed to load apartments');
+                const allApartments = await response.json();
+                
+                // Sort by owned_number (nulls last)
+                allApartments.sort((a, b) => {
+                    if (a.owned_number === null || a.owned_number === undefined) return 1;
+                    if (b.owned_number === null || b.owned_number === undefined) return -1;
+                    return a.owned_number - b.owned_number;
+                });
+                
+                if (allApartments.length === 0) {
+                    container.innerHTML = '<p class="text-muted text-center">No apartments found.</p>';
+                    // Clear visibility controls
+                    const controlsContainer = document.getElementById('apartmentVisibilityControls');
+                    if (controlsContainer) {
+                        controlsContainer.innerHTML = '';
+                    }
+                    return;
+                }
+                
+                // Populate apartment visibility controls
+                const controlsContainer = document.getElementById('apartmentVisibilityControls');
+                if (controlsContainer) {
+                    const allApartmentsLocked = JSON.parse(localStorage.getItem('allApartmentsLocked') || '[]');
+                    controlsContainer.innerHTML = allApartments.map(apt => {
+                        const ownedNum = apt.owned_number || '--';
+                        const isVisible = !hiddenApartments.includes(apt.id);
+                        const isLocked = allApartmentsLocked.includes(apt.id);
+                        return `
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="apt-check-${apt.id}" 
+                                       ${isVisible ? 'checked' : ''} 
+                                       onchange="toggleApartmentVisibility(${apt.id})">
+                                <label class="form-check-label" for="apt-check-${apt.id}">
+                                    Owned ${ownedNum} ${isLocked ? '🔒' : ''}
+                                </label>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                
+                // Load reviews for each apartment
+                const apartmentsWithReviews = await Promise.all(allApartments.map(async (apt) => {
+                    try {
+                        const reviewsResponse = await fetch(`${API_BASE}/${apt.id}/reviews`);
+                        if (reviewsResponse.ok) {
+                            apt.reviews = await reviewsResponse.json();
+                            // Get average rating
+                            if (apt.reviews.length > 0) {
+                                const avgRating = apt.reviews.reduce((sum, r) => sum + r.rating, 0) / apt.reviews.length;
+                                apt.average_rating = avgRating.toFixed(1);
+                            } else {
+                                apt.average_rating = null;
+                            }
+                        } else {
+                            apt.reviews = [];
+                            apt.average_rating = null;
+                        }
+                    } catch (error) {
+                        debugLog(`Error loading reviews for apartment ${apt.id}:`, error);
+                        apt.reviews = [];
+                        apt.average_rating = null;
+                    }
+                    return apt;
+                }));
+                
+                container.innerHTML = apartmentsWithReviews.map(apt => {
+                    const ownedNum = apt.owned_number || '--';
+                    const tabName = `Owned ${ownedNum} - ${escapeHtml(apt.apartment_name || 'Unnamed')}`;
+                    const tabId = `apt-${apt.id}`;
+                    
+                    // Check if apartment is hidden or locked
+                    const isHidden = hiddenApartments.includes(apt.id);
+                    // Check both global lock and "All Apartments" section lock
+                    const allApartmentsLocked = JSON.parse(localStorage.getItem('allApartmentsLocked') || '[]');
+                    const isLocked = allApartmentsLocked.includes(apt.id);
+                    
+                    // Format dates - using local time
+                    const dueDateLocal = apt.due_date ? formatLocalDateDDMMMYYYYWithTime(new Date(apt.due_date)) : '--';
+                    const dueDateEastern = apt.due_date ? formatDateDDMMMYYYYWithTime(new Date(apt.due_date), 'America/New_York') : '--';
+                    const easternTZ = apt.due_date ? getEasternTimeZone() : '';
+                    
+                    const cleanTimeLocal = apt.clean_time ? formatLocalDateDDMMMYYYYWithTime(new Date(apt.clean_time)) : '--';
+                    const cleanTimeEastern = apt.clean_time ? formatDateDDMMMYYYYWithTime(new Date(apt.clean_time), 'America/New_York') : '--';
+                    
+                    const stars = apt.average_rating ? formatStars(parseFloat(apt.average_rating)) : 'No ratings';
+                    
+                    return `
+                        <div class="card mb-4" id="apartment-card-${apt.id}" style="${isHidden ? 'display: none;' : ''}">
+                            <div class="card-header bg-info text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">${tabName}</h4>
+                                    <div class="d-flex gap-2">
+                                        ${!isLocked ? `
+                                            <button class="btn btn-sm btn-light" onclick="editApartment(${apt.id})" title="Edit Apartment">
+                                                ✏️ Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteApartment(${apt.id})" title="Delete Apartment">
+                                                🗑️ Delete
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Tab Navigation -->
+                                <ul class="nav nav-tabs mb-3" id="${tabId}-tabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="${tabId}-info-tab" data-bs-toggle="tab" data-bs-target="#${tabId}-info" type="button" role="tab">
+                                            Info
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="${tabId}-reviews-tab" data-bs-toggle="tab" data-bs-target="#${tabId}-reviews" type="button" role="tab">
+                                            Reviews (${apt.reviews.length})
+                                        </button>
+                                    </li>
+                                </ul>
+                                
+                                <!-- Tab Content -->
+                                <div class="tab-content" id="${tabId}-content">
+                                    <!-- Info Tab -->
+                                    <div class="tab-pane fade show active" id="${tabId}-info" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Location:</strong> ${escapeHtml(apt.location || 'N/A')}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Apartment No.:</strong> ${escapeHtml(apt.apartment_no || 'N/A')}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Postal:</strong> ${escapeHtml(apt.postal || 'N/A')}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Class:</strong> ${escapeHtml(apt.apartment_class || 'N/A')}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Purchased Price:</strong> ${apt.purchased_price ? formatNumber(apt.purchased_price) : 'N/A'}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Renting Price:</strong> <span style="color: navy; font-weight: 700;">${apt.renting_out_price ? formatNumber(apt.renting_out_price) : 'N/A'}</span>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Due Date:</strong><br>
+                                                Local: ${dueDateLocal}<br>
+                                                <span class="eastern-date" style="color: purple;">Eastern: ${dueDateEastern} ${easternTZ}</span>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Clean Time:</strong><br>
+                                                Local: ${cleanTimeLocal}<br>
+                                                <span class="eastern-date" style="color: purple;">Eastern: ${cleanTimeEastern} ${easternTZ}</span>
+                                            </div>
+                                            ${apt.apartment_description ? `
+                                            <div class="col-md-12 mb-3">
+                                                <strong>Description:</strong><br>
+                                                ${escapeHtml(apt.apartment_description)}
+                                            </div>
+                                            ` : ''}
+                                            <div class="col-md-12 mb-3">
+                                                <strong>Rating:</strong> 
+                                                <span class="review-rating" style="display: inline-block; margin-left: 0.5rem;">${stars}</span>
+                                                ${apt.average_rating ? `<span style="margin-left: 0.5rem; color: var(--text-color); opacity: 0.8;">(${apt.average_rating} from ${apt.reviews.length} review${apt.reviews.length !== 1 ? 's' : ''})</span>` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reviews Tab -->
+                                    <div class="tab-pane fade" id="${tabId}-reviews" role="tabpanel">
+                                        ${apt.reviews.length === 0 ? `
+                                            <div class="text-center py-4">
+                                                <p class="text-muted mb-3">No reviews yet.</p>
+                                                ${!isLocked ? `
+                                                    <button class="btn btn-primary" onclick="viewReviews(${apt.id})">
+                                                        ➕ Add Review
+                                                    </button>
+                                                ` : '<p class="text-muted"><small>🔒 Apartment is locked</small></p>'}
+                                            </div>
+                                        ` : `
+                                            ${!isLocked ? `
+                                                <div class="mb-4">
+                                                    <button class="btn btn-primary btn-sm" onclick="viewReviews(${apt.id})">
+                                                        ➕ Add Review
+                                                    </button>
+                                                </div>
+                                            ` : ''}
+                                            <div class="reviews-list">
+                                            ${apt.reviews.map(review => {
+                                                const date = new Date(review.created_at);
+                                                const dateStr = formatLocalDateDDMMMYYYYWithTime(date);
+                                                const easternDateStr = formatDateDDMMMYYYYWithTime(date, 'America/New_York');
+                                                const reviewStars = formatStars(review.rating);
+                                                return `
+                                                    <div class="review-item">
+                                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                                            <div class="flex-grow-1">
+                                                                <div class="review-rating">${reviewStars}</div>
+                                                                <div class="review-date">
+                                                                    ${dateStr}
+                                                                    <span class="eastern-date">Eastern: ${easternDateStr} ${getEasternTimeZone()}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p>${escapeHtml(review.comment || 'No comment')}</p>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                            </div>
+                                        `}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading all apartments:', error);
+                debugLog('ERROR loading all apartments:', error);
+                container.innerHTML = '<p class="text-danger text-center">Error loading apartments. Please refresh the page.</p>';
+            }
+        }
+
+        // Toggle apartment visibility
+        function toggleApartmentVisibility(apartmentId) {
+            const index = hiddenApartments.indexOf(apartmentId);
+            if (index > -1) {
+                hiddenApartments.splice(index, 1);
+            } else {
+                hiddenApartments.push(apartmentId);
+            }
+            localStorage.setItem('hiddenApartments', JSON.stringify(hiddenApartments));
+            
+            // Toggle display immediately
+            const apartmentCard = document.getElementById(`apartment-card-${apartmentId}`);
+            if (apartmentCard) {
+                apartmentCard.style.display = hiddenApartments.includes(apartmentId) ? 'none' : '';
+            }
+            
+            // Update checkbox
+            const checkbox = document.getElementById(`apt-check-${apartmentId}`);
+            if (checkbox) {
+                checkbox.checked = !hiddenApartments.includes(apartmentId);
+            }
+        }
+
+        // Lock all apartments (only affects "All Apartments" section)
+        function lockAllApartments() {
+            // Get all apartment IDs from the cards in "All Apartments" section
+            const allApartmentIds = [];
+            document.querySelectorAll('#allApartmentsContainer [id^="apartment-card-"]').forEach(card => {
+                const apartmentId = parseInt(card.id.replace('apartment-card-', ''));
+                if (!isNaN(apartmentId)) {
+                    allApartmentIds.push(apartmentId);
+                }
+            });
+            
+            // Store locked state for "All Apartments" section only
+            const allApartmentsLocked = JSON.parse(localStorage.getItem('allApartmentsLocked') || '[]');
+            const updatedLocked = [...new Set([...allApartmentsLocked, ...allApartmentIds])];
+            localStorage.setItem('allApartmentsLocked', JSON.stringify(updatedLocked));
+            
+            // Update only the "All Apartments" section cards
+            allApartmentIds.forEach(apartmentId => {
+                const apartmentCard = document.getElementById(`apartment-card-${apartmentId}`);
+                if (apartmentCard) {
+                    apartmentCard.classList.add('locked');
+                    
+                    // Hide edit, delete, and add review buttons in card view only
+                    const editBtn = apartmentCard.querySelector('button[onclick*="editApartment"]');
+                    const deleteBtn = apartmentCard.querySelector('button[onclick*="deleteApartment"]');
+                    const addReviewBtn = apartmentCard.querySelector('button[onclick*="openAddReviewModal"]');
+                    
+                    if (editBtn) editBtn.style.display = 'none';
+                    if (deleteBtn) deleteBtn.style.display = 'none';
+                    if (addReviewBtn) addReviewBtn.style.display = 'none';
+                }
+            });
+            
+            // Update checkbox labels to show lock status
+            allApartmentIds.forEach(apartmentId => {
+                const label = document.querySelector(`label[for="apt-check-${apartmentId}"]`);
+                if (label && !label.textContent.includes('🔒')) {
+                    label.textContent = label.textContent + ' 🔒';
+                }
+            });
+        }
+
+        // Unlock all apartments (only affects "All Apartments" section)
+        function unlockAllApartments() {
+            // Clear locked state for "All Apartments" section
+            localStorage.setItem('allApartmentsLocked', JSON.stringify([]));
+            
+            // Update only the "All Apartments" section cards
+            document.querySelectorAll('#allApartmentsContainer [id^="apartment-card-"]').forEach(card => {
+                const apartmentId = parseInt(card.id.replace('apartment-card-', ''));
+                if (!isNaN(apartmentId)) {
+                    card.classList.remove('locked');
+                    
+                    // Show edit, delete, and add review buttons in card view
+                    const editBtn = card.querySelector('button[onclick*="editApartment"]');
+                    const deleteBtn = card.querySelector('button[onclick*="deleteApartment"]');
+                    const addReviewBtn = card.querySelector('button[onclick*="openAddReviewModal"]');
+                    
+                    if (editBtn) editBtn.style.display = '';
+                    if (deleteBtn) deleteBtn.style.display = '';
+                    if (addReviewBtn) addReviewBtn.style.display = '';
+                }
+            });
+            
+            // Update checkbox labels to remove lock status
+            document.querySelectorAll('#apartmentVisibilityControls label').forEach(label => {
+                if (label.textContent.includes('🔒')) {
+                    label.textContent = label.textContent.replace(' 🔒', '');
+                }
+            });
+        }
+
+        // Toggle apartment lock
+        function toggleApartmentLock(apartmentId) {
+            const index = lockedApartments.indexOf(apartmentId);
+            if (index > -1) {
+                lockedApartments.splice(index, 1);
+            } else {
+                lockedApartments.push(apartmentId);
+            }
+            localStorage.setItem('lockedApartments', JSON.stringify(lockedApartments));
+            
+            // Reload apartments to update UI in both table and card views
+            renderApartments();
+            loadAllApartments();
+        }
+
+        // Load all reviews for Reviews tab
+        async function loadAllReviews() {
+            const container = document.getElementById('allReviewsContainer');
+            if (!container) return;
+            
+            try {
+                container.innerHTML = '<p class="text-muted text-center">Loading reviews...</p>';
+                
+                // Load all apartments first
+                const apartmentsResponse = await fetch(API_BASE);
+                if (!apartmentsResponse.ok) throw new Error('Failed to load apartments');
+                const allApartments = await apartmentsResponse.json();
+                
+                // Load reviews for each apartment
+                const allReviews = [];
+                for (const apt of allApartments) {
+                    try {
+                        const reviewsResponse = await fetch(`${API_BASE}/${apt.id}/reviews`);
+                        if (reviewsResponse.ok) {
+                            const reviews = await reviewsResponse.json();
+                            reviews.forEach(review => {
+                                allReviews.push({
+                                    ...review,
+                                    apartment_name: apt.apartment_name,
+                                    apartment_location: apt.location,
+                                    apartment_id: apt.id
+                                });
+                            });
+                        }
+                    } catch (error) {
+                        debugLog(`Error loading reviews for apartment ${apt.id}:`, error);
+                    }
+                }
+                
+                // Sort by date (newest first)
+                allReviews.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                
+                if (allReviews.length === 0) {
+                    container.innerHTML = '<p class="text-muted text-center">No reviews yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = allReviews.map(review => {
+                    const date = new Date(review.created_at);
+                    const dateStr = date.toLocaleString('en-US', {
+                        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+                    });
+                    const easternDateStr = formatTimeForTimezone(date, 'America/New_York', {
+                        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+                    });
+                    const easternTZ = getEasternTimeZone();
+                    const stars = formatStars(review.rating);
+                    
+                    return `
+                        <div class="review-item">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-2" style="font-weight: 600; color: var(--text-color);">
+                                        <strong>${escapeHtml(review.apartment_name)}</strong>
+                                        <small class="text-muted" style="font-weight: 400;">(${escapeHtml(review.apartment_location)})</small>
+                                    </h6>
+                                    <div class="review-rating">${stars}</div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="review-date">
+                                        ${dateStr}
+                                        <span class="eastern-date">Eastern: ${easternDateStr} ${easternTZ}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>${escapeHtml(review.comment || 'No comment')}</p>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading all reviews:', error);
+                debugLog('ERROR loading all reviews:', error);
+                container.innerHTML = '<p class="text-danger text-center">Error loading reviews.</p>';
+            }
+        }
+
+        // Load overview statistics
+        async function loadOverview() {
+            try {
+                // Load apartments
+                const apartmentsResponse = await fetch(API_BASE);
+                if (!apartmentsResponse.ok) throw new Error('Failed to load apartments');
+                const allApartments = await apartmentsResponse.json();
+                
+                // Load overall rating
+                const ratingResponse = await fetch(`${API_BASE}/reviews/overall-average`);
+                const ratingStats = ratingResponse.ok ? await ratingResponse.json() : { average_rating: null, review_count: 0 };
+                
+                // Update overview display
+                const totalApartmentsEl = document.getElementById('overviewTotalApartments');
+                const overallRatingEl = document.getElementById('overviewOverallRating');
+                const totalReviewsEl = document.getElementById('overviewTotalReviews');
+                
+                if (totalApartmentsEl) {
+                    totalApartmentsEl.textContent = allApartments.length;
+                }
+                
+                if (overallRatingEl) {
+                    if (ratingStats.review_count > 0) {
+                        const avgRating = parseFloat(ratingStats.average_rating).toFixed(1);
+                        const stars = formatStars(parseFloat(avgRating));
+                        overallRatingEl.innerHTML = `<div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${stars}</div><div>${avgRating}</div>`;
+                    } else {
+                        overallRatingEl.innerHTML = '<span style="opacity: 0.7;">No reviews yet</span>';
+                    }
+                }
+                
+                if (totalReviewsEl) {
+                    totalReviewsEl.textContent = ratingStats.review_count || 0;
+                }
+            } catch (error) {
+                console.error('Error loading overview:', error);
+                debugLog('ERROR loading overview:', error);
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            debugLog('Page loaded, initializing...');
+            
+            // Initialize debug button state
+            const debugBtn = document.getElementById('debugToggleBtn');
+            if (debugBtn) {
+                debugBtn.textContent = DEBUG_MODE ? '🐛 Debug: ON' : '🐛 Debug: OFF';
+                debugBtn.classList.toggle('btn-warning', DEBUG_MODE);
+                debugBtn.classList.toggle('btn-secondary', !DEBUG_MODE);
+            }
+            
+            // Initialize table visibility state
+            const tableVisible = localStorage.getItem('apartmentsTableVisible') !== 'false';
+            const tableContainer = document.getElementById('apartmentsTableContainer');
+            const toggleBtn = document.getElementById('toggleTableBtn');
+            if (tableContainer && toggleBtn) {
+                // Wait a bit for loadApartments to potentially show the table first
+                setTimeout(() => {
+                    const currentDisplay = tableContainer.style.display;
+                    if (currentDisplay === 'none' || !tableVisible) {
+                        tableContainer.style.display = 'none';
+                        toggleBtn.textContent = '👁️ Show Table';
+                        toggleBtn.title = 'Show table';
+                    } else {
+                        toggleBtn.textContent = '🙈 Hide Table';
+                        toggleBtn.title = 'Hide table';
+                    }
+                }, 100);
+            }
+            
+            // Load hidden and locked apartments from localStorage
+            hiddenApartments = JSON.parse(localStorage.getItem('hiddenApartments') || '[]');
+            lockedApartments = JSON.parse(localStorage.getItem('lockedApartments') || '[]');
+            
+            updateTimes();
+            setInterval(updateTimes, 1000);
+            loadApartments();
+            loadAllApartments(); // Load the card-based view
+            loadAllApartmentsForSelector(); // Load apartments into selector
+            initStarRatings();
+            loadOverallRating();
+            
+            // Check for actions needed periodically (every 5 minutes)
+            setInterval(checkActionsNeeded, 5 * 60 * 1000);
+            
+            // Update timezone displays when date inputs change
+            document.getElementById('dueDate').addEventListener('change', updateTimezoneDisplays);
+            document.getElementById('dueDate').addEventListener('input', updateTimezoneDisplays);
+            document.getElementById('cleanTime').addEventListener('change', updateTimezoneDisplays);
+            document.getElementById('cleanTime').addEventListener('input', updateTimezoneDisplays);
+            
+            // Reset apartment selector when modal is dismissed/cancelled
+            const apartmentModal = document.getElementById('apartmentModal');
+            if (apartmentModal) {
+                // Remove focus BEFORE modal is hidden to fix accessibility warning
+                apartmentModal.addEventListener('hide.bs.modal', function() {
+                    const focusedElement = apartmentModal.querySelector(':focus');
+                    if (focusedElement && typeof focusedElement.blur === 'function') {
+                        focusedElement.blur();
+                    }
+                });
+                
+                // Cleanup after modal is fully hidden
+                apartmentModal.addEventListener('hidden.bs.modal', function() {
+                    // Only reset if selector still has a value (wasn't reset by saveApartment)
+                    const selector = document.getElementById('apartmentSelector');
+                    if (selector && selector.value !== '') {
+                        selector.value = '';
+                        debugLog('Apartment selector reset after modal close');
+                    }
+                    // Also hide the save button
+                    const saveBtn = document.getElementById('saveApartmentBtn');
+                    if (saveBtn) {
+                        saveBtn.style.display = 'none';
+                    }
+                    
+                    // Ensure modal backdrop is removed (in case it wasn't cleaned up)
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                    
+                    // Remove modal-open class from body if it exists
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                });
+            }
+            
+            // Fix accessibility issue for reviews modal
+            const reviewsModal = document.getElementById('reviewsModal');
+            if (reviewsModal) {
+                // Remove focus BEFORE modal is hidden to fix accessibility warning
+                reviewsModal.addEventListener('hide.bs.modal', function() {
+                    const focusedElement = reviewsModal.querySelector(':focus');
+                    if (focusedElement && typeof focusedElement.blur === 'function') {
+                        focusedElement.blur();
+                    }
+                });
+                
+                // Cleanup backdrop after reviews modal is fully hidden
+                reviewsModal.addEventListener('hidden.bs.modal', function() {
+                    // Ensure modal backdrop is removed
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                    
+                    // Remove modal-open class from body if it exists
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                });
+            }
+            
+            // Handle tab switching
+            const reviewsTab = document.getElementById('reviews-tab');
+            const overviewTab = document.getElementById('overview-tab');
+            
+            if (reviewsTab) {
+                reviewsTab.addEventListener('shown.bs.tab', function() {
+                    loadAllReviews();
+                });
+            }
+            
+            if (overviewTab) {
+                overviewTab.addEventListener('shown.bs.tab', function() {
+                    loadOverview();
+                });
+            }
+        });
+        
+        // Also update on page load (in case DOMContentLoaded already fired)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                updateTimes();
+                setInterval(updateTimes, 1000);
+            });
+        } else {
+            updateTimes();
+            setInterval(updateTimes, 1000);
+        }
+        
+        // Initialize number formatting
+        if (typeof initNumberFormatting === 'function') {
+            initNumberFormatting({ allowDecimals: true, selector: '.money-input, .rent-price-input' });
+        }
+        
+        // Handle Enter key in rent price input
+        document.addEventListener('keydown', function(e) {
+            if (e.target.classList.contains('rent-price-input') && e.key === 'Enter') {
+                const apartmentId = parseInt(e.target.id.replace('rent-price-input-', ''));
+                if (apartmentId) {
+                    saveRentPrice(apartmentId);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

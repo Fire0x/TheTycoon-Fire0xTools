@@ -27,6 +27,35 @@ const SiteConfig = {
     // Disclaimer information
     disclaimer: 'This site is not affiliated with or endorsed by Rockstar North, Take-Two Interactive or The Tycoons or other rightsholders. Any trademarks used belong to their respective owners.',
     
+    // Page titles mapping
+    pageTitles: {
+        'index.html': 'Home',
+        'merchants.html': 'Traveling Merchants',
+        'checklist.html': 'Business Checklist',
+        'checklist-1.html': 'Business Checklist',
+        'VehicleDeliveries.html': 'Vehicle Deliveries',
+        'education_timer.html': 'Education Timer',
+        'apartment.html': 'Apartment Management'
+    },
+    
+    /**
+     * Get page title for a specific page
+     * @param {string} pageName - The page filename (e.g., 'merchants.html')
+     * @returns {string} Page title or empty string if not found
+     */
+    getPageTitle(pageName) {
+        return this.pageTitles[pageName] || '';
+    },
+    
+    /**
+     * Get current page title based on window.location
+     * @returns {string} Current page title
+     */
+    getCurrentPageTitle() {
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        return this.getPageTitle(currentPage);
+    },
+    
     /**
      * Get the site name
      * @returns {string} Site name
@@ -94,9 +123,14 @@ const SiteConfig = {
     /**
      * Initialize page title
      * Updates the <title> tag and favicon
-     * @param {string} pageTitle - The page-specific title (e.g., "Home", "Traveling Merchants")
+     * @param {string} pageTitle - The page-specific title (e.g., "Home", "Traveling Merchants"). If not provided, will auto-detect from pageTitles mapping.
      */
     initPageTitle(pageTitle = '') {
+        // If no title provided, try to get it from the mapping
+        if (!pageTitle) {
+            pageTitle = this.getCurrentPageTitle();
+        }
+        
         const title = pageTitle 
             ? `${pageTitle} - ${this.getSiteName()}`
             : this.getSiteName();
@@ -202,7 +236,8 @@ const VersionManager = {
         'merchants.html': '0.0.6',
         'checklist.html': '0.1.5',
         'VehicleDeliveries.html': '0.1.3',
-        'education_timer.html': '0.0.9'
+        'education_timer.html': '0.0.9',
+        'apartment.html': '0.0.1'
     },
     
     /**
@@ -304,11 +339,8 @@ if (typeof window !== 'undefined') {
 // Auto-initialize if document is available
 if (typeof document !== 'undefined') {
     const initAll = () => {
-        // Initialize SiteConfig
-        const currentTitle = document.title;
-        const pageTitle = currentTitle.includes(' - ') 
-            ? currentTitle.split(' - ')[0]
-            : '';
+        // Initialize SiteConfig - auto-detect page title from mapping
+        const pageTitle = SiteConfig.getCurrentPageTitle();
         SiteConfig.init(pageTitle);
         
         // Initialize VersionManager
