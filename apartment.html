@@ -1403,7 +1403,10 @@
     <script src="js/number-formatter.js"></script>
     <!-- Apartment Management JS -->
     <script>
-        const API_BASE = '/n/apartments';
+        // localStorage Configuration Data Structure
+        const APARTMENTS_STORAGE_KEY = 'apartmentsData';
+        const APARTMENTS_VERSION = '1.0.0';
+        
         let apartments = [];
         
         // Debug mode - can be toggled via localStorage or UI
@@ -1412,6 +1415,103 @@
         // Track hidden and locked apartments
         let hiddenApartments = JSON.parse(localStorage.getItem('hiddenApartments') || '[]');
         let lockedApartments = JSON.parse(localStorage.getItem('lockedApartments') || '[]');
+        
+        // Initialize apartments data from localStorage
+        function initializeApartmentsData() {
+            const saved = localStorage.getItem(APARTMENTS_STORAGE_KEY);
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    apartments = data.apartments || [];
+                    if (!data.version) {
+                        saveApartmentsToLocalStorage();
+                    }
+                    debugLog('✅ Loaded apartments from localStorage:', apartments.length);
+                    return true;
+                } catch (e) {
+                    debugLog('Error parsing saved apartments:', e);
+                }
+            }
+            
+            // No saved data - use empty array
+            apartments = [];
+            saveApartmentsToLocalStorage();
+            debugLog('✅ Created empty apartments data');
+            return true;
+        }
+        
+        // Save apartments to localStorage
+        function saveApartmentsToLocalStorage() {
+            const data = {
+                apartments: apartments,
+                version: APARTMENTS_VERSION
+            };
+            localStorage.setItem(APARTMENTS_STORAGE_KEY, JSON.stringify(data));
+            debugLog('✅ Saved apartments to localStorage:', apartments.length);
+        }
+        
+        // Get apartment by ID
+        function getApartmentById(id) {
+            return apartments.find(apt => apt.id === id);
+        }
+        
+        // Get reviews for an apartment
+        function getApartmentReviews(apartmentId) {
+            const apartment = getApartmentById(apartmentId);
+            return apartment ? (apartment.reviews || []) : [];
+        }
+        
+        // Calculate average rating for an apartment
+        function calculateApartmentRating(apartmentId) {
+            const reviews = getApartmentReviews(apartmentId);
+            if (reviews.length === 0) {
+                return { average_rating: null, review_count: 0 };
+            }
+            const sum = reviews.reduce((acc, review) => acc + parseFloat(review.rating || 0), 0);
+            const average = sum / reviews.length;
+            return {
+                average_rating: average.toFixed(2),
+                review_count: reviews.length
+            };
+        }
+        
+        // Get rating breakdown for an apartment
+        function getApartmentRatingBreakdown(apartmentId) {
+            const reviews = getApartmentReviews(apartmentId);
+            const breakdown = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+            reviews.forEach(review => {
+                const rating = Math.round(parseFloat(review.rating || 0));
+                if (rating >= 1 && rating <= 5) {
+                    breakdown[rating]++;
+                }
+            });
+            return breakdown;
+        }
+        
+        // Calculate overall rating across all apartments
+        function calculateOverallRating() {
+            let totalRating = 0;
+            let totalReviews = 0;
+            
+            apartments.forEach(apt => {
+                const reviews = apt.reviews || [];
+                if (reviews.length > 0) {
+                    reviews.forEach(review => {
+                        totalRating += parseFloat(review.rating || 0);
+                        totalReviews++;
+                    });
+                }
+            });
+            
+            if (totalReviews === 0) {
+                return { average_rating: null, review_count: 0 };
+            }
+            
+            return {
+                average_rating: (totalRating / totalReviews).toFixed(2),
+                review_count: totalReviews
+            };
+        }
         
         // Debug logging function
         function debugLog(...args) {
@@ -1733,38 +1833,30 @@
         }
 
         // Load all apartments for selector
-        async function loadAllApartmentsForSelector() {
-            try {
-                const response = await fetch(API_BASE);
-                if (!response.ok) throw new Error('Failed to load apartments');
-                const allApartments = await response.json();
-                const selector = document.getElementById('apartmentSelector');
-                if (!selector) return;
-                
-                selector.innerHTML = '<option value="">-- Select or Create Apartment --</option><option value="new">➕ Create New Apartment</option>';
-                
-                // Sort by owned_number
-                allApartments.sort((a, b) => {
-                    if (a.owned_number === null || a.owned_number === undefined) return 1;
-                    if (b.owned_number === null || b.owned_number === undefined) return -1;
-                    return a.owned_number - b.owned_number;
-                });
-                
-                allApartments.forEach(apt => {
-                    const option = document.createElement('option');
-                    option.value = apt.id;
-                    const ownedNum = apt.owned_number || '--';
-                    option.textContent = `Owned ${ownedNum} - ${apt.apartment_name || apt.location || 'Unnamed'}`;
-                    selector.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error loading apartments for selector:', error);
-                debugLog('ERROR loading apartments for selector:', error);
-            }
+        function loadAllApartmentsForSelector() {
+            const selector = document.getElementById('apartmentSelector');
+            if (!selector) return;
+            
+            selector.innerHTML = '<option value="">-- Select or Create Apartment --</option><option value="new">➕ Create New Apartment</option>';
+            
+            // Sort by owned_number
+            const sortedApartments = [...apartments].sort((a, b) => {
+                if (a.owned_number === null || a.owned_number === undefined) return 1;
+                if (b.owned_number === null || b.owned_number === undefined) return -1;
+                return a.owned_number - b.owned_number;
+            });
+            
+            sortedApartments.forEach(apt => {
+                const option = document.createElement('option');
+                option.value = apt.id;
+                const ownedNum = apt.owned_number || '--';
+                option.textContent = `Owned ${ownedNum} - ${apt.apartment_name || apt.location || 'Unnamed'}`;
+                selector.appendChild(option);
+            });
         }
 
         // Load apartment data when selected
-        async function loadApartmentData() {
+        function loadApartmentData() {
             const apartmentId = document.getElementById('apartmentSelector').value;
             if (!apartmentId || apartmentId === 'new') {
                 if (apartmentId === 'new') {
@@ -1777,43 +1869,30 @@
                 return;
             }
 
-            try {
-                const response = await fetch(`${API_BASE}/${apartmentId}`);
-                if (!response.ok) throw new Error('Failed to load apartment');
-                const apartment = await response.json();
-                
-                // Ensure apartment is in the apartments array for editApartment to work
-                const existingIndex = apartments.findIndex(apt => apt.id === apartment.id);
-                if (existingIndex >= 0) {
-                    apartments[existingIndex] = apartment;
-                } else {
-                    apartments.push(apartment);
-                }
-                
-                // Populate the form with apartment data
-                editApartment(apartment.id);
-                // Show the modal
-                const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
-                modal.show();
-                
-                document.getElementById('saveApartmentBtn').style.display = 'block';
-            } catch (error) {
-                console.error('Error loading apartment data:', error);
-                debugLog('ERROR loading apartment data:', error);
-                alert('Error loading apartment: ' + error.message);
-                // Reset selector on error
+            const apartment = getApartmentById(parseInt(apartmentId));
+            if (!apartment) {
+                alert('Apartment not found');
                 const selector = document.getElementById('apartmentSelector');
                 if (selector) {
                     selector.value = '';
                 }
+                return;
             }
+            
+            // Populate the form with apartment data
+            editApartment(apartment.id);
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
+            modal.show();
+            
+            document.getElementById('saveApartmentBtn').style.display = 'block';
         }
 
         // Save apartment from selector (wrapper for saveApartment)
-        async function saveApartmentFromSelector() {
-            await saveApartment();
+        function saveApartmentFromSelector() {
+            saveApartment();
             // Reload selector after save
-            await loadAllApartmentsForSelector();
+            loadAllApartmentsForSelector();
         }
 
         // Check for actions needed on apartments
@@ -1940,61 +2019,41 @@
         }
 
         // Load all apartments
-        async function loadApartments() {
-            try {
-                const response = await fetch(API_BASE);
-                if (!response.ok) throw new Error('Failed to load apartments');
-                apartments = await response.json();
-                renderApartments();
-                // Also update selector
-                await loadAllApartmentsForSelector();
-                document.getElementById('loadingAlert').style.display = 'none';
-                document.getElementById('apartmentsTableContainer').style.display = 'block';
-                if (apartments.length === 0) {
-                    document.getElementById('noApartmentsAlert').style.display = 'block';
-                } else {
-                    document.getElementById('noApartmentsAlert').style.display = 'none';
-                }
-                // Check for actions needed after loading
-                checkActionsNeeded();
-            } catch (error) {
-                console.error('Error loading apartments:', error);
-                debugLog('ERROR loading apartments:', error);
-                document.getElementById('loadingAlert').innerHTML = 
-                    '<span class="text-danger">Error loading apartments. Please refresh the page.</span>';
+        function loadApartments() {
+            renderApartments();
+            // Also update selector
+            loadAllApartmentsForSelector();
+            document.getElementById('loadingAlert').style.display = 'none';
+            document.getElementById('apartmentsTableContainer').style.display = 'block';
+            if (apartments.length === 0) {
+                document.getElementById('noApartmentsAlert').style.display = 'block';
+            } else {
+                document.getElementById('noApartmentsAlert').style.display = 'none';
             }
+            // Check for actions needed after loading
+            checkActionsNeeded();
         }
 
         // Load apartment rating
-        async function loadApartmentRating(apartmentId) {
+        function loadApartmentRating(apartmentId) {
             debugLog('Loading rating for apartment:', apartmentId);
-            try {
-                const response = await fetch(`${API_BASE}/${apartmentId}/reviews/average`);
-                if (!response.ok) {
-                    debugLog('Failed to load rating, status:', response.status);
-                    return;
-                }
-                const stats = await response.json();
-                debugLog('Rating stats for apartment', apartmentId, ':', stats);
-                const ratingCell = document.getElementById(`rating-${apartmentId}`);
-                if (ratingCell && stats.review_count > 0) {
-                    const avgRating = parseFloat(stats.average_rating).toFixed(1);
-                    ratingCell.innerHTML = `${avgRating} ⭐ (${stats.review_count} review${stats.review_count !== 1 ? 's' : ''})`;
-                    debugLog('Updated rating display:', avgRating, 'stars,', stats.review_count, 'reviews');
-                } else if (ratingCell) {
-                    ratingCell.innerHTML = 'No reviews';
-                    debugLog('No reviews for apartment:', apartmentId);
-                }
-            } catch (error) {
-                console.error('Error loading apartment rating:', error);
-                debugLog('ERROR loading apartment rating:', error);
+            const stats = calculateApartmentRating(apartmentId);
+            debugLog('Rating stats for apartment', apartmentId, ':', stats);
+            const ratingCell = document.getElementById(`rating-${apartmentId}`);
+            if (ratingCell && stats.review_count > 0) {
+                const avgRating = parseFloat(stats.average_rating).toFixed(1);
+                ratingCell.innerHTML = `${avgRating} ⭐ (${stats.review_count} review${stats.review_count !== 1 ? 's' : ''})`;
+                debugLog('Updated rating display:', avgRating, 'stars,', stats.review_count, 'reviews');
+            } else if (ratingCell) {
+                ratingCell.innerHTML = 'No reviews';
+                debugLog('No reviews for apartment:', apartmentId);
             }
         }
 
         // View reviews for an apartment
-        async function viewReviews(apartmentId) {
+        function viewReviews(apartmentId) {
             debugLog('Viewing reviews for apartment:', apartmentId);
-            const apartment = apartments.find(apt => apt.id === apartmentId);
+            const apartment = getApartmentById(apartmentId);
             if (!apartment) {
                 debugLog('ERROR: Apartment not found:', apartmentId);
                 return;
@@ -2005,42 +2064,16 @@
             document.getElementById('reviewApartmentId').value = apartmentId;
             document.getElementById('reviewForm').reset();
             
-            // Load rating overview and reviews
-            try {
-                debugLog('Fetching reviews data for apartment:', apartmentId);
-                const [reviewsRes, breakdownRes, averageRes] = await Promise.all([
-                    fetch(`${API_BASE}/${apartmentId}/reviews`),
-                    fetch(`${API_BASE}/${apartmentId}/reviews/breakdown`),
-                    fetch(`${API_BASE}/${apartmentId}/reviews/average`)
-                ]);
-                
-                debugLog('API Responses:', {
-                    reviews: reviewsRes.status,
-                    breakdown: breakdownRes.status,
-                    average: averageRes.status
-                });
-                
-                if (!reviewsRes.ok) throw new Error('Failed to load reviews');
-                if (!breakdownRes.ok) throw new Error('Failed to load rating breakdown');
-                if (!averageRes.ok) throw new Error('Failed to load average rating');
-                
-                const reviews = await reviewsRes.json();
-                const breakdown = await breakdownRes.json();
-                const average = await averageRes.json();
-                
-                debugLog('Loaded reviews data:', { reviews: reviews.length, breakdown, average });
-                
-                renderRatingOverview(breakdown, average);
-                renderReviews(reviews);
-                debugLog('Reviews modal rendered');
-            } catch (error) {
-                console.error('Error loading reviews:', error);
-                debugLog('ERROR loading reviews:', error);
-                document.getElementById('reviewsContainer').innerHTML = 
-                    '<div class="alert alert-danger">Error loading reviews. Please try again.</div>';
-                document.getElementById('ratingOverviewContainer').innerHTML = 
-                    '<div class="alert alert-danger">Error loading rating overview. Please try again.</div>';
-            }
+            // Load rating overview and reviews from localStorage
+            const reviews = getApartmentReviews(apartmentId);
+            const breakdown = getApartmentRatingBreakdown(apartmentId);
+            const average = calculateApartmentRating(apartmentId);
+            
+            debugLog('Loaded reviews data:', { reviews: reviews.length, breakdown, average });
+            
+            renderRatingOverview(breakdown, average);
+            renderReviews(reviews);
+            debugLog('Reviews modal rendered');
             
             const modal = new bootstrap.Modal(document.getElementById('reviewsModal'));
             modal.show();
@@ -2213,7 +2246,7 @@
         }
 
         // Save review
-        async function saveReview() {
+        function saveReview() {
             const apartmentId = parseInt(document.getElementById('reviewApartmentId').value);
             if (!apartmentId) {
                 alert('Please select an apartment');
@@ -2241,81 +2274,79 @@
             
             debugLog('Saving review:', { apartmentId, rating, comment });
             
-            try {
-                const response = await fetch(`${API_BASE}/${apartmentId}/reviews`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ rating, comment })
-                });
-                
-                debugLog('Review API response:', response.status, response.statusText);
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    debugLog('API Error:', error);
-                    throw new Error(error.message || 'Failed to save review');
-                }
-                
-                const savedReview = await response.json();
-                debugLog('Review saved successfully:', savedReview);
-                
-                // Reload reviews and overview
-                await viewReviews(apartmentId);
-                // Reload apartments to update rating
-                await loadApartments();
-                await loadAllApartments(); // Refresh card view
-                await loadOverallRating(); // Update overall rating
-                // Refresh reviews and overview tabs if active
-                const reviewsTab = document.getElementById('reviews-tab');
-                const overviewTab = document.getElementById('overview-tab');
-                if (reviewsTab && reviewsTab.classList.contains('active')) {
-                    await loadAllReviews();
-                }
-                if (overviewTab && overviewTab.classList.contains('active')) {
-                    await loadOverview();
-                }
-            } catch (error) {
-                console.error('Error saving review:', error);
-                debugLog('ERROR saving review:', error);
-                alert('Error saving review: ' + error.message);
+            const apartment = getApartmentById(apartmentId);
+            if (!apartment) {
+                alert('Apartment not found');
+                return;
+            }
+            
+            // Initialize reviews array if it doesn't exist
+            if (!apartment.reviews) {
+                apartment.reviews = [];
+            }
+            
+            // Create new review
+            const newReview = {
+                id: Date.now(), // Simple ID generation
+                apartment_id: apartmentId,
+                rating: rating,
+                comment: comment,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+            
+            apartment.reviews.push(newReview);
+            saveApartmentsToLocalStorage();
+            
+            debugLog('Review saved successfully:', newReview);
+            
+            // Reload reviews and overview
+            viewReviews(apartmentId);
+            // Reload apartments to update rating
+            loadApartments();
+            loadAllApartments(); // Refresh card view
+            loadOverallRating(); // Update overall rating
+            // Refresh reviews and overview tabs if active
+            const reviewsTab = document.getElementById('reviews-tab');
+            const overviewTab = document.getElementById('overview-tab');
+            if (reviewsTab && reviewsTab.classList.contains('active')) {
+                loadAllReviews();
+            }
+            if (overviewTab && overviewTab.classList.contains('active')) {
+                loadOverview();
             }
         }
 
         // Delete review
-        async function deleteReview(reviewId, apartmentId) {
+        function deleteReview(reviewId, apartmentId) {
             if (!confirm('Are you sure you want to delete this review?')) {
                 return;
             }
             
-            try {
-                const response = await fetch(`${API_BASE}/reviews/${reviewId}`, {
-                    method: 'DELETE'
-                });
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.message || 'Failed to delete review');
-                }
-                
-                // Reload reviews and overview
-                await viewReviews(apartmentId);
-                // Reload apartments to update rating
-                await loadApartments();
-                await loadAllApartments(); // Refresh card view
-                await loadOverallRating(); // Update overall rating
-                // Refresh reviews and overview tabs if active
-                const reviewsTab = document.getElementById('reviews-tab');
-                const overviewTab = document.getElementById('overview-tab');
-                if (reviewsTab && reviewsTab.classList.contains('active')) {
-                    await loadAllReviews();
-                }
-                if (overviewTab && overviewTab.classList.contains('active')) {
-                    await loadOverview();
-                }
-            } catch (error) {
-                console.error('Error deleting review:', error);
-                debugLog('ERROR deleting review:', error);
-                alert('Error deleting review: ' + error.message);
+            const apartment = getApartmentById(apartmentId);
+            if (!apartment || !apartment.reviews) {
+                alert('Review not found');
+                return;
+            }
+            
+            // Remove review from array
+            apartment.reviews = apartment.reviews.filter(review => review.id !== reviewId);
+            saveApartmentsToLocalStorage();
+            
+            // Reload reviews and overview
+            viewReviews(apartmentId);
+            // Reload apartments to update rating
+            loadApartments();
+            loadAllApartments(); // Refresh card view
+            loadOverallRating(); // Update overall rating
+            // Refresh reviews and overview tabs if active
+            const reviewsTab = document.getElementById('reviews-tab');
+            const overviewTab = document.getElementById('overview-tab');
+            if (reviewsTab && reviewsTab.classList.contains('active')) {
+                loadAllReviews();
+            }
+            if (overviewTab && overviewTab.classList.contains('active')) {
+                loadOverview();
             }
         }
 
@@ -2385,7 +2416,7 @@
         }
 
         // Save review edit
-        async function saveReviewEdit(reviewId, apartmentId) {
+        function saveReviewEdit(reviewId, apartmentId) {
             debugLog('Saving review edit:', { reviewId, apartmentId });
             // Check for half-star rating first, then fall back to radio button
             const selectedRatingInput = document.getElementById(`edit-selected-rating-${reviewId}`);
@@ -2410,100 +2441,69 @@
             
             debugLog('Review edit data:', { rating, comment });
             
-            try {
-                const response = await fetch(`${API_BASE}/reviews/${reviewId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ rating, comment })
-                });
-                
-                debugLog('Review edit API response:', response.status, response.statusText);
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    debugLog('API Error:', error);
-                    throw new Error(error.message || 'Failed to update review');
-                }
-                
-                const updatedReview = await response.json();
-                debugLog('Review updated successfully:', updatedReview);
-                
-                // Reload reviews and overview
-                await viewReviews(apartmentId);
-                // Reload apartments to update rating
-                await loadApartments();
-                await loadAllApartments(); // Refresh card view
-                await loadOverallRating(); // Update overall rating
-                // Refresh reviews and overview tabs if active
-                const reviewsTab = document.getElementById('reviews-tab');
-                const overviewTab = document.getElementById('overview-tab');
-                if (reviewsTab && reviewsTab.classList.contains('active')) {
-                    await loadAllReviews();
-                }
-                if (overviewTab && overviewTab.classList.contains('active')) {
-                    await loadOverview();
-                }
-            } catch (error) {
-                console.error('Error updating review:', error);
-                debugLog('ERROR updating review:', error);
-                alert('Error updating review: ' + error.message);
+            const apartment = getApartmentById(apartmentId);
+            if (!apartment || !apartment.reviews) {
+                alert('Review not found');
+                return;
+            }
+            
+            // Find and update review
+            const reviewIndex = apartment.reviews.findIndex(review => review.id === reviewId);
+            if (reviewIndex === -1) {
+                alert('Review not found');
+                return;
+            }
+            
+            apartment.reviews[reviewIndex].rating = rating;
+            apartment.reviews[reviewIndex].comment = comment;
+            apartment.reviews[reviewIndex].updated_at = new Date().toISOString();
+            saveApartmentsToLocalStorage();
+            
+            debugLog('Review updated successfully:', apartment.reviews[reviewIndex]);
+            
+            // Reload reviews and overview
+            viewReviews(apartmentId);
+            // Reload apartments to update rating
+            loadApartments();
+            loadAllApartments(); // Refresh card view
+            loadOverallRating(); // Update overall rating
+            // Refresh reviews and overview tabs if active
+            const reviewsTab = document.getElementById('reviews-tab');
+            const overviewTab = document.getElementById('overview-tab');
+            if (reviewsTab && reviewsTab.classList.contains('active')) {
+                loadAllReviews();
+            }
+            if (overviewTab && overviewTab.classList.contains('active')) {
+                loadOverview();
             }
         }
 
 
         // Load overall rating across all apartments
-        async function loadOverallRating() {
-            try {
-                const response = await fetch(`${API_BASE}/reviews/overall-average`);
-                if (!response.ok) {
-                    debugLog('Failed to load overall rating, status:', response.status);
-                    // Set default display on error
-                    const overallRatingEl = document.getElementById('overallRating');
-                    const overallRatingTextEl = document.getElementById('overallRatingText');
-                    if (overallRatingEl) {
-                        overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
+        function loadOverallRating() {
+            const stats = calculateOverallRating();
+            debugLog('Overall rating stats:', stats);
+            
+            const overallRatingEl = document.getElementById('overallRating');
+            const overallRatingTextEl = document.getElementById('overallRatingText');
+            
+            if (overallRatingEl) {
+                // Check if we have reviews and a valid average rating
+                const reviewCount = parseInt(stats.review_count) || 0;
+                const avgRating = stats.average_rating != null ? parseFloat(stats.average_rating) : null;
+                
+                if (reviewCount > 0 && avgRating != null && !isNaN(avgRating)) {
+                    const avgRatingFormatted = avgRating.toFixed(1);
+                    const stars = formatStars(avgRating);
+                    overallRatingEl.innerHTML = `<span class="text-warning" style="font-size: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;">${stars} <strong>${avgRatingFormatted}</strong></span>`;
+                    if (overallRatingTextEl) {
+                        overallRatingTextEl.textContent = `(${reviewCount} review${reviewCount !== 1 ? 's' : ''})`;
                     }
+                } else {
+                    overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
                     if (overallRatingTextEl) {
                         overallRatingTextEl.textContent = '(Overall Rating)';
                     }
-                    return;
-                }
-                const stats = await response.json();
-                debugLog('Overall rating stats:', stats);
-                
-                const overallRatingEl = document.getElementById('overallRating');
-                const overallRatingTextEl = document.getElementById('overallRatingText');
-                
-                if (overallRatingEl) {
-                    // Check if we have reviews and a valid average rating
-                    const reviewCount = parseInt(stats.review_count) || 0;
-                    const avgRating = stats.average_rating != null ? parseFloat(stats.average_rating) : null;
-                    
-                    if (reviewCount > 0 && avgRating != null && !isNaN(avgRating)) {
-                        const avgRatingFormatted = avgRating.toFixed(1);
-                        const stars = formatStars(avgRating);
-                        overallRatingEl.innerHTML = `<span class="text-warning" style="font-size: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;">${stars} <strong>${avgRatingFormatted}</strong></span>`;
-                        if (overallRatingTextEl) {
-                            overallRatingTextEl.textContent = `(${reviewCount} review${reviewCount !== 1 ? 's' : ''})`;
-                        }
-                    } else {
-                        overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
-                        if (overallRatingTextEl) {
-                            overallRatingTextEl.textContent = '(Overall Rating)';
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading overall rating:', error);
-                debugLog('ERROR loading overall rating:', error);
-                // Set default display on error
-                const overallRatingEl = document.getElementById('overallRating');
-                const overallRatingTextEl = document.getElementById('overallRatingText');
-                if (overallRatingEl) {
-                    overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
-                }
-                if (overallRatingTextEl) {
-                    overallRatingTextEl.textContent = '(Overall Rating)';
                 }
             }
         }
@@ -2865,7 +2865,7 @@
         }
 
         // Save apartment
-        async function saveApartment() {
+        function saveApartment() {
             const form = document.getElementById('apartmentForm');
             if (!form.checkValidity()) {
                 form.reportValidity();
@@ -2944,105 +2944,93 @@
             
             debugLog('Saving apartment with data:', apartmentData);
             
-            try {
-                const id = document.getElementById('apartmentId').value;
-                let response;
-                
-                if (id) {
-                    // Update
-                    debugLog('Updating apartment ID:', id);
-                    response = await fetch(`${API_BASE}/${id}`, {
-                        method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(apartmentData)
-                    });
-                } else {
-                    // Create
-                    debugLog('Creating new apartment');
-                    response = await fetch(API_BASE, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(apartmentData)
-                    });
+            const id = document.getElementById('apartmentId').value;
+            let savedApartment;
+            
+            if (id) {
+                // Update existing apartment
+                debugLog('Updating apartment ID:', id);
+                const apartmentIndex = apartments.findIndex(apt => apt.id === parseInt(id));
+                if (apartmentIndex === -1) {
+                    alert('Apartment not found');
+                    return;
                 }
                 
-                debugLog('API Response:', response.status, response.statusText);
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    debugLog('API Error:', error);
-                    throw new Error(error.message || 'Failed to save apartment');
-                }
-                
-                const savedApartment = await response.json();
-                debugLog('Apartment saved successfully:', savedApartment);
-                
-                // Close modal and reload
-                const modal = bootstrap.Modal.getInstance(document.getElementById('apartmentModal'));
-                if (modal) {
-                    modal.hide();
-                }
-                
-                // Wait a bit for modal to start closing, then clean up backdrop
-                setTimeout(() => {
-                    // Ensure modal backdrop is removed
-                    const backdrop = document.querySelector('.modal-backdrop');
-                    if (backdrop) {
-                        backdrop.remove();
-                    }
-                    
-                    // Remove modal-open class from body if it exists
-                    document.body.classList.remove('modal-open');
-                    document.body.style.overflow = '';
-                    document.body.style.paddingRight = '';
-                }, 100);
-                
-                await loadApartments();
-                await loadAllApartments(); // Refresh card view
-                await loadAllApartmentsForSelector(); // Update selector
-                // Refresh overview if on overview tab
-                const overviewTab = document.getElementById('overview-tab');
-                if (overviewTab && overviewTab.classList.contains('active')) {
-                    await loadOverview();
-                }
-                // Reset selector
-                document.getElementById('apartmentSelector').value = '';
-                document.getElementById('saveApartmentBtn').style.display = 'none';
-            } catch (error) {
-                console.error('Error saving apartment:', error);
-                debugLog('ERROR saving apartment:', error);
-                alert('Error saving apartment: ' + error.message);
+                // Preserve reviews if they exist
+                const existingReviews = apartments[apartmentIndex].reviews || [];
+                apartments[apartmentIndex] = { ...apartments[apartmentIndex], ...apartmentData };
+                apartments[apartmentIndex].reviews = existingReviews;
+                savedApartment = apartments[apartmentIndex];
+            } else {
+                // Create new apartment
+                debugLog('Creating new apartment');
+                const newId = apartments.length > 0 ? Math.max(...apartments.map(apt => apt.id || 0)) + 1 : 1;
+                savedApartment = {
+                    id: newId,
+                    ...apartmentData,
+                    reviews: []
+                };
+                apartments.push(savedApartment);
             }
+            
+            saveApartmentsToLocalStorage();
+            debugLog('Apartment saved successfully:', savedApartment);
+            
+            // Close modal and reload
+            const modal = bootstrap.Modal.getInstance(document.getElementById('apartmentModal'));
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Wait a bit for modal to start closing, then clean up backdrop
+            setTimeout(() => {
+                // Ensure modal backdrop is removed
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+                
+                // Remove modal-open class from body if it exists
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }, 100);
+            
+            loadApartments();
+            loadAllApartments(); // Refresh card view
+            loadAllApartmentsForSelector(); // Update selector
+            // Refresh overview if on overview tab
+            const overviewTab = document.getElementById('overview-tab');
+            if (overviewTab && overviewTab.classList.contains('active')) {
+                loadOverview();
+            }
+            // Reset selector
+            document.getElementById('apartmentSelector').value = '';
+            document.getElementById('saveApartmentBtn').style.display = 'none';
         }
 
         // Delete apartment
-        async function deleteApartment(id) {
+        function deleteApartment(id) {
             if (!confirm('Are you sure you want to delete this apartment?')) {
                 return;
             }
             
-            try {
-                const response = await fetch(`${API_BASE}/${id}`, {
-                    method: 'DELETE'
-                });
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.message || 'Failed to delete apartment');
-                }
-                
-                await loadApartments();
-                await loadAllApartments(); // Refresh card view
-                await loadAllApartmentsForSelector(); // Update selector
-                // Refresh overview if on overview tab
-                const overviewTab = document.getElementById('overview-tab');
-                if (overviewTab && overviewTab.classList.contains('active')) {
-                    await loadOverview();
-                }
-            } catch (error) {
-                console.error('Error deleting apartment:', error);
-                debugLog('ERROR deleting apartment:', error);
-                alert('Error deleting apartment: ' + error.message);
+            const apartmentIndex = apartments.findIndex(apt => apt.id === id);
+            if (apartmentIndex === -1) {
+                alert('Apartment not found');
+                return;
+            }
+            
+            apartments.splice(apartmentIndex, 1);
+            saveApartmentsToLocalStorage();
+            
+            loadApartments();
+            loadAllApartments(); // Refresh card view
+            loadAllApartmentsForSelector(); // Update selector
+            // Refresh overview if on overview tab
+            const overviewTab = document.getElementById('overview-tab');
+            if (overviewTab && overviewTab.classList.contains('active')) {
+                loadOverview();
             }
         }
 
@@ -3074,7 +3062,7 @@
         }
 
         // Save rent price
-        async function saveRentPrice(apartmentId) {
+        function saveRentPrice(apartmentId) {
             debugLog('Saving rent price for apartment:', apartmentId);
             const input = document.getElementById(`rent-price-input-${apartmentId}`);
             const displayDiv = document.getElementById(`rent-price-display-${apartmentId}`);
@@ -3092,44 +3080,26 @@
             const priceToSave = priceValue !== null ? priceValue : null;
             debugLog('Price to save:', priceToSave);
             
-            try {
-                const response = await fetch(`${API_BASE}/${apartmentId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ renting_out_price: priceToSave })
-                });
-                
-                debugLog('Rent price API response:', response.status, response.statusText);
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    debugLog('API Error:', error);
-                    throw new Error(error.message || 'Failed to update rent price');
-                }
-                
-                // Update display
-                const formattedPrice = priceToSave ? parseFloat(priceToSave).toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }) : '--';
-                displayDiv.textContent = `$${formattedPrice}`;
-                debugLog('Updated display with formatted price:', formattedPrice);
-                
-                // Hide edit form, show display
-                displayDiv.parentElement.style.display = 'flex';
-                editDiv.style.display = 'none';
-                
-                // Update the apartment in the local array
-                const apartment = apartments.find(apt => apt.id === apartmentId);
-                if (apartment) {
-                    apartment.renting_out_price = priceToSave;
-                    debugLog('Updated apartment in local array');
-                }
-            } catch (error) {
-                console.error('Error saving rent price:', error);
-                debugLog('ERROR saving rent price:', error);
-                alert('Error saving rent price: ' + error.message);
+            const apartment = getApartmentById(apartmentId);
+            if (!apartment) {
+                alert('Apartment not found');
+                return;
             }
+            
+            apartment.renting_out_price = priceToSave;
+            saveApartmentsToLocalStorage();
+            
+            // Update display
+            const formattedPrice = priceToSave ? parseFloat(priceToSave).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) : '--';
+            displayDiv.textContent = `$${formattedPrice}`;
+            debugLog('Updated display with formatted price:', formattedPrice);
+            
+            // Hide edit form, show display
+            displayDiv.parentElement.style.display = 'flex';
+            editDiv.style.display = 'none';
         }
 
         // Parse formatted number (remove commas)
@@ -3158,80 +3128,208 @@
         }
 
         // Load all apartments in card format (like All Businesses by Tier)
-        async function loadAllApartments() {
+        function loadAllApartments() {
             const container = document.getElementById('allApartmentsContainer');
             if (!container) return;
             
-            try {
-                container.innerHTML = '<p class="text-muted text-center">Loading apartments...</p>';
-                
-                // Load all apartments
-                const response = await fetch(API_BASE);
-                if (!response.ok) throw new Error('Failed to load apartments');
-                const allApartments = await response.json();
-                
-                // Sort by owned_number (nulls last)
-                allApartments.sort((a, b) => {
-                    if (a.owned_number === null || a.owned_number === undefined) return 1;
-                    if (b.owned_number === null || b.owned_number === undefined) return -1;
-                    return a.owned_number - b.owned_number;
-                });
-                
-                if (allApartments.length === 0) {
-                    container.innerHTML = '<p class="text-muted text-center">No apartments found.</p>';
-                    // Clear visibility controls
-                    const controlsContainer = document.getElementById('apartmentVisibilityControls');
-                    if (controlsContainer) {
-                        controlsContainer.innerHTML = '';
-                    }
-                    return;
-                }
-                
-                // Populate apartment visibility controls
+            // Sort by owned_number (nulls last)
+            const sortedApartments = [...apartments].sort((a, b) => {
+                if (a.owned_number === null || a.owned_number === undefined) return 1;
+                if (b.owned_number === null || b.owned_number === undefined) return -1;
+                return a.owned_number - b.owned_number;
+            });
+            
+            if (sortedApartments.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">No apartments found.</p>';
+                // Clear visibility controls
                 const controlsContainer = document.getElementById('apartmentVisibilityControls');
                 if (controlsContainer) {
-                    const allApartmentsLocked = JSON.parse(localStorage.getItem('allApartmentsLocked') || '[]');
-                    controlsContainer.innerHTML = allApartments.map(apt => {
-                        const ownedNum = apt.owned_number || '--';
-                        const isVisible = !hiddenApartments.includes(apt.id);
-                        const isLocked = allApartmentsLocked.includes(apt.id);
-                        return `
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="apt-check-${apt.id}" 
-                                       ${isVisible ? 'checked' : ''} 
-                                       onchange="toggleApartmentVisibility(${apt.id})">
-                                <label class="form-check-label" for="apt-check-${apt.id}">
-                                    Owned ${ownedNum} ${isLocked ? '🔒' : ''}
-                                </label>
-                            </div>
-                        `;
-                    }).join('');
+                    controlsContainer.innerHTML = '';
                 }
+                return;
+            }
+            
+            // Populate apartment visibility controls
+            const controlsContainer = document.getElementById('apartmentVisibilityControls');
+            if (controlsContainer) {
+                const allApartmentsLocked = JSON.parse(localStorage.getItem('allApartmentsLocked') || '[]');
+                controlsContainer.innerHTML = sortedApartments.map(apt => {
+                    const ownedNum = apt.owned_number || '--';
+                    const isVisible = !hiddenApartments.includes(apt.id);
+                    const isLocked = allApartmentsLocked.includes(apt.id);
+                    return `
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="apt-check-${apt.id}" 
+                                   ${isVisible ? 'checked' : ''} 
+                                   onchange="toggleApartmentVisibility(${apt.id})">
+                            <label class="form-check-label" for="apt-check-${apt.id}">
+                                Owned ${ownedNum} ${isLocked ? '🔒' : ''}
+                            </label>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Calculate average ratings for each apartment
+            const apartmentsWithReviews = sortedApartments.map(apt => {
+                const reviews = apt.reviews || [];
+                if (reviews.length > 0) {
+                    const avgRating = reviews.reduce((sum, r) => sum + parseFloat(r.rating || 0), 0) / reviews.length;
+                    apt.average_rating = avgRating.toFixed(1);
+                } else {
+                    apt.average_rating = null;
+                }
+                return apt;
+            });
                 
-                // Load reviews for each apartment
-                const apartmentsWithReviews = await Promise.all(allApartments.map(async (apt) => {
-                    try {
-                        const reviewsResponse = await fetch(`${API_BASE}/${apt.id}/reviews`);
-                        if (reviewsResponse.ok) {
-                            apt.reviews = await reviewsResponse.json();
-                            // Get average rating
-                            if (apt.reviews.length > 0) {
-                                const avgRating = apt.reviews.reduce((sum, r) => sum + r.rating, 0) / apt.reviews.length;
-                                apt.average_rating = avgRating.toFixed(1);
-                            } else {
-                                apt.average_rating = null;
-                            }
-                        } else {
-                            apt.reviews = [];
-                            apt.average_rating = null;
-                        }
-                    } catch (error) {
-                        debugLog(`Error loading reviews for apartment ${apt.id}:`, error);
-                        apt.reviews = [];
-                        apt.average_rating = null;
-                    }
-                    return apt;
-                }));
+                container.innerHTML = apartmentsWithReviews.map(apt => {
+                    const ownedNum = apt.owned_number || '--';
+                    const tabName = `Owned ${ownedNum} - ${escapeHtml(apt.apartment_name || 'Unnamed')}`;
+                    const tabId = `apt-${apt.id}`;
+                    
+                    // Check if apartment is hidden or locked
+                    const isHidden = hiddenApartments.includes(apt.id);
+                    // Check both global lock and "All Apartments" section lock
+                    const allApartmentsLocked = JSON.parse(localStorage.getItem('allApartmentsLocked') || '[]');
+                    const isLocked = allApartmentsLocked.includes(apt.id);
+                    
+                    // Format dates - using local time
+                    const dueDateLocal = apt.due_date ? formatLocalDateDDMMMYYYYWithTime(new Date(apt.due_date)) : '--';
+                    const dueDateEastern = apt.due_date ? formatDateDDMMMYYYYWithTime(new Date(apt.due_date), 'America/New_York') : '--';
+                    const easternTZ = apt.due_date ? getEasternTimeZone() : '';
+                    
+                    const cleanTimeLocal = apt.clean_time ? formatLocalDateDDMMMYYYYWithTime(new Date(apt.clean_time)) : '--';
+                    const cleanTimeEastern = apt.clean_time ? formatDateDDMMMYYYYWithTime(new Date(apt.clean_time), 'America/New_York') : '--';
+                    
+                    const stars = apt.average_rating ? formatStars(parseFloat(apt.average_rating)) : 'No ratings';
+                    
+                    return `
+                        <div class="card mb-4" id="apartment-card-${apt.id}" style="${isHidden ? 'display: none;' : ''}">
+                            <div class="card-header bg-info text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">${tabName}</h4>
+                                    <div class="d-flex gap-2">
+                                        ${!isLocked ? `
+                                            <button class="btn btn-sm btn-light" onclick="editApartment(${apt.id})" title="Edit Apartment">
+                                                ✏️ Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteApartment(${apt.id})" title="Delete Apartment">
+                                                🗑️ Delete
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Tab Navigation -->
+                                <ul class="nav nav-tabs mb-3" id="${tabId}-tabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="${tabId}-info-tab" data-bs-toggle="tab" data-bs-target="#${tabId}-info" type="button" role="tab">
+                                            Info
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="${tabId}-reviews-tab" data-bs-toggle="tab" data-bs-target="#${tabId}-reviews" type="button" role="tab">
+                                            Reviews (${apt.reviews.length})
+                                        </button>
+                                    </li>
+                                </ul>
+                                
+                                <!-- Tab Content -->
+                                <div class="tab-content" id="${tabId}-content">
+                                    <!-- Info Tab -->
+                                    <div class="tab-pane fade show active" id="${tabId}-info" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Location:</strong> ${escapeHtml(apt.location || 'N/A')}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Apartment No.:</strong> ${escapeHtml(apt.apartment_no || 'N/A')}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Postal:</strong> ${escapeHtml(apt.postal || 'N/A')}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Class:</strong> ${escapeHtml(apt.apartment_class || 'N/A')}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Purchased Price:</strong> ${apt.purchased_price ? formatNumber(apt.purchased_price) : 'N/A'}
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Renting Price:</strong> <span style="color: navy; font-weight: 700;">${apt.renting_out_price ? formatNumber(apt.renting_out_price) : 'N/A'}</span>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Due Date:</strong><br>
+                                                Local: ${dueDateLocal}<br>
+                                                <span class="eastern-date" style="color: purple;">Eastern: ${dueDateEastern} ${easternTZ}</span>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Clean Time:</strong><br>
+                                                Local: ${cleanTimeLocal}<br>
+                                                <span class="eastern-date" style="color: purple;">Eastern: ${cleanTimeEastern} ${easternTZ}</span>
+                                            </div>
+                                            ${apt.apartment_description ? `
+                                            <div class="col-md-12 mb-3">
+                                                <strong>Description:</strong><br>
+                                                ${escapeHtml(apt.apartment_description)}
+                                            </div>
+                                            ` : ''}
+                                            <div class="col-md-12 mb-3">
+                                                <strong>Rating:</strong> 
+                                                <span class="review-rating" style="display: inline-block; margin-left: 0.5rem;">${stars}</span>
+                                                ${apt.average_rating ? `<span style="margin-left: 0.5rem; color: var(--text-color); opacity: 0.8;">(${apt.average_rating} from ${apt.reviews.length} review${apt.reviews.length !== 1 ? 's' : ''})</span>` : ''}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reviews Tab -->
+                                    <div class="tab-pane fade" id="${tabId}-reviews" role="tabpanel">
+                                        ${apt.reviews.length === 0 ? `
+                                            <div class="text-center py-4">
+                                                <p class="text-muted mb-3">No reviews yet.</p>
+                                                ${!isLocked ? `
+                                                    <button class="btn btn-primary" onclick="viewReviews(${apt.id})">
+                                                        ➕ Add Review
+                                                    </button>
+                                                ` : '<p class="text-muted"><small>🔒 Apartment is locked</small></p>'}
+                                            </div>
+                                        ` : `
+                                            ${!isLocked ? `
+                                                <div class="mb-4">
+                                                    <button class="btn btn-primary btn-sm" onclick="viewReviews(${apt.id})">
+                                                        ➕ Add Review
+                                                    </button>
+                                                </div>
+                                            ` : ''}
+                                            <div class="reviews-list">
+                                            ${apt.reviews.map(review => {
+                                                const date = new Date(review.created_at);
+                                                const dateStr = formatLocalDateDDMMMYYYYWithTime(date);
+                                                const easternDateStr = formatDateDDMMMYYYYWithTime(date, 'America/New_York');
+                                                const reviewStars = formatStars(review.rating);
+                                                return `
+                                                    <div class="review-item">
+                                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                                            <div class="flex-grow-1">
+                                                                <div class="review-rating">${reviewStars}</div>
+                                                                <div class="review-date">
+                                                                    ${dateStr}
+                                                                    <span class="eastern-date">Eastern: ${easternDateStr} ${getEasternTimeZone()}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p>${escapeHtml(review.comment || 'No comment')}</p>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                            </div>
+                                        `}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
                 
                 container.innerHTML = apartmentsWithReviews.map(apt => {
                     const ownedNum = apt.owned_number || '--';
@@ -3381,11 +3479,6 @@
                         </div>
                     `;
                 }).join('');
-            } catch (error) {
-                console.error('Error loading all apartments:', error);
-                debugLog('ERROR loading all apartments:', error);
-                container.innerHTML = '<p class="text-danger text-center">Error loading apartments. Please refresh the page.</p>';
-            }
         }
 
         // Toggle apartment visibility
@@ -3499,38 +3592,23 @@
         }
 
         // Load all reviews for Reviews tab
-        async function loadAllReviews() {
+        function loadAllReviews() {
             const container = document.getElementById('allReviewsContainer');
             if (!container) return;
             
-            try {
-                container.innerHTML = '<p class="text-muted text-center">Loading reviews...</p>';
-                
-                // Load all apartments first
-                const apartmentsResponse = await fetch(API_BASE);
-                if (!apartmentsResponse.ok) throw new Error('Failed to load apartments');
-                const allApartments = await apartmentsResponse.json();
-                
-                // Load reviews for each apartment
-                const allReviews = [];
-                for (const apt of allApartments) {
-                    try {
-                        const reviewsResponse = await fetch(`${API_BASE}/${apt.id}/reviews`);
-                        if (reviewsResponse.ok) {
-                            const reviews = await reviewsResponse.json();
-                            reviews.forEach(review => {
-                                allReviews.push({
-                                    ...review,
-                                    apartment_name: apt.apartment_name,
-                                    apartment_location: apt.location,
-                                    apartment_id: apt.id
-                                });
-                            });
-                        }
-                    } catch (error) {
-                        debugLog(`Error loading reviews for apartment ${apt.id}:`, error);
-                    }
-                }
+            // Collect all reviews from all apartments
+            const allReviews = [];
+            apartments.forEach(apt => {
+                const reviews = apt.reviews || [];
+                reviews.forEach(review => {
+                    allReviews.push({
+                        ...review,
+                        apartment_name: apt.apartment_name,
+                        apartment_location: apt.location,
+                        apartment_id: apt.id
+                    });
+                });
+            });
                 
                 // Sort by date (newest first)
                 allReviews.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -3572,127 +3650,75 @@
                         </div>
                     `;
                 }).join('');
-            } catch (error) {
-                console.error('Error loading all reviews:', error);
-                debugLog('ERROR loading all reviews:', error);
-                container.innerHTML = '<p class="text-danger text-center">Error loading reviews.</p>';
-            }
         }
 
         // Load overview statistics
-        async function loadOverview() {
-            try {
-                // Load apartments
-                const apartmentsResponse = await fetch(API_BASE);
-                if (!apartmentsResponse.ok) throw new Error('Failed to load apartments');
-                const allApartments = await apartmentsResponse.json();
-                
-                // Load overall rating
-                const ratingResponse = await fetch(`${API_BASE}/reviews/overall-average`);
-                const ratingStats = ratingResponse.ok ? await ratingResponse.json() : { average_rating: null, review_count: 0 };
-                
-                // Update overview display
-                const totalApartmentsEl = document.getElementById('overviewTotalApartments');
-                const overallRatingEl = document.getElementById('overviewOverallRating');
-                const totalReviewsEl = document.getElementById('overviewTotalReviews');
-                
-                if (totalApartmentsEl) {
-                    totalApartmentsEl.textContent = allApartments.length;
+        function loadOverview() {
+            // Calculate overall rating
+            const ratingStats = calculateOverallRating();
+            
+            // Update overview display
+            const totalApartmentsEl = document.getElementById('overviewTotalApartments');
+            const overallRatingEl = document.getElementById('overviewOverallRating');
+            const totalReviewsEl = document.getElementById('overviewTotalReviews');
+            
+            if (totalApartmentsEl) {
+                totalApartmentsEl.textContent = apartments.length;
+            }
+            
+            if (overallRatingEl) {
+                if (ratingStats.review_count > 0) {
+                    const avgRating = parseFloat(ratingStats.average_rating).toFixed(1);
+                    const stars = formatStars(parseFloat(avgRating));
+                    overallRatingEl.innerHTML = `<div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${stars}</div><div>${avgRating}</div>`;
+                } else {
+                    overallRatingEl.innerHTML = '<span style="opacity: 0.7;">No reviews yet</span>';
                 }
-                
-                if (overallRatingEl) {
-                    if (ratingStats.review_count > 0) {
-                        const avgRating = parseFloat(ratingStats.average_rating).toFixed(1);
-                        const stars = formatStars(parseFloat(avgRating));
-                        overallRatingEl.innerHTML = `<div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${stars}</div><div>${avgRating}</div>`;
-                    } else {
-                        overallRatingEl.innerHTML = '<span style="opacity: 0.7;">No reviews yet</span>';
-                    }
-                }
-                
-                if (totalReviewsEl) {
-                    totalReviewsEl.textContent = ratingStats.review_count || 0;
-                }
-            } catch (error) {
-                console.error('Error loading overview:', error);
-                debugLog('ERROR loading overview:', error);
+            }
+            
+            if (totalReviewsEl) {
+                totalReviewsEl.textContent = ratingStats.review_count || 0;
             }
         }
 
         // Export/Import Functions
 
         // Export all apartments
-        async function exportApartments() {
-            try {
-                const response = await fetch(API_BASE);
-                if (!response.ok) throw new Error('Failed to load apartments');
-                const allApartments = await response.json();
-                
-                // Include reviews for each apartment
-                const apartmentsWithReviews = await Promise.all(allApartments.map(async (apt) => {
-                    try {
-                        const reviewsResponse = await fetch(`${API_BASE}/${apt.id}/reviews`);
-                        if (reviewsResponse.ok) {
-                            apt.reviews = await reviewsResponse.json();
-                        } else {
-                            apt.reviews = [];
-                        }
-                    } catch (error) {
-                        debugLog(`Error loading reviews for apartment ${apt.id}:`, error);
-                        apt.reviews = [];
-                    }
-                    return apt;
-                }));
-                
-                const exportData = {
-                    apartments: apartmentsWithReviews,
-                    export_date: new Date().toISOString(),
-                    version: '1.0.0'
-                };
-                
-                const exportJson = JSON.stringify(exportData, null, 2);
-                document.getElementById('exportTextarea').value = exportJson;
-                document.getElementById('exportModalLabel').textContent = 'Export Apartments';
-                const modal = new bootstrap.Modal(document.getElementById('exportModal'));
-                modal.show();
-            } catch (error) {
-                console.error('Error exporting apartments:', error);
-                debugLog('ERROR exporting apartments:', error);
-                alert('Error exporting apartments: ' + error.message);
-            }
+        function exportApartments() {
+            const exportData = {
+                apartments: apartments,
+                export_date: new Date().toISOString(),
+                version: '1.0.0'
+            };
+            
+            const exportJson = JSON.stringify(exportData, null, 2);
+            document.getElementById('exportTextarea').value = exportJson;
+            document.getElementById('exportModalLabel').textContent = 'Export Apartments';
+            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+            modal.show();
         }
 
         // Export timers only (due_date and clean_time)
-        async function exportTimers() {
-            try {
-                const response = await fetch(API_BASE);
-                if (!response.ok) throw new Error('Failed to load apartments');
-                const allApartments = await response.json();
-                
-                const timers = allApartments.map(apt => ({
-                    apartment_id: apt.id,
-                    apartment_name: apt.apartment_name || apt.location || 'Unnamed',
-                    owned_number: apt.owned_number,
-                    due_date: apt.due_date,
-                    clean_time: apt.clean_time
-                })).filter(timer => timer.due_date || timer.clean_time); // Only include apartments with timers
-                
-                const exportData = {
-                    timers: timers,
-                    export_date: new Date().toISOString(),
-                    version: '1.0.0'
-                };
-                
-                const exportJson = JSON.stringify(exportData, null, 2);
-                document.getElementById('exportTextarea').value = exportJson;
-                document.getElementById('exportModalLabel').textContent = 'Export Timers';
-                const modal = new bootstrap.Modal(document.getElementById('exportModal'));
-                modal.show();
-            } catch (error) {
-                console.error('Error exporting timers:', error);
-                debugLog('ERROR exporting timers:', error);
-                alert('Error exporting timers: ' + error.message);
-            }
+        function exportTimers() {
+            const timers = apartments.map(apt => ({
+                apartment_id: apt.id,
+                apartment_name: apt.apartment_name || apt.location || 'Unnamed',
+                owned_number: apt.owned_number,
+                due_date: apt.due_date,
+                clean_time: apt.clean_time
+            })).filter(timer => timer.due_date || timer.clean_time); // Only include apartments with timers
+            
+            const exportData = {
+                timers: timers,
+                export_date: new Date().toISOString(),
+                version: '1.0.0'
+            };
+            
+            const exportJson = JSON.stringify(exportData, null, 2);
+            document.getElementById('exportTextarea').value = exportJson;
+            document.getElementById('exportModalLabel').textContent = 'Export Timers';
+            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+            modal.show();
         }
 
         // Open import modal
@@ -3711,7 +3737,7 @@
         }
 
         // Import apartments
-        async function importApartments() {
+        function importApartments() {
             const importText = document.getElementById('importTextarea').value.trim();
             if (!importText) {
                 alert('Please paste JSON data');
@@ -3739,50 +3765,22 @@
                         const reviews = aptData.reviews || [];
                         delete aptData.reviews; // Remove reviews from apartment data
                         
-                        let response;
                         if (aptData.id) {
                             // Update existing apartment
-                            const { id, ...apartmentData } = aptData;
-                            response = await fetch(`${API_BASE}/${id}`, {
-                                method: 'PATCH',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(apartmentData)
-                            });
+                            const apartmentIndex = apartments.findIndex(apt => apt.id === aptData.id);
+                            if (apartmentIndex === -1) {
+                                throw new Error('Apartment not found');
+                            }
+                            apartments[apartmentIndex] = { ...apartments[apartmentIndex], ...aptData };
+                            apartments[apartmentIndex].reviews = reviews; // Set reviews
                         } else {
                             // Create new apartment
-                            response = await fetch(API_BASE, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(aptData)
+                            const newId = apartments.length > 0 ? Math.max(...apartments.map(apt => apt.id || 0)) + 1 : 1;
+                            apartments.push({
+                                id: newId,
+                                ...aptData,
+                                reviews: reviews
                             });
-                        }
-                        
-                        if (!response.ok) {
-                            const error = await response.json();
-                            throw new Error(error.message || 'Failed to save apartment');
-                        }
-                        
-                        const savedApartment = await response.json();
-                        
-                        // Import reviews if any
-                        if (reviews.length > 0 && savedApartment.id) {
-                            for (const review of reviews) {
-                                try {
-                                    const reviewResponse = await fetch(`${API_BASE}/${savedApartment.id}/reviews`, {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({
-                                            rating: review.rating,
-                                            comment: review.comment
-                                        })
-                                    });
-                                    if (!reviewResponse.ok) {
-                                        debugLog(`Failed to import review for apartment ${savedApartment.id}`);
-                                    }
-                                } catch (error) {
-                                    debugLog(`Error importing review:`, error);
-                                }
-                            }
                         }
                         
                         successCount++;
@@ -3792,6 +3790,8 @@
                         debugLog('Error importing apartment:', aptData, error);
                     }
                 }
+                
+                saveApartmentsToLocalStorage();
                 
                 const importModal = bootstrap.Modal.getInstance(document.getElementById('importModal'));
                 if (importModal) {
@@ -3807,9 +3807,9 @@
                 alert(message);
                 
                 // Reload apartments
-                await loadApartments();
-                await loadAllApartments();
-                await loadAllApartmentsForSelector();
+                loadApartments();
+                loadAllApartments();
+                loadAllApartmentsForSelector();
             } catch (error) {
                 if (error instanceof SyntaxError) {
                     alert(`Import failed: Invalid JSON format.\n\nError: ${error.message}`);
@@ -3821,7 +3821,7 @@
         }
 
         // Import timers only
-        async function importTimers() {
+        function importTimers() {
             const importText = document.getElementById('importTimersTextarea').value.trim();
             if (!importText) {
                 alert('Please paste JSON data');
@@ -3849,24 +3849,13 @@
                             throw new Error('Missing apartment_id');
                         }
                         
-                        const updateData = {};
-                        if (timerData.due_date) updateData.due_date = timerData.due_date;
-                        if (timerData.clean_time) updateData.clean_time = timerData.clean_time;
-                        
-                        if (Object.keys(updateData).length === 0) {
-                            continue; // Skip if no timer data
+                        const apartment = getApartmentById(timerData.apartment_id);
+                        if (!apartment) {
+                            throw new Error('Apartment not found');
                         }
                         
-                        const response = await fetch(`${API_BASE}/${timerData.apartment_id}`, {
-                            method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(updateData)
-                        });
-                        
-                        if (!response.ok) {
-                            const error = await response.json();
-                            throw new Error(error.message || 'Failed to update timers');
-                        }
+                        if (timerData.due_date) apartment.due_date = timerData.due_date;
+                        if (timerData.clean_time) apartment.clean_time = timerData.clean_time;
                         
                         successCount++;
                     } catch (error) {
@@ -3875,6 +3864,8 @@
                         debugLog('Error importing timer:', timerData, error);
                     }
                 }
+                
+                saveApartmentsToLocalStorage();
                 
                 const importTimersModal = bootstrap.Modal.getInstance(document.getElementById('importTimersModal'));
                 if (importTimersModal) {
@@ -3890,8 +3881,8 @@
                 alert(message);
                 
                 // Reload apartments
-                await loadApartments();
-                await loadAllApartments();
+                loadApartments();
+                loadAllApartments();
             } catch (error) {
                 if (error instanceof SyntaxError) {
                     alert(`Import failed: Invalid JSON format.\n\nError: ${error.message}`);
@@ -3915,6 +3906,9 @@
         // Initialize on page load
         window.addEventListener('DOMContentLoaded', function() {
             debugLog('Page loaded, initializing...');
+            
+            // Initialize apartments from localStorage
+            initializeApartmentsData();
             
             // Initialize debug button state
             const debugBtn = document.getElementById('debugToggleBtn');
