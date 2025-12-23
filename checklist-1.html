@@ -3827,93 +3827,139 @@
         // Open product order modal
         function openProductOrderModal() {
             debugLog('=== openProductOrderModal START ===');
+            const startTime = performance.now();
             const products = checklistConfigData.products || [];
             debugLog(`Found ${products.length} total products`);
             
             if (products.length === 0) {
                 debugWarn('No products available for ordering');
                 alert('No products available. Please add products first.');
+                debugLog('=== openProductOrderModal END (no products) ===');
                 return;
             }
             
             // Build product list with current order
             const productOrderList = document.getElementById('productOrderList');
+            if (!productOrderList) {
+                debugError('Product order list element not found');
+                return;
+            }
             productOrderList.innerHTML = '';
+            debugLog('Cleared product order list');
             
             // Get products in current order (or alphabetical)
             const productOrder = checklistConfigData.productOrder || [];
             debugLog(`Current product order:`, productOrder);
             const orderedProducts = [];
             const unorderedProducts = [];
+            const tiers = checklistConfigData.tiers || [];
+            debugLog(`Found ${tiers.length} tiers for product lookup`);
             
             // Separate ordered and unordered products
-            productOrder.forEach(productId => {
+            debugLog(`Processing ${productOrder.length} ordered product IDs`);
+            productOrder.forEach((productId, idx) => {
                 const product = products.find(p => p.id === productId);
                 if (product) {
-                    const tier = (checklistConfigData.tiers || []).find(t => t.id === product.tierId);
+                    const tier = tiers.find(t => t.id === product.tierId);
+                    const tierName = tier ? tier.name : 'Unknown';
                     orderedProducts.push({
                         ...product,
-                        tierName: tier ? tier.name : 'Unknown'
+                        tierName: tierName
                     });
-                    debugLog(`Added ordered product: ${product.productName} (ID: ${productId}, Tier: ${tier ? tier.name : 'Unknown'})`);
+                    debugLog(`[${idx + 1}/${productOrder.length}] Added ordered product: ${product.productName} (ID: ${productId}, Tier: ${tierName})`);
                 } else {
                     debugWarn(`Product ID ${productId} in order but not found in products list`);
                 }
             });
             
-            products.forEach(product => {
+            debugLog(`Processing ${products.length} total products for unordered items`);
+            products.forEach((product, idx) => {
                 if (!productOrder.includes(product.id)) {
-                    const tier = (checklistConfigData.tiers || []).find(t => t.id === product.tierId);
+                    const tier = tiers.find(t => t.id === product.tierId);
+                    const tierName = tier ? tier.name : 'Unknown';
                     unorderedProducts.push({
                         ...product,
-                        tierName: tier ? tier.name : 'Unknown'
+                        tierName: tierName
                     });
+                    debugLog(`[${idx + 1}/${products.length}] Added unordered product: ${product.productName} (ID: ${product.id}, Tier: ${tierName})`);
                 }
             });
             
             // Sort unordered products alphabetically
+            const sortStartTime = performance.now();
             unorderedProducts.sort((a, b) => a.productName.localeCompare(b.productName));
-            debugLog(`Found ${unorderedProducts.length} unordered products (will be sorted alphabetically)`);
+            debugLog(`Found ${unorderedProducts.length} unordered products (sorted alphabetically in ${(performance.now() - sortStartTime).toFixed(2)}ms)`);
             
             // Combine ordered and unordered
             const allProducts = [...orderedProducts, ...unorderedProducts];
             debugLog(`Total products to display: ${allProducts.length}`, {
                 ordered: orderedProducts.length,
-                unordered: unorderedProducts.length
+                unordered: unorderedProducts.length,
+                orderedProducts: orderedProducts.map(p => p.productName),
+                unorderedProducts: unorderedProducts.map(p => p.productName)
             });
             
-            allProducts.forEach((product, index) => {
-                const item = document.createElement('div');
-                item.className = 'list-group-item d-flex justify-content-between align-items-center';
-                item.dataset.productId = product.id;
-                item.innerHTML = `
-                    <div class="flex-grow-1">
-                        <strong>${escapeHtml(product.productName)}</strong>
-                        <small class="text-muted d-block">Tier: ${escapeHtml(product.tierName)}</small>
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="moveProductUp(${product.id})" ${index === 0 ? 'disabled' : ''} title="Move up">
-                            ⬆️
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="moveProductDown(${product.id})" ${index === allProducts.length - 1 ? 'disabled' : ''} title="Move down">
-                            ⬇️
-                        </button>
-                    </div>
-                `;
-                productOrderList.appendChild(item);
+            // Use requestAnimationFrame to batch DOM updates for better performance
+            requestAnimationFrame(() => {
+                const renderStartTime = performance.now();
+                debugLog(`Starting DOM rendering for ${allProducts.length} products`);
+                
+                // Use DocumentFragment for better performance
+                const fragment = document.createDocumentFragment();
+                
+                allProducts.forEach((product, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    item.dataset.productId = product.id;
+                    item.innerHTML = `
+                        <div class="flex-grow-1">
+                            <strong>${escapeHtml(product.productName)}</strong>
+                            <small class="text-muted d-block">Tier: ${escapeHtml(product.tierName)}</small>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="moveProductUp(${product.id})" ${index === 0 ? 'disabled' : ''} title="Move up">
+                                ⬆️
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="moveProductDown(${product.id})" ${index === allProducts.length - 1 ? 'disabled' : ''} title="Move down">
+                                ⬇️
+                            </button>
+                        </div>
+                    `;
+                    fragment.appendChild(item);
+                });
+                
+                productOrderList.appendChild(fragment);
+                const renderTime = performance.now() - renderStartTime;
+                debugLog(`Rendered ${allProducts.length} product items in modal (took ${renderTime.toFixed(2)}ms)`);
+                
+                // Show modal after DOM is ready
+                setTimeout(() => {
+                    const modalElement = document.getElementById('productOrderModal');
+                    if (!modalElement) {
+                        debugError('Product order modal element not found');
+                        return;
+                    }
+                    
+                    // Reuse existing modal instance if available
+                    let modal = bootstrap.Modal.getInstance(modalElement);
+                    if (!modal) {
+                        debugLog('Creating new Bootstrap Modal instance');
+                        modal = new bootstrap.Modal(modalElement);
+                    } else {
+                        debugLog('Reusing existing Bootstrap Modal instance');
+                    }
+                    
+                    modalElement.addEventListener('shown.bs.modal', function() {
+                        modalElement.setAttribute('aria-hidden', 'false');
+                        const totalTime = performance.now() - startTime;
+                        debugLog(`Modal shown successfully (total time: ${totalTime.toFixed(2)}ms)`);
+                    }, { once: true });
+                    
+                    modal.show();
+                    const totalTime = performance.now() - startTime;
+                    debugLog(`=== openProductOrderModal END (total time: ${totalTime.toFixed(2)}ms) ===`);
+                }, 0);
             });
-            
-            debugLog(`Rendered ${allProducts.length} product items in modal`);
-            
-            const modalElement = document.getElementById('productOrderModal');
-            const modal = new bootstrap.Modal(modalElement);
-            
-            modalElement.addEventListener('shown.bs.modal', function() {
-                modalElement.setAttribute('aria-hidden', 'false');
-            }, { once: true });
-            
-            modal.show();
-            debugLog('=== openProductOrderModal END ===');
         }
         
         // Move product up in order
@@ -4024,25 +4070,61 @@
                 changed: JSON.stringify(oldOrder) !== JSON.stringify(productOrder)
             });
             
+            // Close modal first, before recalculating
             const productOrderModal = bootstrap.Modal.getInstance(document.getElementById('productOrderModal'));
             if (productOrderModal) {
+                debugLog('Closing product order modal');
                 const focusedElement = document.activeElement;
                 if (focusedElement && productOrderModal._element.contains(focusedElement)) {
                     focusedElement.blur();
                 }
+                
+                // Remove any event listeners that might interfere
+                const modalElement = document.getElementById('productOrderModal');
+                modalElement.removeAttribute('aria-hidden');
+                
+                // Hide modal and wait for it to fully close
                 productOrderModal.hide();
+                
+                // Wait for modal to fully close before continuing
+                modalElement.addEventListener('hidden.bs.modal', function cleanup() {
+                    modalElement.removeEventListener('hidden.bs.modal', cleanup);
+                    debugLog('Product order modal fully closed, proceeding with updates');
+                    
+                    // Recalculate summaries with new order after modal is closed
+                    debugLog(`Recalculating summaries for ${getBusinessTiers().length} tiers`);
+                    const tiers = getBusinessTiers();
+                    tiers.forEach(tier => {
+                        debugLog(`Recalculating summary for tier: ${tier.name}`);
+                        calculateTierSummary(tier.name);
+                    });
+                    
+                    // Recalculate all business summary
+                    debugLog('Recalculating all business summary');
+                    calculateAllBusinessSummary();
+                    
+                    debugLog(`=== saveProductOrder END ===`);
+                    
+                    // Show success message after everything is done
+                    setTimeout(() => {
+                        alert('Product order saved! Summaries will update automatically.');
+                    }, 100);
+                }, { once: true });
+            } else {
+                debugWarn('Product order modal instance not found, proceeding without closing');
+                
+                // Recalculate summaries even if modal not found
+                debugLog(`Recalculating summaries for ${getBusinessTiers().length} tiers`);
+                const tiers = getBusinessTiers();
+                tiers.forEach(tier => {
+                    debugLog(`Recalculating summary for tier: ${tier.name}`);
+                    calculateTierSummary(tier.name);
+                });
+                calculateAllBusinessSummary();
+                
+                debugLog(`=== saveProductOrder END ===`);
+                alert('Product order saved! Summaries will update automatically.');
             }
-            
-            // Recalculate summaries with new order
-            debugLog(`Recalculating summaries for ${getBusinessTiers().length} tiers`);
-            const tiers = getBusinessTiers();
-            tiers.forEach(tier => {
-                debugLog(`Recalculating summary for tier: ${tier.name}`);
-                calculateTierSummary(tier.name);
-            });
-            
-            debugLog(`=== saveProductOrder END ===`);
-            alert('Product order saved! Summaries will update automatically.');
         }
         
         // Sort products by tier in the modal
