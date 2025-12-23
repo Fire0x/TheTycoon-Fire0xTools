@@ -236,12 +236,12 @@ const VersionManager = {
         'index.html': '0.0.4',
         'Info.html': '0.1.0',
         'merchants.html': '0.0.7',
-        'checklist.html': '0.1.6',
+        'checklist.html': '0.1.7',
         'VehicleDeliveries.html': '0.1.4',
         'education_timer.html': '0.1.0',
         'apartment.html': '0.1.2',
         'Info-Ref.html': '0.1.0',
-        'checklist-1.html': '0.1.0'
+        'checklist-1.html': '0.0.1'
     },
     
     /**
