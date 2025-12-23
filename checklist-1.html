@@ -525,6 +525,13 @@
                         </div>
                     </div>
                     <div class="mb-3">
+                        <h5>Product Management</h5>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-primary" onclick="openAddProductModal()">➕ Add Product</button>
+                            <button type="button" class="btn btn-info" onclick="openEditProductModal()">✏️ Edit Product</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <h5>Import/Export</h5>
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             <button type="button" class="btn btn-success" onclick="exportConfiguration()">📤 Export Configuration</button>
@@ -552,6 +559,34 @@
             <p class="mb-0" id="summaryContent" style="font-size: 1.05rem; line-height: 1.8;">
                 <!-- Summary will be dynamically generated here -->
             </p>
+        </div>
+
+        <!-- All Business Summary -->
+        <div class="card mt-4" id="allBusinessSummaryCard" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">📊 All Business Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr id="allBusinessSummaryHeaderRow">
+                                <th>Product Name</th>
+                                <!-- Tier columns will be dynamically generated here -->
+                                <th class="text-end"><strong>Grand Total</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody id="allBusinessSummaryBody">
+                            <tr>
+                                <td colspan="100%" class="text-center text-muted">Loading summary...</td>
+                            </tr>
+                        </tbody>
+                        <tfoot id="allBusinessSummaryFooter">
+                            <!-- Grand Total row will be dynamically generated here -->
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- Action Buttons -->
@@ -1104,6 +1139,38 @@
         </div>
     </div>
 
+    <!-- Product Modal -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalLabel">Add/Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm">
+                        <input type="hidden" id="productId" value="">
+                        <div class="mb-3">
+                            <label for="productTierId" class="form-label">Tier <span class="text-danger">*</span></label>
+                            <select class="form-select" id="productTierId" required>
+                                <option value="">Select a tier...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Product Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="productName" required placeholder="e.g., Apple">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProduct()">Save Product</button>
+                    <button type="button" class="btn btn-danger" id="deleteProductBtn" onclick="deleteProduct()" style="display: none;">Delete Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Business Modal -->
     <div class="modal fade" id="businessModal" tabindex="-1" aria-labelledby="businessModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -1307,6 +1374,9 @@
         
         // Global state
         let checklistConfigData = null;
+        
+        // Track tier summary visibility
+        let tierSummaryVisible = JSON.parse(localStorage.getItem('checklistTierSummaryVisible') || '{}');
 
         // Initialize configuration from localStorage or migrate from API
         async function initializeConfig() {
@@ -1361,6 +1431,7 @@
             return {
                 tiers: [],
                 businesses: [],
+                products: [],
                 version: CONFIG_VERSION
             };
         }
@@ -1398,7 +1469,8 @@
                         collectionStorage: biz.collectionStorage,
                         canCollectItems: biz.canCollectItems,
                         conversionRate: biz.conversionRate || tier.conversionRate,
-                        notes: biz.notes || ''
+                        notes: biz.notes || '',
+                        productId: biz.productId || null
                     }));
                 
                 businessesByTier[tier.name] = tierBusinesses;
@@ -1432,25 +1504,55 @@
                     tierCounts[tier.name] = openBusinesses.length;
                     totalOpen += openBusinesses.length;
                     
+                    const isSummaryVisible = tierSummaryVisible[tier.name] !== false;
+                    
                     const card = document.createElement('div');
                     card.className = 'card mt-4 mb-4';
                     card.innerHTML = `
                         <div class="card-header ${tier.color}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h2 class="mb-0">${tier.icon} ${tier.name}</h2>
-                                <button type="button" class="btn btn-sm btn-outline-light toggle-tier-btn" 
-                                        data-tier="${tier.name}"
-                                        title="Show all businesses in this tier">
-                                    👁️ Show All
-                                </button>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-light toggle-tier-summary-btn" 
+                                            data-tier="${tier.name}"
+                                            title="Show/Hide Tier Summary"
+                                            onclick="toggleTierSummary('${tier.name}')">
+                                        ${isSummaryVisible ? '📊 Hide Summary' : '📊 Show Summary'}
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-light toggle-tier-btn" 
+                                            data-tier="${tier.name}"
+                                            title="Show all businesses in this tier">
+                                        👁️ Show All
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
+                            <!-- Tier Summary Section -->
+                            <div class="tier-summary-section mb-4" id="tier-summary-${tier.name}" style="display: ${isSummaryVisible ? 'block' : 'none'};">
+                                <h5 class="mb-3">📊 Tier Summary</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Product Name</th>
+                                                <th>Total Products Needed</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tier-summary-body-${tier.name}">
+                                            <tr>
+                                                <td colspan="2" class="text-center text-muted">Loading summary...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                             <div class="list-group" data-tier="${tier.name}">
                                 ${openBusinesses.map((biz, index) => {
                                     const businessName = biz.businessName || biz.businessCode;
                                     const hasCollection = biz.canCollectItems === true;
-                                    const colClass = hasCollection ? 'col-md-3' : 'col-md-4';
+                                    // Adjust column classes: Money, Stock, Product, Collection (if applicable), Notes
+                                    const colClass = hasCollection ? 'col-md-2' : 'col-md-3';
                                     const maxStock = biz.maxStock || 0;
                                     const collectionStorage = biz.collectionStorage || 0;
                                     const maxStockDisplay = maxStock.toLocaleString('en-US');
@@ -1518,6 +1620,17 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="${colClass}">
+                                                        <small class="text-muted d-block mb-1" style="font-weight: 600;">
+                                                            <strong>📦 Product:</strong>
+                                                        </small>
+                                                        <select class="form-select form-select-sm product-selector" 
+                                                                data-tier="${tier.name}" 
+                                                                data-business-code="${biz.businessCode}"
+                                                                onchange="handleProductSelection('${tier.name}', '${biz.businessCode}')">
+                                                            <option value="">-- Select Product --</option>
+                                                        </select>
+                                                    </div>
                                                     ${hasCollection ? `
                                                     <div class="${colClass}">
                                                         <small class="text-muted d-block mb-1" style="font-weight: 600;">
@@ -1531,7 +1644,7 @@
                                                                oninput="saveProgress();">
                                                     </div>
                                                     ` : ''}
-                                                    <div class="${colClass}">
+                                                    <div class="${hasCollection ? 'col-md-4' : 'col-md-3'}">
                                                         <small class="text-muted d-block mb-1" style="font-weight: 600;">
                                                             <strong>📝 Notes:</strong>
                                                         </small>
@@ -1574,6 +1687,31 @@
             
             // Load saved progress
             loadProgress();
+            
+            // Populate product selectors for each tier
+            tiers.forEach(tier => {
+                populateProductSelectorsForTier(tier.name);
+            });
+            
+            // Load product selections (already done in loadProgress, but ensure it happens after selectors are populated)
+            setTimeout(() => {
+                const productSelectors = document.querySelectorAll('.product-selector');
+                productSelectors.forEach(selector => {
+                    const businessCode = selector.dataset.businessCode;
+                    const business = (checklistConfigData.businesses || []).find(b => b.businessCode === businessCode);
+                    if (business && business.productId) {
+                        selector.value = business.productId;
+                    }
+                });
+                
+                // Calculate tier summaries after products are loaded
+                tiers.forEach(tier => {
+                    calculateTierSummary(tier.name);
+                });
+                
+                // Calculate all business summary after all tier summaries are done
+                setTimeout(() => calculateAllBusinessSummary(), 200);
+            }, 100);
             
             // Update tier toggle buttons after loading
             tiers.forEach(tier => {
@@ -1822,6 +1960,16 @@
                     });
                 }
             }
+            
+            // Load product selections from business objects
+            const productSelectors = document.querySelectorAll('.product-selector');
+            productSelectors.forEach(selector => {
+                const businessCode = selector.dataset.businessCode;
+                const business = (checklistConfigData.businesses || []).find(b => b.businessCode === businessCode);
+                if (business && business.productId) {
+                    selector.value = business.productId;
+                }
+            });
         }
 
         // Clear progress
@@ -1951,6 +2099,13 @@
                 e.target.classList.contains('stock-input') ||
                 e.target.classList.contains('collection-input')) {
                 saveProgress();
+                
+                // If a business checkbox changed, recalculate tier summary
+                if (e.target.type === 'checkbox' && e.target.dataset.tier) {
+                    const tierName = e.target.dataset.tier;
+                    debugLog(`Business checkbox changed for tier ${tierName} - recalculating tier summary`);
+                    calculateTierSummary(tierName);
+                }
             }
         });
         
@@ -2176,6 +2331,287 @@
             }
         }, true);
 
+        // Toggle tier summary visibility
+        function toggleTierSummary(tierName) {
+            if (!tierSummaryVisible.hasOwnProperty(tierName)) {
+                tierSummaryVisible[tierName] = true;
+            } else {
+                tierSummaryVisible[tierName] = !tierSummaryVisible[tierName];
+            }
+            localStorage.setItem('checklistTierSummaryVisible', JSON.stringify(tierSummaryVisible));
+            
+            const summarySection = document.getElementById(`tier-summary-${tierName}`);
+            const toggleBtn = document.querySelector(`.toggle-tier-summary-btn[data-tier="${tierName}"]`);
+            
+            if (summarySection) {
+                summarySection.style.display = tierSummaryVisible[tierName] ? 'block' : 'none';
+            }
+            
+            if (toggleBtn) {
+                toggleBtn.textContent = tierSummaryVisible[tierName] ? '📊 Hide Summary' : '📊 Show Summary';
+            }
+        }
+
+        // Calculate tier summary
+        function calculateTierSummary(tierName) {
+            debugLog(`=== calculateTierSummary START for tier: ${tierName} ===`);
+            const summaryBody = document.getElementById(`tier-summary-body-${tierName}`);
+            if (!summaryBody) {
+                debugLog(`Summary body not found for tier: ${tierName}`);
+                return;
+            }
+            
+            // Get all businesses for this tier
+            const businesses = document.querySelectorAll(`.business-item[data-tier="${tierName}"]`);
+            debugLog(`Found ${businesses.length} businesses for tier ${tierName}`);
+            const productMap = {}; // productName -> { totalNeeded: number, businesses: [] }
+            
+            businesses.forEach(businessItem => {
+                const businessCode = businessItem.dataset.businessCode;
+                
+                // Check if business checkbox is checked - if checked, ignore this business
+                const businessCheckbox = businessItem.querySelector(`input[type="checkbox"][data-tier="${tierName}"][value="${businessCode}"]`);
+                if (businessCheckbox && businessCheckbox.checked) {
+                    debugLog(`Business ${businessCode}: Checkbox is checked - skipping from total calculation`);
+                    return;
+                }
+                
+                const productSelector = businessItem.querySelector(`.product-selector[data-tier="${tierName}"][data-business-code="${businessCode}"]`);
+                const stockNeededDisplay = document.getElementById(`stock-needed-${tierName}-${businessCode}`);
+                
+                if (!productSelector) return;
+                
+                const selectedOption = productSelector.options[productSelector.selectedIndex];
+                if (!selectedOption || !selectedOption.value) return;
+                
+                const productName = selectedOption.textContent;
+                const productId = selectedOption.value;
+                
+                // Get stock needed value
+                let stockNeeded = 0;
+                if (stockNeededDisplay) {
+                    const neededText = stockNeededDisplay.textContent || '';
+                    const neededMatch = neededText.match(/Needed:\s*([\d,]+)/);
+                    if (neededMatch) {
+                        stockNeeded = parseInt(neededMatch[1].replace(/,/g, '')) || 0;
+                    }
+                }
+                
+                debugLog(`Business ${businessCode}: Product="${productName}", StockNeeded=${stockNeeded}`);
+                
+                // Initialize product in map if not exists
+                if (!productMap[productName]) {
+                    productMap[productName] = {
+                        productId: productId,
+                        totalNeeded: 0,
+                        businesses: []
+                    };
+                }
+                
+                // Add to total if stock needed > 0
+                if (stockNeeded > 0) {
+                    productMap[productName].totalNeeded += stockNeeded;
+                }
+                productMap[productName].businesses.push({
+                    code: businessCode,
+                    needed: stockNeeded
+                });
+            });
+            
+            debugLog(`Product map:`, productMap);
+            
+            // Render summary table
+            if (Object.keys(productMap).length === 0) {
+                summaryBody.innerHTML = '<tr><td colspan="2" class="text-center text-muted">No products selected yet</td></tr>';
+                debugLog(`No products found for tier ${tierName}`);
+                calculateAllBusinessSummary();
+                return;
+            }
+            
+            summaryBody.innerHTML = Object.keys(productMap).map(productName => {
+                const productData = productMap[productName];
+                const totalNeeded = productData.totalNeeded;
+                
+                debugLog(`Product "${productName}": totalNeeded=${totalNeeded}`);
+                
+                return `
+                    <tr>
+                        <td>${escapeHtml(productName)}</td>
+                        <td class="text-end">
+                            <strong>${totalNeeded.toLocaleString('en-US')}</strong>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            debugLog(`=== calculateTierSummary END for tier: ${tierName} ===`);
+            
+            // Recalculate all business summary after tier summary is updated
+            calculateAllBusinessSummary();
+        }
+
+        // Calculate all business summary (aggregates all tier summaries)
+        function calculateAllBusinessSummary() {
+            debugLog(`=== calculateAllBusinessSummary START ===`);
+            const summaryCard = document.getElementById('allBusinessSummaryCard');
+            const summaryBody = document.getElementById('allBusinessSummaryBody');
+            const headerRow = document.getElementById('allBusinessSummaryHeaderRow');
+            const summaryFooter = document.getElementById('allBusinessSummaryFooter');
+            
+            if (!summaryCard || !summaryBody || !headerRow || !summaryFooter) {
+                debugLog('All Business Summary elements not found');
+                return;
+            }
+            
+            // Aggregate product data from all tiers
+            const allProductsMap = {}; // productName -> { tiers: { tierName: totalNeeded }, grandTotal: number }
+            const tierNames = [];
+            const tiers = getBusinessTiers();
+            
+            if (!tiers || tiers.length === 0) {
+                summaryCard.style.display = 'none';
+                return;
+            }
+            
+            tiers.forEach(tier => {
+                const tierName = tier.name;
+                tierNames.push(tierName);
+                
+                // Get all businesses for this tier
+                const businesses = document.querySelectorAll(`.business-item[data-tier="${tierName}"]`);
+                debugLog(`Tier ${tierName}: Found ${businesses.length} businesses`);
+                
+                businesses.forEach(businessItem => {
+                    const businessCode = businessItem.dataset.businessCode;
+                    
+                    // Check if business checkbox is checked - if checked, ignore this business
+                    const businessCheckbox = businessItem.querySelector(`input[type="checkbox"][data-tier="${tierName}"][value="${businessCode}"]`);
+                    if (businessCheckbox && businessCheckbox.checked) {
+                        return;
+                    }
+                    
+                    const productSelector = businessItem.querySelector(`.product-selector[data-tier="${tierName}"][data-business-code="${businessCode}"]`);
+                    const stockNeededDisplay = document.getElementById(`stock-needed-${tierName}-${businessCode}`);
+                    
+                    if (!productSelector) return;
+                    
+                    const selectedOption = productSelector.options[productSelector.selectedIndex];
+                    if (!selectedOption || !selectedOption.value) return;
+                    
+                    const productName = selectedOption.textContent;
+                    
+                    // Get stock needed value
+                    let stockNeeded = 0;
+                    if (stockNeededDisplay) {
+                        const neededText = stockNeededDisplay.textContent || '';
+                        const neededMatch = neededText.match(/Needed:\s*([\d,]+)/);
+                        if (neededMatch) {
+                            stockNeeded = parseInt(neededMatch[1].replace(/,/g, '')) || 0;
+                        }
+                    }
+                    
+                    // Initialize product in map if not exists
+                    if (!allProductsMap[productName]) {
+                        allProductsMap[productName] = {
+                            tiers: {},
+                            grandTotal: 0
+                        };
+                    }
+                    
+                    // Initialize tier entry if not exists
+                    if (!allProductsMap[productName].tiers[tierName]) {
+                        allProductsMap[productName].tiers[tierName] = 0;
+                    }
+                    
+                    // Add to tier total and grand total
+                    if (stockNeeded > 0) {
+                        allProductsMap[productName].tiers[tierName] += stockNeeded;
+                        allProductsMap[productName].grandTotal += stockNeeded;
+                    }
+                });
+            });
+            
+            debugLog(`All products map:`, allProductsMap);
+            
+            // Check if there are any products
+            if (Object.keys(allProductsMap).length === 0) {
+                const colspan = tierNames.length + 2;
+                summaryBody.innerHTML = `<tr><td colspan="${colspan}" class="text-center text-muted">No products selected yet</td></tr>`;
+                summaryFooter.innerHTML = '';
+                summaryCard.style.display = 'none';
+                debugLog(`No products found across all tiers`);
+                return;
+            }
+            
+            // Show the summary card
+            summaryCard.style.display = 'block';
+            
+            // Rebuild tier header columns
+            const tierHeaderCells = tierNames.map(tierName => 
+                `<th class="text-end">${escapeHtml(tierName)}</th>`
+            ).join('');
+            headerRow.innerHTML = `<th>Product Name</th>${tierHeaderCells}<th class="text-end"><strong>Grand Total</strong></th>`;
+            
+            // Build table rows
+            const sortedProducts = Object.keys(allProductsMap).sort();
+            summaryBody.innerHTML = sortedProducts.map(productName => {
+                const productData = allProductsMap[productName];
+                const tierCells = tierNames.map(tierName => {
+                    const tierTotal = productData.tiers[tierName] || 0;
+                    return `<td class="text-end">${tierTotal > 0 ? tierTotal.toLocaleString('en-US') : '-'}</td>`;
+                }).join('');
+                
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(productName)}</strong></td>
+                        ${tierCells}
+                        <td class="text-end"><strong>${productData.grandTotal.toLocaleString('en-US')}</strong></td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Calculate grand totals for each tier and overall
+            const tierGrandTotals = {};
+            let overallGrandTotal = 0;
+            
+            tierNames.forEach(tierName => {
+                tierGrandTotals[tierName] = 0;
+            });
+            
+            sortedProducts.forEach(productName => {
+                const productData = allProductsMap[productName];
+                tierNames.forEach(tierName => {
+                    const tierTotal = productData.tiers[tierName] || 0;
+                    tierGrandTotals[tierName] += tierTotal;
+                });
+                overallGrandTotal += productData.grandTotal;
+            });
+            
+            // Build grand total footer row
+            const tierGrandTotalCells = tierNames.map(tierName => {
+                const total = tierGrandTotals[tierName];
+                return `<td class="text-end"><strong>${total > 0 ? total.toLocaleString('en-US') : '-'}</strong></td>`;
+            }).join('');
+            
+            summaryFooter.innerHTML = `
+                <tr style="background-color: rgba(102, 126, 234, 0.1);">
+                    <td><strong>Grand Total</strong></td>
+                    ${tierGrandTotalCells}
+                    <td class="text-end"><strong style="font-size: 1.1em;">${overallGrandTotal.toLocaleString('en-US')}</strong></td>
+                </tr>
+            `;
+            
+            debugLog(`=== calculateAllBusinessSummary END ===`);
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         // How to Use Section Collapse State
         const HOW_TO_USE_STORAGE_KEY = 'checklist_how_to_use_expanded';
         
@@ -2304,6 +2740,9 @@
             if (typeof saveProgress === 'function') {
                 saveProgress();
             }
+            
+            // Recalculate tier summary after stock calculation
+            setTimeout(() => calculateTierSummary(tierName), 100);
         }
 
         // Tier Management Functions
@@ -2477,6 +2916,9 @@
             
             // Remove businesses in this tier
             checklistConfigData.businesses = (checklistConfigData.businesses || []).filter(b => b.tierId !== parseInt(id));
+            
+            // Remove products in this tier
+            checklistConfigData.products = (checklistConfigData.products || []).filter(p => p.tierId !== parseInt(id));
             
             saveConfigToLocalStorage();
             const tierModal = bootstrap.Modal.getInstance(document.getElementById('tierModal'));
@@ -2761,6 +3203,280 @@
             alert(`✅ Business "${businessName}" (${code}) has been deleted.`);
         }
 
+        // Product Management Functions
+        function openAddProductModal() {
+            document.getElementById('productModalLabel').textContent = 'Add Product';
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('deleteProductBtn').style.display = 'none';
+            
+            // Populate tier dropdown
+            const tierSelect = document.getElementById('productTierId');
+            tierSelect.innerHTML = '<option value="">Select a tier...</option>';
+            (checklistConfigData.tiers || []).forEach(tier => {
+                const option = document.createElement('option');
+                option.value = tier.id;
+                option.textContent = tier.name;
+                tierSelect.appendChild(option);
+            });
+            
+            const modalElement = document.getElementById('productModal');
+            const modal = new bootstrap.Modal(modalElement);
+            
+            modalElement.addEventListener('shown.bs.modal', function() {
+                modalElement.setAttribute('aria-hidden', 'false');
+            }, { once: true });
+            
+            modal.show();
+        }
+
+        function openEditProductModal() {
+            const products = checklistConfigData.products || [];
+            if (products.length === 0) {
+                alert('No products available to edit. Please add a product first.');
+                return;
+            }
+            
+            // Use setTimeout to defer the prompt
+            setTimeout(() => {
+                const maxDisplay = 50;
+                const displayProducts = products.slice(0, maxDisplay);
+                const remainingCount = products.length - maxDisplay;
+                
+                let productOptions = displayProducts.map(p => {
+                    const tier = (checklistConfigData.tiers || []).find(t => t.id === p.tierId);
+                    const tierName = tier ? tier.name : 'Unknown';
+                    return `${p.id}: ${p.productName} (${tierName})`;
+                }).join('\n');
+                
+                if (remainingCount > 0) {
+                    productOptions += `\n\n... and ${remainingCount} more product${remainingCount !== 1 ? 's' : ''}`;
+                }
+                
+                const productId = prompt(`Enter Product ID to edit:\n\n${productOptions}`);
+                if (!productId) return;
+                
+                const product = products.find(p => p.id === parseInt(productId));
+                if (!product) {
+                    alert('Product not found');
+                    return;
+                }
+                
+                document.getElementById('productModalLabel').textContent = 'Edit Product';
+                document.getElementById('productId').value = product.id;
+                document.getElementById('productName').value = product.productName || '';
+                document.getElementById('deleteProductBtn').style.display = 'inline-block';
+                
+                // Populate tier dropdown
+                const tierSelect = document.getElementById('productTierId');
+                const tiers = checklistConfigData.tiers || [];
+                
+                const fragment = document.createDocumentFragment();
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Select a tier...';
+                fragment.appendChild(defaultOption);
+                
+                tiers.forEach(tier => {
+                    const option = document.createElement('option');
+                    option.value = tier.id;
+                    option.textContent = tier.name;
+                    if (tier.id === product.tierId) {
+                        option.selected = true;
+                    }
+                    fragment.appendChild(option);
+                });
+                
+                tierSelect.innerHTML = '';
+                tierSelect.appendChild(fragment);
+                
+                const modalElement = document.getElementById('productModal');
+                const modal = new bootstrap.Modal(modalElement);
+                
+                modalElement.addEventListener('shown.bs.modal', function() {
+                    modalElement.setAttribute('aria-hidden', 'false');
+                }, { once: true });
+                
+                modal.show();
+            }, 0);
+        }
+
+        function saveProduct() {
+            const id = document.getElementById('productId').value;
+            const tierId = document.getElementById('productTierId').value;
+            const productName = document.getElementById('productName').value.trim();
+            
+            if (!tierId || !productName) {
+                alert('Tier and product name are required');
+                return;
+            }
+            
+            if (!checklistConfigData.products) {
+                checklistConfigData.products = [];
+            }
+            
+            if (id) {
+                // Edit existing product
+                const productIndex = checklistConfigData.products.findIndex(p => p.id === parseInt(id));
+                if (productIndex !== -1) {
+                    // Check if product name conflicts with another product in the same tier (excluding current one)
+                    const conflictingProduct = checklistConfigData.products.find(
+                        p => p.productName.toLowerCase() === productName.toLowerCase() && 
+                             p.tierId === parseInt(tierId) && 
+                             p.id !== parseInt(id)
+                    );
+                    if (conflictingProduct) {
+                        alert('Product name already exists for this tier');
+                        return;
+                    }
+                    
+                    checklistConfigData.products[productIndex] = {
+                        id: parseInt(id),
+                        tierId: parseInt(tierId),
+                        productName: productName
+                    };
+                }
+            } else {
+                // Add new product
+                // Check if product name already exists for this tier
+                const existingProduct = checklistConfigData.products.find(
+                    p => p.productName.toLowerCase() === productName.toLowerCase() && 
+                         p.tierId === parseInt(tierId)
+                );
+                if (existingProduct) {
+                    alert('Product name already exists for this tier');
+                    return;
+                }
+                
+                const maxId = checklistConfigData.products.length > 0 
+                    ? Math.max(...checklistConfigData.products.map(p => p.id))
+                    : 0;
+                checklistConfigData.products.push({
+                    id: maxId + 1,
+                    tierId: parseInt(tierId),
+                    productName: productName
+                });
+            }
+            
+            saveConfigToLocalStorage();
+            const productModal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+            if (productModal) {
+                const focusedElement = document.activeElement;
+                if (focusedElement && productModal._element.contains(focusedElement)) {
+                    focusedElement.blur();
+                }
+                productModal.hide();
+            }
+            requestAnimationFrame(() => {
+                loadAllBusinesses();
+            });
+        }
+
+        function deleteProduct() {
+            const id = document.getElementById('productId').value;
+            if (!id) return;
+            
+            const product = checklistConfigData.products.find(p => p.id === parseInt(id));
+            const productName = product ? product.productName : 'this product';
+            const tier = product ? (checklistConfigData.tiers || []).find(t => t.id === product.tierId) : null;
+            const tierName = tier ? tier.name : 'Unknown';
+            
+            // Check if any businesses are using this product
+            const businessesUsingProduct = (checklistConfigData.businesses || []).filter(b => b.productId === parseInt(id));
+            const businessCount = businessesUsingProduct.length;
+            
+            if (businessCount > 0) {
+                if (!confirm(`⚠️ WARNING: You cannot delete "${productName}" because ${businessCount} business${businessCount !== 1 ? 'es are' : ' is'} using it.\n\nPlease remove the product selection from those businesses first.`)) {
+                    return;
+                }
+                return;
+            }
+            
+            // First confirmation
+            if (!confirm(`⚠️ WARNING: You are about to delete product "${productName}" from ${tierName}.\n\nThis will PERMANENTLY delete this product.\n\nThis action CANNOT be undone!\n\nAre you sure you want to continue?`)) {
+                return;
+            }
+            
+            // Second confirmation
+            if (!confirm(`🚨 FINAL CONFIRMATION 🚨\n\nYou are about to PERMANENTLY DELETE:\n- Product: "${productName}"\n- Tier: ${tierName}\n\nClick OK to proceed to the final confirmation step.`)) {
+                return;
+            }
+            
+            // Third confirmation - require typing confirmation phrase
+            const confirmationPhrase = "I want to remove";
+            const userInput = prompt(`🚨 TYPE TO CONFIRM DELETION 🚨\n\nTo confirm deletion of:\n- Product: "${productName}"\n- Tier: ${tierName}\n\nPlease type exactly: "${confirmationPhrase}"\n\n(Click Cancel to abort)`);
+            
+            if (userInput === null) {
+                return;
+            }
+            
+            if (userInput.trim() !== confirmationPhrase) {
+                alert(`❌ Confirmation failed!\n\nYou typed: "${userInput}"\n\nExpected: "${confirmationPhrase}"\n\nDeletion cancelled.`);
+                return;
+            }
+            
+            checklistConfigData.products = (checklistConfigData.products || []).filter(p => p.id !== parseInt(id));
+            saveConfigToLocalStorage();
+            const productModal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+            if (productModal) {
+                const focusedElement = document.activeElement;
+                if (focusedElement && productModal._element.contains(focusedElement)) {
+                    focusedElement.blur();
+                }
+                productModal.hide();
+            }
+            requestAnimationFrame(() => {
+                loadAllBusinesses();
+            });
+            
+            alert(`✅ Product "${productName}" has been deleted.`);
+        }
+
+        // Product Helper Functions
+        function getProductsForTier(tierId) {
+            if (!checklistConfigData || !checklistConfigData.products) return [];
+            return checklistConfigData.products.filter(p => p.tierId === tierId);
+        }
+
+        function populateProductSelectorsForTier(tierName) {
+            const tier = (checklistConfigData.tiers || []).find(t => t.name === tierName);
+            if (!tier) return;
+            
+            const products = getProductsForTier(tier.id);
+            const selectors = document.querySelectorAll(`.product-selector[data-tier="${tierName}"]`);
+            
+            selectors.forEach(selector => {
+                selector.innerHTML = '<option value="">-- Select Product --</option>';
+                
+                products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.id;
+                    option.textContent = product.productName;
+                    option.dataset.productName = product.productName;
+                    selector.appendChild(option);
+                });
+            });
+        }
+
+        function handleProductSelection(tierName, businessCode) {
+            const selector = document.querySelector(`.product-selector[data-tier="${tierName}"][data-business-code="${businessCode}"]`);
+            if (!selector) return;
+            
+            const productId = selector.value ? parseInt(selector.value) : null;
+            const selectedProduct = selector.options[selector.selectedIndex].text;
+            debugLog(`Product selected for ${businessCode}: ${selectedProduct}`);
+            
+            // Save product selection to business object in config
+            const business = (checklistConfigData.businesses || []).find(b => b.businessCode === businessCode);
+            if (business) {
+                business.productId = productId;
+                saveConfigToLocalStorage();
+            }
+            
+            // Recalculate tier summary
+            calculateTierSummary(tierName);
+        }
+
         // Import/Export Functions
         function exportConfiguration() {
             if (!checklistConfigData) {
@@ -2819,6 +3535,18 @@
                     }
                 });
                 
+                // Validate products structure (if present)
+                if (imported.products && Array.isArray(imported.products)) {
+                    imported.products.forEach((prod, index) => {
+                        if (!prod.id || !prod.tierId || !prod.productName) {
+                            throw new Error(`Invalid product at index ${index}: id, tierId, and productName are required`);
+                        }
+                    });
+                } else if (!imported.products) {
+                    // Initialize products array if not present
+                    imported.products = [];
+                }
+                
                 checklistConfigData = imported;
                 saveConfigToLocalStorage();
                 const importModal = bootstrap.Modal.getInstance(document.getElementById('importModal'));
@@ -2852,12 +3580,14 @@
             }
             
             // Generate CSV format for checklist with all business data
-            let csv = 'Business Code,Business Name,Tier,Status,Max Stock,Collection Storage,Can Collect Items,Notes\n';
+            let csv = 'Business Code,Business Name,Tier,Status,Max Stock,Collection Storage,Can Collect Items,Product,Notes\n';
             
             // Include all businesses regardless of status
             checklistConfigData.businesses.forEach(biz => {
                 const tier = (checklistConfigData.tiers || []).find(t => t.id === biz.tierId);
                 const tierName = tier ? tier.name : 'Unknown';
+                const product = biz.productId ? (checklistConfigData.products || []).find(p => p.id === biz.productId) : null;
+                const productName = product ? product.productName : '';
                 
                 // Properly escape CSV values (handle quotes and commas in business names)
                 const escapeCSV = (value) => {
@@ -2869,7 +3599,7 @@
                     return str;
                 };
                 
-                csv += `${escapeCSV(biz.businessCode)},${escapeCSV(biz.businessName)},${escapeCSV(tierName)},${escapeCSV(biz.status || 'Open')},${biz.maxStock || 0},${biz.collectionStorage || 0},${escapeCSV(biz.canCollectItems ? 'Yes' : 'No')},${escapeCSV(biz.notes || '')}\n`;
+                csv += `${escapeCSV(biz.businessCode)},${escapeCSV(biz.businessName)},${escapeCSV(tierName)},${escapeCSV(biz.status || 'Open')},${biz.maxStock || 0},${biz.collectionStorage || 0},${escapeCSV(biz.canCollectItems ? 'Yes' : 'No')},${escapeCSV(productName)},${escapeCSV(biz.notes || '')}\n`;
             });
             
             document.getElementById('exportTextarea').value = csv;

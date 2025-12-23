@@ -1994,25 +1994,25 @@
 
         // Load all apartments for selector
         function loadAllApartmentsForSelector() {
-            const selector = document.getElementById('apartmentSelector');
-            if (!selector) return;
-            
-            selector.innerHTML = '<option value="">-- Select or Create Apartment --</option><option value="new">➕ Create New Apartment</option>';
-            
-            // Sort by owned_number
+                const selector = document.getElementById('apartmentSelector');
+                if (!selector) return;
+                
+                selector.innerHTML = '<option value="">-- Select or Create Apartment --</option><option value="new">➕ Create New Apartment</option>';
+                
+                // Sort by owned_number
             const sortedApartments = [...apartments].sort((a, b) => {
-                if (a.owned_number === null || a.owned_number === undefined) return 1;
-                if (b.owned_number === null || b.owned_number === undefined) return -1;
-                return a.owned_number - b.owned_number;
-            });
-            
+                    if (a.owned_number === null || a.owned_number === undefined) return 1;
+                    if (b.owned_number === null || b.owned_number === undefined) return -1;
+                    return a.owned_number - b.owned_number;
+                });
+                
             sortedApartments.forEach(apt => {
-                const option = document.createElement('option');
-                option.value = apt.id;
-                const ownedNum = apt.owned_number || '--';
-                option.textContent = `Owned ${ownedNum} - ${apt.apartment_name || apt.location || 'Unnamed'}`;
-                selector.appendChild(option);
-            });
+                    const option = document.createElement('option');
+                    option.value = apt.id;
+                    const ownedNum = apt.owned_number || '--';
+                    option.textContent = `Owned ${ownedNum} - ${apt.apartment_name || apt.location || 'Unnamed'}`;
+                    selector.appendChild(option);
+                });
         }
 
         // Load apartment data when selected
@@ -2037,15 +2037,15 @@
                     selector.value = '';
                 }
                 return;
-            }
-            
-            // Populate the form with apartment data
-            editApartment(apartment.id);
-            // Show the modal
-            const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
-            modal.show();
-            
-            document.getElementById('saveApartmentBtn').style.display = 'block';
+                }
+                
+                // Populate the form with apartment data
+                editApartment(apartment.id);
+                // Show the modal
+                const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
+                modal.show();
+                
+                document.getElementById('saveApartmentBtn').style.display = 'block';
         }
 
         // Save apartment from selector (wrapper for saveApartment)
@@ -2180,33 +2180,33 @@
 
         // Load all apartments
         function loadApartments() {
-            renderApartments();
-            // Also update selector
+                renderApartments();
+                // Also update selector
             loadAllApartmentsForSelector();
-            document.getElementById('loadingAlert').style.display = 'none';
-            document.getElementById('apartmentsTableContainer').style.display = 'block';
-            if (apartments.length === 0) {
-                document.getElementById('noApartmentsAlert').style.display = 'block';
-            } else {
-                document.getElementById('noApartmentsAlert').style.display = 'none';
-            }
-            // Check for actions needed after loading
-            checkActionsNeeded();
+                document.getElementById('loadingAlert').style.display = 'none';
+                document.getElementById('apartmentsTableContainer').style.display = 'block';
+                if (apartments.length === 0) {
+                    document.getElementById('noApartmentsAlert').style.display = 'block';
+                } else {
+                    document.getElementById('noApartmentsAlert').style.display = 'none';
+                }
+                // Check for actions needed after loading
+                checkActionsNeeded();
         }
 
         // Load apartment rating
         function loadApartmentRating(apartmentId) {
             debugLog('Loading rating for apartment:', apartmentId);
             const stats = calculateApartmentRating(apartmentId);
-            debugLog('Rating stats for apartment', apartmentId, ':', stats);
-            const ratingCell = document.getElementById(`rating-${apartmentId}`);
-            if (ratingCell && stats.review_count > 0) {
-                const avgRating = parseFloat(stats.average_rating).toFixed(1);
-                ratingCell.innerHTML = `${avgRating} ⭐ (${stats.review_count} review${stats.review_count !== 1 ? 's' : ''})`;
-                debugLog('Updated rating display:', avgRating, 'stars,', stats.review_count, 'reviews');
-            } else if (ratingCell) {
-                ratingCell.innerHTML = 'No reviews';
-                debugLog('No reviews for apartment:', apartmentId);
+                debugLog('Rating stats for apartment', apartmentId, ':', stats);
+                const ratingCell = document.getElementById(`rating-${apartmentId}`);
+                if (ratingCell && stats.review_count > 0) {
+                    const avgRating = parseFloat(stats.average_rating).toFixed(1);
+                    ratingCell.innerHTML = `${avgRating} ⭐ (${stats.review_count} review${stats.review_count !== 1 ? 's' : ''})`;
+                    debugLog('Updated rating display:', avgRating, 'stars,', stats.review_count, 'reviews');
+                } else if (ratingCell) {
+                    ratingCell.innerHTML = 'No reviews';
+                    debugLog('No reviews for apartment:', apartmentId);
             }
         }
 
@@ -2228,12 +2228,12 @@
             const reviews = getApartmentReviews(apartmentId);
             const breakdown = getApartmentRatingBreakdown(apartmentId);
             const average = calculateApartmentRating(apartmentId);
-            
-            debugLog('Loaded reviews data:', { reviews: reviews.length, breakdown, average });
-            
-            renderRatingOverview(breakdown, average);
-            renderReviews(reviews);
-            debugLog('Reviews modal rendered');
+                
+                debugLog('Loaded reviews data:', { reviews: reviews.length, breakdown, average });
+                
+                renderRatingOverview(breakdown, average);
+                renderReviews(reviews);
+                debugLog('Reviews modal rendered');
             
             const modal = new bootstrap.Modal(document.getElementById('reviewsModal'));
             modal.show();
@@ -2472,12 +2472,12 @@
                 
                 // Refresh reviews and overview tabs if active (defer non-critical)
                 setTimeout(() => {
-                    const reviewsTab = document.getElementById('reviews-tab');
-                    const overviewTab = document.getElementById('overview-tab');
-                    if (reviewsTab && reviewsTab.classList.contains('active')) {
+                const reviewsTab = document.getElementById('reviews-tab');
+                const overviewTab = document.getElementById('overview-tab');
+                if (reviewsTab && reviewsTab.classList.contains('active')) {
                         loadAllReviews();
-                    }
-                    if (overviewTab && overviewTab.classList.contains('active')) {
+                }
+                if (overviewTab && overviewTab.classList.contains('active')) {
                         loadOverview();
                     }
                 }, 50);
@@ -2512,12 +2512,12 @@
                 
                 // Refresh reviews and overview tabs if active (defer non-critical)
                 setTimeout(() => {
-                    const reviewsTab = document.getElementById('reviews-tab');
-                    const overviewTab = document.getElementById('overview-tab');
-                    if (reviewsTab && reviewsTab.classList.contains('active')) {
+                const reviewsTab = document.getElementById('reviews-tab');
+                const overviewTab = document.getElementById('overview-tab');
+                if (reviewsTab && reviewsTab.classList.contains('active')) {
                         loadAllReviews();
-                    }
-                    if (overviewTab && overviewTab.classList.contains('active')) {
+                }
+                if (overviewTab && overviewTab.classList.contains('active')) {
                         loadOverview();
                     }
                 }, 50);
@@ -2647,12 +2647,12 @@
                 
                 // Refresh reviews and overview tabs if active (defer non-critical)
                 setTimeout(() => {
-                    const reviewsTab = document.getElementById('reviews-tab');
-                    const overviewTab = document.getElementById('overview-tab');
-                    if (reviewsTab && reviewsTab.classList.contains('active')) {
+                const reviewsTab = document.getElementById('reviews-tab');
+                const overviewTab = document.getElementById('overview-tab');
+                if (reviewsTab && reviewsTab.classList.contains('active')) {
                         loadAllReviews();
-                    }
-                    if (overviewTab && overviewTab.classList.contains('active')) {
+                }
+                if (overviewTab && overviewTab.classList.contains('active')) {
                         loadOverview();
                     }
                 }, 50);
@@ -2663,28 +2663,28 @@
         // Load overall rating across all apartments
         function loadOverallRating() {
             const stats = calculateOverallRating();
-            debugLog('Overall rating stats:', stats);
-            
-            const overallRatingEl = document.getElementById('overallRating');
-            const overallRatingTextEl = document.getElementById('overallRatingText');
-            
-            if (overallRatingEl) {
-                // Check if we have reviews and a valid average rating
-                const reviewCount = parseInt(stats.review_count) || 0;
-                const avgRating = stats.average_rating != null ? parseFloat(stats.average_rating) : null;
+                debugLog('Overall rating stats:', stats);
                 
-                if (reviewCount > 0 && avgRating != null && !isNaN(avgRating)) {
-                    const avgRatingFormatted = avgRating.toFixed(1);
-                    const stars = formatStars(avgRating);
-                    overallRatingEl.innerHTML = `<span class="text-warning" style="font-size: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;">${stars} <strong>${avgRatingFormatted}</strong></span>`;
-                    if (overallRatingTextEl) {
-                        overallRatingTextEl.textContent = `(${reviewCount} review${reviewCount !== 1 ? 's' : ''})`;
-                    }
-                } else {
-                    overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
-                    if (overallRatingTextEl) {
-                        overallRatingTextEl.textContent = '(Overall Rating)';
-                    }
+                const overallRatingEl = document.getElementById('overallRating');
+                const overallRatingTextEl = document.getElementById('overallRatingText');
+                
+                if (overallRatingEl) {
+                    // Check if we have reviews and a valid average rating
+                    const reviewCount = parseInt(stats.review_count) || 0;
+                    const avgRating = stats.average_rating != null ? parseFloat(stats.average_rating) : null;
+                    
+                    if (reviewCount > 0 && avgRating != null && !isNaN(avgRating)) {
+                        const avgRatingFormatted = avgRating.toFixed(1);
+                        const stars = formatStars(avgRating);
+                        overallRatingEl.innerHTML = `<span class="text-warning" style="font-size: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;">${stars} <strong>${avgRatingFormatted}</strong></span>`;
+                        if (overallRatingTextEl) {
+                            overallRatingTextEl.textContent = `(${reviewCount} review${reviewCount !== 1 ? 's' : ''})`;
+                        }
+                    } else {
+                        overallRatingEl.innerHTML = '<span class="text-warning" style="font-size: 1.5rem;">⭐</span> <span class="text-muted">--</span>';
+                        if (overallRatingTextEl) {
+                            overallRatingTextEl.textContent = '(Overall Rating)';
+                        }
                 }
             }
         }
@@ -3048,21 +3048,21 @@
         // Save apartment
         function saveApartment() {
             try {
-                const form = document.getElementById('apartmentForm');
+            const form = document.getElementById('apartmentForm');
                 if (!form) {
                     alert('Form not found');
                     return;
                 }
                 
-                if (!form.checkValidity()) {
-                    form.reportValidity();
-                    debugLog('Form validation failed');
-                    return;
-                }
-                
-                const ownedNumberEl = document.getElementById('ownedNumber');
-                const ownedNumberInput = ownedNumberEl ? ownedNumberEl.value.trim() : '';
-                const ownedNumber = ownedNumberInput ? parseInt(ownedNumberInput) : null;
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                debugLog('Form validation failed');
+                return;
+            }
+            
+            const ownedNumberEl = document.getElementById('ownedNumber');
+            const ownedNumberInput = ownedNumberEl ? ownedNumberEl.value.trim() : '';
+            const ownedNumber = ownedNumberInput ? parseInt(ownedNumberInput) : null;
             
             const locationEl = document.getElementById('location');
             const apartmentNameEl = document.getElementById('apartmentName');
@@ -3145,12 +3145,12 @@
             
             debugLog('Saving apartment with data:', apartmentData);
             
-            const id = document.getElementById('apartmentId').value;
+                const id = document.getElementById('apartmentId').value;
             let savedApartment;
-            
-            if (id) {
+                
+                if (id) {
                 // Update existing apartment
-                debugLog('Updating apartment ID:', id);
+                    debugLog('Updating apartment ID:', id);
                 const apartmentIndex = apartments.findIndex(apt => apt.id === parseInt(id));
                 if (apartmentIndex === -1) {
                     alert('Apartment not found');
@@ -3162,9 +3162,9 @@
                 apartments[apartmentIndex] = { ...apartments[apartmentIndex], ...apartmentData };
                 apartments[apartmentIndex].reviews = existingReviews;
                 savedApartment = apartments[apartmentIndex];
-            } else {
+                } else {
                 // Create new apartment
-                debugLog('Creating new apartment');
+                    debugLog('Creating new apartment');
                 const newId = apartments.length > 0 ? Math.max(...apartments.map(apt => apt.id || 0)) + 1 : 1;
                 
                 // Auto-assign owned_number if not provided
@@ -3189,28 +3189,28 @@
             }
             
             saveApartmentsToLocalStorage();
-            debugLog('Apartment saved successfully:', savedApartment);
-            
-            // Close modal and reload
-            const modal = bootstrap.Modal.getInstance(document.getElementById('apartmentModal'));
-            if (modal) {
-                modal.hide();
-            }
-            
-            // Wait a bit for modal to start closing, then clean up backdrop
-            setTimeout(() => {
-                // Ensure modal backdrop is removed
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) {
-                    backdrop.remove();
+                debugLog('Apartment saved successfully:', savedApartment);
+                
+                // Close modal and reload
+                const modal = bootstrap.Modal.getInstance(document.getElementById('apartmentModal'));
+                if (modal) {
+                    modal.hide();
                 }
                 
-                // Remove modal-open class from body if it exists
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-            }, 100);
-            
+                // Wait a bit for modal to start closing, then clean up backdrop
+                setTimeout(() => {
+                    // Ensure modal backdrop is removed
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                    
+                    // Remove modal-open class from body if it exists
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }, 100);
+                
             // Batch DOM updates to improve performance
             requestAnimationFrame(() => {
                 loadApartments();
@@ -3219,14 +3219,14 @@
                 
                 // Refresh overview if on overview tab (defer non-critical)
                 setTimeout(() => {
-                    const overviewTab = document.getElementById('overview-tab');
-                    if (overviewTab && overviewTab.classList.contains('active')) {
+                const overviewTab = document.getElementById('overview-tab');
+                if (overviewTab && overviewTab.classList.contains('active')) {
                         loadOverview();
-                    }
+                }
                 }, 50);
             });
             
-            // Reset selector
+                // Reset selector
             const selector = document.getElementById('apartmentSelector');
             if (selector) selector.value = '';
             const saveBtn = document.getElementById('saveApartmentBtn');
@@ -3256,9 +3256,9 @@
             loadApartments();
             loadAllApartments(); // Refresh card view
             loadAllApartmentsForSelector(); // Update selector
-            // Refresh overview if on overview tab
-            const overviewTab = document.getElementById('overview-tab');
-            if (overviewTab && overviewTab.classList.contains('active')) {
+                // Refresh overview if on overview tab
+                const overviewTab = document.getElementById('overview-tab');
+                if (overviewTab && overviewTab.classList.contains('active')) {
                 loadOverview();
             }
         }
@@ -3317,18 +3317,18 @@
             
             apartment.renting_out_price = priceToSave;
             saveApartmentsToLocalStorage();
-            
-            // Update display
-            const formattedPrice = priceToSave ? parseFloat(priceToSave).toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }) : '--';
-            displayDiv.textContent = `$${formattedPrice}`;
-            debugLog('Updated display with formatted price:', formattedPrice);
-            
-            // Hide edit form, show display
-            displayDiv.parentElement.style.display = 'flex';
-            editDiv.style.display = 'none';
+                
+                // Update display
+                const formattedPrice = priceToSave ? parseFloat(priceToSave).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) : '--';
+                displayDiv.textContent = `$${formattedPrice}`;
+                debugLog('Updated display with formatted price:', formattedPrice);
+                
+                // Hide edit form, show display
+                displayDiv.parentElement.style.display = 'flex';
+                editDiv.style.display = 'none';
         }
 
         // Parse formatted number (remove commas)
@@ -3371,55 +3371,55 @@
         function loadAllApartments() {
             const container = document.getElementById('allApartmentsContainer');
             if (!container) return;
-            
-            // Sort by owned_number (nulls last)
+                
+                // Sort by owned_number (nulls last)
             const sortedApartments = [...apartments].sort((a, b) => {
-                if (a.owned_number === null || a.owned_number === undefined) return 1;
-                if (b.owned_number === null || b.owned_number === undefined) return -1;
-                return a.owned_number - b.owned_number;
-            });
-            
+                    if (a.owned_number === null || a.owned_number === undefined) return 1;
+                    if (b.owned_number === null || b.owned_number === undefined) return -1;
+                    return a.owned_number - b.owned_number;
+                });
+                
             if (sortedApartments.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center">No apartments found.</p>';
-                // Clear visibility controls
+                    container.innerHTML = '<p class="text-muted text-center">No apartments found.</p>';
+                    // Clear visibility controls
+                    const controlsContainer = document.getElementById('apartmentVisibilityControls');
+                    if (controlsContainer) {
+                        controlsContainer.innerHTML = '';
+                    }
+                    return;
+                }
+                
+                // Populate apartment visibility controls
                 const controlsContainer = document.getElementById('apartmentVisibilityControls');
                 if (controlsContainer) {
-                    controlsContainer.innerHTML = '';
-                }
-                return;
-            }
-            
-            // Populate apartment visibility controls
-            const controlsContainer = document.getElementById('apartmentVisibilityControls');
-            if (controlsContainer) {
-                const allApartmentsLocked = JSON.parse(localStorage.getItem('allApartmentsLocked') || '[]');
+                    const allApartmentsLocked = JSON.parse(localStorage.getItem('allApartmentsLocked') || '[]');
                 controlsContainer.innerHTML = sortedApartments.map(apt => {
-                    const ownedNum = apt.owned_number || '--';
-                    const isVisible = !hiddenApartments.includes(apt.id);
-                    const isLocked = allApartmentsLocked.includes(apt.id);
-                    return `
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="apt-check-${apt.id}" 
-                                   ${isVisible ? 'checked' : ''} 
-                                   onchange="toggleApartmentVisibility(${apt.id})">
-                            <label class="form-check-label" for="apt-check-${apt.id}">
-                                Owned ${ownedNum} ${isLocked ? '🔒' : ''}
-                            </label>
-                        </div>
-                    `;
-                }).join('');
-            }
-            
+                        const ownedNum = apt.owned_number || '--';
+                        const isVisible = !hiddenApartments.includes(apt.id);
+                        const isLocked = allApartmentsLocked.includes(apt.id);
+                        return `
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="apt-check-${apt.id}" 
+                                       ${isVisible ? 'checked' : ''} 
+                                       onchange="toggleApartmentVisibility(${apt.id})">
+                                <label class="form-check-label" for="apt-check-${apt.id}">
+                                    Owned ${ownedNum} ${isLocked ? '🔒' : ''}
+                                </label>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                
             // Calculate average ratings for each apartment
             const apartmentsWithReviews = sortedApartments.map(apt => {
                 const reviews = apt.reviews || [];
                 if (reviews.length > 0) {
                     const avgRating = reviews.reduce((sum, r) => sum + parseFloat(r.rating || 0), 0) / reviews.length;
-                    apt.average_rating = avgRating.toFixed(1);
-                } else {
-                    apt.average_rating = null;
-                }
-                return apt;
+                                apt.average_rating = avgRating.toFixed(1);
+                            } else {
+                        apt.average_rating = null;
+                    }
+                    return apt;
             });
                 
                 container.innerHTML = apartmentsWithReviews.map(apt => {
@@ -3837,17 +3837,17 @@
             if (!container) return;
             
             // Collect all reviews from all apartments
-            const allReviews = [];
+                const allReviews = [];
             apartments.forEach(apt => {
                 const reviews = apt.reviews || [];
-                reviews.forEach(review => {
-                    allReviews.push({
-                        ...review,
-                        apartment_name: apt.apartment_name,
-                        apartment_location: apt.location,
-                        apartment_id: apt.id
-                    });
-                });
+                            reviews.forEach(review => {
+                                allReviews.push({
+                                    ...review,
+                                    apartment_name: apt.apartment_name,
+                                    apartment_location: apt.location,
+                                    apartment_id: apt.id
+                                });
+                            });
             });
                 
                 // Sort by date (newest first)
@@ -3896,28 +3896,28 @@
         function loadOverview() {
             // Calculate overall rating
             const ratingStats = calculateOverallRating();
-            
-            // Update overview display
-            const totalApartmentsEl = document.getElementById('overviewTotalApartments');
-            const overallRatingEl = document.getElementById('overviewOverallRating');
-            const totalReviewsEl = document.getElementById('overviewTotalReviews');
-            
-            if (totalApartmentsEl) {
+                
+                // Update overview display
+                const totalApartmentsEl = document.getElementById('overviewTotalApartments');
+                const overallRatingEl = document.getElementById('overviewOverallRating');
+                const totalReviewsEl = document.getElementById('overviewTotalReviews');
+                
+                if (totalApartmentsEl) {
                 totalApartmentsEl.textContent = apartments.length;
-            }
-            
-            if (overallRatingEl) {
-                if (ratingStats.review_count > 0) {
-                    const avgRating = parseFloat(ratingStats.average_rating).toFixed(1);
-                    const stars = formatStars(parseFloat(avgRating));
-                    overallRatingEl.innerHTML = `<div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${stars}</div><div>${avgRating}</div>`;
-                } else {
-                    overallRatingEl.innerHTML = '<span style="opacity: 0.7;">No reviews yet</span>';
                 }
-            }
-            
-            if (totalReviewsEl) {
-                totalReviewsEl.textContent = ratingStats.review_count || 0;
+                
+                if (overallRatingEl) {
+                    if (ratingStats.review_count > 0) {
+                        const avgRating = parseFloat(ratingStats.average_rating).toFixed(1);
+                        const stars = formatStars(parseFloat(avgRating));
+                        overallRatingEl.innerHTML = `<div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${stars}</div><div>${avgRating}</div>`;
+                    } else {
+                        overallRatingEl.innerHTML = '<span style="opacity: 0.7;">No reviews yet</span>';
+                    }
+                }
+                
+                if (totalReviewsEl) {
+                    totalReviewsEl.textContent = ratingStats.review_count || 0;
             }
         }
 
@@ -4142,8 +4142,8 @@
                                     reviews: []
                                 });
                                 apartmentsImported++;
-                            }
-                        } catch (error) {
+                }
+            } catch (error) {
                             apartmentsErrors++;
                             errors.push(`Apartment ${aptData.apartment_name || aptData.id || 'Unknown'}: ${error.message}`);
                             debugLog('Error importing apartment:', aptData, error);
