@@ -457,7 +457,15 @@
                                 <h6 class="mb-2"><strong>Step 1: Set Up Your Tiers</strong></h6>
                                 <p class="mb-2">Click on <strong>⚙️ Configuration Management</strong> above to expand it, then click <span class="badge bg-primary">➕ Add Tier</span> to create your first tier. Give it a name (e.g., "Tier 1: Fruit Stand"), choose an icon (emoji), and select a color.</p>
                                 
-                                <h6 class="mb-2"><strong>Step 2: Add Businesses</strong></h6>
+                                <h6 class="mb-2"><strong>Step 2: Add Products</strong></h6>
+                                <p class="mb-2">Before adding businesses, you can set up products for each tier. In the Configuration Management panel, click <span class="badge bg-primary">➕ Add Product</span> to create products:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Tier:</strong> Select which tier this product belongs to (products are tier-specific)</li>
+                                    <li><strong>Product Name:</strong> Enter the product name (e.g., "Apple", "Orange", "Banana")</li>
+                                </ul>
+                                <p class="mb-2"><em>Note:</em> Products help you track which items each business is producing. You can add products at any time, but it's recommended to set them up before adding businesses.</p>
+                                
+                                <h6 class="mb-2"><strong>Step 3: Add Businesses</strong></h6>
                                 <p class="mb-2">In the Configuration Management panel, click <span class="badge bg-primary">➕ Add Business</span> to add businesses to your tiers. Fill in:</p>
                                 <ul class="mb-3">
                                     <li><strong>Business Code:</strong> A unique identifier (e.g., "TIER1-BIZ001")</li>
@@ -468,18 +476,37 @@
                                     <li><strong>Notes:</strong> <em>Optional</em> - Add notes to help remember which business this is, such as employee names or other identifying information. Hover over the ℹ️ icon for more details. This makes it easy to identify businesses when you have multiple locations.</li>
                                 </ul>
                                 
-                                <h6 class="mb-2"><strong>Step 3: Track Your Progress</strong></h6>
+                                <h6 class="mb-2"><strong>Step 4: Track Your Progress</strong></h6>
                                 <p class="mb-2">Once businesses are added, they will appear in the checklist below. You can:</p>
                                 <ul class="mb-3">
-                                    <li><strong>Check off businesses:</strong> Click the checkbox when you've completed a task</li>
+                                    <li><strong>Check off businesses:</strong> Click the checkbox when you've completed a task (checked businesses are excluded from summary calculations)</li>
                                     <li><strong>Add Money:</strong> Enter the current money amount in the Money field</li>
-                                    <li><strong>Track Stock:</strong> Enter current stock to see how much more is needed to reach max</li>
+                                    <li><strong>Track Stock:</strong> Enter current stock to see how much more is needed to reach max. The system automatically calculates "Stock Needed" based on Max Stock - Current Stock</li>
+                                    <li><strong>Select Product:</strong> Choose which product this business is producing from the Product dropdown. This is used for summary calculations</li>
                                     <li><strong>Track Collection:</strong> Enter collection storage amounts (if applicable)</li>
                                     <li><strong>Add Notes:</strong> Add any notes or reminders for each business</li>
                                 </ul>
                                 
-                                <h6 class="mb-2"><strong>Step 4: Import/Export Configuration</strong></h6>
-                                <p class="mb-2">You can backup and restore your configuration:</p>
+                                <h6 class="mb-2"><strong>Step 5: View Tier Summaries</strong></h6>
+                                <p class="mb-2">Each tier card has a <span class="badge bg-info">📊 Show Summary</span> / <span class="badge bg-info">📊 Hide Summary</span> button. Click it to view a summary table showing:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Product Name:</strong> All products assigned to businesses in this tier</li>
+                                    <li><strong>Total Products Needed:</strong> Sum of stock needed for each product across all businesses in the tier</li>
+                                </ul>
+                                <p class="mb-2"><em>Note:</em> Businesses with checked checkboxes are excluded from summary calculations. The summary only counts businesses that need stock.</p>
+                                
+                                <h6 class="mb-2"><strong>Step 6: View All Business Summary</strong></h6>
+                                <p class="mb-2">Below the tier cards, you'll find the <strong>📊 All Business Summary</strong> card (appears when products are selected). This shows:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Product Name:</strong> All products across all tiers</li>
+                                    <li><strong>Tier Columns:</strong> Stock needed for each product per tier</li>
+                                    <li><strong>Grand Total:</strong> Total stock needed for each product across all tiers</li>
+                                    <li><strong>Footer Row:</strong> Grand totals for each tier and overall grand total</li>
+                                </ul>
+                                <p class="mb-2">This summary helps you see at a glance how much of each product you need across all your businesses.</p>
+                                
+                                <h6 class="mb-2"><strong>Step 7: Import/Export Configuration</strong></h6>
+                                <p class="mb-2">You can backup and restore your configuration (including tiers, businesses, products, and product selections):</p>
                                 <ul class="mb-3">
                                     <li><strong>Export:</strong> Click <span class="badge bg-success">📤 Export Configuration</span> to copy your setup. Then copy the JSON text:</li>
                                     <ul class="mb-2">
@@ -493,7 +520,7 @@
                                     </ul>
                                     <li>Click <span class="badge bg-primary">Import</span> to load your configuration</li>
                                 </ul>
-                                <p class="mb-0">All your progress is automatically saved to your browser. Use <span class="badge bg-info">📋 Generate Checklist</span> to create a CSV report. For more details on copy/paste shortcuts, see the <a href="merchants.html">Traveling Merchants</a> page.</p>
+                                <p class="mb-0">All your progress is automatically saved to your browser. Use <span class="badge bg-info">📋 Generate Checklist</span> to create a CSV report (includes product information). For more details on copy/paste shortcuts, see the <a href="merchants.html">Traveling Merchants</a> page.</p>
                             </div>
                         </div>
                     </div>
