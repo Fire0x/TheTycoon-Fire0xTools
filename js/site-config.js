@@ -241,7 +241,7 @@ const VersionManager = {
         'education_timer.html': '0.1.0',
         'apartment.html': '0.1.2',
         'Info-Ref.html': '0.1.0',
-        'checklist-1.html': '0.0.6'
+        'checklist-1.html': '0.0.7'
     },
     
     /**

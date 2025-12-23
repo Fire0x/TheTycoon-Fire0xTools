@@ -1545,7 +1545,16 @@
                     card.innerHTML = `
                         <div class="card-header ${tier.color}">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h2 class="mb-0">${tier.icon} ${tier.name}</h2>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="checkbox" 
+                                           class="form-check-input tier-check-all" 
+                                           id="tier-check-all-${tier.name}"
+                                           data-tier="${tier.name}"
+                                           title="Check/Uncheck all businesses in this tier"
+                                           onchange="toggleTierCheckAll('${tier.name}')"
+                                           style="width: 1.25rem; height: 1.25rem; cursor: pointer;">
+                                    <h2 class="mb-0">${tier.icon} ${tier.name}</h2>
+                                </div>
                                 <div class="d-flex gap-2">
                                     <button type="button" class="btn btn-sm btn-outline-light toggle-tier-summary-btn" 
                                             data-tier="${tier.name}"
@@ -1578,6 +1587,9 @@
                                                 <td colspan="2" class="text-center text-muted">Loading summary...</td>
                                             </tr>
                                         </tbody>
+                                        <tfoot id="tier-summary-footer-${tier.name}">
+                                            <!-- Grand Total row will be dynamically generated here -->
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
@@ -1763,6 +1775,10 @@
             // Update tier toggle buttons after loading
             tiers.forEach(tier => {
                 updateTierToggleButton(tier.name);
+                // Update tier checkbox states after loading progress
+                setTimeout(() => {
+                    updateTierCheckboxState(tier.name);
+                }, 150);
             });
         }
 
@@ -1786,6 +1802,17 @@
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(checkbox => checkbox.checked = true);
             saveProgress();
+            
+            // Update all tier checkbox states
+            const tiers = getBusinessTiers();
+            tiers.forEach(tier => {
+                updateTierCheckboxState(tier.name);
+            });
+            
+            // Recalculate all tier summaries
+            tiers.forEach(tier => {
+                calculateTierSummary(tier.name);
+            });
         }
 
         // Uncheck all checkboxes
@@ -1793,6 +1820,17 @@
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(checkbox => checkbox.checked = false);
             saveProgress();
+            
+            // Update all tier checkbox states
+            const tiers = getBusinessTiers();
+            tiers.forEach(tier => {
+                updateTierCheckboxState(tier.name);
+            });
+            
+            // Recalculate all tier summaries
+            tiers.forEach(tier => {
+                calculateTierSummary(tier.name);
+            });
         }
 
         // Save progress to localStorage
@@ -2125,6 +2163,57 @@
             updateTierToggleButton(tier);
         }
         
+        // Toggle all businesses checkboxes in a tier
+        function toggleTierCheckAll(tierName) {
+            const tierCheckbox = document.getElementById(`tier-check-all-${tierName}`);
+            if (!tierCheckbox) {
+                debugWarn(`Tier checkbox not found for tier: ${tierName}`);
+                return;
+            }
+            
+            const isChecked = tierCheckbox.checked;
+            debugLog(`Toggling all businesses in tier ${tierName} to ${isChecked ? 'checked' : 'unchecked'}`);
+            
+            // Get all business checkboxes in this tier
+            const businessCheckboxes = document.querySelectorAll(`input[type="checkbox"][data-tier="${tierName}"]:not(.tier-check-all)`);
+            debugLog(`Found ${businessCheckboxes.length} business checkboxes in tier ${tierName}`);
+            
+            businessCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            
+            // Save progress
+            saveProgress();
+            
+            // Recalculate tier summary
+            debugLog(`Recalculating tier summary for ${tierName} after check-all`);
+            calculateTierSummary(tierName);
+        }
+        
+        // Update tier checkbox state based on individual business checkboxes
+        function updateTierCheckboxState(tierName) {
+            const tierCheckbox = document.getElementById(`tier-check-all-${tierName}`);
+            if (!tierCheckbox) return;
+            
+            const businessCheckboxes = document.querySelectorAll(`input[type="checkbox"][data-tier="${tierName}"]:not(.tier-check-all)`);
+            if (businessCheckboxes.length === 0) return;
+            
+            const checkedCount = Array.from(businessCheckboxes).filter(cb => cb.checked).length;
+            const allChecked = checkedCount === businessCheckboxes.length;
+            const someChecked = checkedCount > 0 && checkedCount < businessCheckboxes.length;
+            
+            // Update checkbox state (indeterminate if some checked, checked if all checked, unchecked if none checked)
+            tierCheckbox.checked = allChecked;
+            tierCheckbox.indeterminate = someChecked;
+            
+            debugLog(`Updated tier checkbox state for ${tierName}:`, { 
+                checked: allChecked, 
+                indeterminate: someChecked,
+                checkedCount,
+                totalCount: businessCheckboxes.length 
+            });
+        }
+        
         // Update tier toggle button text/state
         function updateTierToggleButton(tier) {
             const items = document.querySelectorAll(`.business-item[data-tier="${tier}"]`);
@@ -2153,10 +2242,11 @@
                 e.target.classList.contains('collection-input')) {
                 saveProgress();
                 
-                // If a business checkbox changed, recalculate tier summary
-                if (e.target.type === 'checkbox' && e.target.dataset.tier) {
+                // If a business checkbox changed, update tier checkbox state and recalculate tier summary
+                if (e.target.type === 'checkbox' && e.target.dataset.tier && !e.target.classList.contains('tier-check-all')) {
                     const tierName = e.target.dataset.tier;
-                    debugLog(`Business checkbox changed for tier ${tierName} - recalculating tier summary`);
+                    debugLog(`Business checkbox changed for tier ${tierName} - updating tier checkbox state and recalculating tier summary`);
+                    updateTierCheckboxState(tierName);
                     calculateTierSummary(tierName);
                 }
             }
@@ -2497,16 +2587,25 @@
             debugLog(`Product map:`, productMap);
             
             // Render summary table
+            const summaryFooter = document.getElementById(`tier-summary-footer-${tierName}`);
             if (Object.keys(productMap).length === 0) {
                 summaryBody.innerHTML = '<tr><td colspan="2" class="text-center text-muted">No products selected yet</td></tr>';
+                if (summaryFooter) {
+                    summaryFooter.innerHTML = '';
+                }
                 debugLog(`No products found for tier ${tierName}`);
                 calculateAllBusinessSummary();
                 return;
             }
             
-            summaryBody.innerHTML = Object.keys(productMap).map(productName => {
+            // Calculate grand total
+            let grandTotal = 0;
+            const sortedProducts = Object.keys(productMap).sort();
+            
+            summaryBody.innerHTML = sortedProducts.map(productName => {
                 const productData = productMap[productName];
                 const totalNeeded = productData.totalNeeded;
+                grandTotal += totalNeeded;
                 
                 debugLog(`Product "${productName}": totalNeeded=${totalNeeded}`);
                 
@@ -2520,6 +2619,17 @@
                 `;
             }).join('');
             
+            // Render grand total footer
+            if (summaryFooter) {
+                summaryFooter.innerHTML = `
+                    <tr style="background-color: rgba(102, 126, 234, 0.1);">
+                        <td><strong>Grand Total</strong></td>
+                        <td class="text-end"><strong style="font-size: 1.1em;">${grandTotal.toLocaleString('en-US')}</strong></td>
+                    </tr>
+                `;
+            }
+            
+            debugLog(`Tier summary grand total for ${tierName}: ${grandTotal}`);
             debugLog(`=== calculateTierSummary END for tier: ${tierName} ===`);
             
             // Recalculate all business summary after tier summary is updated
