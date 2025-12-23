@@ -1215,6 +1215,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-info" onclick="sortProductsByTier()">Sort by Tier</button>
                     <button type="button" class="btn btn-primary" onclick="saveProductOrder()">Save Order</button>
                     <button type="button" class="btn btn-outline-secondary" onclick="resetProductOrder()">Reset to Alphabetical</button>
                 </div>
@@ -1428,7 +1429,7 @@
         
         // localStorage Configuration Data Structure
         const CONFIG_STORAGE_KEY = 'checklistConfigData';
-        const CONFIG_VERSION = '1.0.0';
+        const CONFIG_VERSION = '1.0.1';
         
         // Global state
         let checklistConfigData = null;
@@ -3727,12 +3728,19 @@
 
         // Get products sorted by custom order (or alphabetical if no order set)
         function getProductsInOrder(productNames) {
+            debugLog(`=== getProductsInOrder START ===`);
+            debugLog(`Input product names:`, productNames);
+            
             if (!checklistConfigData || !checklistConfigData.productOrder || checklistConfigData.productOrder.length === 0) {
                 // No custom order, return alphabetically sorted
-                return productNames.sort();
+                const sorted = productNames.sort();
+                debugLog(`No custom order found, using alphabetical order:`, sorted);
+                debugLog(`=== getProductsInOrder END (alphabetical) ===`);
+                return sorted;
             }
             
             const productOrder = checklistConfigData.productOrder;
+            debugLog(`Custom product order found:`, productOrder);
             const orderedProducts = [];
             const unorderedProducts = [];
             
@@ -3742,6 +3750,9 @@
                 const product = (checklistConfigData.products || []).find(p => p.id === productId);
                 if (product && productNames.includes(product.productName)) {
                     orderedProducts.push(product.productName);
+                    debugLog(`Added ordered product: ${product.productName} (ID: ${productId})`);
+                } else if (product) {
+                    debugLog(`Skipped product ${product.productName} (ID: ${productId}) - not in productNames list`);
                 }
             });
             
@@ -3752,8 +3763,12 @@
                 }
             });
             unorderedProducts.sort();
+            debugLog(`Found ${unorderedProducts.length} unordered products:`, unorderedProducts);
             
-            return [...orderedProducts, ...unorderedProducts];
+            const finalOrder = [...orderedProducts, ...unorderedProducts];
+            debugLog(`Final product order:`, finalOrder);
+            debugLog(`=== getProductsInOrder END (custom order) ===`);
+            return finalOrder;
         }
 
         function populateProductSelectorsForTier(tierName) {
@@ -3811,10 +3826,12 @@
 
         // Open product order modal
         function openProductOrderModal() {
-            debugLog('Opening Product Order Modal');
+            debugLog('=== openProductOrderModal START ===');
             const products = checklistConfigData.products || [];
+            debugLog(`Found ${products.length} total products`);
             
             if (products.length === 0) {
+                debugWarn('No products available for ordering');
                 alert('No products available. Please add products first.');
                 return;
             }
@@ -3825,6 +3842,7 @@
             
             // Get products in current order (or alphabetical)
             const productOrder = checklistConfigData.productOrder || [];
+            debugLog(`Current product order:`, productOrder);
             const orderedProducts = [];
             const unorderedProducts = [];
             
@@ -3837,6 +3855,9 @@
                         ...product,
                         tierName: tier ? tier.name : 'Unknown'
                     });
+                    debugLog(`Added ordered product: ${product.productName} (ID: ${productId}, Tier: ${tier ? tier.name : 'Unknown'})`);
+                } else {
+                    debugWarn(`Product ID ${productId} in order but not found in products list`);
                 }
             });
             
@@ -3852,9 +3873,14 @@
             
             // Sort unordered products alphabetically
             unorderedProducts.sort((a, b) => a.productName.localeCompare(b.productName));
+            debugLog(`Found ${unorderedProducts.length} unordered products (will be sorted alphabetically)`);
             
             // Combine ordered and unordered
             const allProducts = [...orderedProducts, ...unorderedProducts];
+            debugLog(`Total products to display: ${allProducts.length}`, {
+                ordered: orderedProducts.length,
+                unordered: unorderedProducts.length
+            });
             
             allProducts.forEach((product, index) => {
                 const item = document.createElement('div');
@@ -3877,6 +3903,8 @@
                 productOrderList.appendChild(item);
             });
             
+            debugLog(`Rendered ${allProducts.length} product items in modal`);
+            
             const modalElement = document.getElementById('productOrderModal');
             const modal = new bootstrap.Modal(modalElement);
             
@@ -3885,62 +3913,116 @@
             }, { once: true });
             
             modal.show();
+            debugLog('=== openProductOrderModal END ===');
         }
         
         // Move product up in order
         function moveProductUp(productId) {
+            debugLog(`=== moveProductUp START ===`);
+            debugLog(`Moving product ID ${productId} up`);
             const items = Array.from(document.querySelectorAll('#productOrderList .list-group-item'));
             const currentIndex = items.findIndex(item => parseInt(item.dataset.productId) === productId);
+            debugLog(`Current index: ${currentIndex}, Total items: ${items.length}`);
             
             if (currentIndex > 0) {
                 const productOrderList = document.getElementById('productOrderList');
                 const item = items[currentIndex];
                 const previousItem = items[currentIndex - 1];
+                const productName = item.querySelector('strong')?.textContent || 'Unknown';
                 
                 productOrderList.insertBefore(item, previousItem);
+                debugLog(`Moved product "${productName}" from index ${currentIndex} to ${currentIndex - 1}`);
                 
                 // Update button states
                 updateProductOrderButtons();
+            } else {
+                debugLog(`Product ${productId} is already at the top, cannot move up`);
             }
+            debugLog(`=== moveProductUp END ===`);
         }
         
         // Move product down in order
         function moveProductDown(productId) {
+            debugLog(`=== moveProductDown START ===`);
+            debugLog(`Moving product ID ${productId} down`);
             const items = Array.from(document.querySelectorAll('#productOrderList .list-group-item'));
             const currentIndex = items.findIndex(item => parseInt(item.dataset.productId) === productId);
+            debugLog(`Current index: ${currentIndex}, Total items: ${items.length}`);
             
             if (currentIndex < items.length - 1) {
                 const productOrderList = document.getElementById('productOrderList');
                 const item = items[currentIndex];
                 const nextItem = items[currentIndex + 1];
+                const productName = item.querySelector('strong')?.textContent || 'Unknown';
                 
                 productOrderList.insertBefore(item, nextItem.nextSibling);
+                debugLog(`Moved product "${productName}" from index ${currentIndex} to ${currentIndex + 1}`);
                 
                 // Update button states
                 updateProductOrderButtons();
+            } else {
+                debugLog(`Product ${productId} is already at the bottom, cannot move down`);
             }
+            debugLog(`=== moveProductDown END ===`);
         }
         
         // Update button states in product order modal
         function updateProductOrderButtons() {
+            debugLog(`=== updateProductOrderButtons START ===`);
             const items = Array.from(document.querySelectorAll('#productOrderList .list-group-item'));
+            debugLog(`Updating buttons for ${items.length} items`);
+            
+            let disabledUpCount = 0;
+            let disabledDownCount = 0;
+            
             items.forEach((item, index) => {
                 const buttons = item.querySelectorAll('button');
                 if (buttons.length >= 2) {
+                    const wasUpDisabled = buttons[0].disabled;
+                    const wasDownDisabled = buttons[1].disabled;
+                    
                     buttons[0].disabled = index === 0; // Up button
                     buttons[1].disabled = index === items.length - 1; // Down button
+                    
+                    if (buttons[0].disabled) disabledUpCount++;
+                    if (buttons[1].disabled) disabledDownCount++;
+                    
+                    if (wasUpDisabled !== buttons[0].disabled || wasDownDisabled !== buttons[1].disabled) {
+                        const productName = item.querySelector('strong')?.textContent || 'Unknown';
+                        debugLog(`Updated buttons for "${productName}" at index ${index}: Up=${buttons[0].disabled}, Down=${buttons[1].disabled}`);
+                    }
                 }
             });
+            
+            debugLog(`Button update complete: ${disabledUpCount} up buttons disabled, ${disabledDownCount} down buttons disabled`);
+            debugLog(`=== updateProductOrderButtons END ===`);
         }
         
         // Save product order
         function saveProductOrder() {
+            debugLog(`=== saveProductOrder START ===`);
             const items = Array.from(document.querySelectorAll('#productOrderList .list-group-item'));
+            debugLog(`Found ${items.length} product items to save`);
+            
             const productOrder = items.map(item => parseInt(item.dataset.productId));
             
+            // Log product names in order for debugging
+            const productNamesInOrder = items.map(item => {
+                const productId = parseInt(item.dataset.productId);
+                const product = (checklistConfigData.products || []).find(p => p.id === productId);
+                return product ? product.productName : `Unknown (ID: ${productId})`;
+            });
+            debugLog(`Product order (by name):`, productNamesInOrder);
+            debugLog(`Product order (by ID):`, productOrder);
+            
+            const oldOrder = checklistConfigData.productOrder || [];
             checklistConfigData.productOrder = productOrder;
             saveConfigToLocalStorage();
-            debugLog(`✅ Saved product order:`, productOrder);
+            debugLog(`✅ Saved product order:`, {
+                oldOrder: oldOrder,
+                newOrder: productOrder,
+                changed: JSON.stringify(oldOrder) !== JSON.stringify(productOrder)
+            });
             
             const productOrderModal = bootstrap.Modal.getInstance(document.getElementById('productOrderModal'));
             if (productOrderModal) {
@@ -3952,32 +4034,143 @@
             }
             
             // Recalculate summaries with new order
+            debugLog(`Recalculating summaries for ${getBusinessTiers().length} tiers`);
             const tiers = getBusinessTiers();
             tiers.forEach(tier => {
+                debugLog(`Recalculating summary for tier: ${tier.name}`);
                 calculateTierSummary(tier.name);
             });
             
+            debugLog(`=== saveProductOrder END ===`);
             alert('Product order saved! Summaries will update automatically.');
+        }
+        
+        // Sort products by tier in the modal
+        function sortProductsByTier() {
+            debugLog(`=== sortProductsByTier START ===`);
+            const productOrderList = document.getElementById('productOrderList');
+            const items = Array.from(document.querySelectorAll('#productOrderList .list-group-item'));
+            debugLog(`Found ${items.length} product items to sort`);
+            
+            if (items.length === 0) {
+                debugWarn('No products to sort');
+                return;
+            }
+            
+            // Get tier order from config
+            const tiers = getBusinessTiers();
+            debugLog(`Found ${tiers.length} tiers:`, tiers.map(t => t.name));
+            
+            // Create a map of tier name to tier index for sorting
+            const tierOrderMap = {};
+            tiers.forEach((tier, index) => {
+                tierOrderMap[tier.name] = index;
+                debugLog(`Tier "${tier.name}" at index ${index}`);
+            });
+            
+            // Get all products with their data
+            const products = checklistConfigData.products || [];
+            const productsWithData = items.map(item => {
+                const productId = parseInt(item.dataset.productId);
+                const product = products.find(p => p.id === productId);
+                const tier = tiers.find(t => t.id === product?.tierId);
+                const tierName = tier ? tier.name : 'Unknown';
+                const tierIndex = tierOrderMap[tierName] !== undefined ? tierOrderMap[tierName] : 999; // Unknown tiers go to end
+                
+                return {
+                    item: item,
+                    productId: productId,
+                    productName: product ? product.productName : 'Unknown',
+                    tierName: tierName,
+                    tierIndex: tierIndex
+                };
+            });
+            
+            debugLog(`Products before sorting:`, productsWithData.map(p => ({
+                name: p.productName,
+                tier: p.tierName,
+                tierIndex: p.tierIndex
+            })));
+            
+            // Sort by tier index first, then alphabetically within each tier
+            productsWithData.sort((a, b) => {
+                if (a.tierIndex !== b.tierIndex) {
+                    return a.tierIndex - b.tierIndex;
+                }
+                return a.productName.localeCompare(b.productName);
+            });
+            
+            debugLog(`Products after sorting:`, productsWithData.map(p => ({
+                name: p.productName,
+                tier: p.tierName,
+                tierIndex: p.tierIndex
+            })));
+            
+            // Clear and rebuild the list
+            productOrderList.innerHTML = '';
+            
+            // Group by tier for logging
+            const productsByTier = {};
+            productsWithData.forEach(p => {
+                if (!productsByTier[p.tierName]) {
+                    productsByTier[p.tierName] = [];
+                }
+                productsByTier[p.tierName].push(p.productName);
+            });
+            debugLog(`Products grouped by tier:`, productsByTier);
+            
+            // Re-append items in sorted order
+            productsWithData.forEach((productData, index) => {
+                const item = productData.item;
+                const product = products.find(p => p.id === productData.productId);
+                const tier = tiers.find(t => t.id === product?.tierId);
+                const tierName = tier ? tier.name : 'Unknown';
+                
+                // Update button states
+                const buttons = item.querySelectorAll('button');
+                if (buttons.length >= 2) {
+                    buttons[0].disabled = index === 0; // Up button
+                    buttons[1].disabled = index === productsWithData.length - 1; // Down button
+                }
+                
+                productOrderList.appendChild(item);
+                debugLog(`Appended product "${productData.productName}" (Tier: ${tierName}) at index ${index}`);
+            });
+            
+            debugLog(`✅ Sorted ${items.length} products by tier`);
+            debugLog(`=== sortProductsByTier END ===`);
         }
         
         // Reset product order to alphabetical
         function resetProductOrder() {
+            debugLog(`=== resetProductOrder START ===`);
+            const oldOrder = checklistConfigData.productOrder || [];
+            debugLog(`Current product order:`, oldOrder);
+            
             if (!confirm('Reset product order to alphabetical? This will remove your custom ordering.')) {
+                debugLog('Reset cancelled by user');
                 return;
             }
             
             checklistConfigData.productOrder = [];
             saveConfigToLocalStorage();
-            debugLog('✅ Reset product order to alphabetical');
+            debugLog('✅ Reset product order to alphabetical', {
+                oldOrder: oldOrder,
+                newOrder: []
+            });
             
             // Recalculate summaries
+            debugLog(`Recalculating summaries for ${getBusinessTiers().length} tiers`);
             const tiers = getBusinessTiers();
             tiers.forEach(tier => {
+                debugLog(`Recalculating summary for tier: ${tier.name}`);
                 calculateTierSummary(tier.name);
             });
             
             // Refresh modal
+            debugLog('Refreshing product order modal');
             openProductOrderModal();
+            debugLog(`=== resetProductOrder END ===`);
         }
 
         // Import/Export Functions
