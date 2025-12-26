@@ -10,6 +10,9 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="css/styles.css" rel="stylesheet">
+    <!-- Google API Client Library -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -505,7 +508,25 @@
                                 </ul>
                                 <p class="mb-2">This summary helps you see at a glance how much of each product you need across all your businesses.</p>
                                 
-                                <h6 class="mb-2"><strong>Step 7: Import/Export Configuration</strong></h6>
+                                <h6 class="mb-2"><strong>Step 7: Google Sheets Sync (Optional)</strong></h6>
+                                <p class="mb-2">You can sync your checklist data to Google Sheets for cloud access across devices:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Connect:</strong> In the Configuration Management panel, under "Storage Settings", click <span class="badge bg-success">🔗 Connect Google Sheets</span> to sign in with your Google account</li>
+                                    <li><strong>Automatic Sync:</strong> Once connected, all changes are automatically synced to Google Sheets (with a 2-second delay to avoid excessive API calls)</li>
+                                    <li><strong>Hybrid Storage:</strong> Data is always saved to your browser (localStorage) for offline access. When connected, changes sync to both localStorage and Google Sheets</li>
+                                    <li><strong>Disconnect:</strong> Click <span class="badge bg-danger">🔌 Disconnect</span> to stop syncing. Your data remains in localStorage</li>
+                                    <li><strong>Status:</strong> The status badge shows "Connected" (green), "Syncing..." (yellow), or "Disconnected" (gray)</li>
+                                    <li><strong>Last Sync:</strong> The timestamp shows when data was last synced to Google Sheets</li>
+                                </ul>
+                                <p class="mb-2"><strong>Troubleshooting:</strong></p>
+                                <ul class="mb-3">
+                                    <li>If sync fails, check your internet connection and try disconnecting and reconnecting</li>
+                                    <li>If you see "Token expired", disconnect and reconnect to refresh authentication</li>
+                                    <li>Your data is always safe in localStorage even if Google Sheets sync fails</li>
+                                    <li>If you lose access to your Google account, you can still use localStorage and export/import your configuration</li>
+                                </ul>
+                                
+                                <h6 class="mb-2"><strong>Step 8: Import/Export Configuration</strong></h6>
                                 <p class="mb-2">You can backup and restore your configuration (including tiers, businesses, products, and product selections):</p>
                                 <ul class="mb-3">
                                     <li><strong>Export:</strong> Click <span class="badge bg-success">📤 Export Configuration</span> to copy your setup. Then copy the JSON text:</li>
@@ -557,6 +578,24 @@
                             <button type="button" class="btn btn-primary" onclick="openAddProductModal()">➕ Add Product</button>
                             <button type="button" class="btn btn-info" onclick="openEditProductModal()">✏️ Edit Product</button>
                             <button type="button" class="btn btn-secondary" onclick="openProductOrderModal()">📋 Edit Product Order</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h5>Storage Settings</h5>
+                        <div class="mb-2">
+                            <p class="mb-2">Sync your data to Google Sheets for cloud access across devices.</p>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span>Status:</span>
+                                <span id="googleSheetsStatus" class="badge bg-secondary">Disconnected</span>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <button type="button" class="btn btn-success" id="connectGoogleSheetsBtn" onclick="authenticateGoogle()">🔗 Connect Google Sheets</button>
+                                <button type="button" class="btn btn-danger" id="disconnectGoogleSheetsBtn" onclick="disconnectGoogleSheets()" style="display: none;">🔌 Disconnect</button>
+                            </div>
+                            <small id="lastSyncTime" class="text-muted">Never synced</small>
+                        </div>
+                        <div class="alert alert-info alert-sm mb-0" role="alert">
+                            <small><strong>Note:</strong> Data is always saved to your browser (localStorage) for offline access. When connected to Google Sheets, changes are automatically synced to the cloud. You can disconnect at any time and continue using localStorage.</small>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -1431,6 +1470,46 @@
         const CONFIG_STORAGE_KEY = 'checklistConfigData';
         const CONFIG_VERSION = '1.0.1';
         
+        // Google Sheets Storage Keys
+        const GOOGLE_SHEET_ID_KEY = 'checklistGoogleSheetId';
+        const GOOGLE_ACCESS_TOKEN_KEY = 'googleAccessToken';
+        const STORAGE_TYPE_KEY = 'checklistStorageType';
+        const LAST_SYNC_KEY = 'checklistLastSync';
+        const PROGRESS_STORAGE_KEY = 'businessChecklist';
+        
+        // Google Sheets Configuration
+        // 
+        // SETUP INSTRUCTIONS:
+        // 1. Go to https://console.cloud.google.com/
+        // 2. Create a new project or select an existing one
+        // 3. Enable the Google Sheets API:
+        //    - Go to "APIs & Services" > "Library"
+        //    - Search for "Google Sheets API" and enable it
+        // 4. Create OAuth 2.0 credentials:
+        //    - Go to "APIs & Services" > "Credentials"
+        //    - Click "Create Credentials" > "OAuth client ID"
+        //    - Application type: "Web application"
+        //    - Authorized JavaScript origins: Add your GitHub Pages URL (e.g., https://yourusername.github.io)
+        //    - Authorized redirect URIs: Add your GitHub Pages URL (e.g., https://yourusername.github.io)
+        //    - Copy the Client ID
+        // 5. Create API Key:
+        //    - In "Credentials", click "Create Credentials" > "API key"
+        //    - Copy the API key
+        //    - (Optional) Restrict the API key to Google Sheets API for security
+        // 6. Replace the placeholders below with your actual credentials
+        //
+        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
+        const GOOGLE_API_KEY = 'YOUR_GOOGLE_API_KEY_HERE';
+        const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+        const DISCOVERY_DOCS = ['https://sheets.googleapis.com/$discovery/rest?version=v4'];
+        
+        // Storage state
+        let googleSheetsInitialized = false;
+        let googleSheetsConnected = false;
+        let syncInProgress = false;
+        let syncQueue = [];
+        let syncDebounceTimer = null;
+        
         // Global state
         let checklistConfigData = null;
         
@@ -1439,50 +1518,98 @@
 
         // Initialize configuration from localStorage or migrate from API
         async function initializeConfig() {
-            const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
-            if (saved) {
-                try {
-                    checklistConfigData = JSON.parse(saved);
-                    if (!checklistConfigData.version) {
-                        checklistConfigData.version = CONFIG_VERSION;
-                        saveConfigToLocalStorage();
-                    }
-                    debugLog('✅ Loaded configuration from localStorage');
-                    if (!debugEnabled) console.log('✅ Loaded configuration from localStorage');
-                    return true;
-                } catch (e) {
-                    debugError('Error parsing saved config:', e);
+            debugLog('=== initializeConfig START ===');
+            
+            // Initialize Google API (non-blocking)
+            if (GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE' && GOOGLE_API_KEY !== 'YOUR_GOOGLE_API_KEY_HERE') {
+                initGoogleAPI().catch(error => {
+                    debugError('Failed to initialize Google API:', error);
+                });
+            }
+            
+            // Check for existing Google Sheets connection
+            const sheetId = localStorage.getItem(GOOGLE_SHEET_ID_KEY);
+            if (sheetId && googleSheetsInitialized) {
+                const authInstance = gapi.auth2.getAuthInstance();
+                if (authInstance && authInstance.isSignedIn.get()) {
+                    googleSheetsConnected = true;
+                    debugLog('Restored Google Sheets connection');
                 }
+            }
+            
+            // Try to load config (will check Google Sheets if connected)
+            const loaded = await loadConfigFromLocalStorage();
+            if (loaded) {
+                if (!loaded.version) {
+                    loaded.version = CONFIG_VERSION;
+                    await saveConfigToLocalStorage();
+                }
+                debugLog('✅ Loaded configuration');
+                if (!debugEnabled) console.log('✅ Loaded configuration');
+                debugLog('=== initializeConfig END ===');
+                return true;
             }
             
             // No saved config - use default empty config
             checklistConfigData = getDefaultConfig();
-            saveConfigToLocalStorage();
+            await saveConfigToLocalStorage();
             debugLog('✅ Created default empty configuration');
+            debugLog('=== initializeConfig END ===');
             return true;
         }
 
-        // Load configuration from localStorage
-        function loadConfigFromLocalStorage() {
+        // Load configuration from localStorage (with Google Sheets fallback)
+        async function loadConfigFromLocalStorage() {
+            debugLog('=== loadConfigFromLocalStorage START ===');
+            
+            // Try Google Sheets first if connected
+            if (googleSheetsConnected) {
+                const cloudConfig = await loadConfigFromGoogleSheets();
+                if (cloudConfig) {
+                    checklistConfigData = cloudConfig;
+                    // Also save to localStorage for offline access
+                    localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(checklistConfigData));
+                    debugLog('✅ Loaded configuration from Google Sheets');
+                    debugLog('=== loadConfigFromLocalStorage END ===');
+                    return checklistConfigData;
+                }
+            }
+            
+            // Fallback to localStorage
             const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
             if (saved) {
                 try {
                     checklistConfigData = JSON.parse(saved);
+                    debugLog('✅ Loaded configuration from localStorage');
+                    debugLog('=== loadConfigFromLocalStorage END ===');
                     return checklistConfigData;
                 } catch (e) {
                     debugError('Error loading config:', e);
                 }
             }
+            
+            debugLog('=== loadConfigFromLocalStorage END ===');
             return null;
         }
 
-        // Save configuration to localStorage
-        function saveConfigToLocalStorage() {
+        // Save configuration to localStorage (with Google Sheets sync)
+        async function saveConfigToLocalStorage() {
+            debugLog('=== saveConfigToLocalStorage START ===');
+            
             if (checklistConfigData) {
                 checklistConfigData.version = CONFIG_VERSION;
+                
+                // Always save to localStorage first (for offline access)
                 localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(checklistConfigData));
                 debugLog('✅ Saved configuration to localStorage');
+                
+                // Also sync to Google Sheets if connected (hybrid sync)
+                if (googleSheetsConnected) {
+                    await syncToGoogleSheets();
+                }
             }
+            
+            debugLog('=== saveConfigToLocalStorage END ===');
         }
 
         // Get default empty configuration structure
@@ -1496,6 +1623,536 @@
             };
         }
 
+        // ==================== Google Sheets Integration ====================
+        
+        // Initialize Google API Client
+        async function initGoogleAPI() {
+            debugLog('=== initGoogleAPI START ===');
+            if (googleSheetsInitialized) {
+                debugLog('Google API already initialized');
+                debugLog('=== initGoogleAPI END ===');
+                return true;
+            }
+            
+            try {
+                await new Promise((resolve, reject) => {
+                    if (typeof gapi === 'undefined') {
+                        debugError('Google API (gapi) not loaded');
+                        reject(new Error('Google API not loaded'));
+                        return;
+                    }
+                    
+                    gapi.load('client:auth2', {
+                        callback: () => {
+                            debugLog('Google API client loaded');
+                            resolve();
+                        },
+                        onerror: (error) => {
+                            debugError('Error loading Google API:', error);
+                            reject(error);
+                        },
+                        timeout: 10000,
+                        ontimeout: () => {
+                            debugError('Timeout loading Google API');
+                            reject(new Error('Timeout loading Google API'));
+                        }
+                    });
+                });
+                
+                await gapi.client.init({
+                    apiKey: GOOGLE_API_KEY,
+                    clientId: GOOGLE_CLIENT_ID,
+                    discoveryDocs: DISCOVERY_DOCS,
+                    scope: SCOPES
+                });
+                
+                googleSheetsInitialized = true;
+                debugLog('✅ Google API initialized successfully');
+                
+                // Check if user is already signed in
+                const authInstance = gapi.auth2.getAuthInstance();
+                if (authInstance.isSignedIn.get()) {
+                    googleSheetsConnected = true;
+                    debugLog('User already signed in to Google');
+                    updateStorageUI();
+                }
+                
+                debugLog('=== initGoogleAPI END ===');
+                return true;
+            } catch (error) {
+                debugError('Error initializing Google API:', error);
+                googleSheetsInitialized = false;
+                debugLog('=== initGoogleAPI END ===');
+                return false;
+            }
+        }
+        
+        // Authenticate with Google
+        async function authenticateGoogle() {
+            debugLog('=== authenticateGoogle START ===');
+            
+            if (!googleSheetsInitialized) {
+                const initialized = await initGoogleAPI();
+                if (!initialized) {
+                    debugError('Failed to initialize Google API');
+                    alert('Failed to initialize Google Sheets. Please check your credentials.');
+                    debugLog('=== authenticateGoogle END ===');
+                    return false;
+                }
+            }
+            
+            try {
+                const authInstance = gapi.auth2.getAuthInstance();
+                const user = await authInstance.signIn();
+                
+                if (user.isSignedIn()) {
+                    googleSheetsConnected = true;
+                    debugLog('✅ Successfully authenticated with Google');
+                    
+                    // Create or get sheet
+                    const sheetId = await createOrGetSheet();
+                    if (sheetId) {
+                        localStorage.setItem(GOOGLE_SHEET_ID_KEY, sheetId);
+                        updateStorageUI();
+                        await syncToGoogleSheets();
+                        debugLog('=== authenticateGoogle END ===');
+                        return true;
+                    } else {
+                        debugError('Failed to create or get sheet');
+                        alert('Failed to create or access Google Sheet. Please try again.');
+                        debugLog('=== authenticateGoogle END ===');
+                        return false;
+                    }
+                } else {
+                    debugWarn('User not signed in after authentication attempt');
+                    debugLog('=== authenticateGoogle END ===');
+                    return false;
+                }
+            } catch (error) {
+                debugError('Error authenticating with Google:', error);
+                if (error.error === 'popup_closed_by_user') {
+                    alert('Authentication cancelled. Please try again if you want to sync with Google Sheets.');
+                } else {
+                    alert('Failed to authenticate with Google: ' + (error.error || error.message || 'Unknown error'));
+                }
+                debugLog('=== authenticateGoogle END ===');
+                return false;
+            }
+        }
+        
+        // Create or get Google Sheet
+        async function createOrGetSheet() {
+            debugLog('=== createOrGetSheet START ===');
+            
+            try {
+                // Check if we already have a sheet ID
+                let sheetId = localStorage.getItem(GOOGLE_SHEET_ID_KEY);
+                
+                if (sheetId) {
+                    // Verify sheet exists and is accessible
+                    try {
+                        await gapi.client.sheets.spreadsheets.get({
+                            spreadsheetId: sheetId
+                        });
+                        debugLog('✅ Using existing sheet:', sheetId);
+                        debugLog('=== createOrGetSheet END ===');
+                        return sheetId;
+                    } catch (error) {
+                        debugWarn('Existing sheet not accessible, creating new one:', error);
+                        sheetId = null;
+                    }
+                }
+                
+                // Create new sheet
+                const sheetTitle = `Business Checklist - ${new Date().toLocaleDateString()}`;
+                const response = await gapi.client.sheets.spreadsheets.create({
+                    properties: {
+                        title: sheetTitle
+                    },
+                    sheets: [
+                        {
+                            properties: {
+                                title: 'Configuration'
+                            }
+                        },
+                        {
+                            properties: {
+                                title: 'Progress'
+                            }
+                        }
+                    ]
+                });
+                
+                sheetId = response.result.spreadsheetId;
+                debugLog('✅ Created new Google Sheet:', sheetId);
+                
+                // Initialize sheet structure
+                await gapi.client.sheets.spreadsheets.values.update({
+                    spreadsheetId: sheetId,
+                    range: 'Configuration!A1',
+                    valueInputOption: 'RAW',
+                    resource: {
+                        values: [['Checklist Configuration Data']]
+                    }
+                });
+                
+                await gapi.client.sheets.spreadsheets.values.update({
+                    spreadsheetId: sheetId,
+                    range: 'Progress!A1',
+                    valueInputOption: 'RAW',
+                    resource: {
+                        values: [['Checklist Progress Data']]
+                    }
+                });
+                
+                debugLog('=== createOrGetSheet END ===');
+                return sheetId;
+            } catch (error) {
+                debugError('Error creating/getting sheet:', error);
+                debugLog('=== createOrGetSheet END ===');
+                return null;
+            }
+        }
+        
+        // Save configuration to Google Sheets
+        async function saveConfigToGoogleSheets() {
+            debugLog('=== saveConfigToGoogleSheets START ===');
+            
+            if (!googleSheetsConnected || !checklistConfigData) {
+                debugLog('Google Sheets not connected or no config data');
+                debugLog('=== saveConfigToGoogleSheets END ===');
+                return false;
+            }
+            
+            const sheetId = localStorage.getItem(GOOGLE_SHEET_ID_KEY);
+            if (!sheetId) {
+                debugError('No sheet ID found');
+                debugLog('=== saveConfigToGoogleSheets END ===');
+                return false;
+            }
+            
+            try {
+                const configJson = JSON.stringify(checklistConfigData);
+                const configBase64 = btoa(unescape(encodeURIComponent(configJson)));
+                
+                await gapi.client.sheets.spreadsheets.values.update({
+                    spreadsheetId: sheetId,
+                    range: 'Configuration!A2',
+                    valueInputOption: 'RAW',
+                    resource: {
+                        values: [[configBase64]]
+                    }
+                });
+                
+                localStorage.setItem(LAST_SYNC_KEY, new Date().toISOString());
+                debugLog('✅ Saved configuration to Google Sheets');
+                updateStorageUI();
+                debugLog('=== saveConfigToGoogleSheets END ===');
+                return true;
+            } catch (error) {
+                debugError('Error saving config to Google Sheets:', error);
+                if (error.status === 401) {
+                    // Token expired, try to refresh
+                    debugWarn('Token expired, attempting to refresh');
+                    googleSheetsConnected = false;
+                    updateStorageUI();
+                }
+                debugLog('=== saveConfigToGoogleSheets END ===');
+                return false;
+            }
+        }
+        
+        // Load configuration from Google Sheets
+        async function loadConfigFromGoogleSheets() {
+            debugLog('=== loadConfigFromGoogleSheets START ===');
+            
+            if (!googleSheetsConnected) {
+                debugLog('Google Sheets not connected');
+                debugLog('=== loadConfigFromGoogleSheets END ===');
+                return null;
+            }
+            
+            const sheetId = localStorage.getItem(GOOGLE_SHEET_ID_KEY);
+            if (!sheetId) {
+                debugError('No sheet ID found');
+                debugLog('=== loadConfigFromGoogleSheets END ===');
+                return null;
+            }
+            
+            try {
+                const response = await gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: sheetId,
+                    range: 'Configuration!A2'
+                });
+                
+                const values = response.result.values;
+                if (!values || values.length === 0 || !values[0] || !values[0][0]) {
+                    debugLog('No configuration data found in sheet');
+                    debugLog('=== loadConfigFromGoogleSheets END ===');
+                    return null;
+                }
+                
+                const configBase64 = values[0][0];
+                const configJson = decodeURIComponent(escape(atob(configBase64)));
+                const config = JSON.parse(configJson);
+                
+                debugLog('✅ Loaded configuration from Google Sheets');
+                debugLog('=== loadConfigFromGoogleSheets END ===');
+                return config;
+            } catch (error) {
+                debugError('Error loading config from Google Sheets:', error);
+                if (error.status === 401) {
+                    debugWarn('Token expired');
+                    googleSheetsConnected = false;
+                    updateStorageUI();
+                }
+                debugLog('=== loadConfigFromGoogleSheets END ===');
+                return null;
+            }
+        }
+        
+        // Save progress to Google Sheets
+        async function saveProgressToGoogleSheets() {
+            debugLog('=== saveProgressToGoogleSheets START ===');
+            
+            if (!googleSheetsConnected) {
+                debugLog('Google Sheets not connected');
+                debugLog('=== saveProgressToGoogleSheets END ===');
+                return false;
+            }
+            
+            const sheetId = localStorage.getItem(GOOGLE_SHEET_ID_KEY);
+            if (!sheetId) {
+                debugError('No sheet ID found');
+                debugLog('=== saveProgressToGoogleSheets END ===');
+                return false;
+            }
+            
+            try {
+                // Get progress from localStorage first
+                const progressJson = localStorage.getItem(PROGRESS_STORAGE_KEY);
+                if (!progressJson) {
+                    debugLog('No progress data to save');
+                    debugLog('=== saveProgressToGoogleSheets END ===');
+                    return false;
+                }
+                
+                const progressBase64 = btoa(unescape(encodeURIComponent(progressJson)));
+                
+                await gapi.client.sheets.spreadsheets.values.update({
+                    spreadsheetId: sheetId,
+                    range: 'Progress!A2',
+                    valueInputOption: 'RAW',
+                    resource: {
+                        values: [[progressBase64]]
+                    }
+                });
+                
+                localStorage.setItem(LAST_SYNC_KEY, new Date().toISOString());
+                debugLog('✅ Saved progress to Google Sheets');
+                updateStorageUI();
+                debugLog('=== saveProgressToGoogleSheets END ===');
+                return true;
+            } catch (error) {
+                debugError('Error saving progress to Google Sheets:', error);
+                if (error.status === 401) {
+                    debugWarn('Token expired');
+                    googleSheetsConnected = false;
+                    updateStorageUI();
+                }
+                debugLog('=== saveProgressToGoogleSheets END ===');
+                return false;
+            }
+        }
+        
+        // Load progress from Google Sheets
+        async function loadProgressFromGoogleSheets() {
+            debugLog('=== loadProgressFromGoogleSheets START ===');
+            
+            if (!googleSheetsConnected) {
+                debugLog('Google Sheets not connected');
+                debugLog('=== loadProgressFromGoogleSheets END ===');
+                return null;
+            }
+            
+            const sheetId = localStorage.getItem(GOOGLE_SHEET_ID_KEY);
+            if (!sheetId) {
+                debugError('No sheet ID found');
+                debugLog('=== loadProgressFromGoogleSheets END ===');
+                return null;
+            }
+            
+            try {
+                const response = await gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: sheetId,
+                    range: 'Progress!A2'
+                });
+                
+                const values = response.result.values;
+                if (!values || values.length === 0 || !values[0] || !values[0][0]) {
+                    debugLog('No progress data found in sheet');
+                    debugLog('=== loadProgressFromGoogleSheets END ===');
+                    return null;
+                }
+                
+                const progressBase64 = values[0][0];
+                const progressJson = decodeURIComponent(escape(atob(progressBase64)));
+                const progress = JSON.parse(progressJson);
+                
+                debugLog('✅ Loaded progress from Google Sheets');
+                debugLog('=== loadProgressFromGoogleSheets END ===');
+                return progress;
+            } catch (error) {
+                debugError('Error loading progress from Google Sheets:', error);
+                if (error.status === 401) {
+                    debugWarn('Token expired');
+                    googleSheetsConnected = false;
+                    updateStorageUI();
+                }
+                debugLog('=== loadProgressFromGoogleSheets END ===');
+                return null;
+            }
+        }
+        
+        // Disconnect Google Sheets
+        async function disconnectGoogleSheets() {
+            debugLog('=== disconnectGoogleSheets START ===');
+            
+            try {
+                if (googleSheetsInitialized) {
+                    const authInstance = gapi.auth2.getAuthInstance();
+                    if (authInstance.isSignedIn.get()) {
+                        await authInstance.signOut();
+                    }
+                }
+                
+                googleSheetsConnected = false;
+                localStorage.removeItem(GOOGLE_SHEET_ID_KEY);
+                localStorage.removeItem(LAST_SYNC_KEY);
+                updateStorageUI();
+                
+                debugLog('✅ Disconnected from Google Sheets');
+                debugLog('=== disconnectGoogleSheets END ===');
+            } catch (error) {
+                debugError('Error disconnecting Google Sheets:', error);
+                debugLog('=== disconnectGoogleSheets END ===');
+            }
+        }
+        
+        // Get sync status
+        function getSyncStatus() {
+            return {
+                connected: googleSheetsConnected,
+                syncing: syncInProgress,
+                lastSync: localStorage.getItem(LAST_SYNC_KEY),
+                sheetId: localStorage.getItem(GOOGLE_SHEET_ID_KEY)
+            };
+        }
+        
+        // Unified sync function with debouncing
+        async function syncToGoogleSheets() {
+            debugLog('=== syncToGoogleSheets START ===');
+            
+            if (!googleSheetsConnected) {
+                debugLog('Google Sheets not connected, skipping sync');
+                debugLog('=== syncToGoogleSheets END ===');
+                return false;
+            }
+            
+            // Clear existing debounce timer
+            if (syncDebounceTimer) {
+                clearTimeout(syncDebounceTimer);
+                syncDebounceTimer = null;
+            }
+            
+            // Debounce: wait 2 seconds before syncing
+            return new Promise((resolve) => {
+                syncDebounceTimer = setTimeout(async () => {
+                    syncDebounceTimer = null;
+                    
+                    if (syncInProgress) {
+                        debugLog('Sync already in progress, queuing');
+                        syncQueue.push({ type: 'sync', resolve });
+                        debugLog('=== syncToGoogleSheets END ===');
+                        return;
+                    }
+                    
+                    syncInProgress = true;
+                    updateStorageUI();
+                    
+                    try {
+                        // Sync configuration
+                        await saveConfigToGoogleSheets();
+                        
+                        // Sync progress
+                        await saveProgressToGoogleSheets();
+                        
+                        // Process sync queue
+                        while (syncQueue.length > 0) {
+                            const queued = syncQueue.shift();
+                            if (queued && queued.resolve) {
+                                queued.resolve(true);
+                            }
+                        }
+                        
+                        debugLog('✅ Sync completed successfully');
+                        resolve(true);
+                    } catch (error) {
+                        debugError('Error during sync:', error);
+                        resolve(false);
+                    } finally {
+                        syncInProgress = false;
+                        updateStorageUI();
+                        debugLog('=== syncToGoogleSheets END ===');
+                    }
+                }, 2000);
+            });
+        }
+        
+        // Update storage UI
+        function updateStorageUI() {
+            debugLog('=== updateStorageUI START ===');
+            const status = getSyncStatus();
+            const statusElement = document.getElementById('googleSheetsStatus');
+            const connectBtn = document.getElementById('connectGoogleSheetsBtn');
+            const disconnectBtn = document.getElementById('disconnectGoogleSheetsBtn');
+            const lastSyncElement = document.getElementById('lastSyncTime');
+            
+            if (!statusElement || !connectBtn || !disconnectBtn) {
+                debugLog('Storage UI elements not found');
+                debugLog('=== updateStorageUI END ===');
+                return;
+            }
+            
+            if (status.connected) {
+                statusElement.textContent = 'Connected';
+                statusElement.className = 'badge bg-success';
+                connectBtn.style.display = 'none';
+                disconnectBtn.style.display = 'inline-block';
+                
+                if (syncInProgress) {
+                    statusElement.textContent = 'Syncing...';
+                    statusElement.className = 'badge bg-warning';
+                }
+            } else {
+                statusElement.textContent = 'Disconnected';
+                statusElement.className = 'badge bg-secondary';
+                connectBtn.style.display = 'inline-block';
+                disconnectBtn.style.display = 'none';
+            }
+            
+            if (lastSyncElement && status.lastSync) {
+                const syncDate = new Date(status.lastSync);
+                lastSyncElement.textContent = `Last sync: ${syncDate.toLocaleString()}`;
+            } else if (lastSyncElement) {
+                lastSyncElement.textContent = 'Never synced';
+            }
+            
+            debugLog('Storage UI updated:', status);
+            debugLog('=== updateStorageUI END ===');
+        }
+        
+        // ==================== End Google Sheets Integration ====================
 
         // Get business tiers (all tiers are visible)
         function getBusinessTiers() {
@@ -1504,10 +2161,10 @@
         }
 
         // Load all businesses from localStorage
-        function loadAllBusinesses() {
+        async function loadAllBusinesses() {
             if (!checklistConfigData) {
                 debugError('Configuration not initialized');
-                buildChecklist({});
+                await buildChecklist({});
                 return;
             }
             
@@ -1536,12 +2193,12 @@
                 businessesByTier[tier.name] = tierBusinesses;
             });
             
-            buildChecklist(businessesByTier);
+            await buildChecklist(businessesByTier);
         }
 
 
         // Build checklist HTML
-        function buildChecklist(businessesByTier) {
+        async function buildChecklist(businessesByTier) {
             const container = document.getElementById('checklistContainer');
             
             let totalOpen = 0;
@@ -1758,7 +2415,7 @@
             }
             
             // Load saved progress
-            loadProgress();
+            await loadProgress();
             
             // Populate product selectors for each tier
             debugLog('Starting product selector population and summary calculation');
@@ -1859,8 +2516,9 @@
             });
         }
 
-        // Save progress to localStorage
-        function saveProgress() {
+        // Save progress to localStorage (with Google Sheets sync)
+        async function saveProgress() {
+            debugLog('=== saveProgress START ===');
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
             const notesInputs = document.querySelectorAll('.notes-input');
             const moneyInputs = document.querySelectorAll('.money-input');
@@ -1952,7 +2610,16 @@
             });
             progress._hidden = hiddenBusinesses;
             
+            // Always save to localStorage first (for offline access)
             localStorage.setItem('businessChecklist', JSON.stringify(progress));
+            debugLog('✅ Saved progress to localStorage');
+            
+            // Also sync to Google Sheets if connected (hybrid sync)
+            if (googleSheetsConnected) {
+                await syncToGoogleSheets();
+            }
+            
+            debugLog('=== saveProgress END ===');
         }
 
         // Get note for a business
@@ -1987,11 +2654,33 @@
             saveNote(businessId, tierName, noteText);
         }
 
-        // Load progress from localStorage
-        function loadProgress() {
-            const saved = localStorage.getItem('businessChecklist');
-            if (saved) {
-                const progress = JSON.parse(saved);
+        // Load progress from localStorage (with Google Sheets fallback)
+        async function loadProgress() {
+            debugLog('=== loadProgress START ===');
+            
+            let progress = null;
+            
+            // Try Google Sheets first if connected
+            if (googleSheetsConnected) {
+                const cloudProgress = await loadProgressFromGoogleSheets();
+                if (cloudProgress) {
+                    progress = cloudProgress;
+                    // Also save to localStorage for offline access
+                    localStorage.setItem('businessChecklist', JSON.stringify(progress));
+                    debugLog('✅ Loaded progress from Google Sheets');
+                }
+            }
+            
+            // Fallback to localStorage
+            if (!progress) {
+                const saved = localStorage.getItem('businessChecklist');
+                if (saved) {
+                    progress = JSON.parse(saved);
+                    debugLog('✅ Loaded progress from localStorage');
+                }
+            }
+            
+            if (progress) {
                 
                 // Load checkbox states
                 const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -2087,6 +2776,8 @@
             if (productSelectionRestored > 0) {
                 debugLog(`✅ Restored ${productSelectionRestored} product selections in loadProgress`);
             }
+            
+            debugLog('=== loadProgress END ===');
         }
 
         // Clear progress
@@ -2906,9 +3597,12 @@
             // Initialize configuration (wait for it to complete)
             await initializeConfig();
             
+            // Update storage UI
+            updateStorageUI();
+            
             // Load businesses (only after config is initialized)
             if (checklistConfigData) {
-                loadAllBusinesses();
+                await loadAllBusinesses();
             } else {
                 debugError('Failed to initialize configuration');
                 document.getElementById('loadingAlert').innerHTML = '<span class="text-danger">⚠️ Failed to initialize configuration. Please refresh the page or add tiers/businesses manually.</span>';
