@@ -9,7 +9,7 @@
 
 const SiteConfig = {
     // Site branding information
-    siteName: 'TheTycoon - Fire0x Tools - The Tycoons Staff Only',
+    siteName: 'TheTycoon - Fire0x Tools',
     siteLogo: {
         path: 'images/SiteLogo.png',
         alt: 'Site Logo',
@@ -25,7 +25,7 @@ const SiteConfig = {
     },
     
     // Disclaimer information
-    disclaimer: 'This site is not affiliated with or endorsed by Rockstar North, Take-Two Interactive or The Tycoons or other rightsholders. Any trademarks used belong to their respective owners.',
+    disclaimer: 'This website is not affiliated with, endorsed by, or officially connected to Rockstar North, Take-Two Interactive, The Tycoons FiveM Server, or any other rights holders. All trademarks and intellectual property used herein are the property of their respective owners.',
     
     // Page titles mapping
     pageTitles: {
@@ -229,7 +229,7 @@ const SiteConfig = {
 
 const VersionManager = {
     // Website overall version
-    website: '0.1.5',
+    website: '0.1.6',
     
     // Individual page versions
     pages: {
