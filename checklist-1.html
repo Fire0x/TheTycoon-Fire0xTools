@@ -2128,6 +2128,16 @@
                         btn.title = 'Hide business';
                     }
                 });
+                
+                // Update tier checkbox states and recalculate summaries
+                const tiers = getBusinessTiers();
+                tiers.forEach(tier => {
+                    updateTierCheckboxState(tier.name);
+                    calculateTierSummary(tier.name);
+                });
+                
+                // Recalculate all business summary
+                calculateAllBusinessSummary();
             }
         }
         
