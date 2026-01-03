@@ -518,6 +518,7 @@
                                         <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
                                     </ul>
                                     <li>Click <span class="badge bg-primary">Import</span> to load your configuration</li>
+                                    <li><strong>Template:</strong> Click <span class="badge bg-primary">📋 Load Template</span> to load an example configuration. The template file (<code>checklist-template.json</code>) contains sample tiers, businesses, and products that you can customize. The template loads into the import modal for review before applying. You can edit the template file directly to create your own starting configuration.</li>
                                 </ul>
                                 <p class="mb-0">All your progress is automatically saved to your browser. Use <span class="badge bg-info">📋 Generate Checklist</span> to create a CSV report (includes product information). For more details on copy/paste shortcuts, see the <a href="merchants.html">Traveling Merchants</a> page.</p>
                             </div>
@@ -563,6 +564,7 @@
                         <div class="d-flex flex-wrap gap-2 mb-3">
                             <button type="button" class="btn btn-success" onclick="exportConfiguration()">📤 Export Configuration</button>
                             <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Configuration</button>
+                            <button type="button" class="btn btn-primary" onclick="loadTemplate()">📋 Load Template</button>
                             <button type="button" class="btn btn-info" onclick="generatePersonTableString()">📋 Generate Checklist</button>
                         </div>
                     </div>
@@ -573,19 +575,6 @@
         <div class="alert alert-secondary" role="alert" id="loadingAlert">
             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
             Loading businesses from localStorage...
-        </div>
-
-        <!-- Dynamic Content Container -->
-        <div id="checklistContainer">
-            <!-- Content will be dynamically generated here -->
-        </div>
-
-        <!-- Summary -->
-        <div class="alert alert-info mt-4" role="alert" id="summaryAlert" style="display: none;">
-            <h5 class="alert-heading" style="font-weight: 700; font-size: 1.3rem; margin-bottom: 1rem;">📊 Summary</h5>
-            <p class="mb-0" id="summaryContent" style="font-size: 1.05rem; line-height: 1.8;">
-                <!-- Summary will be dynamically generated here -->
-            </p>
         </div>
 
         <!-- All Business Summary -->
@@ -614,6 +603,19 @@
                     </table>
                 </div>
             </div>
+        </div>
+
+        <!-- Dynamic Content Container -->
+        <div id="checklistContainer">
+            <!-- Content will be dynamically generated here -->
+        </div>
+
+        <!-- Summary -->
+        <div class="alert alert-info mt-4" role="alert" id="summaryAlert" style="display: none;">
+            <h5 class="alert-heading" style="font-weight: 700; font-size: 1.3rem; margin-bottom: 1rem;">📊 Summary</h5>
+            <p class="mb-0" id="summaryContent" style="font-size: 1.05rem; line-height: 1.8;">
+                <!-- Summary will be dynamically generated here -->
+            </p>
         </div>
 
         <!-- Action Buttons -->
@@ -4294,6 +4296,107 @@
             modal.show();
         }
 
+        function loadTemplate() {
+            debugLog('=== loadTemplate START ===');
+            debugLog('Loading template from checklist-template.json');
+            
+            // Show loading state
+            const importTextarea = document.getElementById('importTextarea');
+            if (importTextarea) {
+                importTextarea.value = 'Loading template...';
+            }
+            
+            // Open modal first to show loading state
+            const modal = new bootstrap.Modal(document.getElementById('importModal'));
+            modal.show();
+            
+            debugLog('Fetching template file...');
+            
+            fetch('checklist-template.json')
+                .then(response => {
+                    debugLog('Fetch response received:', { status: response.status, statusText: response.statusText, ok: response.ok });
+                    
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            debugWarn('Template file not found (404)');
+                            throw new Error('Template file (checklist-template.json) not found. Please ensure the file exists in the root directory.');
+                        }
+                        throw new Error(`Failed to fetch template: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    return response.text();
+                })
+                .then(text => {
+                    debugLog('Template fetched successfully', { size: text.length });
+                    
+                    try {
+                        const template = JSON.parse(text);
+                        debugLog('Template JSON parsed successfully');
+                        debugLog('Template structure:', { 
+                            tiers: template.tiers?.length || 0, 
+                            businesses: template.businesses?.length || 0, 
+                            products: template.products?.length || 0,
+                            hasInstructions: !!template._instructions,
+                            version: template.version
+                        });
+                        
+                        // Create a clean copy without _instructions for display
+                        const cleanTemplate = { ...template };
+                        if (cleanTemplate._instructions) {
+                            delete cleanTemplate._instructions;
+                            debugLog('Removed _instructions field from template');
+                        }
+                        
+                        // Format JSON with indentation for readability
+                        const formattedTemplate = JSON.stringify(cleanTemplate, null, 2);
+                        
+                        // Populate the import modal textarea
+                        if (importTextarea) {
+                            importTextarea.value = formattedTemplate;
+                            debugLog('Template loaded into import modal');
+                        } else {
+                            debugError('Import textarea not found');
+                            throw new Error('Import textarea element not found');
+                        }
+                        
+                        debugLog('=== loadTemplate END (success) ===');
+                    } catch (parseError) {
+                        debugError('Template JSON parse error:', parseError);
+                        debugError('Failed to parse template JSON:', { error: parseError.message, text: text.substring(0, 200) });
+                        
+                        if (importTextarea) {
+                            importTextarea.value = '';
+                        }
+                        
+                        alert(`Failed to parse template JSON.\n\nError: ${parseError.message}\n\nPlease check that checklist-template.json contains valid JSON.`);
+                        debugLog('=== loadTemplate END (parse error) ===');
+                    }
+                })
+                .catch(error => {
+                    debugError('Template loading error:', error);
+                    debugError('Full error details:', { 
+                        message: error.message, 
+                        stack: error.stack,
+                        name: error.name 
+                    });
+                    
+                    if (importTextarea) {
+                        importTextarea.value = '';
+                    }
+                    
+                    let errorMessage = 'Failed to load template.';
+                    if (error.message) {
+                        errorMessage += `\n\n${error.message}`;
+                    } else {
+                        errorMessage += '\n\nPlease check that checklist-template.json exists and is accessible.';
+                    }
+                    errorMessage += '\n\nYou can manually import a configuration using the "Import Configuration" button.';
+                    
+                    alert(errorMessage);
+                    debugLog('=== loadTemplate END (error) ===');
+                });
+        }
+
         function importConfiguration() {
             debugLog('Starting configuration import');
             const importText = document.getElementById('importTextarea').value.trim();
@@ -4524,4 +4627,3 @@
     </script>
 </body>
 </html>
-
