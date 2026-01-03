@@ -33,7 +33,7 @@ const SiteConfig = {
         'Info.html': 'Information',
         'merchants.html': 'Traveling Merchants',
         'checklist.html': 'Business Checklist',
-        'checklist-1.html': 'Business Checklist',
+        'checklist-1.html': 'Business Checklist - Testing',
         'VehicleDeliveries.html': 'Vehicle Deliveries',
         'education_timer.html': 'Education Timer',
         'apartment.html': 'Apartment Management'
@@ -229,7 +229,7 @@ const SiteConfig = {
 
 const VersionManager = {
     // Website overall version
-    website: '0.1.6',
+    website: '0.1.7',
     
     // Individual page versions
     pages: {
@@ -241,7 +241,7 @@ const VersionManager = {
         'education_timer.html': '0.1.0',
         'apartment.html': '0.1.2',
         'Info-Ref.html': '0.1.0',
-        'checklist-1.html': '0.0.2'
+        'checklist-1.html': '0.0.1'
     },
     
     /**

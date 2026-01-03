@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Checklist</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/SiteLogo.png">
+    <title>TheTycoon - Fire0x Tools</title>
+    <!-- Title and favicon will be set by site-config.js -->
     <!-- Bootstrap CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -1339,7 +1338,6 @@
     <!-- Footer -->
     <footer class="bg-light py-3">
         <div class="container text-center">
-            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
             <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
                 <!-- Version will be inserted here by site-config.js -->
             </div>
@@ -3247,21 +3245,22 @@
                 return;
             }
             
-                // Populate form fields
-            document.getElementById('businessModalLabel').textContent = 'Edit Business';
-            document.getElementById('businessCodeOriginal').value = business.businessCode;
-            document.getElementById('businessCode').value = business.businessCode;
-            document.getElementById('businessName').value = business.businessName;
-            document.getElementById('businessStatus').value = business.status || 'Open';
-                
-                // Format numbers with commas for display
-                const maxStock = business.maxStock || 0;
-                const collectionStorage = business.collectionStorage || 0;
-                document.getElementById('businessMaxStock').value = typeof formatNumber === 'function' ? formatNumber(maxStock, false) : maxStock.toString();
-                document.getElementById('businessCollectionStorage').value = typeof formatNumber === 'function' ? formatNumber(collectionStorage, false) : collectionStorage.toString();
-                
-            document.getElementById('businessCanCollectItems').checked = business.canCollectItems === true;
-            document.getElementById('businessNotes').value = business.notes || '';
+                // Populate form fields (do NOT reset form when editing)
+                document.getElementById('businessModalLabel').textContent = 'Edit Business';
+                document.getElementById('businessCodeOriginal').value = business.businessCode;
+                document.getElementById('businessCode').value = business.businessCode;
+                document.getElementById('businessName').value = business.businessName || '';
+                document.getElementById('businessStatus').value = business.status || 'Open';
+                    
+                    // Format numbers with commas for display
+                    const maxStock = business.maxStock || 0;
+                    const collectionStorage = business.collectionStorage || 0;
+                    document.getElementById('businessMaxStock').value = typeof formatNumber === 'function' ? formatNumber(maxStock, false) : maxStock.toString();
+                    document.getElementById('businessCollectionStorage').value = typeof formatNumber === 'function' ? formatNumber(collectionStorage, false) : collectionStorage.toString();
+                    
+                document.getElementById('businessCanCollectItems').checked = business.canCollectItems === true;
+                // Set notes value (will also be set again after modal is shown as a safeguard)
+                document.getElementById('businessNotes').value = business.notes || '';
                 
             document.getElementById('deleteBusinessBtn').style.display = 'inline-block';
             
@@ -3295,6 +3294,9 @@
                 
                 // Initialize number formatting and tooltips after modal is fully shown
                 modalElement.addEventListener('shown.bs.modal', function() {
+                    // Ensure notes are set after modal is shown (in case form reset or modal initialization cleared them)
+                    document.getElementById('businessNotes').value = business.notes || '';
+                    
                     if (typeof initNumberFormatting === 'function') {
                         initNumberFormatting({ allowDecimals: false, selector: '#businessMaxStock, #businessCollectionStorage' });
                     }
