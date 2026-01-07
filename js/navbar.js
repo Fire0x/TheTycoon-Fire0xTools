@@ -34,6 +34,11 @@ const NavbarManager = {
             href: 'education_timer.html',
             text: '🎓 Education Timer',
             id: 'nav-education'
+        },
+        {
+            href: 'changelog.html',
+            text: '📝 Changelog',
+            id: 'nav-changelog'
         }
     ],
     

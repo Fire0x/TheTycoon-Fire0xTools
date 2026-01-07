@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changelog - TheTycoon Tools</title>
+    <!-- Title and favicon will be set by site-config.js -->
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar is injected by js/navbar.js -->
+
+    <!-- Page Header -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="glow-text">Changelog</h1>
+            <p class="lead">Summary of updates and improvements across all TheTycoon tools.</p>
+        </div>
+    </section>
+
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- ===================================================================================== -->
+                <!-- CHANGELOG ENTRIES                                                                  -->
+                <!--                                                                                     -->
+                <!-- To add a new entry:                                                                -->
+                <!-- 1. Copy one entire <article class="changelog-entry">...</article> block below.     -->
+                <!-- 2. Paste it ABOVE the existing entries so newest changes are at the top.           -->
+                <!-- 3. Update the version, date, and bullet points with your notes.                    -->
+                <!--                                                                                     -->
+                <!-- You only need to edit TEXT inside the tags; do not change the structure.           -->
+                <!-- ===================================================================================== -->
+
+                <section id="changelog" class="mb-5">
+                    <h2 class="mb-4 text-center">Release Notes</h2>
+
+                    <!-- Example Entry (Most Recent) -->
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.0.0</h3>
+                                <p class="text-muted mb-3">2026-01-06</p>
+                                <ul class="mb-0">
+                                    <li>Initial public changelog page created.</li>
+                                    <li>Added section to embed an external feedback form for updates.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Older entries go here. Copy/paste the <article> above and edit as needed. -->
+
+                </section>
+
+                <!-- ===================================================================================== -->
+                <!-- FEEDBACK / FORM EMBED SECTION                                                       -->
+                <!--                                                                                     -->
+                <!-- This section is designed for pasting in an external form (Google Forms, Typeform,   -->
+                <!-- etc.). You can also remove the example and keep only your real embed code.          -->
+                <!--                                                                                     -->
+                <!-- HOW TO USE:                                                                         -->
+                <!-- - Google Forms:                                                                     -->
+                <!--     1. In Google Forms, click \"Send\" -> \"<>\" (Embed HTML).                       -->
+                <!--     2. Copy the <iframe> HTML code.                                                 -->
+                <!--     3. Paste it inside the <!-- FORM EMBED START --> area below.                    -->
+                <!-- - Typeform or other services:                                                       -->
+                <!--     1. Copy the embed code they provide (iframe or script).                         -->
+                <!--     2. Paste it in the same spot.                                                   -->
+                <!-- ===================================================================================== -->
+
+                <section id="feedback-form" class="mb-5">
+                    <h2 class="mb-3 text-center">Feedback & Suggestions</h2>
+                    <p class="text-center mb-4">
+                        Use the form below to share bugs, suggestions, or general feedback about TheTycoon tools.
+                    </p>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- FORM EMBED START -->
+                            <!--
+                                Replace this example box with your real form embed.
+
+                                Example: Google Forms iframe (paste your own here)
+
+                                <iframe src="YOUR_GOOGLE_FORM_EMBED_URL"
+                                        width="100%"
+                                        height="800"
+                                        frameborder="0"
+                                        marginheight="0"
+                                        marginwidth="0">
+                                    Loading…
+                                </iframe>
+
+                                Example: Typeform embed (paste full script snippet)
+
+                                <div data-tf-live="YOUR_TYPEFORM_ID"></div>
+                                <script src="https://embed.typeform.com/next/embed.js"></script>
+                            -->
+
+                            <!-- Simple placeholder so the section doesn’t look empty before you add a form -->
+                            <div class="alert alert-info mb-0" role="alert">
+                                No feedback form has been embedded yet.
+                                Edit <code>changelog.html</code> and paste your form's embed code in this section.
+                            </div>
+                            <!-- FORM EMBED END -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Optional additional notes section -->
+                <section class="mb-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title">How this page works</h2>
+                            <p class="mb-2">
+                                This page is completely static and uses only HTML and Bootstrap styling. To update it:
+                            </p>
+                            <ol class="mb-0">
+                                <li>Open <code>changelog.html</code> in a text editor.</li>
+                                <li>Copy an existing changelog <code>&lt;article class=\"changelog-entry\"&gt;</code> block and edit the text.</li>
+                                <li>Paste external form embed code into the Feedback &amp; Suggestions section when you are ready.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
+                <!-- Version will be inserted here by site-config.js -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Site Configuration & Version Manager (load in order) -->
+    <script src="js/config/config-data.js"></script>
+    <script src="js/config/site-config.js"></script>
+    <script src="js/config/version-manager.js"></script>
+    <script src="js/site-config.js"></script>
+    <!-- Navbar Manager -->
+    <script src="js/navbar.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+</body>
+</html>
+
+
