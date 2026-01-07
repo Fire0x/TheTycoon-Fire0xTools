@@ -37,7 +37,7 @@ const ConfigData = {
     },
     
     // Website overall version
-    websiteVersion: '0.1.7',
+    websiteVersion: '0.1.8',
     
     // Individual page versions
     pageVersions: {
@@ -50,7 +50,7 @@ const ConfigData = {
         'apartment.html': '0.1.2',
         'Info-Ref.html': '0.1.0',
         'checklist-1.html': '0.0.5',
-        'changelog.html': '0.1.0'
+        'changelog.html': '0.0.1'
     }
 };
 
@@ -58,4 +58,5 @@ const ConfigData = {
 if (typeof window !== 'undefined') {
     window.ConfigData = ConfigData;
 }
+
 
