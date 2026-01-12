@@ -81,20 +81,20 @@ const ConfigData = {
     },
     
     // Website overall version
-    websiteVersion: '0.1.8',
+    websiteVersion: '0.1.9',
     
     // Individual page versions
     pageVersions: {
-        'index.html': '0.0.4',
-        'Info.html': '0.1.0',
-        'merchants.html': '0.0.7',
-        'checklist.html': '0.1.9',
-        'VehicleDeliveries.html': '0.1.4',
-        'education_timer.html': '0.1.0',
-        'apartment.html': '0.1.2',
-        'Info-Ref.html': '0.1.0',
-        'checklist-1.html': '0.0.5',
-        'changelog.html': '0.0.1'
+        'index.html': '0.0.6',
+        'Info.html': '0.1.2',
+        'merchants.html': '0.0.9',
+        'checklist.html': '0.2.1',
+        'VehicleDeliveries.html': '0.1.6',
+        'education_timer.html': '0.1.2',
+        'apartment.html': '0.1.4',
+        'Info-Ref.html': '0.1.2',
+        'checklist-1.html': '0.0.7',
+        'changelog.html': '0.0.3'
     }
 };
 
