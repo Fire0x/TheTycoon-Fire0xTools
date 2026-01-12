@@ -1,0 +1,23 @@
+/**
+ * Info Styles - PRIMARY
+ * =====================
+ * 
+ * PURPOSE:
+ * - Contains styles specific to Info.html (PRIMARY FILE)
+ * - Extends info-base.css
+ * 
+ * APPLIES TO:
+ * - Info.html ONLY
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To update Info.html ONLY: Edit this file
+ * - To update BOTH Info.html and Info-Ref.html: Edit info-base.css
+ * - To update Info-Ref.html ONLY: Edit info-ref.css
+ * 
+ * PRIMARY/VARIANT RELATIONSHIP:
+ * - Primary: Info.html
+ * - Variant: Info-Ref.html (extends this file)
+ */
+
+/* Add Info.html-specific styles here */
+/* Currently no unique styles - all shared in base/common styles */

@@ -1,0 +1,23 @@
+/**
+ * Info-Ref Styles - VARIANT
+ * ==========================
+ * 
+ * PURPOSE:
+ * - Contains styles specific to Info-Ref.html (VARIANT FILE)
+ * - Extends info-base.css and info.css
+ * 
+ * APPLIES TO:
+ * - Info-Ref.html ONLY
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To update Info-Ref.html ONLY: Edit this file
+ * - To update BOTH Info.html and Info-Ref.html: Edit info-base.css
+ * - To update Info.html ONLY: Edit info.css
+ * 
+ * PRIMARY/VARIANT RELATIONSHIP:
+ * - Primary: Info.html
+ * - Variant: Info-Ref.html (this file - extends primary)
+ */
+
+/* Add Info-Ref.html-specific overrides here */
+/* Currently no unique styles - all shared in base/common styles */

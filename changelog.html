@@ -9,6 +9,12 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="css/styles.css" rel="stylesheet">
+    <!-- Base CSS (load order matters) -->
+    <link href="css/base/variables.css" rel="stylesheet">
+    <link href="css/base/common.css" rel="stylesheet">
+    <link href="css/base/responsive.css" rel="stylesheet">
+    <!-- Page-specific CSS -->
+    <link href="css/pages/changelog.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar is injected by js/navbar.js -->
@@ -50,6 +56,14 @@
                                     <li>Updated script loading order in changelog.html to match apartment.html pattern (theme.js loads before config files).</li>
                                     <li>Adjusted time display width to match "How to Use This Page" card width in merchants and education timer pages.</li>
                                     <li>Standardized navbar injection comments across all pages.</li>
+                                    <li>Implemented modular CSS architecture across all pages for improved maintainability.</li>
+                                    <li>Created base CSS files (variables.css, common.css, responsive.css) for shared styles and components.</li>
+                                    <li>Extracted all inline styles to external CSS files organized by page.</li>
+                                    <li>Added page-specific CSS files for checklist, merchants, apartment, education timer, vehicle deliveries, info pages, changelog, and index.</li>
+                                    <li>Established primary/variant CSS structure for checklist and info page pairs (checklist.html/checklist-1.html, Info.html/Info-Ref.html).</li>
+                                    <li>Removed all inline &lt;style&gt; blocks from HTML files, improving code organization and browser caching.</li>
+                                    <li>Added comprehensive documentation comments to all CSS files explaining purpose, usage, and update instructions.</li>
+                                    <li>Updated all HTML pages to load CSS in correct cascade order (base → page-base → page-specific → variant-specific).</li>
                                 </ul>
                             </div>
                         </div>

@@ -1,0 +1,334 @@
+/**
+ * Common Components (Base)
+ * =======================
+ * 
+ * PURPOSE:
+ * - Contains shared component styles used across multiple pages
+ * - Includes: cards, buttons, alerts, forms, typography, emoji picker, etc.
+ * 
+ * APPLIES TO:
+ * - All HTML pages that need these common components
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To change card styles site-wide: Edit .card, .card-body, .card-header here
+ * - To change button styles site-wide: Edit .btn-* classes here
+ * - To change form styles site-wide: Edit .form-* classes here
+ * - To change alert styles site-wide: Edit .alert-* classes here
+ * 
+ * NOTE:
+ * - These styles can be overridden in page-specific CSS files if needed
+ * - Uses CSS variables from variables.css
+ */
+
+/* ========================================
+   BASE LAYOUT
+   ======================================== */
+body {
+    background: var(--bg-color);
+}
+
+/* ========================================
+   CARD COMPONENTS
+   ======================================== */
+.card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+h1.glow-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.lead {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}
+
+small.text-muted {
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+hr {
+    opacity: 0.2;
+    margin: 1.25rem 0;
+}
+
+.text-info {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.text-warning {
+    background: var(--warning-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+.btn {
+    border-radius: 0.75rem;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    transition: var(--transition);
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+.btn-info {
+    background: var(--info-gradient);
+    color: white;
+}
+
+.btn-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(79, 172, 254, 0.3);
+}
+
+.btn-danger {
+    background: var(--warning-gradient);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(245, 87, 108, 0.3);
+}
+
+/* ========================================
+   ALERTS
+   ======================================== */
+.alert {
+    border-radius: 1rem;
+    border: none;
+    box-shadow: var(--card-shadow);
+    padding: 1.25rem 1.5rem;
+}
+
+.alert-secondary {
+    background: linear-gradient(135deg, rgba(108, 117, 125, 0.1) 0%, rgba(90, 98, 104, 0.1) 100%);
+    color: var(--text-color);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+    border-left: 4px solid #4facfe;
+    color: var(--text-color);
+}
+
+/* ========================================
+   FORMS
+   ======================================== */
+.form-control, .form-select {
+    border-radius: 0.75rem;
+    border: 2px solid var(--card-border);
+    padding: 0.625rem 1rem;
+    transition: var(--transition);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+.form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.375rem;
+    border: 2px solid var(--card-border);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-check-label {
+    cursor: pointer;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+/* ========================================
+   EMOJI PICKER
+   ======================================== */
+.emoji-picker-container {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.emoji-search {
+    margin-bottom: 1rem;
+}
+
+.emoji-search input {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--card-border);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.emoji-search input:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.emoji-category {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--card-border);
+}
+
+.emoji-category:first-child {
+    margin-top: 0;
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.emoji-btn.hidden {
+    display: none;
+}
+
+.emoji-category.hidden {
+    display: none;
+}
+
+.emoji-btn {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji-btn:hover {
+    background-color: rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+    transform: scale(1.1);
+}
+
+/* ========================================
+   KEYBOARD SHORTCUTS (kbd)
+   ======================================== */
+kbd {
+    display: inline-block;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-color);
+    text-align: center;
+    background-color: var(--bg-color);
+    border: 1px solid var(--card-border);
+    border-radius: 0.25rem;
+    box-shadow: inset 0 -1px 0 var(--card-border);
+}
+
+/* ========================================
+   MODALS
+   ======================================== */
+.modal-content {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* ========================================
+   SPINNERS
+   ======================================== */
+.spinner-border {
+    border-color: #667eea;
+    border-right-color: transparent;
+}

@@ -1,0 +1,45 @@
+/**
+ * Vehicle Deliveries Styles
+ * =========================
+ * 
+ * PURPOSE:
+ * - Contains styles specific to VehicleDeliveries.html
+ * - Includes paste area components for vehicle delivery tracking
+ * 
+ * APPLIES TO:
+ * - VehicleDeliveries.html ONLY
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To update VehicleDeliveries.html styles: Edit this file
+ * - To update shared styles used by VehicleDeliveries.html: Edit css/base/common.css
+ */
+
+/* ========================================
+   PASTE AREA
+   ======================================== */
+.paste-area {
+    background-color: var(--card-bg);
+    border: 2px dashed var(--card-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+.paste-area textarea {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+}
+
+.paste-area textarea:focus {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--link-color);
+}
+
+.paste-area pre {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--card-border);
+}

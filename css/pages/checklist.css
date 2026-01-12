@@ -1,0 +1,23 @@
+/**
+ * Checklist Styles - PRIMARY
+ * ==========================
+ * 
+ * PURPOSE:
+ * - Contains styles specific to checklist.html (PRIMARY FILE)
+ * - Extends checklist-base.css
+ * 
+ * APPLIES TO:
+ * - checklist.html ONLY
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To update checklist.html ONLY: Edit this file
+ * - To update BOTH checklist.html and checklist-1.html: Edit checklist-base.css
+ * - To update checklist-1.html ONLY: Edit checklist-1.css
+ * 
+ * PRIMARY/VARIANT RELATIONSHIP:
+ * - Primary: checklist.html
+ * - Variant: checklist-1.html (extends this file)
+ */
+
+/* Add checklist.html-specific styles here */
+/* Currently no unique styles - all shared in checklist-base.css */

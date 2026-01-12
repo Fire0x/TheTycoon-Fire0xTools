@@ -1,0 +1,36 @@
+/**
+ * Responsive Styles (Base)
+ * ========================
+ * 
+ * PURPOSE:
+ * - Contains shared responsive breakpoints and media queries
+ * - Mobile-first responsive design rules
+ * 
+ * APPLIES TO:
+ * - All HTML pages
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To change mobile breakpoints site-wide: Edit media queries here
+ * - To add new responsive rules: Add them here
+ * 
+ * NOTE:
+ * - These styles can be overridden in page-specific CSS files if needed
+ */
+
+/* ========================================
+   MOBILE BREAKPOINT (768px and below)
+   ======================================== */
+@media (max-width: 768px) {
+    h1.glow-text {
+        font-size: 2rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-right: 0;
+    }
+}

@@ -1,0 +1,24 @@
+/**
+ * Info Base Styles
+ * ================
+ * 
+ * PURPOSE:
+ * - Contains shared styles for both Info.html and Info-Ref.html
+ * - Currently both pages use the same base styles
+ * 
+ * APPLIES TO:
+ * - Info.html (primary)
+ * - Info-Ref.html (variant)
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To update styles for BOTH Info.html and Info-Ref.html: Edit this file
+ * - To update Info.html ONLY: Edit info.css
+ * - To update Info-Ref.html ONLY: Edit info-ref.css
+ * 
+ * PRIMARY/VARIANT RELATIONSHIP:
+ * - Primary: Info.html
+ * - Variant: Info-Ref.html (extends primary)
+ */
+
+/* Add shared Info.html/Info-Ref.html styles here */
+/* Currently no unique shared styles - both pages use base/common styles */

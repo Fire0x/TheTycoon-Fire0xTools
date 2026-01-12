@@ -1,0 +1,34 @@
+/**
+ * CSS Variables (Base)
+ * ===================
+ * 
+ * PURPOSE:
+ * - Contains all CSS custom properties (CSS variables) used across the site
+ * - These variables are shared by all pages
+ * 
+ * APPLIES TO:
+ * - All HTML pages (loaded first in the cascade)
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To change colors, gradients, shadows, or transitions site-wide: Edit this file
+ * - Changes here will affect all pages that use these variables
+ * 
+ * NOTE:
+ * - Variables defined here can be overridden in page-specific CSS files if needed
+ * - Use var(--variable-name) in other CSS files to reference these values
+ */
+
+:root {
+    /* Primary color gradients */
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --info-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    
+    /* Shadows */
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,0 +1,115 @@
+/**
+ * Checklist Base Styles
+ * ====================
+ * 
+ * PURPOSE:
+ * - Contains shared styles for both checklist.html and checklist-1.html
+ * - Includes checklist-specific components: stock calculations, business items, config panels, etc.
+ * 
+ * APPLIES TO:
+ * - checklist.html (primary)
+ * - checklist-1.html (variant)
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To update styles for BOTH checklist.html and checklist-1.html: Edit this file
+ * - To update checklist.html ONLY: Edit checklist.css
+ * - To update checklist-1.html ONLY: Edit checklist-1.css
+ * 
+ * PRIMARY/VARIANT RELATIONSHIP:
+ * - Primary: checklist.html
+ * - Variant: checklist-1.html (extends primary)
+ */
+
+/* ========================================
+   STOCK CALCULATION COMPONENTS
+   ======================================== */
+.stock-calc-container {
+    min-width: 200px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.stock-target-input {
+    text-align: right;
+    font-weight: 600;
+}
+
+.stock-needed-display-checklist {
+    text-align: center;
+    padding: 0.5rem;
+    min-height: 20px;
+    background: linear-gradient(135deg, rgba(17, 153, 142, 0.1) 0%, rgba(56, 239, 125, 0.1) 100%);
+    border-radius: 0.5rem;
+    font-weight: 600;
+    color: #11998e;
+    margin-top: 0.5rem;
+}
+
+/* ========================================
+   TIME DISPLAY
+   ======================================== */
+.time-display {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    font-weight: 600;
+}
+
+/* ========================================
+   BUSINESS ITEMS
+   ======================================== */
+.business-item {
+    background: linear-gradient(135deg, var(--card-bg) 0%, rgba(102, 126, 234, 0.02) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.business-item:hover {
+    transform: translateX(4px);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.business-code {
+    color: #667eea;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.business-name {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* ========================================
+   CONFIGURATION PANEL
+   ======================================== */
+.config-panel {
+    margin-bottom: 2rem;
+}
+
+.config-collapse-btn {
+    width: 100%;
+    text-align: left;
+    font-weight: 600;
+}
+
+/* ========================================
+   CONVERSION DISPLAY
+   ======================================== */
+.conversion-display {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
+.conversion-toggle {
+    cursor: pointer;
+    user-select: none;
+}

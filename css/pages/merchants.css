@@ -1,0 +1,116 @@
+/**
+ * Merchants Styles
+ * ===============
+ * 
+ * PURPOSE:
+ * - Contains styles specific to merchants.html
+ * - Includes merchant-specific components: merchant cards, timers, paste areas, etc.
+ * 
+ * APPLIES TO:
+ * - merchants.html ONLY
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To update merchants.html styles: Edit this file
+ * - To update shared styles used by merchants.html: Edit css/base/common.css
+ */
+
+/* ========================================
+   MERCHANT CARDS
+   ======================================== */
+.merchant-card {
+    margin-bottom: 1rem;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* ========================================
+   TIMER DISPLAYS
+   ======================================== */
+.timer-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--link-color);
+}
+
+.timer-complete {
+    color: #28a745 !important;
+}
+
+/* ========================================
+   MERCHANT ICONS
+   ======================================== */
+.merchant-icon {
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+/* ========================================
+   PASTE AREA
+   ======================================== */
+.paste-area {
+    background-color: var(--card-bg);
+    border: 2px dashed var(--card-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+.paste-area textarea {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+}
+
+.paste-area textarea:focus {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--link-color);
+}
+
+.paste-area pre {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--card-border);
+}
+
+/* ========================================
+   TIME DISPLAY
+   ======================================== */
+.aest-time {
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    background-color: var(--card-bg);
+    border-radius: 0.25rem;
+    color: var(--text-color);
+}
+
+/* ========================================
+   TEXT OVERRIDES
+   ======================================== */
+.card-title {
+    color: var(--text-color);
+}
+
+.text-muted {
+    color: var(--text-color) !important;
+    opacity: 0.7;
+}
+
+.text-info {
+    color: var(--link-color) !important;
+}
+
+/* ========================================
+   MERCHANT INFO
+   ======================================== */
+.merchant-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.merchant-info strong {
+    min-width: 120px;
+}

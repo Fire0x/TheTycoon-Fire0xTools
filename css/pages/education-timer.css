@@ -1,0 +1,107 @@
+/**
+ * Education Timer Styles
+ * ======================
+ * 
+ * PURPOSE:
+ * - Contains styles specific to education_timer.html
+ * - Includes timer-specific components: timer cards, paste areas, etc.
+ * 
+ * APPLIES TO:
+ * - education_timer.html ONLY
+ * 
+ * UPDATE INSTRUCTIONS:
+ * - To update education_timer.html styles: Edit this file
+ * - To update shared styles used by education_timer.html: Edit css/base/common.css
+ */
+
+/* ========================================
+   TIMER CARDS
+   ======================================== */
+.timer-card {
+    margin-bottom: 1rem;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* ========================================
+   TIMER DISPLAYS
+   ======================================== */
+.timer-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--link-color);
+}
+
+.timer-complete {
+    color: #28a745 !important;
+}
+
+.timer-cancelled {
+    color: #dc3545 !important;
+}
+
+/* ========================================
+   EDUCATION LEVEL
+   ======================================== */
+.education-level {
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* ========================================
+   PASTE AREA
+   ======================================== */
+.paste-area {
+    background-color: var(--card-bg);
+    border: 2px dashed var(--card-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+.paste-area textarea {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+}
+
+.paste-area textarea:focus {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--link-color);
+}
+
+.paste-area pre {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--card-border);
+}
+
+/* ========================================
+   TIME DISPLAY
+   ======================================== */
+.aest-time {
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    background-color: var(--card-bg);
+    border-radius: 0.25rem;
+    color: var(--text-color);
+}
+
+/* ========================================
+   TEXT OVERRIDES
+   ======================================== */
+.card-title {
+    color: var(--text-color);
+}
+
+.text-muted {
+    color: var(--text-color) !important;
+    opacity: 0.7;
+}
+
+.text-info {
+    color: var(--link-color) !important;
+}
