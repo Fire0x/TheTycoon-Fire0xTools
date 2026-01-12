@@ -148,6 +148,34 @@
             </div>
         </div>
 
+        <!-- All Business Summary -->
+        <div class="card mt-4 mb-4" id="allBusinessSummaryCard" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">📊 All Business Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr id="allBusinessSummaryHeaderRow">
+                                <th>Product Name</th>
+                                <!-- Tier columns will be dynamically generated here -->
+                                <th class="text-end"><strong>Grand Total</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody id="allBusinessSummaryBody">
+                            <tr>
+                                <td colspan="100%" class="text-center text-muted">Loading summary...</td>
+                            </tr>
+                        </tbody>
+                        <tfoot id="allBusinessSummaryFooter">
+                            <!-- Grand Total row will be dynamically generated here -->
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Configuration Panel -->
         <div class="card config-panel">
             <div class="card-header">
@@ -195,34 +223,6 @@
         <div class="alert alert-secondary" role="alert" id="loadingAlert">
             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
             Loading businesses from localStorage...
-        </div>
-
-        <!-- All Business Summary -->
-        <div class="card mt-4" id="allBusinessSummaryCard" style="display: none;">
-            <div class="card-header">
-                <h5 class="mb-0">📊 All Business Summary</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered">
-                        <thead>
-                            <tr id="allBusinessSummaryHeaderRow">
-                                <th>Product Name</th>
-                                <!-- Tier columns will be dynamically generated here -->
-                                <th class="text-end"><strong>Grand Total</strong></th>
-                            </tr>
-                        </thead>
-                        <tbody id="allBusinessSummaryBody">
-                            <tr>
-                                <td colspan="100%" class="text-center text-muted">Loading summary...</td>
-                            </tr>
-                        </tbody>
-                        <tfoot id="allBusinessSummaryFooter">
-                            <!-- Grand Total row will be dynamically generated here -->
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
         </div>
 
         <!-- Dynamic Content Container -->
