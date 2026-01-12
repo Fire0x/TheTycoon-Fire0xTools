@@ -81,6 +81,52 @@
         },
         
         /**
+         * Get hero section data for a specific page
+         * @param {string} pageName - The page filename (e.g., 'merchants.html')
+         * @returns {Object|null} Hero section data with title and description, or null if not found
+         */
+        getHeroSection(pageName) {
+            return ConfigData.heroSections[pageName] || null;
+        },
+        
+        /**
+         * Get current page hero section data based on window.location
+         * @returns {Object|null} Current page hero section data
+         */
+        getCurrentHeroSection() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            return this.getHeroSection(currentPage);
+        },
+        
+        /**
+         * Initialize hero section
+         * Updates hero section title and description if hero section exists on page
+         */
+        initHeroSection() {
+            const heroSection = document.querySelector('section.hero');
+            if (!heroSection) {
+                return; // No hero section on this page
+            }
+            
+            const heroData = this.getCurrentHeroSection();
+            if (!heroData) {
+                return; // No hero data configured for this page
+            }
+            
+            // Update title
+            const titleElement = heroSection.querySelector('h1.glow-text, h1');
+            if (titleElement) {
+                titleElement.textContent = heroData.title;
+            }
+            
+            // Update description
+            const descElement = heroSection.querySelector('p.lead, p');
+            if (descElement) {
+                descElement.textContent = heroData.description;
+            }
+        },
+        
+        /**
          * Initialize navbar brand (logo + name)
          * Updates all navbar-brand elements on the page
          */
@@ -190,6 +236,7 @@
         init(pageTitle = '') {
             this.initPageTitle(pageTitle);
             this.initNavbarBrand();
+            this.initHeroSection();
             this.initFooterCopyright();
         }
     };

@@ -92,10 +92,18 @@
     </style>
 </head>
 <body>
+    <!-- Navbar is injected by js/navbar.js -->
+
+    <!-- Page Header -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="glow-text">Traveling Merchants</h1>
+            <p class="lead">Track traveling merchants, their rotations, locations, prices, and timers.</p>
+        </div>
+    </section>
 
     <!-- Main Content -->
     <main class="container py-5">
-        <h1 class="glow-text">📋 Traveling Merchants</h1>
         <p class="aest-time mb-4">
             <strong>Current Time (Local):</strong> 
             <span id="aestTime"></span>
@@ -105,7 +113,7 @@
         <div class="row mb-4">
             <div class="col-md-10 mx-auto">
                 <div class="card merchant-card mb-4">
-                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+        <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
                         <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
                             <span>📖 How to Use This Page</span>
                             <span class="float-end" id="howToUseToggle">▼</span>
@@ -114,32 +122,32 @@
                     <div class="collapse show" id="howToUseCollapse">
                         <div class="card-body">
                             <div class="mb-3">
-                                <h6 class="mb-2"><strong>Step 1: In-Game</strong></h6>
-                                <p class="mb-2">Open your chat and type the command:</p>
-                                <code class="d-block p-2 mb-3" style="background-color: var(--bg-color); border: 1px solid var(--card-border); border-radius: 0.25rem; color: var(--link-color);">/merchants</code>
-                                
-                                <h6 class="mb-2"><strong>Step 2: Copy the Data</strong></h6>
-                                <p class="mb-2">Select all the merchant data that appears:</p>
-                                <ul class="mb-3">
-                                    <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd></li>
-                                    <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then <kbd>Cmd</kbd> + <kbd>C</kbd></li>
-                                </ul>
-                                
-                                <h6 class="mb-2"><strong>Step 3: Paste on This Page</strong></h6>
-                                <p class="mb-2">Click in the text area below and paste your data:</p>
-                                <ul class="mb-3">
-                                    <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
-                                    <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
-                                </ul>
-                                
-                                <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
+                            <h6 class="mb-2"><strong>Step 1: In-Game</strong></h6>
+                            <p class="mb-2">Open your chat and type the command:</p>
+                            <code class="d-block p-2 mb-3" style="background-color: var(--bg-color); border: 1px solid var(--card-border); border-radius: 0.25rem; color: var(--link-color);">/merchants</code>
+                            
+                            <h6 class="mb-2"><strong>Step 2: Copy the Data</strong></h6>
+                            <p class="mb-2">Select all the merchant data that appears:</p>
+                            <ul class="mb-3">
+                                <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd></li>
+                                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then <kbd>Cmd</kbd> + <kbd>C</kbd></li>
+                            </ul>
+                            
+                            <h6 class="mb-2"><strong>Step 3: Paste on This Page</strong></h6>
+                            <p class="mb-2">Click in the text area below and paste your data:</p>
+                            <ul class="mb-3">
+                                <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
+                                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
+                            </ul>
+                            
+                            <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
                                 <p class="mb-0">Click the <span class="badge bg-primary">Parse &amp; Save Merchants</span> button to add them to your tracker!</p>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
 
         <div class="row">
             <div class="col-md-10 mx-auto">

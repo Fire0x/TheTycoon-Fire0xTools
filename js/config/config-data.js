@@ -36,6 +36,50 @@ const ConfigData = {
         'changelog.html': 'Changelog'
     },
     
+    // Hero section data for each page
+    heroSections: {
+        'index.html': {
+            title: 'Welcome to The Tycoon',
+            description: 'Your comprehensive resource for managing businesses, tracking progress, and optimizing your gameplay experience.'
+        },
+        'Info.html': {
+            title: 'Information',
+            description: 'Your comprehensive information and documentation hub.'
+        },
+        'Info-Ref.html': {
+            title: 'Information Reference',
+            description: 'Reference information for The Tycoon tools.'
+        },
+        'merchants.html': {
+            title: 'Traveling Merchants',
+            description: 'Track traveling merchants, their rotations, locations, prices, and timers.'
+        },
+        'checklist.html': {
+            title: 'Business Checklist',
+            description: 'Comprehensive business management tool with tier and business creation, editing, and tracking.'
+        },
+        'checklist-1.html': {
+            title: 'Business Checklist - Testing',
+            description: 'Testing version of the business checklist tool.'
+        },
+        'VehicleDeliveries.html': {
+            title: 'Vehicle Deliveries',
+            description: 'Track vehicle delivery progress and unlock requirements.'
+        },
+        'education_timer.html': {
+            title: 'Education Timer',
+            description: 'Monitor education and training timers with real-time countdowns.'
+        },
+        'apartment.html': {
+            title: '🏠 Apartment Management',
+            description: 'Manage your apartments, rental due dates, and cleaning schedules'
+        },
+        'changelog.html': {
+            title: 'Changelog',
+            description: 'Summary of updates and improvements across all TheTycoon tools.'
+        }
+    },
+    
     // Website overall version
     websiteVersion: '0.1.8',
     
