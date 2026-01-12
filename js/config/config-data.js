@@ -93,7 +93,7 @@ const ConfigData = {
         'education_timer.html': '0.1.2',
         'apartment.html': '0.1.4',
         'Info-Ref.html': '0.1.2',
-        'checklist-1.html': '0.0.7',
+        'checklist-1.html': '0.0.8',
         'changelog.html': '0.0.3'
     }
 };
