@@ -151,6 +151,39 @@
             </div>
         </div>
 
+        <!-- All Business Summary -->
+        <div class="card mt-4 mb-4" id="allBusinessSummaryCard" style="display: none;">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#allBusinessSummaryCollapse" aria-expanded="true" aria-controls="allBusinessSummaryCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📊 All Business Summary</span>
+                    <span class="float-end" id="allBusinessSummaryToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="allBusinessSummaryCollapse">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr id="allBusinessSummaryHeaderRow">
+                                    <th>Product Name</th>
+                                    <!-- Tier columns will be dynamically generated here -->
+                                    <th class="text-end"><strong>Grand Total</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody id="allBusinessSummaryBody">
+                                <tr>
+                                    <td colspan="100%" class="text-center text-muted">Loading summary...</td>
+                                </tr>
+                            </tbody>
+                            <tfoot id="allBusinessSummaryFooter">
+                                <!-- Grand Total row will be dynamically generated here -->
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Configuration Panel -->
         <div class="card config-panel">
             <div class="card-header">
@@ -200,45 +233,26 @@
             Loading businesses from localStorage...
         </div>
 
-        <!-- All Business Summary -->
-        <div class="card mt-4" id="allBusinessSummaryCard" style="display: none;">
-            <div class="card-header">
-                <h5 class="mb-0">📊 All Business Summary</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered">
-                        <thead>
-                            <tr id="allBusinessSummaryHeaderRow">
-                                <th>Product Name</th>
-                                <!-- Tier columns will be dynamically generated here -->
-                                <th class="text-end"><strong>Grand Total</strong></th>
-                            </tr>
-                        </thead>
-                        <tbody id="allBusinessSummaryBody">
-                            <tr>
-                                <td colspan="100%" class="text-center text-muted">Loading summary...</td>
-                            </tr>
-                        </tbody>
-                        <tfoot id="allBusinessSummaryFooter">
-                            <!-- Grand Total row will be dynamically generated here -->
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-
         <!-- Dynamic Content Container -->
         <div id="checklistContainer">
             <!-- Content will be dynamically generated here -->
         </div>
 
         <!-- Summary -->
-        <div class="alert alert-info mt-4" role="alert" id="summaryAlert" style="display: none;">
-            <h5 class="alert-heading" style="font-weight: 700; font-size: 1.3rem; margin-bottom: 1rem;">📊 Summary</h5>
-            <p class="mb-0" id="summaryContent" style="font-size: 1.05rem; line-height: 1.8;">
-                <!-- Summary will be dynamically generated here -->
-            </p>
+        <div class="card mt-4" id="summaryAlert" style="display: none;">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#summaryCollapse" aria-expanded="true" aria-controls="summaryCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📊 Summary</span>
+                    <span class="float-end" id="summaryToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="summaryCollapse">
+                <div class="card-body">
+                    <p class="mb-0" id="summaryContent" style="font-size: 1.05rem; line-height: 1.8;">
+                        <!-- Summary will be dynamically generated here -->
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- Action Buttons -->
@@ -2530,10 +2544,96 @@
             }
         }
 
+        // All Business Summary Collapse State
+        const ALL_BUSINESS_SUMMARY_STORAGE_KEY = 'checklist_all_business_summary_expanded';
+        
+        // Initialize All Business Summary collapse state
+        function initAllBusinessSummaryCollapse() {
+            const stored = localStorage.getItem(ALL_BUSINESS_SUMMARY_STORAGE_KEY);
+            const shouldExpand = stored === null ? true : stored === 'true'; // Default to expanded
+            
+            const collapseElement = document.getElementById('allBusinessSummaryCollapse');
+            const toggleIcon = document.getElementById('allBusinessSummaryToggle');
+            const toggleButton = document.querySelector('[data-bs-target="#allBusinessSummaryCollapse"]');
+            
+            if (collapseElement) {
+                const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                    toggle: false
+                });
+                
+                if (!shouldExpand) {
+                    bsCollapse.hide();
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+                } else {
+                    bsCollapse.show();
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+                }
+                
+                // Listen for collapse events
+                collapseElement.addEventListener('shown.bs.collapse', function() {
+                    localStorage.setItem(ALL_BUSINESS_SUMMARY_STORAGE_KEY, 'true');
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+                });
+                
+                collapseElement.addEventListener('hidden.bs.collapse', function() {
+                    localStorage.setItem(ALL_BUSINESS_SUMMARY_STORAGE_KEY, 'false');
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+                });
+            }
+        }
+
+        // Summary Collapse State
+        const SUMMARY_STORAGE_KEY = 'checklist_summary_expanded';
+        
+        // Initialize Summary collapse state
+        function initSummaryCollapse() {
+            const stored = localStorage.getItem(SUMMARY_STORAGE_KEY);
+            const shouldExpand = stored === null ? true : stored === 'true'; // Default to expanded
+            
+            const collapseElement = document.getElementById('summaryCollapse');
+            const toggleIcon = document.getElementById('summaryToggle');
+            const toggleButton = document.querySelector('[data-bs-target="#summaryCollapse"]');
+            
+            if (collapseElement) {
+                const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                    toggle: false
+                });
+                
+                if (!shouldExpand) {
+                    bsCollapse.hide();
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+                } else {
+                    bsCollapse.show();
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+                }
+                
+                // Listen for collapse events
+                collapseElement.addEventListener('shown.bs.collapse', function() {
+                    localStorage.setItem(SUMMARY_STORAGE_KEY, 'true');
+                    if (toggleIcon) toggleIcon.textContent = '▼';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+                });
+                
+                collapseElement.addEventListener('hidden.bs.collapse', function() {
+                    localStorage.setItem(SUMMARY_STORAGE_KEY, 'false');
+                    if (toggleIcon) toggleIcon.textContent = '▶';
+                    if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+                });
+            }
+        }
+
         // Load businesses on page load
         window.addEventListener('DOMContentLoaded', async function() {
             initDebugMode();
             initHowToUseCollapse();
+            initAllBusinessSummaryCollapse();
+            initSummaryCollapse();
             debugLog('Page initialized');
             
             updateTimes();
