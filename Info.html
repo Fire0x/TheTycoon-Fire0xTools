@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Information</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/SiteLogo.png">
+    <title>TheTycoon - Fire0x Tools</title>
+    <!-- Title and favicon will be set by site-config.js -->
     <!-- Bootstrap CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="css/styles.css" rel="stylesheet">
+    <!-- Base CSS (load order matters) -->
+    <link href="css/base/variables.css" rel="stylesheet">
+    <link href="css/base/common.css" rel="stylesheet">
+    <link href="css/base/responsive.css" rel="stylesheet">
+    <!-- Page-specific CSS -->
+    <link href="css/pages/info-base.css" rel="stylesheet">
+    <link href="css/pages/info.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navbar will be inserted here by navbar.js -->
-    
-    <!-- Hero Section -->
+    <!-- Navbar is injected by js/navbar.js -->
+
+    <!-- Page Header -->
     <section class="hero">
         <div class="container">
             <h1 class="glow-text">Information</h1>
@@ -55,10 +61,27 @@
                 <!-- Example Section: Headings -->
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h2 class="mb-0">Headings</h2>
+                        <h2 class="mb-0">Corporation Info</h2>
                     </div>
                     <div class="card-body">
                         <p>Use headings to organize your content hierarchically. The main page title uses h1, section titles use h2, subsections use h3, and so on.</p>
+                        
+                        <h4>Current Possible Perks</h4>
+                        <ul>
+                            <li><strong>Corporation Tag Display</strong> Display your corporation tag in your player name tag for all players to see.</li>
+                            <li><strong>Member Salary System</strong> Unlock salary payments for all members. Members can collect their salary based on their monthly XP contribution.</li>
+                            <li><strong>Remote Business Viewing</strong> Allows all corporation members to view all owned businesses from anywhere. Cargo delivery and fund management are disabled when viewing remotely.</li>
+                            <li><strong>Public Stock Trading </strong> AI investors will buy and sell stocks, generating passive income for your corporation over time.</li>
+
+                        </ul>
+
+                        <h4>Roles: WORK IN PROGRESS</h4>
+                        <ul>
+                            <li><strong>Founder</strong> The founder is the owner of the corporation. They have full control over the corporation and can do anything they want.</li>
+                            <li><strong>Co-Founder</strong> The co-founder is a partner of the corporation. They have full control over the corporation and can do anything they want.</li>
+                            <li><strong>Officer</strong> The officer is a member of the corporation that has been given additional responsibilities. They can help the founder and co-founder manage the corporation.</li>
+                            <li><strong>Member</strong> The member is a member of the corporation. They can view the corporation's businesses and can contribute to the corporation's XP.</li>
+                        </ul>
                         
                         <h2>Heading Level 2 (h2)</h2>
                         <h3>Heading Level 3 (h3)</h3>
@@ -397,7 +420,6 @@
     <!-- Footer -->
     <footer class="bg-light py-3">
         <div class="container text-center">
-            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All rights reserved.</p>
             <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
                 <!-- Version will be inserted here by site-config.js -->
             </div>
@@ -406,7 +428,10 @@
 
     <!-- Bootstrap JS -->
     <script src="js/bootstrap.bundle.min.js"></script>
-    <!-- Site Configuration & Version Manager -->
+    <!-- Site Configuration & Version Manager (load in order) -->
+    <script src="js/config/config-data.js"></script>
+    <script src="js/config/site-config.js"></script>
+    <script src="js/config/version-manager.js"></script>
     <script src="js/site-config.js"></script>
     <!-- Navbar Manager -->
     <script src="js/navbar.js"></script>

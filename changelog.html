@@ -48,6 +48,21 @@
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.0.3</h3>
+                                <p class="text-muted mb-3">2026-01-13</p>
+                                <ul class="mb-0">
+                                    <li><strong>Checklist - Emoji Picker Refactoring:</strong> Created shared emoji picker module (<code>js/pages/checklist/emoji-picker.js</code>) to centralize emoji picker functionality and remove ~475 lines of duplicate inline HTML from <code>checklist.html</code> and <code>checklist-1.html</code>.</li>
+                                    <li><strong>Checklist - Code Cleanup:</strong> Removed all leftover inline emoji HTML from both checklist pages. Emoji picker is now dynamically generated via JavaScript for improved maintainability.</li>
+                                    <li><strong>Checklist - Summary Calculation Fix:</strong> Fixed console warnings for tiers with no businesses. Updated <code>calculateTierSummary()</code> to gracefully handle tiers without businesses and skip unnecessary calculations.</li>
+                                    <li><strong>Checklist - Performance:</strong> Optimized summary calculation by checking for businesses before processing, reducing unnecessary DOM queries and function calls.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
                                 <h3 class="card-title mb-1">Version 1.0.2</h3>
                                 <p class="text-muted mb-3">2026-01-12</p>
                                 <ul class="mb-0">
@@ -64,6 +79,19 @@
                                     <li>Removed all inline &lt;style&gt; blocks from HTML files, improving code organization and browser caching.</li>
                                     <li>Added comprehensive documentation comments to all CSS files explaining purpose, usage, and update instructions.</li>
                                     <li>Updated all HTML pages to load CSS in correct cascade order (base → page-base → page-specific → variant-specific).</li>
+                                    <li>Fixed apartment page initialization errors - corrected initNumberFormatting function calls to use window.NumberFormatter.initNumberFormatting instead of window.initNumberFormatting.</li>
+                                    <li>Fixed apartment modals duplicate declaration error - removed duplicate formatDateDDMMMYYYYWithTime constant declaration.</li>
+                                    <li>Fixed apartment page missing function exports - ensured all export/import functions (exportAll, loadApartmentData, exportTimers, etc.) are properly exported to global scope.</li>
+                                    <li>Fixed education timer parseAndSave functionality - synchronized window.trainings reference after all data modifications to ensure renderTimers() displays correctly.</li>
+                                    <li>Optimized merchants page performance - throttled localStorage saves to every 30 seconds and re-renders to every 10 seconds, reducing excessive DOM operations and improving click handler performance.</li>
+                                    <li>Fixed merchants page duplicate setInterval calls - consolidated multiple timer initialization blocks into a single initializePage() function.</li>
+                                    <li>Fixed VehicleDeliveries.html duplicate theme.js script tag and corrected script loading order.</li>
+                                    <li>Created apartments-import.json template file - added sample import file with example apartment data structure for easy testing and reference.</li>
+                                    <li><strong>Checklist - Emoji Picker Refactoring:</strong> Created shared emoji picker module (<code>js/pages/checklist/emoji-picker.js</code>) to centralize emoji picker functionality and 
+                                    <li><strong>Checklist - Code Cleanup:</strong> Removed all leftover inline emoji HTML from both checklist pages. Emoji picker is now dynamically generated via JavaScript for improved mainta
+                                    <li><strong>Checklist - Summary Calculation Fix:</strong> Fixed console warnings for tiers with no businesses. Updated <code>calculateTierSummary()</code> to gracefully handle tiers without
+                                    <li><strong>Checklist - Performance:</strong> Optimized summary calculation by checking for businesses before processing, reducing unnecessary DOM queries and function calls.</li>       
+                                    <li>Credits to Brooks for testing and providing feedback on the changes.</li>
                                 </ul>
                             </div>
                         </div>
