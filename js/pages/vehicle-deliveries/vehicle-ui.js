@@ -16,24 +16,50 @@
 
     // Render vehicle progress cards
     function renderVehicleProgress() {
-        debugManager.log('Rendering vehicle progress');
+        debugManager.log('=== renderVehicleProgress START ===');
+        debugManager.log('window.vehicleProgress:', window.vehicleProgress);
+        debugManager.log('typeof window.vehicleProgress:', typeof window.vehicleProgress);
+        
         const container = document.getElementById('vehicleProgressContainer');
         const emptyState = document.getElementById('vehicleProgressEmptyState');
         const summary = document.getElementById('progressSummary');
         
-        if (!container) return;
+        debugManager.log('Container element:', container ? 'found' : 'NOT FOUND');
+        debugManager.log('Empty state element:', emptyState ? 'found' : 'NOT FOUND');
+        debugManager.log('Summary element:', summary ? 'found' : 'NOT FOUND');
+        
+        if (!container) {
+            debugManager.error('vehicleProgressContainer element not found!');
+            return;
+        }
         
         const vehicleProgress = window.vehicleProgress || {};
+        debugManager.log('vehicleProgress object:', vehicleProgress);
+        debugManager.log('vehicleProgress type:', typeof vehicleProgress);
+        debugManager.log('vehicleProgress is array?', Array.isArray(vehicleProgress));
+        
         const keys = Object.keys(vehicleProgress);
         debugManager.log('Total vehicles to render:', keys.length);
+        debugManager.log('Vehicle keys:', keys);
         
         const summaryHeader = document.getElementById('summaryHeader');
+        debugManager.log('Summary header element:', summaryHeader ? 'found' : 'NOT FOUND');
         
         if (keys.length === 0) {
+            debugManager.log('No vehicles to render, showing empty state');
             container.innerHTML = '';
-            if (emptyState) emptyState.style.display = 'block';
-            if (summary) summary.style.display = 'none';
-            if (summaryHeader) summaryHeader.style.display = 'none';
+            if (emptyState) {
+                emptyState.style.display = 'block';
+                debugManager.log('Showing empty state');
+            }
+            if (summary) {
+                summary.style.display = 'none';
+                debugManager.log('Hiding summary');
+            }
+            if (summaryHeader) {
+                summaryHeader.style.display = 'none';
+                debugManager.log('Hiding summary header');
+            }
             const highestRepEl = document.getElementById('highestRep');
             const totalVehiclesNeededEl = document.getElementById('totalVehiclesNeeded');
             const deliveriesLeftEl = document.getElementById('deliveriesLeft');
@@ -42,13 +68,26 @@
             if (totalVehiclesNeededEl) totalVehiclesNeededEl.textContent = '0';
             if (deliveriesLeftEl) deliveriesLeftEl.textContent = '0';
             if (unlockedCountEl) unlockedCountEl.textContent = '0';
+            debugManager.log('Reset all summary values to 0');
+            debugManager.log('=== renderVehicleProgress END (empty state) ===');
             return;
         }
         
-        if (emptyState) emptyState.style.display = 'none';
-        if (summaryHeader) summaryHeader.style.display = 'flex';
+        debugManager.log('Rendering', keys.length, 'vehicles');
+        
+        if (emptyState) {
+            emptyState.style.display = 'none';
+            debugManager.log('Hiding empty state');
+        }
+        if (summaryHeader) {
+            summaryHeader.style.display = 'flex';
+            debugManager.log('Showing summary header');
+        }
         if (typeof window.updateSummaryVisibility === 'function') {
+            debugManager.log('Calling updateSummaryVisibility()');
             window.updateSummaryVisibility();
+        } else {
+            debugManager.log('updateSummaryVisibility is not a function');
         }
         
         let highestRep = 0;
@@ -56,37 +95,77 @@
         let unlockedCount = 0;
         let totalDeliveriesLeft = 0;
         
-        keys.forEach(key => {
+        debugManager.log('Calculating summary statistics...');
+        keys.forEach((key, idx) => {
             const vehicle = vehicleProgress[key];
+            debugManager.log(`[${idx}] Processing vehicle key: "${key}"`);
+            debugManager.log(`  -> Vehicle data:`, vehicle);
+            
+            if (!vehicle) {
+                debugManager.error(`  -> Vehicle data is null/undefined for key: "${key}"`);
+                return;
+            }
+            
             const current = vehicle.current || 0;
             const total = vehicle.total || 0;
             const remaining = total - current;
             const unlocked = current >= total;
             
+            debugManager.log(`  -> Progress: ${current}/${total}, Remaining: ${remaining}, Unlocked: ${unlocked}`);
+            
             if (!unlocked) {
                 totalVehiclesNeeded++;
                 totalDeliveriesLeft += remaining;
                 if (vehicle.reputation && vehicle.reputation > highestRep) {
+                    debugManager.log(`  -> New highest reputation: ${vehicle.reputation} (was ${highestRep})`);
                     highestRep = vehicle.reputation;
                 }
             } else {
                 unlockedCount++;
+                debugManager.log(`  -> Vehicle is unlocked`);
             }
         });
+        
+        debugManager.log('Summary statistics calculated:');
+        debugManager.log('  -> Highest Rep:', highestRep);
+        debugManager.log('  -> Total Vehicles Needed:', totalVehiclesNeeded);
+        debugManager.log('  -> Total Deliveries Left:', totalDeliveriesLeft);
+        debugManager.log('  -> Unlocked Count:', unlockedCount);
         
         const highestRepEl = document.getElementById('highestRep');
         const totalVehiclesNeededEl = document.getElementById('totalVehiclesNeeded');
         const deliveriesLeftEl = document.getElementById('deliveriesLeft');
         const unlockedCountEl = document.getElementById('unlockedCount');
         
-        if (highestRepEl) highestRepEl.textContent = highestRep.toLocaleString('en-US');
-        if (totalVehiclesNeededEl) totalVehiclesNeededEl.textContent = totalVehiclesNeeded;
-        if (deliveriesLeftEl) deliveriesLeftEl.textContent = totalDeliveriesLeft.toLocaleString('en-US');
-        if (unlockedCountEl) unlockedCountEl.textContent = unlockedCount;
+        debugManager.log('Updating summary elements...');
+        if (highestRepEl) {
+            highestRepEl.textContent = highestRep.toLocaleString('en-US');
+            debugManager.log('Updated highestRep element:', highestRep.toLocaleString('en-US'));
+        } else {
+            debugManager.error('highestRep element not found!');
+        }
+        if (totalVehiclesNeededEl) {
+            totalVehiclesNeededEl.textContent = totalVehiclesNeeded;
+            debugManager.log('Updated totalVehiclesNeeded element:', totalVehiclesNeeded);
+        } else {
+            debugManager.error('totalVehiclesNeeded element not found!');
+        }
+        if (deliveriesLeftEl) {
+            deliveriesLeftEl.textContent = totalDeliveriesLeft.toLocaleString('en-US');
+            debugManager.log('Updated deliveriesLeft element:', totalDeliveriesLeft.toLocaleString('en-US'));
+        } else {
+            debugManager.error('deliveriesLeft element not found!');
+        }
+        if (unlockedCountEl) {
+            unlockedCountEl.textContent = unlockedCount;
+            debugManager.log('Updated unlockedCount element:', unlockedCount);
+        } else {
+            debugManager.error('unlockedCount element not found!');
+        }
         
-        debugManager.log('Summary - Highest Rep:', highestRep, 'Total Needed:', totalVehiclesNeeded, 'Deliveries Left:', totalDeliveriesLeft, 'Unlocked:', unlockedCount);
-        
-        container.innerHTML = keys.map(key => {
+        debugManager.log('Generating vehicle cards HTML...');
+        const cardsHtml = keys.map((key, idx) => {
+            debugManager.log(`[${idx}] Generating card for key: "${key}"`);
             const vehicle = vehicleProgress[key];
             const name = vehicle.name;
             const current = vehicle.current || 0;
@@ -110,7 +189,7 @@
             const cardBg = unlocked ? 'linear-gradient(135deg, #28a745 0%, #20c997 100%)' : 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)';
             const textColor = unlocked ? '#fff' : '#fff';
             
-            return `
+            const cardHtml = `
                 <div class="col-md-6 col-lg-4">
                     <div class="card shadow-sm h-100" style="background: ${cardBg}; border: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                         <div class="card-body">
@@ -139,7 +218,16 @@
                     </div>
                 </div>
             `;
-        }).join('');
+            debugManager.log(`  -> Generated card HTML (length: ${cardHtml.length} chars)`);
+            return cardHtml;
+        });
+        
+        const finalHtml = cardsHtml.join('');
+        debugManager.log('Total HTML length:', finalHtml.length);
+        debugManager.log('Setting container.innerHTML...');
+        container.innerHTML = finalHtml;
+        debugManager.log('container.innerHTML set successfully');
+        debugManager.log('=== renderVehicleProgress END ===');
     }
 
     // Summary Statistics Toggle State
