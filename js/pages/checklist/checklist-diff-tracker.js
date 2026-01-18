@@ -52,11 +52,37 @@
     function checkKnownDifferences() {
         const config = getPageConfig();
         
-        // Example: Check for HTML structure differences
-        const allBusinessSummaryCard = document.getElementById('allBusinessSummaryCard');
-        if (allBusinessSummaryCard) {
-            const position = allBusinessSummaryCard.compareDocumentPosition(document.getElementById('config-panel') || document.querySelector('.config-panel'));
-            // This is a simple check - you can expand this
+        // Check for hero section presence
+        const heroSection = document.querySelector('section.hero');
+        if (heroSection) {
+            logDifference('Hero Section', 'checklist.html has hero section with navbar injection');
+        } else {
+            logDifference('Hero Section', 'checklist-1.html uses centered header div instead of hero section');
+        }
+        
+        // Check for navbar injection comment
+        const bodyContent = document.body.innerHTML;
+        const hasNavbarComment = bodyContent.includes('<!-- Navbar is injected by js/navbar.js -->');
+        if (hasNavbarComment) {
+            logDifference('Navbar', 'checklist.html has navbar injection comment');
+        } else {
+            logDifference('Navbar', 'checklist-1.html does not have navbar injection comment');
+        }
+        
+        // Check for checklist-1.css stylesheet
+        const checklist1CSS = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+            .some(link => link.href.includes('checklist-1.css'));
+        if (checklist1CSS) {
+            logDifference('CSS', 'checklist-1.html loads checklist-1.css stylesheet');
+        }
+        
+        // Check for tier color options (checklist-1.html has fewer options)
+        const tierColorSelect = document.getElementById('tierColor');
+        if (tierColorSelect) {
+            const options = tierColorSelect.options.length;
+            if (options < 18) {
+                logDifference('Tier Color Options', `checklist-1.html has ${options} color options (fewer than checklist.html)`);
+            }
         }
         
         // Log page detection
@@ -73,11 +99,45 @@
             page: config.page,
             timestamp: new Date().toISOString(),
             differences: [],
-            features: config.features
+            features: config.features,
+            htmlStructure: {},
+            cssFiles: [],
+            javascriptFiles: []
         };
         
-        // Add checks for known differences
-        // Example: Check if All Business Summary is above Configuration Panel
+        // Check HTML structure differences
+        const heroSection = document.querySelector('section.hero');
+        report.htmlStructure.hasHeroSection = !!heroSection;
+        report.htmlStructure.hasNavbarComment = document.body.innerHTML.includes('<!-- Navbar is injected by js/navbar.js -->');
+        
+        // Check CSS files
+        const stylesheets = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+        report.cssFiles = stylesheets.map(link => {
+            const href = link.href;
+            const filename = href.substring(href.lastIndexOf('/') + 1);
+            return filename;
+        });
+        
+        // Check JavaScript files
+        const scripts = Array.from(document.querySelectorAll('script[src]'));
+        report.javascriptFiles = scripts.map(script => {
+            const src = script.src;
+            const filename = src.substring(src.lastIndexOf('/') + 1);
+            return filename;
+        });
+        
+        // Check for tier color options
+        const tierColorSelect = document.getElementById('tierColor');
+        if (tierColorSelect) {
+            report.differences.push({
+                type: 'feature',
+                feature: 'Tier Color Options',
+                description: `Has ${tierColorSelect.options.length} color options`,
+                page: config.page
+            });
+        }
+        
+        // Check layout differences
         const allBusinessSummary = document.getElementById('allBusinessSummaryCard');
         const configPanel = document.getElementById('config-panel') || document.querySelector('.config-panel');
         
@@ -85,14 +145,14 @@
             const summaryRect = allBusinessSummary.getBoundingClientRect();
             const configRect = configPanel.getBoundingClientRect();
             
-            if (summaryRect.top < configRect.top) {
-                report.differences.push({
-                    type: 'layout',
-                    feature: 'All Business Summary Position',
-                    description: 'All Business Summary is positioned above Configuration Panel',
-                    page: config.page
-                });
-            }
+            report.differences.push({
+                type: 'layout',
+                feature: 'All Business Summary Position',
+                description: summaryRect.top < configRect.top 
+                    ? 'All Business Summary is positioned above Configuration Panel' 
+                    : 'All Business Summary is positioned below Configuration Panel',
+                page: config.page
+            });
         }
         
         return report;
