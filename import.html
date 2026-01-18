@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheTycoon - Fire0x Tools</title>
+    <!-- Title and favicon will be set by site-config.js -->
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- Base CSS (load order matters) -->
+    <link href="css/base/variables.css" rel="stylesheet">
+    <link href="css/base/common.css" rel="stylesheet">
+    <link href="css/base/responsive.css" rel="stylesheet">
+    <!-- Page-specific CSS -->
+    <link href="css/pages/import-export.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar is injected by js/navbar.js -->
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="glow-text">📥 Import / Export</h1>
+            <p class="lead">Centralized data management for all pages - import, export, and track your data</p>
+        </div>
+
+        <!-- Debug Toggle -->
+        <div class="row mb-4">
+            <div class="col-12 text-end">
+                <button id="debugToggleBtn" class="btn btn-sm btn-outline-secondary">
+                    <span id="debugToggleText">Enable Debug</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Status Cards -->
+        <div class="row mb-5" id="dataStatusCards">
+            <!-- Cards will be rendered by import-export-ui.js -->
+        </div>
+
+        <!-- Export Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📤 Export Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-2">
+                                <button id="exportAllBtn" class="btn btn-primary w-100">
+                                    Export All (Single File)
+                                </button>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <button id="exportAllSeparateBtn" class="btn btn-primary w-100">
+                                    Export All (Separate Files)
+                                </button>
+                            </div>
+                        </div>
+                        <hr>
+                        <h6 class="mb-3">Export Individual Pages:</h6>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <button class="btn btn-outline-primary w-100 export-page-btn" data-page="checklist">
+                                    📋 Checklist
+                                </button>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <button class="btn btn-outline-primary w-100 export-page-btn" data-page="apartments">
+                                    🏠 Apartments
+                                </button>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <button class="btn btn-outline-primary w-100 export-page-btn" data-page="education">
+                                    ⏱️ Education
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📥 Import Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Format Detection Indicator -->
+                        <div id="formatDetectionIndicator" class="alert alert-info d-none mb-3">
+                            <strong>Detected Format:</strong> <span id="detectedFormat">-</span>
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="mb-3">
+                            <label for="importFileInput" class="form-label">Upload JSON File:</label>
+                            <input type="file" class="form-control" id="importFileInput" accept=".json">
+                        </div>
+
+                        <!-- Textarea for Pasting -->
+                        <div class="mb-3">
+                            <label for="importTextarea" class="form-label">Or Paste JSON Data:</label>
+                            <textarea class="form-control" id="importTextarea" rows="10" placeholder="Paste JSON data here..."></textarea>
+                        </div>
+
+                        <!-- Import Buttons -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-2">
+                                <button id="importAllBtn" class="btn btn-success w-100">
+                                    Import All (Auto-detect Format)
+                                </button>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="importMode" id="importModeReplace" value="replace" checked>
+                                    <label class="btn btn-outline-secondary" for="importModeReplace">Replace</label>
+                                    <input type="radio" class="btn-check" name="importMode" id="importModeMerge" value="merge">
+                                    <label class="btn btn-outline-secondary" for="importModeMerge">Merge</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <h6 class="mb-3">Import Individual Pages:</h6>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <button class="btn btn-outline-success w-100 import-page-btn" data-page="checklist">
+                                    📋 Checklist
+                                </button>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <button class="btn btn-outline-success w-100 import-page-btn" data-page="apartments">
+                                    🏠 Apartments
+                                </button>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <button class="btn btn-outline-success w-100 import-page-btn" data-page="education">
+                                    ⏱️ Education
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Messages Area -->
+        <div id="statusMessages"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
+                <!-- Version will be inserted here by site-config.js -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Site Configuration & Version Manager (load in order) -->
+    <script src="js/config/config-data.js"></script>
+    <script src="js/config/site-config.js"></script>
+    <script src="js/config/version-manager.js"></script>
+    <script src="js/site-config.js"></script>
+    <!-- Navbar Manager -->
+    <script src="js/navbar.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+    <!-- Debug Manager -->
+    <script src="js/debug-manager.js"></script>
+    <!-- Import/Export JS Modules -->
+    <script src="js/pages/import-export/import-export-core.js"></script>
+    <script src="js/pages/import-export/import-export-ui.js"></script>
+    <script src="js/pages/import-export/import-export-init.js"></script>
+</body>
+</html>

@@ -83,6 +83,38 @@
         }
         
         updateStarColors();
+        updateRatingButtons(rating);
+        updateSelectedRatingDisplay(rating);
+    }
+    
+    // Select rating via button
+    function selectRatingButton(rating) {
+        selectHalfStar(rating);
+    }
+    
+    // Update rating button states
+    function updateRatingButtons(selectedRating) {
+        const buttons = document.querySelectorAll('.rating-btn');
+        buttons.forEach(btn => {
+            const btnRating = parseFloat(btn.getAttribute('data-rating'));
+            if (btnRating === selectedRating) {
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-primary');
+            } else {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline-secondary');
+            }
+        });
+    }
+    
+    // Update selected rating display
+    function updateSelectedRatingDisplay(rating) {
+        const display = document.getElementById('selectedRatingDisplay');
+        const valueSpan = document.getElementById('selectedRatingValue');
+        if (display && valueSpan) {
+            valueSpan.textContent = rating;
+            display.style.display = 'block';
+        }
     }
 
     // Select half star for edit form
@@ -157,6 +189,17 @@
             
             updateStarColors();
         });
+        
+        // Initialize rating buttons
+        const ratingButtons = document.querySelectorAll('.rating-btn');
+        ratingButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const rating = parseFloat(this.getAttribute('data-rating'));
+                if (rating) {
+                    selectRatingButton(rating);
+                }
+            });
+        });
     }
 
     // Update star colors based on selected rating
@@ -187,11 +230,18 @@
                 if (selectedRating >= starRating) {
                     label.style.color = '#ffc107';
                 } else if (selectedRating >= starRating - 0.5) {
+                    // Half star
                     label.style.color = '#ffc107';
                 } else {
                     label.style.color = '#ddd';
                 }
             });
+            
+            // Also update rating buttons if they exist (for review form)
+            if (ratingContainer.id === 'reviewStarRating') {
+                updateRatingButtons(selectedRating);
+                updateSelectedRatingDisplay(selectedRating);
+            }
         });
     }
 
@@ -380,7 +430,11 @@
         }
             
         const apartmentsWithReviews = sortedApartments.map(apt => {
-            const reviews = apt.reviews || [];
+            // Ensure reviews is always an array
+            if (!apt.reviews || !Array.isArray(apt.reviews)) {
+                apt.reviews = [];
+            }
+            const reviews = apt.reviews;
             if (reviews.length > 0) {
                 const avgRating = reviews.reduce((sum, r) => sum + parseFloat(r.rating || 0), 0) / reviews.length;
                 apt.average_rating = avgRating.toFixed(1);
@@ -434,7 +488,7 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="${tabId}-reviews-tab" data-bs-toggle="tab" data-bs-target="#${tabId}-reviews" type="button" role="tab">
-                                    Reviews (${apt.reviews.length})
+                                    Reviews (${(apt.reviews && Array.isArray(apt.reviews)) ? apt.reviews.length : 0})
                                 </button>
                             </li>
                         </ul>
@@ -479,13 +533,13 @@
                                     <div class="col-md-12 mb-3">
                                         <strong>Rating:</strong> 
                                         <span class="review-rating" style="display: inline-block; margin-left: 0.5rem;">${stars}</span>
-                                        ${apt.average_rating ? `<span style="margin-left: 0.5rem; color: var(--text-color); opacity: 0.8;">(${apt.average_rating} from ${apt.reviews.length} review${apt.reviews.length !== 1 ? 's' : ''})</span>` : ''}
+                                        ${apt.average_rating ? `<span style="margin-left: 0.5rem; color: var(--text-color); opacity: 0.8;">(${apt.average_rating} from ${(apt.reviews && Array.isArray(apt.reviews)) ? apt.reviews.length : 0} review${((apt.reviews && Array.isArray(apt.reviews)) ? apt.reviews.length : 0) !== 1 ? 's' : ''})</span>` : ''}
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="tab-pane fade" id="${tabId}-reviews" role="tabpanel">
-                                ${apt.reviews.length === 0 ? `
+                                ${(!apt.reviews || !Array.isArray(apt.reviews) || apt.reviews.length === 0) ? `
                                     <div class="text-center py-4">
                                         <p class="text-muted mb-3">No reviews yet.</p>
                                         ${!isLocked ? `
@@ -494,7 +548,7 @@
                                             </button>
                                         ` : '<p class="text-muted"><small>🔒 Apartment is locked</small></p>'}
                                     </div>
-                                ` : `
+                                    ` : `
                                     ${!isLocked ? `
                                         <div class="mb-4">
                                             <button class="btn btn-primary btn-sm" onclick="viewReviews(${apt.id})">
@@ -503,7 +557,7 @@
                                         </div>
                                     ` : ''}
                                     <div class="reviews-list">
-                                    ${apt.reviews.map(review => {
+                                    ${(apt.reviews && Array.isArray(apt.reviews)) ? apt.reviews.map(review => {
                                         const date = new Date(review.created_at);
                                         const dateStr = formatLocalDateDDMMMYYYYWithTime(date);
                                         const easternDateStr = formatDateDDMMMYYYYWithTime(date, 'America/New_York');
@@ -522,7 +576,7 @@
                                                 <p>${escapeHtml(review.comment || 'No comment')}</p>
                                             </div>
                                         `;
-                                    }).join('')}
+                                    }).join('') : ''}
                                     </div>
                                 `}
                             </div>
@@ -875,6 +929,7 @@
     window.toggleApartmentsTable = toggleApartmentsTable;
     window.formatStars = formatStars;
     window.selectHalfStar = selectHalfStar;
+    window.selectRatingButton = selectRatingButton;
     window.selectEditHalfStar = selectEditHalfStar;
     window.updateEditStarColors = updateEditStarColors;
     window.initStarRatings = initStarRatings;

@@ -40,7 +40,35 @@
                 <section id="changelog" class="mb-5">
                     <h2 class="mb-4 text-center">Release Notes</h2>
 
-                    <!-- Example Entry (Most Recent) -->
+                    <!-- Example Entry (Most Recent) -->                  
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.0.4</h3>
+                                <p class="text-muted mb-3">2025-01-15</p>
+                                <ul class="mb-0">
+                                    <li><strong>New Feature - Import/Export Page:</strong> Created centralized <code>import.html</code> page for managing data across all pages. Users can now export and import data for Checklist, Apartments, and Education Timer in a single unified interface.</li>
+                                    <li><strong>Import/Export - Format Detection:</strong> Implemented automatic JSON format detection that recognizes existing export formats from individual pages (checklist, apartments, unified format, etc.) for seamless data migration.</li>
+                                    <li><strong>Import/Export - Hash-Based Change Detection:</strong> Added hash comparison system to detect "new data" indicators, showing users when their data has been modified since last export.</li>
+                                    <li><strong>Import/Export - Export Options:</strong> Supports both single-file export (all data in one JSON) and separate-file export (individual JSON files per page) for flexible backup strategies.</li>
+                                    <li><strong>Import/Export - Import Modes:</strong> Added "Replace" and "Merge" import modes, allowing users to either completely replace existing data or merge new data with existing entries.</li>
+                                    <li><strong>Import/Export - Debug Support:</strong> Integrated DebugManager with comprehensive logging for all import/export operations, format detection, and data processing steps.</li>
+                                    <li><strong>Import/Export - Page Exclusion System:</strong> Implemented configurable page exclusion toggle. Merchants and Vehicle Deliveries are excluded by default (can be toggled in code via <code>EXCLUDED_PAGES</code> array).</li>
+                                    <li><strong>Import/Export - UI Features:</strong> Added data status cards showing data counts, last modified timestamps, hash values, and "New Data" badges for each page.</li>
+                                    <li><strong>Import/Export - File Handling:</strong> Supports both file upload and paste-in-textarea methods for importing JSON data with automatic format detection.</li>
+                                    <li><strong>Navigation - Import/Export Link:</strong> Added "📥 Import / Export" link to navbar, positioned to the left of the Business dropdown menu for easy access.</li>
+                                    <li><strong>Configuration - Import Page Registration:</strong> Updated <code>config-data.js</code> to include <code>import.html</code> in page titles, hero sections, and version tracking.</li>
+                                    <li><strong>Code Organization - Modular Architecture:</strong> Created three new JavaScript modules for import/export functionality: <code>import-export-core.js</code> (data management), <code>import-export-ui.js</code> (UI rendering), and <code>import-export-init.js</code> (initialization).</li>
+                                    <li><strong>Code Organization - CSS Styling:</strong> Added <code>import-export.css</code> for page-specific styling including data status cards, format detection indicators, and status messages.</li>
+                                    <li><strong>Apartment - Export/Import Collapse Feature:</strong> Added collapsible functionality to the Export/Import section within the "Select Apartment" card. Users can now collapse/expand this section, with state persistence in localStorage. Matches the behavior of the "How to Use This Page" section.</li>
+                                    <li><strong>Apartment - Reviews Modal Fix:</strong> Fixed issue where the reviews modal close button wasn't working properly. Changed from creating new Bootstrap Modal instances to using <code>getOrCreateModal()</code> helper function, ensuring proper modal instance reuse and correct event handling.</li>
+                                    <li><strong>Apartment - Modal Instance Management:</strong> Updated all modal creation calls in <code>apartment-modals.js</code> to use <code>getOrCreateModal()</code> instead of <code>new bootstrap.Modal()</code> for consistent modal behavior across apartment management, reviews, and export/import modals.</li>
+                                    <li><strong>Apartment - Syntax Error Fix:</strong> Fixed missing ternary operator fallback in <code>apartment-ui.js</code> that was causing "Unexpected token '}'" error when rendering reviews. Added proper <code>: ''</code> fallback for cases where reviews array is empty or undefined.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                    
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
@@ -87,7 +115,7 @@
                                     <li><strong>Checklist - Code Cleanup:</strong> Removed all leftover inline emoji HTML from both checklist pages. Emoji picker is now dynamically generated via JavaScript for improved mainta
                                     <li><strong>Checklist - Summary Calculation Fix:</strong> Fixed console warnings for tiers with no businesses. Updated <code>calculateTierSummary()</code> to gracefully handle tiers without
                                     <li><strong>Checklist - Performance:</strong> Optimized summary calculation by checking for businesses before processing, reducing unnecessary DOM queries and function calls.</li>       
-                                    <li>Credits to Brooks for testing and providing feedback on the changes.</li>
+                                    <li>Credits to <strong>Brooks</strong> for testing and providing feedback on the changes.</li>
                                 </ul>
                             </div>
                         </div>

@@ -58,6 +58,45 @@
         }
     }
 
+    // Initialize Export/Import collapse toggle
+    function initExportImportCollapse() {
+        const EXPORT_IMPORT_STORAGE_KEY = 'apartmentExportImportExpanded';
+        const stored = localStorage.getItem(EXPORT_IMPORT_STORAGE_KEY);
+        const shouldExpand = stored === null ? true : stored === 'true';
+        
+        const collapseElement = document.getElementById('exportImportCollapse');
+        const toggleIcon = document.getElementById('exportImportToggle');
+        const toggleButton = document.querySelector('[data-bs-target="#exportImportCollapse"]');
+        
+        if (collapseElement) {
+            const bsCollapse = new bootstrap.Collapse(collapseElement, {
+                toggle: false
+            });
+            
+            if (!shouldExpand) {
+                bsCollapse.hide();
+                if (toggleIcon) toggleIcon.textContent = '▶';
+                if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+            } else {
+                bsCollapse.show();
+                if (toggleIcon) toggleIcon.textContent = '▼';
+                if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+            }
+            
+            collapseElement.addEventListener('shown.bs.collapse', function() {
+                localStorage.setItem(EXPORT_IMPORT_STORAGE_KEY, 'true');
+                if (toggleIcon) toggleIcon.textContent = '▼';
+                if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+            });
+            
+            collapseElement.addEventListener('hidden.bs.collapse', function() {
+                localStorage.setItem(EXPORT_IMPORT_STORAGE_KEY, 'false');
+                if (toggleIcon) toggleIcon.textContent = '▶';
+                if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+            });
+        }
+    }
+
     // Fix modal accessibility issues
     function initModalAccessibility() {
         const modals = ['exportModal', 'importModal', 'importTimersModal', 'importReviewsModal', 'importAllModal', 'apartmentModal', 'reviewsModal'];
@@ -215,6 +254,7 @@
         
         // Initialize UI components
         initHowToUseCollapse();
+        initExportImportCollapse();
         initModalAccessibility();
         initTableVisibility();
         initApartmentModal();

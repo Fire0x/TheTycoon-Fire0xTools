@@ -33,7 +33,8 @@ const ConfigData = {
         'VehicleDeliveries.html': 'Vehicle Deliveries',
         'education_timer.html': 'Education Timer',
         'apartment.html': 'Apartment Management',
-        'changelog.html': 'Changelog'
+        'changelog.html': 'Changelog',
+        'import.html': 'Import / Export'
     },
     
     // Hero section data for each page
@@ -77,11 +78,15 @@ const ConfigData = {
         'changelog.html': {
             title: 'Changelog',
             description: 'Summary of updates and improvements across all TheTycoon tools.'
+        },
+        'import.html': {
+            title: '📥 Import / Export',
+            description: 'Centralized data management for all pages - import, export, and track your data'
         }
     },
     
     // Website overall version
-    websiteVersion: '0.2.0',
+    websiteVersion: '0.2.1',
     
     // Individual page versions
     pageVersions: {
@@ -94,7 +99,8 @@ const ConfigData = {
         'apartment.html': '0.1.5',
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
-        'changelog.html': '0.0.4'
+        'changelog.html': '0.0.6',
+        'import.html': '0.1.0'
     }
 };
 

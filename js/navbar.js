@@ -12,6 +12,11 @@ const NavbarManager = {
             id: 'nav-home'
         },
         {
+            href: 'import.html',
+            text: '📥 Import / Export',
+            id: 'nav-import'
+        },
+        {
             type: 'dropdown',
             text: '💵 Busineses',
             id: 'businessDropdown',

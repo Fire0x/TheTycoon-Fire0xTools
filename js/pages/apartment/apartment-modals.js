@@ -104,8 +104,10 @@
         
         updateTimezoneDisplays();
         
-        const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
-        modal.show();
+        const modal = getOrCreateModal('apartmentModal');
+        if (modal) {
+            modal.show();
+        }
     }
 
     // Save apartment
@@ -337,8 +339,10 @@
         if (!apartmentId || apartmentId === 'new') {
             if (apartmentId === 'new') {
                 openAddModal();
-                const modal = new bootstrap.Modal(document.getElementById('apartmentModal'));
-                modal.show();
+                const modal = getOrCreateModal('apartmentModal');
+                if (modal) {
+                    modal.show();
+                }
             }
             const saveBtn = document.getElementById('saveApartmentBtn');
             if (saveBtn) saveBtn.style.display = 'none';
@@ -398,8 +402,10 @@
         }
         debugManager.log('Reviews modal rendered');
         
-        const modal = new bootstrap.Modal(document.getElementById('reviewsModal'));
-        modal.show();
+        const modal = getOrCreateModal('reviewsModal');
+        if (modal) {
+            modal.show();
+        }
     }
 
     // Render rating overview

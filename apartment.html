@@ -194,21 +194,26 @@
         <!-- Export/Import Section -->
         <div class="card mb-4">
             <div class="card-header bg-info text-white">
-                <h3 class="mb-0">Export/Import</h3>
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#exportImportCollapse" aria-expanded="true" aria-controls="exportImportCollapse" style="color: white; font-weight: 600;">
+                    <span>📦 Export/Import</span>
+                    <span class="float-end" id="exportImportToggle">▼</span>
+                </button>
             </div>
-            <div class="card-body">
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                    <button type="button" class="btn btn-success" onclick="exportApartments()">📤 Export Apartments</button>
-                    <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Apartments</button>
-                    <button type="button" class="btn btn-info" onclick="exportTimers()">⏱️ Export Timers</button>
-                    <button type="button" class="btn btn-secondary" onclick="openImportTimersModal()">⏱️ Import Timers</button>
-                    <button type="button" class="btn btn-primary" onclick="exportReviews()">⭐ Export Reviews</button>
-                    <button type="button" class="btn btn-danger" onclick="openImportReviewsModal()">⭐ Import Reviews</button>
-                </div>
-                <hr>
-                <div class="d-flex flex-wrap gap-2">
-                    <button type="button" class="btn btn-success btn-lg" onclick="exportAll()">📦 Export All Data</button>
-                    <button type="button" class="btn btn-warning btn-lg" onclick="openImportAllModal()">📦 Import All Data</button>
+            <div class="collapse show" id="exportImportCollapse">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button type="button" class="btn btn-success" onclick="exportApartments()">📤 Export Apartments</button>
+                        <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Apartments</button>
+                        <button type="button" class="btn btn-info" onclick="exportTimers()">⏱️ Export Timers</button>
+                        <button type="button" class="btn btn-secondary" onclick="openImportTimersModal()">⏱️ Import Timers</button>
+                        <button type="button" class="btn btn-primary" onclick="exportReviews()">⭐ Export Reviews</button>
+                        <button type="button" class="btn btn-danger" onclick="openImportReviewsModal()">⭐ Import Reviews</button>
+                    </div>
+                    <hr>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-success btn-lg" onclick="exportAll()">📦 Export All Data</button>
+                        <button type="button" class="btn btn-warning btn-lg" onclick="openImportAllModal()">📦 Import All Data</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -495,7 +500,9 @@
                         <input type="hidden" id="reviewApartmentId">
                         <div class="mb-3">
                             <label for="reviewRating" class="form-label">Rating <span class="text-danger">*</span></label>
-                            <div class="star-rating" id="reviewStarRating">
+                            
+                            <!-- Star Rating Visual -->
+                            <div class="star-rating mb-3" id="reviewStarRating">
                                 <input type="radio" id="star10" name="rating" value="5">
                                 <label for="star10" class="star-label" data-rating="5">
                                     <span class="star-half-left" data-rating="4.5" onclick="selectHalfStar(4.5)"></span>
@@ -533,7 +540,28 @@
                                 <input type="radio" id="star1" name="rating" value="0.5">
                                 <input type="hidden" id="selectedRating" name="selectedRating" value="" required>
                             </div>
-                            <small class="form-text text-muted">Click a star to rate (0.5-5 stars, click left half for half-star)</small>
+                            
+                            <!-- Numeric Rating Buttons -->
+                            <div class="mb-2">
+                                <label class="form-label small text-muted">Or select a rating:</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="0.5" onclick="selectRatingButton(0.5)">0.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="1" onclick="selectRatingButton(1)">1</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="1.5" onclick="selectRatingButton(1.5)">1.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="2" onclick="selectRatingButton(2)">2</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="2.5" onclick="selectRatingButton(2.5)">2.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="3" onclick="selectRatingButton(3)">3</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="3.5" onclick="selectRatingButton(3.5)">3.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="4" onclick="selectRatingButton(4)">4</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="4.5" onclick="selectRatingButton(4.5)">4.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="5" onclick="selectRatingButton(5)">5</button>
+                                </div>
+                            </div>
+                            
+                            <small class="form-text text-muted">Click stars above or use buttons to select rating (0.5-5 stars)</small>
+                            <div id="selectedRatingDisplay" class="mt-2 text-info" style="display: none;">
+                                <strong>Selected Rating:</strong> <span id="selectedRatingValue">--</span> ⭐
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="reviewComment" class="form-label">Comment</label>
