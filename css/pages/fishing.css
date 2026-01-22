@@ -1,0 +1,432 @@
+:root {
+    --primary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    --success-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    --info-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    --danger-gradient: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    --secondary-gradient: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    background: var(--bg-color);
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border-bottom: 2px solid rgba(6, 182, 212, 0.25);
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+h1.glow-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.lead {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+}
+
+.location-card {
+    border: 2px solid rgba(6, 182, 212, 0.2);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    background: var(--card-bg);
+}
+
+.location-card:hover {
+    border-color: rgba(6, 182, 212, 0.4);
+    transform: translateX(5px);
+}
+
+.reward-card {
+    border: 2px solid rgba(16, 185, 129, 0.2);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    background: var(--card-bg);
+}
+
+.reward-card:hover {
+    border-color: rgba(16, 185, 129, 0.4);
+    transform: translateX(5px);
+}
+
+.reward-card.claimed-reward {
+    opacity: 0.7;
+    border-color: rgba(16, 185, 129, 0.5);
+    background: linear-gradient(135deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.reward-card.claimed-reward .reward-item {
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.reward-item {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.reward-level {
+    display: inline-block;
+    background: var(--warning-gradient);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.reward-notes {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.location-name {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.location-postal {
+    display: inline-block;
+    background: var(--info-gradient);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.location-index {
+    display: inline-block;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.fish-card {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    transition: var(--transition);
+    border: 2px solid rgba(6, 182, 212, 0.2);
+    border-radius: 0.75rem;
+}
+
+.fish-card:hover {
+    border-color: rgba(6, 182, 212, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(6, 182, 212, 0.2);
+}
+
+.fish-card .card-title {
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.fish-card .card-text {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* Ensure fish items flow left to right in rows */
+#fishItemsContainer .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+}
+
+#fishItemsContainer .row > [class*="col-"] {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.btn {
+    border-radius: 0.75rem;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    transition: var(--transition);
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(6, 182, 212, 0.3);
+}
+
+.btn-success {
+    background: var(--success-gradient);
+    color: white;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-danger {
+    background: var(--danger-gradient);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+.btn-secondary {
+    background: var(--secondary-gradient);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(100, 116, 139, 0.3);
+}
+
+.btn-light {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+}
+
+.btn-light:hover {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: rgba(6, 182, 212, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(6, 182, 212, 0.2);
+}
+
+/* Dark mode styling for buttons in colored headers */
+.bg-primary .btn-light,
+.bg-success .btn-light {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.bg-primary .btn-light:hover,
+.bg-success .btn-light:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.form-control, .form-select, textarea.form-control {
+    border-radius: 0.5rem;
+    border: 1px solid var(--card-border);
+    padding: 0.625rem 1rem;
+    transition: var(--transition);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: rgba(6, 182, 212, 0.5);
+    box-shadow: 0 0 0 0.2rem rgba(6, 182, 212, 0.25);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.form-label {
+    color: var(--text-color);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-text {
+    color: var(--text-muted);
+}
+
+.nav-tabs {
+    border-bottom: 2px solid var(--card-border);
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-muted);
+    padding: 0.75rem 1.5rem;
+    transition: var(--transition);
+    font-size: 1rem;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-tabs .nav-link:hover {
+    border-bottom-color: rgba(6, 182, 212, 0.5);
+    color: var(--text-color);
+}
+
+.nav-tabs .nav-link.active {
+    border-bottom-color: #06b6d4;
+    color: var(--text-color);
+    font-weight: 600;
+    background-color: #374151;
+}
+
+.modal-content {
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.modal-header {
+    border-bottom: 2px solid var(--card-border);
+    padding: 1.25rem 1.5rem;
+    background-color: var(--card-bg);
+}
+
+.modal-title {
+    color: var(--text-color);
+}
+
+.modal-body {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.modal-footer {
+    border-top: 2px solid var(--card-border);
+    padding: 1.25rem 1.5rem;
+    background-color: var(--card-bg);
+}
+
+.btn-close {
+    filter: invert(0);
+    opacity: 0.5;
+}
+
+[data-theme="dark"] .btn-close {
+    filter: invert(1);
+    opacity: 0.7;
+}
+
+[data-theme="dark"] .btn-close:hover {
+    opacity: 1;
+}
+
+/* Modal backdrop for dark mode */
+[data-theme="dark"] .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Ensure all form elements in modals are styled */
+.modal .form-control,
+.modal .form-select,
+.modal textarea.form-control {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+.modal .form-control:focus,
+.modal .form-select:focus,
+.modal textarea.form-control:focus {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: rgba(6, 182, 212, 0.5);
+}
+
+.modal .form-label {
+    color: var(--text-color);
+}
+
+.modal .form-text {
+    color: var(--text-muted);
+}
+
+/* Ensure required asterisk is visible */
+.modal .text-danger {
+    color: #ef4444 !important;
+}
+
+/* Form check styling for dark mode */
+.form-check-input {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+}
+
+.form-check-input:checked {
+    background-color: #06b6d4;
+    border-color: #06b6d4;
+}
+
+.form-check-label {
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.time-display {
+    padding: 0.5rem;
+}

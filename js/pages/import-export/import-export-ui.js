@@ -49,6 +49,16 @@
                     // Fallback if it's an object
                     const trainingCount = Object.keys(data).length;
                     return `${trainingCount} training${trainingCount !== 1 ? 's' : ''}`;
+                case 'fishing':
+                    const locations = data.locations?.length || 0;
+                    const fish = data.fish?.length || 0;
+                    const rewards = data.rewards?.length || 0;
+                    return `${locations} location${locations !== 1 ? 's' : ''}, ${fish} fish, ${rewards} reward${rewards !== 1 ? 's' : ''}`;
+                case 'logistics':
+                    const companies = data.companies?.length || 0;
+                    const licenses = data.licenses?.length || 0;
+                    const jobs = data.jobs?.length || 0;
+                    return `${companies} compan${companies !== 1 ? 'ies' : 'y'}, ${licenses} license${licenses !== 1 ? 's' : ''}, ${jobs} job${jobs !== 1 ? 's' : ''}`;
                 default:
                     return 'Data present';
             }

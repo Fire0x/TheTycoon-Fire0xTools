@@ -23,6 +23,8 @@ const NavbarManager = {
             items: [
                 {text: '🏠 Apartment Management', href: 'apartment.html'},
                 {text: '🏠 Business Checklist', href: 'checklist.html'},
+                {text: '🚚 Logistics Analysis', href: 'logistics.html'},
+                {text: '🎣 Fishing Management', href: 'fishing.html'},
             ]
         },
         {

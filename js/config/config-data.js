@@ -34,7 +34,9 @@ const ConfigData = {
         'education_timer.html': 'Education Timer',
         'apartment.html': 'Apartment Management',
         'changelog.html': 'Changelog',
-        'import.html': 'Import / Export'
+        'import.html': 'Import / Export',
+        'fishing.html': 'Fishing Management',
+        'logistics.html': 'Logistics Analysis'
     },
     
     // Hero section data for each page
@@ -82,6 +84,14 @@ const ConfigData = {
         'import.html': {
             title: '📥 Import / Export',
             description: 'Centralized data management for all pages - import, export, and track your data'
+        },
+        'fishing.html': {
+            title: '🎣 Fishing Management',
+            description: 'Track fishing locations, indexes, and rewards'
+        },
+        'logistics.html': {
+            title: '🚚 Logistics Analysis',
+            description: 'Analyze logistics jobs, company reputation, and licenses'
         }
     },
     
@@ -99,8 +109,10 @@ const ConfigData = {
         'apartment.html': '0.1.5',
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
-        'changelog.html': '0.0.6',
-        'import.html': '0.1.0'
+        'changelog.html': '0.0.5',
+        'import.html': '0.0.6',
+        'fishing.html': '0.0.1',
+        'logistics.html': '0.0.1'
     }
 };
 

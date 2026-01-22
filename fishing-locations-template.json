@@ -1,0 +1,7 @@
+{
+  "_instructions": "This is an example template configuration file for fishing locations. You can edit this file to customize your starting configuration. The _instructions field will be ignored when importing. Remove this field or modify the structure as needed.",
+  "locations": [],
+  "fish": [],
+  "rewards": [],
+  "version": "1.0.0"
+}

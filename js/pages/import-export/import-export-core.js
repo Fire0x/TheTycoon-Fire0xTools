@@ -61,7 +61,9 @@
         apartments: 'apartmentsData',
         merchants: 'traveling_merchants',
         vehicles: 'vehicle_delivery_progress',
-        education: 'educationTimers'  // Note: stored as array, not object
+        education: 'educationTimers',  // Note: stored as array, not object
+        fishing: 'fishingData',
+        logistics: 'logisticsData'
     };
 
     // Excluded pages from import/export (can be toggled)
@@ -116,6 +118,11 @@
         }
 
         try {
+            // Use LogisticsStorage API for logistics page
+            if (pageName === 'logistics' && typeof LogisticsStorage !== 'undefined') {
+                return LogisticsStorage.read();
+            }
+            
             const stored = localStorage.getItem(storageKey);
             if (!stored) {
                 debugManager.log(`No data found for ${pageName}`);
@@ -231,13 +238,15 @@
         debugManager.log('Detecting format for data:', Object.keys(jsonData));
 
         // Check for unified format (has multiple page data types)
-        if (jsonData.checklist || jsonData.apartments || jsonData.merchants || jsonData.vehicles || jsonData.education) {
+        if (jsonData.checklist || jsonData.apartments || jsonData.merchants || jsonData.vehicles || jsonData.education || jsonData.fishing || jsonData.logistics) {
             const pages = [];
             if (jsonData.checklist) pages.push('checklist');
             if (jsonData.apartments) pages.push('apartments');
             if (jsonData.merchants) pages.push('merchants');
             if (jsonData.vehicles) pages.push('vehicles');
             if (jsonData.education) pages.push('education');
+            if (jsonData.fishing) pages.push('fishing');
+            if (jsonData.logistics) pages.push('logistics');
             
             return {
                 type: 'unified',
@@ -324,6 +333,29 @@
             };
         }
 
+        // Check for fishing format
+        if (jsonData.locations && Array.isArray(jsonData.locations) && 
+            jsonData.fish && Array.isArray(jsonData.fish) && 
+            jsonData.rewards && Array.isArray(jsonData.rewards)) {
+            return {
+                type: 'fishing',
+                page: 'fishing',
+                description: 'Fishing format (locations + fish + rewards)'
+            };
+        }
+
+        // Check for logistics format
+        if (jsonData.companies && Array.isArray(jsonData.companies) &&
+            jsonData.licenses && Array.isArray(jsonData.licenses) &&
+            jsonData.jobs && Array.isArray(jsonData.jobs) &&
+            jsonData.config && typeof jsonData.config === 'object') {
+            return {
+                type: 'logistics',
+                page: 'logistics',
+                description: 'Logistics format (companies + licenses + jobs + config)'
+            };
+        }
+
         return {
             type: 'unknown',
             page: null,
@@ -351,13 +383,17 @@
         if (allData.checklist) exportData.checklist = allData.checklist;
         if (allData.apartments) exportData.apartments = allData.apartments;
         if (allData.education) exportData.education = allData.education;
+        if (allData.fishing) exportData.fishing = allData.fishing;
+        if (allData.logistics) exportData.logistics = allData.logistics;
 
         debugManager.log('Exported data summary:', {
             checklist: allData.checklist ? 'present' : 'empty',
             apartments: allData.apartments ? 'present' : 'empty',
             merchants: isPageExcluded('merchants') ? 'excluded' : (allData.merchants ? 'present' : 'empty'),
             vehicles: isPageExcluded('vehicles') ? 'excluded' : (allData.vehicles ? 'present' : 'empty'),
-            education: allData.education ? 'present' : 'empty'
+            education: allData.education ? 'present' : 'empty',
+            fishing: allData.fishing ? 'present' : 'empty',
+            logistics: allData.logistics ? 'present' : 'empty'
         });
 
         debugManager.log('=== exportAllData END ===');
@@ -672,6 +708,239 @@
     }
 
     /**
+     * Import fishing data
+     * @param {object} data - Fishing data
+     * @param {string} mode - 'replace' or 'merge'
+     * @returns {object} Import result
+     */
+    function importFishingData(data, mode) {
+        debugManager.log('=== importFishingData START ===', { mode });
+        
+        const result = { success: 0, updated: 0, errors: 0, messages: [] };
+
+        try {
+            // Handle fishing data structure
+            let fishingDataToImport = null;
+            let versionToUse = '1.0.0';
+            
+            if (data.locations && Array.isArray(data.locations) && 
+                data.fish && Array.isArray(data.fish) && 
+                data.rewards && Array.isArray(data.rewards)) {
+                // Full fishing data structure
+                fishingDataToImport = {
+                    locations: data.locations,
+                    fish: data.fish,
+                    rewards: data.rewards,
+                    version: data.version || versionToUse
+                };
+            } else if (data.fishing && typeof data.fishing === 'object') {
+                // Nested fishing object
+                fishingDataToImport = {
+                    locations: data.fishing.locations || [],
+                    fish: data.fishing.fish || [],
+                    rewards: data.fishing.rewards || [],
+                    version: data.fishing.version || versionToUse
+                };
+            } else {
+                throw new Error('Invalid fishing data format');
+            }
+
+            const existingData = getPageData('fishing');
+            let locations = existingData?.locations || [];
+            let fish = existingData?.fish || [];
+            let rewards = existingData?.rewards || [];
+
+            if (mode === 'replace') {
+                locations = fishingDataToImport.locations;
+                fish = fishingDataToImport.fish;
+                rewards = fishingDataToImport.rewards;
+                result.success = locations.length + fish.length + rewards.length;
+                result.messages.push(`Replaced ${locations.length} locations, ${fish.length} fish, ${rewards.length} rewards`);
+            } else {
+                // Merge: update existing by ID, add new
+                let locationsAdded = 0, locationsUpdated = 0;
+                let fishAdded = 0, fishUpdated = 0;
+                let rewardsAdded = 0, rewardsUpdated = 0;
+                
+                // Merge locations
+                fishingDataToImport.locations.forEach(loc => {
+                    const index = locations.findIndex(l => l.id === loc.id);
+                    if (index !== -1) {
+                        locations[index] = { ...locations[index], ...loc };
+                        locationsUpdated++;
+                    } else {
+                        locations.push(loc);
+                        locationsAdded++;
+                    }
+                });
+                
+                // Merge fish
+                fishingDataToImport.fish.forEach(f => {
+                    const index = fish.findIndex(fish => fish.id === f.id);
+                    if (index !== -1) {
+                        fish[index] = { ...fish[index], ...f };
+                        fishUpdated++;
+                    } else {
+                        fish.push(f);
+                        fishAdded++;
+                    }
+                });
+                
+                // Merge rewards
+                fishingDataToImport.rewards.forEach(rew => {
+                    const index = rewards.findIndex(r => r.id === rew.id);
+                    if (index !== -1) {
+                        rewards[index] = { ...rewards[index], ...rew };
+                        rewardsUpdated++;
+                    } else {
+                        rewards.push(rew);
+                        rewardsAdded++;
+                    }
+                });
+                
+                result.success = locationsAdded + fishAdded + rewardsAdded;
+                result.updated = locationsUpdated + fishUpdated + rewardsUpdated;
+                result.messages.push(
+                    `Added ${locationsAdded} locations, ${fishAdded} fish, ${rewardsAdded} rewards. ` +
+                    `Updated ${locationsUpdated} locations, ${fishUpdated} fish, ${rewardsUpdated} rewards`
+                );
+            }
+
+            const saveData = {
+                locations: locations,
+                fish: fish,
+                rewards: rewards,
+                version: fishingDataToImport.version
+            };
+            localStorage.setItem(STORAGE_KEYS.fishing, JSON.stringify(saveData));
+
+            debugManager.log('Fishing import successful');
+        } catch (error) {
+            result.errors = 1;
+            result.messages.push(`Error: ${error.message}`);
+            debugManager.error('Fishing import error:', error);
+        }
+
+        debugManager.log('=== importFishingData END ===');
+        return result;
+    }
+
+    /**
+     * Import logistics data
+     * @param {object} data - Logistics data
+     * @param {string} mode - 'replace' or 'merge'
+     * @returns {object} Import result
+     */
+    function importLogisticsData(data, mode) {
+        debugManager.log('=== importLogisticsData START ===', { mode });
+
+        const result = { success: 0, updated: 0, errors: 0, messages: [] };
+
+        try {
+            let logisticsToImport = null;
+
+            if (data.companies && Array.isArray(data.companies) &&
+                data.licenses && Array.isArray(data.licenses) &&
+                data.jobs && Array.isArray(data.jobs) &&
+                data.config && typeof data.config === 'object') {
+                logisticsToImport = data;
+            } else if (data.logistics && typeof data.logistics === 'object') {
+                logisticsToImport = data.logistics;
+            } else {
+                throw new Error('Invalid logistics data format');
+            }
+
+            // Use LogisticsStorage API if available, otherwise fall back to direct localStorage
+            if (typeof LogisticsStorage === 'undefined') {
+                throw new Error('LogisticsStorage API not available');
+            }
+
+            const existing = LogisticsStorage.read();
+
+            if (mode === 'replace') {
+                LogisticsStorage.write({
+                    companies: logisticsToImport.companies || [],
+                    licenses: logisticsToImport.licenses || [],
+                    jobs: logisticsToImport.jobs || [],
+                    config: logisticsToImport.config || {}
+                });
+
+                result.success = (logisticsToImport.companies?.length || 0) +
+                    (logisticsToImport.licenses?.length || 0) +
+                    (logisticsToImport.jobs?.length || 0);
+                result.messages.push('Logistics data replaced successfully');
+            } else {
+                // Merge by company_name for companies, by id for licenses/jobs
+                const merged = {
+                    companies: [...(existing.companies || [])],
+                    licenses: [...(existing.licenses || [])],
+                    jobs: [...(existing.jobs || [])],
+                    config: { ...(existing.config || {}) }
+                };
+
+                let added = 0;
+                let updated = 0;
+
+                // Companies
+                (logisticsToImport.companies || []).forEach(c => {
+                    const idx = merged.companies.findIndex(x =>
+                        (x.company_name || '').toLowerCase() === (c.company_name || '').toLowerCase()
+                    );
+                    if (idx !== -1) {
+                        merged.companies[idx] = { ...merged.companies[idx], ...c };
+                        updated++;
+                    } else {
+                        merged.companies.push(c);
+                        added++;
+                    }
+                });
+
+                // Licenses
+                (logisticsToImport.licenses || []).forEach(l => {
+                    const idx = merged.licenses.findIndex(x => String(x.id) === String(l.id));
+                    if (idx !== -1) {
+                        merged.licenses[idx] = { ...merged.licenses[idx], ...l };
+                        updated++;
+                    } else {
+                        merged.licenses.push(l);
+                        added++;
+                    }
+                });
+
+                // Jobs
+                (logisticsToImport.jobs || []).forEach(j => {
+                    const idx = merged.jobs.findIndex(x => String(x.id) === String(j.id));
+                    if (idx !== -1) {
+                        merged.jobs[idx] = { ...merged.jobs[idx], ...j };
+                        updated++;
+                    } else {
+                        merged.jobs.push(j);
+                        added++;
+                    }
+                });
+
+                // Config (shallow merge)
+                merged.config = { ...merged.config, ...(logisticsToImport.config || {}) };
+
+                LogisticsStorage.write(merged);
+
+                result.success = added;
+                result.updated = updated;
+                result.messages.push(`Merged logistics: added ${added}, updated ${updated}`);
+            }
+
+            debugManager.log('Logistics import successful');
+        } catch (error) {
+            result.errors = 1;
+            result.messages.push(`Error: ${error.message}`);
+            debugManager.error('Logistics import error:', error);
+        }
+
+        debugManager.log('=== importLogisticsData END ===');
+        return result;
+    }
+
+    /**
      * Import data for a specific page
      * @param {string} pageName - Page name
      * @param {object} jsonData - JSON data to import
@@ -702,6 +971,10 @@
                     return importVehiclesData(jsonData, mode);
                 case 'education':
                     return importEducationData(jsonData, mode);
+                case 'fishing':
+                    return importFishingData(jsonData, mode);
+                case 'logistics':
+                    return importLogisticsData(jsonData, mode);
                 default:
                     throw new Error(`Unknown page name: ${pageName}`);
             }

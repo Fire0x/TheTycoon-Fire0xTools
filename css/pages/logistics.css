@@ -1,0 +1,471 @@
+.job-card {
+    margin-bottom: 1rem;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.company-card {
+    margin-bottom: 1rem;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.company-display-card {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.company-display-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.company-display-card .card-body {
+    padding: 1.5rem;
+    position: relative;
+}
+
+.company-display-card .card-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--accent-color, var(--link-color)), transparent);
+    opacity: 0.6;
+}
+
+.company-display-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--card-border);
+}
+
+.company-display-line {
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.company-display-line:last-child {
+    margin-bottom: 0;
+}
+
+.company-display-line em {
+    font-style: italic;
+    color: var(--text-color);
+    opacity: 0.85;
+    font-size: 1.05rem;
+}
+
+.company-display-line strong {
+    color: var(--link-color);
+    font-weight: 600;
+}
+
+.paste-area {
+    background-color: var(--card-bg);
+    border: 2px dashed var(--card-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+}
+
+.paste-area textarea {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--card-border);
+}
+
+.paste-area textarea:focus {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--link-color);
+}
+
+.paste-area pre {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--card-border);
+}
+
+.aest-time {
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    background-color: var(--card-bg);
+    border-radius: 0.25rem;
+    color: var(--text-color);
+}
+
+.card-title {
+    color: var(--text-color);
+}
+
+.text-muted {
+    color: var(--text-color) !important;
+    opacity: 0.7;
+}
+
+.text-info {
+    color: var(--link-color) !important;
+}
+
+.job-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.job-info strong {
+    min-width: 120px;
+}
+
+.company-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.company-info strong {
+    min-width: 150px;
+}
+
+.company-card .form-label {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.company-card .editable-field {
+    width: 100%;
+}
+
+kbd {
+    display: inline-block;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-color);
+    text-align: center;
+    background-color: var(--bg-color);
+    border: 1px solid var(--card-border);
+    border-radius: 0.25rem;
+    box-shadow: inset 0 -1px 0 var(--card-border);
+}
+
+/* Job Type Badges */
+.job-type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    margin: 0.125rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    background-color: var(--bg-color);
+    border: 1px solid var(--card-border);
+    color: var(--text-color);
+}
+
+.job-type-badge.fragile {
+    background-color: rgba(255, 193, 7, 0.2);
+    border-color: #ffc107;
+    color: #ffc107;
+}
+
+.job-type-badge.heavy {
+    background-color: rgba(108, 117, 125, 0.2);
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.job-type-badge.convoy {
+    background-color: rgba(0, 123, 255, 0.2);
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.job-type-badge.high-value {
+    background-color: rgba(40, 167, 69, 0.2);
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.job-type-badge.high-tier {
+    background-color: rgba(220, 53, 69, 0.2);
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.job-type-badge.adr {
+    background-color: rgba(255, 0, 0, 0.2);
+    border-color: #ff0000;
+    color: #ff0000;
+}
+
+/* Level Indicators */
+.level-indicator {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.level-indicator.available {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.level-indicator.too-low {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+/* Analysis Cards */
+.analysis-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.analysis-card.top-3 {
+    border-color: var(--link-color);
+    border-width: 2px;
+}
+
+.analysis-card .card-header {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.analysis-card .value-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--link-color);
+    margin: 0.5rem 0;
+}
+
+.analysis-card .job-details {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* Reputation Last Updated */
+.reputation-last-updated {
+    font-size: 0.75rem;
+    color: var(--text-color);
+    opacity: 0.6;
+    margin-left: 0.5rem;
+    font-style: italic;
+}
+
+/* Editable Fields */
+.editable-field {
+    background-color: var(--bg-color);
+    border: 1px solid var(--card-border);
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    color: var(--text-color);
+    width: 100%;
+}
+
+.editable-field:focus {
+    outline: none;
+    border-color: var(--link-color);
+}
+
+/* Company Cards Grid */
+.company-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+/* Job Cards Grid */
+.job-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+/* Licenses Table */
+/* Override Bootstrap table classes for dark mode */
+#licensesTable.table-striped > tbody > tr:nth-of-type(odd) > td,
+#licensesTable.table-striped > tbody > tr:nth-of-type(odd) > th {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+#licensesTable.table-hover > tbody > tr:hover > td,
+#licensesTable.table-hover > tbody > tr:hover > th {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+}
+
+#licensesTable {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    color: var(--text-color);
+}
+
+#licensesTable thead th {
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-bottom: 2px solid var(--link-color);
+    font-weight: 600;
+    padding: 1rem 0.75rem;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#licensesTable tbody td {
+    border-bottom: 1px solid var(--card-border);
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    transition: background-color 0.2s ease;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+#licensesTable tbody tr {
+    transition: all 0.2s ease;
+    background-color: var(--card-bg);
+}
+
+#licensesTable tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#licensesTable tbody tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#licensesTable tbody tr:nth-child(even):hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+#licensesTable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.license-row {
+    transition: all 0.2s ease;
+}
+
+.license-row:hover {
+    background-color: var(--card-bg) !important;
+}
+
+.license-row td {
+    vertical-align: middle;
+    padding: 1rem 0.75rem;
+}
+
+.license-row .form-control-sm {
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+.license-row .form-control-sm:focus {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--link-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.license-row .price-input {
+    text-align: right;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+.license-row .price-input:focus {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.license-row .input-group-text {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+.license-row .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: var(--bg-color);
+    border-color: var(--card-border);
+}
+
+.license-row .form-check-input:checked {
+    background-color: var(--link-color);
+    border-color: var(--link-color);
+}
+
+.license-row .form-check-input:focus {
+    border-color: var(--link-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.license-row .btn-danger {
+    transition: all 0.2s ease;
+}
+
+.license-row .btn-danger:hover {
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .company-cards-grid,
+    .job-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    #licensesTable {
+        font-size: 0.875rem;
+    }
+    
+    .license-row .form-control-sm {
+        font-size: 0.8rem;
+    }
+}

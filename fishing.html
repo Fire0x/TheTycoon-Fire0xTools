@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheTycoon - Fire0x Tools</title>
+    <!-- Title and favicon will be set by site-config.js -->
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- Base CSS (load order matters) -->
+    <link href="css/base/variables.css" rel="stylesheet">
+    <link href="css/base/common.css" rel="stylesheet">
+    <link href="css/base/responsive.css" rel="stylesheet">
+    <!-- Page-specific CSS -->
+    <link href="css/pages/fishing.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar is injected by js/navbar.js -->
+    <div id="navbar-container"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="position-relative mb-4">
+            <div class="text-center">
+                <h1 class="glow-text mb-0">🎣 Fishing Management</h1>
+                <p class="lead">Track fishing locations, indexes, and rewards</p>
+            </div>
+            <button id="debugToggleBtn" 
+                    class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0" 
+                    onclick="if(window.debug) window.debug.toggle()">
+                🐛 Debug: <span id="debugStatus">OFF</span>
+            </button>
+        </div>
+
+        <!-- Time Displays -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="time-display">
+                                    <strong>🕐 Brisbane, Australia:</strong>
+                                    <div id="brisbane-time" 
+                                         class="text-info" 
+                                         style="font-size: 1.2rem; margin-top: 0.5rem;">
+                                        --:--:--
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="time-display">
+                                    <strong>🕐 Eastern Time:</strong>
+                                    <div id="eastern-time" 
+                                         class="text-info" 
+                                         style="font-size: 1.2rem; margin-top: 0.5rem;">
+                                        --:--:--
+                                    </div>
+                                    <span id="eastern-tz" class="text-muted small">EST</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="time-display">
+                                    <strong>📅 Current Date:</strong>
+                                    <div id="current-date" 
+                                         class="text-info" 
+                                         style="font-size: 1.2rem; margin-top: 0.5rem;">
+                                        --/--/----
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs mb-4" id="fishingTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" 
+                        id="locations-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#locations" 
+                        type="button" 
+                        role="tab">
+                    🎣 Locations
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="rewards-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#rewards" 
+                        type="button" 
+                        role="tab">
+                    🏆 Rewards
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="allfish-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#allfish" 
+                        type="button" 
+                        role="tab">
+                    🐟 All Fish
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="howto-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#howto" 
+                        type="button" 
+                        role="tab">
+                    📖 How to Use
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="fishingTabsContent">
+            <!-- Locations Tab -->
+            <div class="tab-pane fade show active" id="locations" role="tabpanel">
+                <!-- Fishing Location Selector -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">Fishing Location</h3>
+                            <button type="button" 
+                                    class="btn btn-light btn-sm" 
+                                    onclick="openLocationModal()">
+                                ➕ Add Location
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="fishingLocationSelector" class="form-label">
+                                    Select Fishing Location
+                                </label>
+                                <select class="form-select" 
+                                        id="fishingLocationSelector" 
+                                        onchange="loadLocationData()">
+                                    <option value="">-- Select or Create Location --</option>
+                                    <option value="new">➕ Create New Location</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="locationDetailsContainer" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="locationName" class="form-label">
+                                        Location Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="locationName" 
+                                           required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="locationPostal" class="form-label">Postal</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="locationPostal">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fishingIndex" class="form-label">Fishing Index</label>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="fishingIndex" 
+                                           min="0" 
+                                           placeholder="Enter fishing index for this location">
+                                    <small class="form-text text-muted">
+                                        The fishing index depends on the selected location
+                                    </small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fishingIndexName" class="form-label">Fishing Index Name</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="fishingIndexName" 
+                                           placeholder="Enter fishing index name">
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="button" 
+                                        class="btn btn-primary" 
+                                        onclick="saveLocationData()">
+                                    💾 Save Location Data
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-danger" 
+                                        onclick="deleteLocation()" 
+                                        id="deleteLocationBtn" 
+                                        style="display: none;">
+                                    🗑️ Delete Location
+                                </button>
+                            </div>
+                            
+                            <!-- Fish Section -->
+                            <div class="mt-4" id="fishItemsSection" style="display: none;">
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">🐟 Fish</h5>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" 
+                                                class="btn btn-sm btn-info" 
+                                                onclick="toggleFishPasteArea()">
+                                            📋 Bulk Paste
+                                        </button>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-success" 
+                                                onclick="openFishModal()">
+                                            ➕ Add Fish
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Bulk Paste Area -->
+                                <div id="fishPasteArea" class="mb-3" style="display: none;">
+                                    <div class="card bg-dark border-info">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-info mb-2">📋 Bulk Import Fish</h6>
+                                            <p class="text-muted small mb-2">Paste fish data below. Each fish name on a new line. Size and notes will be auto-detected.</p>
+                                            <textarea class="form-control mb-2" 
+                                                      id="fishPasteInput" 
+                                                      rows="6" 
+                                                      placeholder="Paste fish data here...&#10;&#10;Example:&#10;Secret Fish&#10;Bicuda&#10;medium&#10;Rare"></textarea>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-primary" 
+                                                        onclick="parseAndImportFish()">
+                                                    ✅ Import Fish
+                                                </button>
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-secondary" 
+                                                        onclick="toggleFishPasteArea()">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="fishItemsContainer">
+                                    <p class="text-muted text-center">Loading fish...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Locations List -->
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h3 class="mb-0">All Fishing Locations</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="allLocationsContainer">
+                            <p class="text-muted text-center">Loading locations...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Fish Tab -->
+            <div class="tab-pane fade" id="allfish" role="tabpanel">
+                <div class="card">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">All Fish</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="allFishContainer">
+                            <p class="text-muted text-center">Loading fish...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How to Use Tab -->
+            <div class="tab-pane fade" id="howto" role="tabpanel">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="mb-0">📖 How to Use Fishing Management</h3>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="mb-3">🎣 Managing Fishing Locations</h5>
+                        <div class="mb-4">
+                            <h6 class="mb-2"><strong>Step 1: Create a Fishing Location</strong></h6>
+                            <p class="mb-2">Click <span class="badge bg-primary">➕ Add Location</span> or select "➕ Create New Location" from the dropdown. Fill in:</p>
+                            <ul class="mb-3">
+                                <li><strong>Location Name</strong> - The name of the fishing location (e.g., "Del Perro Pier")</li>
+                                <li><strong>Postal Code</strong> - The postal code for the location</li>
+                                <li><strong>Fishing Index</strong> - A unique number that links this location to fish entries</li>
+                                <li><strong>Fishing Index Name</strong> - A descriptive name for this fishing index (e.g., "Amazon River")</li>
+                            </ul>
+                            
+                            <h6 class="mb-2"><strong>Step 2: Edit or Delete Locations</strong></h6>
+                            <p class="mb-2">Use the <span class="badge bg-primary">✏️ Edit</span> button to modify a location, or <span class="badge bg-danger">🗑️ Delete</span> to remove it.</p>
+                        </div>
+
+                        <h5 class="mb-3">🐟 Managing Fish</h5>
+                        <div class="mb-4">
+                            <h6 class="mb-2"><strong>Step 1: Select a Location</strong></h6>
+                            <p class="mb-2">Choose a location from the dropdown that has a Fishing Index set. The fish section will appear below.</p>
+                            
+                            <h6 class="mb-2"><strong>Step 2: Add Individual Fish</strong></h6>
+                            <p class="mb-2">Click <span class="badge bg-success">➕ Add Fish</span> to manually add a fish. Fill in:</p>
+                            <ul class="mb-3">
+                                <li><strong>Fishing Index</strong> - Automatically set from the selected location</li>
+                                <li><strong>Fish Name</strong> - The name of the fish (required)</li>
+                                <li><strong>Fish Size</strong> - Size category (e.g., Small, Medium, Large)</li>
+                                <li><strong>Fish Rarity</strong> - Rarity level (e.g., Common, Uncommon, Rare, Epic, Legendary, Secret Fish)</li>
+                                <li><strong>Notes</strong> - Any additional information</li>
+                            </ul>
+                            
+                            <h6 class="mb-2"><strong>Step 3: Bulk Import Fish</strong></h6>
+                            <p class="mb-2">Click <span class="badge bg-info">📋 Bulk Paste</span> to import multiple fish at once. Paste your fish data in the format:</p>
+                            <div class="alert alert-secondary mb-3">
+                                <pre class="mb-0">❓
+???
+Secret Fish
+🐟
+Bicuda
+medium
+Rare
+🐟
+Electric Eel
+large
+Uncommon</pre>
+                            </div>
+                            <p class="mb-2">The parser will automatically:</p>
+                            <ul class="mb-3">
+                                <li>Skip headers and footers</li>
+                                <li>Create placeholders for "???" entries</li>
+                                <li>Create secret placeholders for "???" followed by "Secret Fish"</li>
+                                <li>Parse fish entries with emoji (🐟), name, size, and rarity</li>
+                                <li>Only create new fish or update existing ones if data changed</li>
+                            </ul>
+                            
+                            <h6 class="mb-2"><strong>Step 4: Edit or Delete Fish</strong></h6>
+                            <p class="mb-2">Use <span class="badge bg-primary">✏️ Edit</span> to modify a fish, or <span class="badge bg-danger">🗑️ Delete</span> to remove it.</p>
+                        </div>
+
+                        <h5 class="mb-3">🏆 Managing Fishing Rewards</h5>
+                        <div class="mb-4">
+                            <h6 class="mb-2"><strong>Step 1: Add a Reward</strong></h6>
+                            <p class="mb-2">Click <span class="badge bg-success">➕ Add Reward</span> and fill in:</p>
+                            <ul class="mb-3">
+                                <li><strong>Reward Name</strong> - Name of the reward</li>
+                                <li><strong>Level Requirement</strong> - Minimum fishing level needed</li>
+                                <li><strong>Claimed</strong> - Check if you've already claimed this reward</li>
+                            </ul>
+                            
+                            <h6 class="mb-2"><strong>Step 2: View All Rewards</strong></h6>
+                            <p class="mb-2">All rewards are displayed in the Rewards tab, sorted by level requirement. Claimed rewards are marked with a badge and appear faded.</p>
+                        </div>
+
+                        <h5 class="mb-3">🐟 Viewing All Fish</h5>
+                        <div class="mb-4">
+                            <h6 class="mb-2"><strong>All Fish Tab</strong></h6>
+                            <p class="mb-2">The <span class="badge bg-primary">🐟 All Fish</span> tab shows:</p>
+                            <ul class="mb-3">
+                                <li><strong>Total Discovery Summary</strong> - Shows discovered fish count vs total fish at the top</li>
+                                <li><strong>Grouped by Index</strong> - Fish organized by Fishing Index</li>
+                                <li><strong>Collapsible Sections</strong> - Click headers to expand/collapse each index</li>
+                                <li><strong>Read-Only View</strong> - No edit/delete buttons, perfect for viewing progress</li>
+                                <li><strong>Index Statistics</strong> - Each section shows discovered/total count for that index</li>
+                            </ul>
+                        </div>
+
+                        <h5 class="mb-3">💡 Tips</h5>
+                        <ul class="mb-0">
+                            <li>Locations are sorted by Fishing Index in the dropdown and list</li>
+                            <li>Fish are automatically sorted by Fishing Index, then by ID</li>
+                            <li>Use placeholders ("???") to track undiscovered fish slots</li>
+                            <li>The bulk paste feature is smart - it won't duplicate existing fish unless data changed</li>
+                            <li>All data is saved to MySQL and persists between sessions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rewards Tab -->
+            <div class="tab-pane fade" id="rewards" role="tabpanel">
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">Fishing Rewards</h3>
+                            <button type="button" 
+                                    class="btn btn-light btn-sm" 
+                                    onclick="openRewardModal()">
+                                ➕ Add Reward
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="rewardsContainer">
+                            <p class="text-muted text-center">Loading rewards...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Location Modal -->
+    <div class="modal fade" id="locationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="locationModalTitle">Add Fishing Location</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="locationForm">
+                        <input type="hidden" id="locationId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="modalLocationName" class="form-label">
+                                    Location Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="modalLocationName" 
+                                       required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="modalLocationPostal" class="form-label">Postal</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="modalLocationPostal">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="modalFishingIndex" class="form-label">Fishing Index</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="modalFishingIndex" 
+                                       min="0" 
+                                       placeholder="Enter fishing index">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="modalFishingIndexName" class="form-label">Fishing Index Name</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="modalFishingIndexName" 
+                                       placeholder="Enter fishing index name">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" 
+                            class="btn btn-secondary" 
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="button" 
+                            class="btn btn-primary" 
+                            onclick="saveLocationFromModal()">
+                        Save Location
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reward Modal -->
+    <div class="modal fade" id="rewardModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rewardModalTitle">Add Fishing Reward</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="rewardForm">
+                        <input type="hidden" id="rewardId">
+                        <div class="mb-3">
+                            <label for="rewardItem" class="form-label">
+                                Item <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="rewardItem" 
+                                   required 
+                                   placeholder="Enter item name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="rewardLevelRequirement" class="form-label">
+                                Level Requirement
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="rewardLevelRequirement" 
+                                   min="0" 
+                                   placeholder="Enter level requirement">
+                        </div>
+                        <div class="mb-3">
+                            <label for="rewardNotes" class="form-label">Notes</label>
+                            <textarea class="form-control" 
+                                      id="rewardNotes" 
+                                      rows="4" 
+                                      placeholder="Enter any additional notes about this reward"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" 
+                                       type="checkbox" 
+                                       id="rewardClaimed" 
+                                       value="1">
+                                <label class="form-check-label" for="rewardClaimed">
+                                    Claimed
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" 
+                            class="btn btn-secondary" 
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="button" 
+                            class="btn btn-primary" 
+                            onclick="saveRewardFromModal()">
+                        Save Reward
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fish Modal -->
+    <div class="modal fade" id="fishModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fishModalTitle">Add Fish</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="fishForm">
+                        <input type="hidden" id="fishId">
+                        <div class="mb-3">
+                            <label for="fishFishingIndex" class="form-label">
+                                Fishing Index <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="fishFishingIndex" 
+                                   min="0" 
+                                   required
+                                   placeholder="Enter fishing index">
+                        </div>
+                        <div class="mb-3">
+                            <label for="fishName" class="form-label">
+                                Fish Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="fishName" 
+                                   required 
+                                   placeholder="Enter fish name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="fishSize" class="form-label">Fish Size</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="fishSize" 
+                                   placeholder="Enter fish size (e.g., Small, Medium, Large)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="fishRarity" class="form-label">Fish Rarity</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="fishRarity" 
+                                   placeholder="Enter fish rarity (e.g., Common, Rare, Epic, Legendary)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="fishNotes" class="form-label">Notes</label>
+                            <textarea class="form-control" 
+                                      id="fishNotes" 
+                                      rows="4" 
+                                      placeholder="Enter any additional notes about this fish"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" 
+                            class="btn btn-secondary" 
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="button" 
+                            class="btn btn-primary" 
+                            onclick="saveFishFromModal()">
+                        Save Fish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3" 
+            style="width: 100%; margin: 0; padding-left: 0; padding-right: 0;">
+        <div class="container text-center">
+            <p>
+                &copy; 2025-2026 Fire0x Incorporated. 
+                The Tycoon is owned and created by OneLonelyDad (Troublesum). 
+                All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Site Configuration & Version Manager (load in order) -->
+    <script src="js/config/config-data.js"></script>
+    <script src="js/config/site-config.js"></script>
+    <script src="js/config/version-manager.js"></script>
+    <script src="js/site-config.js"></script>
+    
+    <!-- Navbar Manager -->
+    <script src="js/navbar.js"></script>
+    
+    <!-- Number Formatter -->
+    <script src="js/number-formatter.js"></script>
+    
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+    
+    <!-- Debug Manager -->
+    <script src="js/debug-manager.js"></script>
+    
+    <!-- Fishing Management JS -->
+    <script src="js/pages/fishing/fishing-storage.js"></script>
+    <script src="js/pages/fishing/fishing-core.js"></script>
+    <script src="js/pages/fishing/fishing-fish-core.js"></script>
+    <script src="js/pages/fishing/fishing-ui.js"></script>
+    <script src="js/pages/fishing/fishing-main.js"></script>
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheTycoon - Fire0x Tools</title>
+    <!-- Title and favicon will be set by site-config.js -->
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- Base CSS (load order matters) -->
+    <link href="css/base/variables.css" rel="stylesheet">
+    <link href="css/base/common.css" rel="stylesheet">
+    <link href="css/base/responsive.css" rel="stylesheet">
+    <!-- Page-specific CSS -->
+    <link href="css/pages/logistics.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar is injected by js/navbar.js -->
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="position-relative mb-4">
+            <div class="text-center">
+                <h1 class="glow-text mb-0">🚚 Logistics Analysis</h1>
+                <p class="lead">Analyze logistics jobs, company reputation, and licenses</p>
+            </div>
+            <p class="aest-time mb-0 mt-2">
+                <strong>🕐 Local Time:</strong> <span id="aestTime">--:--:--</span>
+            </p>
+            <button id="debugToggleBtn"
+                    class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0"
+                    onclick="if(window.toggleLogisticsDebug) window.toggleLogisticsDebug()">
+                🔍 Debug: <span id="debugToggleText">OFF</span>
+            </button>
+        </div>
+
+        <!-- How to Use Section -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📖 How to Use This Page</span>
+                    <span class="float-end" id="howToUseToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="howToUseCollapse">
+                <div class="card-body">
+                    <div class="mb-3">
+                    <h6 class="mb-2"><strong>Step 1: Company Reputation (Profile)</strong></h6>
+                    <p class="mb-2">Copy company reputation data from the game and paste into the Profile section text area below. Click <span class="badge bg-primary">Parse & Save Companies</span> to import all companies. You can edit individual company fields and click Save. Reputation Last Updated shows when reputation value was last changed.</p>
+                    <ul class="mb-2">
+                        <li><strong>Custom Name:</strong> This will be displayed instead of the company name if set.</li>
+                        <li><strong>Custom Motto:</strong> This will be displayed instead of the motto if set.</li>
+                        <li><strong>Reputation:</strong> Edit the reputation value. The \"Last updated\" timestamp will update when the reputation value changes.</li>
+                        <li><strong>Total Earnings:</strong> Edit the total earnings amount.</li>
+                        <li><strong>Accent Color:</strong> Set a custom accent color (hex format, e.g., #007bff) for the company's display card.</li>
+                    </ul>
+
+                    <h6 class="mb-2"><strong>Step 2: My Licenses</strong></h6>
+                    <p class="mb-2">Manage your logistics licenses. Click <span class="badge bg-primary">➕ Add New License</span> to create a license entry. For each license, you can set the name, required level, price, and mark it as purchased. Click <span class="badge bg-success">💾 Save Changes</span> to save all license updates.</p>
+
+                    <h6 class="mb-2"><strong>Step 3: Set Your Level</strong></h6>
+                    <p class="mb-2">Enter your current level in the level input field. Only jobs at or below your level will be shown in the analysis.</p>
+
+                    <h6 class="mb-2"><strong>Step 4: Import Job Data</strong></h6>
+                    <p class="mb-2">Copy job data from the game (all available jobs) and paste into the Job Data section text area below. Click <span class="badge bg-primary">Parse & Save Jobs</span> to extract and save jobs. Only \"Accept Job\" entries will be saved (filters out \"Level Too Low\"). You can also click <span class="badge bg-danger">🗑️ Clear All Jobs</span> to remove all saved jobs.</p>
+
+                    <h6 class="mb-2"><strong>Step 5: View Analysis</strong></h6>
+                    <p class="mb-2">View the analysis sections to see: <strong>Highest Money</strong>, <strong>Best Convoy</strong>, <strong>Highest Rep to Company</strong>, and more.</p>
+
+                    <h6 class="mb-2"><strong>Step 6: Job Cards</strong></h6>
+                    <p class="mb-0">View all imported jobs as cards. You can remove individual jobs using the <span class="badge bg-danger">🗑️ Remove Job</span> button.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section (Company Reputation) -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <h5 class="mb-0">👤 Company Reputation (Profile)</h5>
+            </div>
+            <div class="card-body">
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#profilePasteCollapse" aria-expanded="true" aria-controls="profilePasteCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>📋 Import Company Reputation Data</span>
+                        <span class="float-end" id="profilePasteToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="profilePasteCollapse">
+                    <div class="paste-area mt-3">
+                        <p class="text-muted small mb-3">Paste company reputation data here.</p>
+                        <textarea id="profilePasteInput" class="form-control" rows="6" placeholder="Paste company reputation data here..."></textarea>
+                        <div class="mt-3">
+                            <button class="btn btn-primary" onclick="parseAndSaveCompanies()">Parse & Save Companies</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export/Import Section -->
+                <div class="card-header mt-4 mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#companyRepExportImportCollapse" aria-expanded="true" aria-controls="companyRepExportImportCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>📦 Export/Import Company Reputation</span>
+                        <span class="float-end" id="companyRepExportImportToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="companyRepExportImportCollapse">
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button type="button" class="btn btn-success btn-sm" onclick="exportCompanyReputation()">
+                            📤 Export Company Reputation
+                        </button>
+                        <button type="button" class="btn btn-warning btn-sm" onclick="document.getElementById('companyRepFileInput').click()">
+                            📥 Import Company Reputation
+                        </button>
+                        <input type="file" id="companyRepFileInput" accept=".json" style="display: none;" onchange="handleCompanyReputationFileImport(event)">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="companyRepImportMode" id="companyRepImportModeReplace" value="replace">
+                            <label class="btn btn-outline-secondary" for="companyRepImportModeReplace">Replace</label>
+                            <input type="radio" class="btn-check" name="companyRepImportMode" id="companyRepImportModeMerge" value="merge" checked>
+                            <label class="btn btn-outline-secondary" for="companyRepImportModeMerge">Merge</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="companyRepJsonInput" class="form-label small">Or Paste JSON Data:</label>
+                        <textarea id="companyRepJsonInput" class="form-control form-control-sm" rows="4" placeholder="Paste JSON data here..."></textarea>
+                        <button type="button" class="btn btn-warning btn-sm mt-2" onclick="importCompanyReputationFromString(document.getElementById('companyRepJsonInput').value)">
+                            📥 Import from JSON
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-header mt-4 mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#companyReputationEditableCollapse" aria-expanded="true" aria-controls="companyReputationEditableCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>⭐ Company Reputation (Editable)</span>
+                        <span class="float-end" id="companyReputationEditableToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="companyReputationEditableCollapse">
+                    <div id="companyCardsContainer" class="mt-2"></div>
+                    <div id="companyEmptyState" class="text-center py-3" style="display: none;">
+                        <p class="text-muted">No companies added yet. Paste company reputation data above to get started!</p>
+                    </div>
+                </div>
+
+                <div class="card-header mt-4 mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#companyReputationDisplayCollapse" aria-expanded="true" aria-controls="companyReputationDisplayCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>📊 Company Reputation (Display)</span>
+                        <span class="float-end" id="companyReputationDisplayToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="companyReputationDisplayCollapse">
+                    <div id="companyReputationDisplayContainer" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Licenses Section -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none text-start p-0 flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#myLicensesCollapse" aria-expanded="true" aria-controls="myLicensesCollapse" style="color: var(--text-color); font-weight: 600; text-align: left;">
+                    <span>📜 My Licenses</span>
+                    <span class="float-end ms-2" id="myLicensesToggle">▼</span>
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="addLicense();" style="flex-shrink: 0;">
+                    ➕ Add New License
+                </button>
+            </div>
+            <div class="collapse show" id="myLicensesCollapse">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="licensesTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Level</th>
+                                    <th>Price</th>
+                                    <th>Purchased</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="licensesBody">
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Loading licenses...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Export/Import Section -->
+                    <div class="card-header mt-4 mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#licensesExportImportCollapse" aria-expanded="true" aria-controls="licensesExportImportCollapse" style="color: var(--text-color); font-weight: 600;">
+                            <span>📦 Export/Import Licenses</span>
+                            <span class="float-end" id="licensesExportImportToggle">▼</span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="licensesExportImportCollapse">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-success btn-sm" onclick="exportLicenses()">
+                                📤 Export Licenses
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm" onclick="document.getElementById('licensesFileInput').click()">
+                                📥 Import Licenses
+                            </button>
+                            <input type="file" id="licensesFileInput" accept=".json" style="display: none;" onchange="handleLicensesFileImport(event)">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <input type="radio" class="btn-check" name="licensesImportMode" id="licensesImportModeReplace" value="replace">
+                                <label class="btn btn-outline-secondary" for="licensesImportModeReplace">Replace</label>
+                                <input type="radio" class="btn-check" name="licensesImportMode" id="licensesImportModeMerge" value="merge" checked>
+                                <label class="btn btn-outline-secondary" for="licensesImportModeMerge">Merge</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="licensesJsonInput" class="form-label small">Or Paste JSON Data:</label>
+                            <textarea id="licensesJsonInput" class="form-control form-control-sm" rows="4" placeholder="Paste JSON data here..."></textarea>
+                            <button type="button" class="btn btn-warning btn-sm mt-2" onclick="importLicensesFromString(document.getElementById('licensesJsonInput').value)">
+                                📥 Import from JSON
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-success" onclick="saveLicenses()">
+                            💾 Save Changes
+                        </button>
+                        <span id="licensesStatus" class="ms-3"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#configCollapse" aria-expanded="true" aria-controls="configCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>⚙️ Configuration</span>
+                    <span class="float-end" id="configToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="configCollapse">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="repBonusInput" class="form-label"><strong>Reputation Bonus per Company:</strong></label>
+                        <input type="number" class="form-control" id="repBonusInput" min="0" value="3" onchange="updateRepBonus()">
+                        <small class="text-muted">This value is added to rep when calculating \"Highest Rep per Company\"</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Level Filter Mode:</strong></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="levelFilterMode" id="levelFilterBelow" value="below" checked onchange="updateLevelFilterMode()">
+                            <label class="form-check-label" for="levelFilterBelow">Include Below (show jobs at or below your level)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="levelFilterMode" id="levelFilterExact" value="exact" onchange="updateLevelFilterMode()">
+                            <label class="form-check-label" for="levelFilterExact">Exact Level Only (show only jobs at your exact level)</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Enabled Calculations:</strong></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestMoney" checked onchange="toggleCalculation('highestMoney')">
+                            <label class="form-check-label" for="calcHighestMoney">Highest Money</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcBestConvoy" checked onchange="toggleCalculation('bestConvoy')">
+                            <label class="form-check-label" for="calcBestConvoy">Best Convoy</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcBestHazard" checked onchange="toggleCalculation('bestHazard')">
+                            <label class="form-check-label" for="calcBestHazard">Best Hazard</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestRep" checked onchange="toggleCalculation('highestRep')">
+                            <label class="form-check-label" for="calcHighestRep">Highest Rep</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestRepPerCompany" checked onchange="toggleCalculation('highestRepPerCompany')">
+                            <label class="form-check-label" for="calcHighestRepPerCompany">Highest Rep per Company</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestRepPerDistance" checked onchange="toggleCalculation('highestRepPerDistance')">
+                            <label class="form-check-label" for="calcHighestRepPerDistance">Highest Rep per Distance</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestRepPerMilePerCompany" checked onchange="toggleCalculation('highestRepPerMilePerCompany')">
+                            <label class="form-check-label" for="calcHighestRepPerMilePerCompany">Highest Rep per Mile per Company</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Input and Job Data Section -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#jobAnalysisCollapse" aria-expanded="true" aria-controls="jobAnalysisCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📦 Job Analysis</span>
+                    <span class="float-end" id="jobAnalysisToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="jobAnalysisCollapse">
+            <div class="card-body">
+                <div class="mb-4">
+                    <label for="userLevelInput" class="form-label"><strong>Your Level:</strong></label>
+                    <input type="number" class="form-control" id="userLevelInput" min="1" value="1" placeholder="Enter your level" onchange="updateLevelFilter()">
+                    <small class="text-muted" id="levelFilterHelp">Only jobs at or below this level will be shown</small>
+                </div>
+
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#importJobDataCollapse" aria-expanded="true" aria-controls="importJobDataCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>📋 Import Job Data</span>
+                        <span class="float-end" id="importJobDataToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="importJobDataCollapse">
+                <div class="paste-area">
+                    <textarea id="jobPasteInput" class="form-control" rows="6" placeholder="Paste job data here..."></textarea>
+                    <div class="mt-3">
+                        <button class="btn btn-primary" onclick="parseAndSaveJobs()">Parse & Save Jobs</button>
+                        <button class="btn btn-danger" onclick="clearAllJobsAndRefresh()">🗑️ Clear All Jobs</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Analysis Sections -->
+        <div class="card mb-4" id="analysisSection" style="display: none; background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#analysisCollapse" aria-expanded="true" aria-controls="analysisCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📊 Analysis</span>
+                    <span class="float-end" id="analysisToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="analysisCollapse">
+            <div class="card-body">
+                <!-- Highest Money -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestMoneyCollapse" aria-expanded="true" aria-controls="highestMoneyCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>💰 Highest Money</span>
+                        <span class="float-end" id="highestMoneyToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestMoneyCollapse">
+                <div class="mb-4">
+                    <div id="highestMoneyContainer">
+                        <!-- Highest money jobs will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Best Convoy -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#bestConvoyCollapse" aria-expanded="true" aria-controls="bestConvoyCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>🚛 Best Convoy Overall Rating</span>
+                        <span class="float-end" id="bestConvoyToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="bestConvoyCollapse">
+                <div class="mb-4">
+                    <div id="bestConvoyContainer">
+                        <!-- Best convoy jobs will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Highest Rep per Company -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestRepPerCompanyCollapse" aria-expanded="true" aria-controls="highestRepPerCompanyCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>⭐ Highest Rep per Company</span>
+                        <span class="float-end" id="highestRepPerCompanyToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestRepPerCompanyCollapse">
+                <div class="mb-4">
+                    <div id="highestRepPerCompanyContainer">
+                        <!-- Highest rep per company will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Highest Rep to Company (per distance) -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestRepCollapse" aria-expanded="true" aria-controls="highestRepCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>⭐ Highest Rep to Company (per distance)</span>
+                        <span class="float-end" id="highestRepToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestRepCollapse">
+                <div class="mb-4">
+                    <div id="highestRepContainer">
+                        <!-- Highest rep per distance per company will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Best Hazard -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#bestHazardCollapse" aria-expanded="true" aria-controls="bestHazardCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>⚠️ Best Hazard Overall Rating</span>
+                        <span class="float-end" id="bestHazardToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="bestHazardCollapse">
+                <div class="mb-4">
+                    <div id="bestHazardContainer">
+                        <!-- Best hazard jobs will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Highest Rep -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestRepOnlyCollapse" aria-expanded="true" aria-controls="highestRepOnlyCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>⭐ Highest Rep</span>
+                        <span class="float-end" id="highestRepOnlyToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestRepOnlyCollapse">
+                <div class="mb-4">
+                    <div id="highestRepOnlyContainer">
+                        <!-- Highest rep jobs will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Highest Rep per Mile per Company -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestRepPerMileCollapse" aria-expanded="true" aria-controls="highestRepPerMileCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>⭐ Highest Rep per Mile per Company</span>
+                        <span class="float-end" id="highestRepPerMileToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestRepPerMileCollapse">
+                <div class="mb-4">
+                    <div id="highestRepPerMileContainer">
+                        <!-- Highest rep per mile per company will be displayed here -->
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Jobs Section -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#jobsSectionCollapse" aria-expanded="true" aria-controls="jobsSectionCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📋 Job Cards</span>
+                    <span class="float-end" id="jobsSectionToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="jobsSectionCollapse">
+                <div class="card-body">
+                    <div id="jobsContainer"></div>
+                    <div id="emptyState" class="text-center py-5" style="display: none;">
+                        <p class="text-muted">No jobs added yet. Paste job data above to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <div id="version-display" class="mt-2" style="font-size: 0.875rem; color: #6c757d;">
+                <!-- Version will be inserted here by site-config.js -->
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Site Configuration & Version Manager (load in order) -->
+    <script src="js/config/config-data.js"></script>
+    <script src="js/config/site-config.js"></script>
+    <script src="js/config/version-manager.js"></script>
+    <script src="js/site-config.js"></script>
+    <!-- Navbar Manager -->
+    <script src="js/navbar.js"></script>
+    <!-- Number Formatter -->
+    <script src="js/number-formatter.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+    <!-- Debug Manager -->
+    <script src="js/debug-manager.js"></script>
+    <!-- Logistics Debug -->
+    <script src="js/pages/logistics/logistics-debug.js"></script>
+    <!-- Logistics Storage (unified localStorage) -->
+    <script src="js/pages/logistics/logistics-storage.js"></script>
+    <!-- Logistics JS Modules -->
+    <script src="js/pages/logistics/logistics-company-config.js"></script>
+    <script src="js/pages/logistics/logistics-config.js"></script>
+    <script src="js/pages/logistics/logistics-core.js"></script>
+    <script src="js/pages/logistics/logistics-parser.js"></script>
+    <script src="js/pages/logistics/logistics-profile-parser.js"></script>
+    <script src="js/pages/logistics/logistics-profile-api.js?v=2.0.0"></script>
+    <script src="js/pages/logistics/logistics-profile-ui.js"></script>
+    <script src="js/pages/logistics/logistics-profile-export-import.js"></script>
+    <script src="js/pages/logistics/logistics-licenses-core.js"></script>
+    <script src="js/pages/logistics/logistics-licenses-api.js?v=2.0.0"></script>
+    <script src="js/pages/logistics/logistics-licenses-ui.js"></script>
+    <script src="js/pages/logistics/logistics-licenses-export-import.js"></script>
+    <script src="js/pages/logistics/logistics-calculations.js"></script>
+    <script src="js/pages/logistics/logistics-ui.js"></script>
+    <script src="js/pages/logistics/logistics-main.js"></script>
+</body>
+</html>
+

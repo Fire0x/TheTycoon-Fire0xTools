@@ -1,0 +1,21 @@
+{
+  "_instructions": "Empty template for Logistics. The _instructions field is ignored on import.",
+  "companies": [],
+  "licenses": [],
+  "jobs": [],
+  "config": {
+    "repBonusPerCompany": 3,
+    "levelFilterMode": "below",
+    "enabledCalculations": {
+      "highestMoney": true,
+      "bestConvoy": true,
+      "bestHazard": true,
+      "highestRep": true,
+      "highestRepPerCompany": true,
+      "highestRepPerMilePerCompany": true
+    },
+    "userLevel": 1
+  },
+  "version": "1.0.0"
+}
+
