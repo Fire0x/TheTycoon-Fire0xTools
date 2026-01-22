@@ -1179,6 +1179,30 @@ function renderAllFish() {
     }
 }
 
+// Copy JSON to clipboard
+window.copyFishingJson = function(elementId) {
+    const textarea = document.getElementById(elementId);
+    if (textarea) {
+        textarea.select();
+        textarea.setSelectionRange(0, 99999); // For mobile devices
+        try {
+            document.execCommand('copy');
+            alert('✅ Copied to clipboard!');
+        } catch (err) {
+            // Fallback for modern browsers
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textarea.value).then(() => {
+                    alert('✅ Copied to clipboard!');
+                }).catch(() => {
+                    alert('❌ Failed to copy. Please select and copy manually.');
+                });
+            } else {
+                alert('❌ Failed to copy. Please select and copy manually.');
+            }
+        }
+    }
+};
+
 // Export render functions
 window.fishingUI = {
     renderLocationSelector,

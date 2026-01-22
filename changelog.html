@@ -40,7 +40,44 @@
                 <section id="changelog" class="mb-5">
                     <h2 class="mb-4 text-center">Release Notes</h2>
 
-                    <!-- Example Entry (Most Recent) -->                  
+                    <!-- Latest Entry -->                  
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.0.5</h3>
+                                <p class="text-muted mb-3">2026-01-22 (Wednesday)</p>
+                                <ul class="mb-0">
+                                    <li><strong>Logistics - Default Licenses:</strong> Added automatic default license loading functionality. When the licenses section is first accessed with no data in localStorage, the system now automatically loads 8 default licenses (Hazmat Classes 1-8, Heavy Cargo, and High Value Cargo) and saves them to localStorage.</li>
+                                    <li><strong>Logistics - License Auto-Population:</strong> Modified <code>loadLicenses()</code> function in <code>logistics-licenses-api.js</code> to check if the licenses array is empty after loading from localStorage. If empty, it automatically populates with default licenses and saves them, ensuring users always have a starting set of licenses available.</li>
+                                    <li><strong>Logistics - Default License Data:</strong> Added <code>DEFAULT_LICENSES</code> constant containing 8 pre-configured licenses with proper IDs, names, levels, prices, and display order. Default licenses include all Hazmat classes (1, 2, 3, 4, 6, 8) plus Heavy Cargo and High Value Cargo licenses.</li>
+                                    <li><strong>Logistics - Company Reputation Export/Import:</strong> Added modular export/import functionality for company reputation data. Created <code>logistics-profile-export-import.js</code> module supporting JSON file download/upload and paste-in-textarea import. Includes "Replace" and "Merge" import modes with comprehensive debugging.</li>
+                                    <li><strong>Logistics - Licenses Export/Import:</strong> Added modular export/import functionality for license data. Created <code>logistics-licenses-export-import.js</code> module supporting JSON file download/upload and paste-in-textarea import. Includes "Replace" and "Merge" import modes with format validation for multiple JSON structures.</li>
+                                    <li><strong>Logistics - Export/Import UI:</strong> Added collapsible "Export/Import Company Reputation" and "Export/Import Licenses" sections to <code>logistics.html</code> with file upload buttons, JSON paste textareas, and import mode radio buttons (Replace/Merge).</li>
+                                    <li><strong>Logistics - License Template:</strong> Created <code>licenses-template.json</code> file containing 8 default licenses (Hazmat Classes 1-8, Heavy Cargo, High Value Cargo) for reference and import purposes.</li>
+                                    <li><strong>Logistics - Storage Migration:</strong> Converted logistics page from MySQL API-based storage to localStorage. All data (companies, licenses, jobs, config) now persists locally in the browser using the unified <code>LogisticsStorage</code> API.</li>
+                                    <li><strong>Logistics - Storage Module:</strong> Created <code>logistics-storage.js</code> module providing unified localStorage operations with read/write/update functions for all logistics data types. Includes migration support from legacy localStorage keys.</li>
+                                    <li><strong>Logistics - API Conversion:</strong> Rewrote <code>logistics-profile-api.js</code> and <code>logistics-licenses-api.js</code> to use localStorage instead of API calls. Removed all <code>fetch</code> operations and CORS-related code. All data operations now use <code>LogisticsStorage</code> API.</li>
+                                    <li><strong>Logistics - Debug Manager Integration:</strong> Updated <code>logistics-main.js</code> to properly initialize DebugManager with options object instead of positional arguments, fixing initialization errors.</li>
+                                    <li><strong>Fishing Management - Storage Migration (WIP):</strong> Converted fishing management page from MySQL API-based storage to localStorage with JSON saving. All data now persists locally in the browser.</li>
+                                    <li><strong>Fishing Management - Default Data:</strong> Added default fishing locations (10 locations) and default fishing rewards (11 rewards) that automatically load on first use. Data includes locations like Del Perro Pier, Paleto Cove, and rewards from Dinghy (Small) to Patrol Boat.</li>
+                                    <li><strong>Fishing Management - Storage Module:</strong> Created <code>fishing-storage.js</code> module following the same pattern as logistics storage, providing unified localStorage operations with read/write/update functions.</li>
+                                    <li><strong>Fishing Management - Core Updates:</strong> Updated <code>fishing-core.js</code> and <code>fishing-fish-core.js</code> to use localStorage instead of API calls. Removed all async/await operations since localStorage is synchronous.</li>
+                                    <li><strong>Fishing Management - UI Updates:</strong> Updated all UI functions in <code>fishing-ui.js</code> to work with synchronous localStorage operations. Removed async/await keywords from all functions.</li>
+                                    <li><strong>Fishing Management - Default Data Templates:</strong> Added "Default Data Templates" section to the "How to Use" tab with copyable JSON for default locations and rewards, allowing users to easily reference or import the default data.</li>
+                                    <li><strong>Fishing Management - Copy Functionality:</strong> Added <code>copyFishingJson()</code> function with clipboard API support and fallback for older browsers, enabling easy copying of JSON templates.</li>
+                                    <li><strong>Fishing Management - Page Structure:</strong> Updated <code>fishing.html</code> to include base CSS files (variables, common, responsive) and proper script loading order matching other pages in the project.</li>
+                                    <li><strong>Import/Export - Fishing Support:</strong> Added fishing page support to the centralized import/export page. Fishing data can now be exported and imported alongside Checklist, Apartments, and Education.</li>
+                                    <li><strong>Import/Export - Logistics Support (WIP):</strong> Added logistics page support to the centralized import/export page. Logistics data can now be exported and imported, though full functionality is still being developed.</li>
+                                    <li><strong>Import/Export - Storage Integration:</strong> Updated <code>import-export-core.js</code> to use <code>FishingStorage.read()</code> and <code>LogisticsStorage.read()</code> APIs, ensuring default data is included in exports even if not yet saved.</li>
+                                    <li><strong>Import/Export - Status Cards:</strong> Added fishing and logistics to the data status cards on the import/export page, showing data summaries, last modified timestamps, and hash values.</li>
+                                    <li><strong>Import/Export - Script Loading:</strong> Added <code>fishing-storage.js</code> and <code>logistics-storage.js</code> to <code>import.html</code> to ensure storage APIs are available before import/export operations.</li>
+                                    <li><strong>Note - WIP Status:</strong> Fishing and Logistics features are marked as Work In Progress (WIP). Core functionality is implemented, but additional features and refinements may be added in future updates.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Previous Entry -->                  
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">

@@ -110,9 +110,9 @@ const ConfigData = {
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
         'changelog.html': '0.0.5',
-        'import.html': '0.0.6',
-        'fishing.html': '0.0.1',
-        'logistics.html': '0.0.1'
+        'import.html': '0.0.7',
+        'fishing.html': '0.0.2',
+        'logistics.html': '0.0.2'
     }
 };
 

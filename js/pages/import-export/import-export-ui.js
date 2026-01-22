@@ -104,7 +104,9 @@
             apartments: { name: 'Apartments', icon: '🏠' },
             merchants: { name: 'Merchants', icon: '🛒' },
             vehicles: { name: 'Vehicles', icon: '🚚' },
-            education: { name: 'Education', icon: '⏱️' }
+            education: { name: 'Education', icon: '⏱️' },
+            fishing: { name: 'Fishing', icon: '🎣' },
+            logistics: { name: 'Logistics', icon: '🚚' }
         };
 
         const hashes = core.calculateAllHashes();
@@ -302,7 +304,7 @@
         debugManager.log('=== handleExportAllSeparate START ===');
         
         try {
-            const pageNames = core.getAvailablePages ? core.getAvailablePages() : ['checklist', 'apartments', 'education'];
+            const pageNames = core.getAvailablePages ? core.getAvailablePages() : ['checklist', 'apartments', 'education', 'fishing', 'logistics'];
             let exported = 0;
 
             for (const pageName of pageNames) {

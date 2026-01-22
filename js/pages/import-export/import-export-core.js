@@ -123,6 +123,11 @@
                 return LogisticsStorage.read();
             }
             
+            // Use FishingStorage API for fishing page
+            if (pageName === 'fishing' && typeof FishingStorage !== 'undefined') {
+                return FishingStorage.read();
+            }
+            
             const stored = localStorage.getItem(storageKey);
             if (!stored) {
                 debugManager.log(`No data found for ${pageName}`);

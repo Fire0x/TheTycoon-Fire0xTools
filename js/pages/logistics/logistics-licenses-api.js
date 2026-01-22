@@ -2,6 +2,18 @@
 // localStorage-based functions for licenses (replaces API calls)
 // Version: 2.0.0 - localStorage only, no API calls
 
+// Default licenses to load if localStorage is empty
+const DEFAULT_LICENSES = [
+    { "id": "license-1", "name": "Hazmat Class 1 (Explosives)", "level": 5, "price": 5000000.00, "purchased": false, "display_order": 0 },
+    { "id": "license-2", "name": "Hazmat Class 2 (Gases)", "level": 6, "price": 5500000.00, "purchased": false, "display_order": 1 },
+    { "id": "license-3", "name": "Hazmat Class 3 (Flammable Liquids)", "level": 8, "price": 6000000.00, "purchased": false, "display_order": 2 },
+    { "id": "license-4", "name": "Hazmat Class 4 (Flammable Solids)", "level": 10, "price": 6500000.00, "purchased": false, "display_order": 3 },
+    { "id": "license-5", "name": "Hazmat Class 6 (Toxic)", "level": 12, "price": 7000000.00, "purchased": false, "display_order": 4 },
+    { "id": "license-6", "name": "Hazmat Class 8 (Corrosive)", "level": 15, "price": 7500000.00, "purchased": false, "display_order": 5 },
+    { "id": "license-7", "name": "Heavy Cargo", "level": 18, "price": 9000000.00, "purchased": false, "display_order": 6 },
+    { "id": "license-8", "name": "High Value Cargo", "level": 20, "price": 10000000.00, "purchased": false, "display_order": 7 }
+];
+
 // Load licenses from localStorage
 window.loadLicenses = async function() {
     if (window.debug) window.debug.log('[LICENSES-API] Loading licenses from localStorage...');
@@ -27,7 +39,21 @@ window.loadLicenses = async function() {
             return license;
         });
         
-        if (window.debug) window.debug.log(`[LICENSES-API] Loaded ${window.licenses.length} license(s) from localStorage`);
+        // If no licenses exist, load defaults and save them
+        if (window.licenses.length === 0) {
+            if (window.debug) window.debug.log('[LICENSES-API] No licenses found in localStorage, loading default licenses...');
+            window.licenses = JSON.parse(JSON.stringify(DEFAULT_LICENSES)); // Deep copy
+            
+            // Save defaults to localStorage
+            LogisticsStorage.update(data => {
+                data.licenses = window.licenses;
+                return data;
+            });
+            
+            if (window.debug) window.debug.log(`[LICENSES-API] Loaded ${window.licenses.length} default license(s) and saved to localStorage`);
+        } else {
+            if (window.debug) window.debug.log(`[LICENSES-API] Loaded ${window.licenses.length} license(s) from localStorage`);
+        }
         
         if (typeof window.renderLicenses === 'function') {
             window.renderLicenses();
