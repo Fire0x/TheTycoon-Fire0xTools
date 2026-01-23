@@ -391,6 +391,110 @@ window.renderAnalysis = function() {
         }
     }
     
+    // License-based calculations
+    const licenses = window.licenses || [];
+    const userLevel = getUserLevel();
+    
+    if (enabled.highestPayPerLicense !== false) {
+        const highestPayPerLicense = window.calculateHighestPayPerLicense(jobs, licenses, userLevel);
+        const container = document.getElementById('highestPayPerLicenseContainer');
+        if (container) {
+            if (highestPayPerLicense.length === 0) {
+                container.innerHTML = '<p class="text-muted">No jobs found for purchased licenses.</p>';
+            } else {
+                container.innerHTML = highestPayPerLicense.slice(0, 10).map((result, idx) => `
+                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                        <div class="card-header">
+                            <strong>${window.escapeHtml(result.license.name || 'Unknown License')}</strong>
+                            <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                        </div>
+                        <div class="value-display">$${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')}</div>
+                        <div class="job-details">
+                            <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
+                            <div>XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')} | REP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.rep) : result.job.rep.toLocaleString('en-US')}</div>
+                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    }
+    
+    if (enabled.highestRepPerLicense !== false) {
+        const highestRepPerLicense = window.calculateHighestRepPerLicense(jobs, licenses, userLevel);
+        const container = document.getElementById('highestRepPerLicenseContainer');
+        if (container) {
+            if (highestRepPerLicense.length === 0) {
+                container.innerHTML = '<p class="text-muted">No jobs found for purchased licenses.</p>';
+            } else {
+                container.innerHTML = highestRepPerLicense.slice(0, 10).map((result, idx) => `
+                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                        <div class="card-header">
+                            <strong>${window.escapeHtml(result.license.name || 'Unknown License')}</strong>
+                            <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                        </div>
+                        <div class="value-display">${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')} REP</div>
+                        <div class="job-details">
+                            <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
+                            <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.money) : result.job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')}</div>
+                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    }
+    
+    if (enabled.highestPayPerCompanyPerLicense !== false) {
+        const highestPayPerCompanyPerLicense = window.calculateHighestPayPerCompanyPerLicense(jobs, licenses, userLevel);
+        const container = document.getElementById('highestPayPerCompanyPerLicenseContainer');
+        if (container) {
+            if (highestPayPerCompanyPerLicense.length === 0) {
+                container.innerHTML = '<p class="text-muted">No jobs found for purchased licenses.</p>';
+            } else {
+                container.innerHTML = highestPayPerCompanyPerLicense.slice(0, 10).map((result, idx) => `
+                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                        <div class="card-header">
+                            <strong>${window.escapeHtml(result.license.name || 'Unknown License')} - ${window.escapeHtml(result.company || 'Unknown')}</strong>
+                            <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                        </div>
+                        <div class="value-display">$${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')}</div>
+                        <div class="job-details">
+                            <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
+                            <div>XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')} | REP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.rep) : result.job.rep.toLocaleString('en-US')}</div>
+                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    }
+    
+    if (enabled.highestRepPerCompanyPerLicense !== false) {
+        const highestRepPerCompanyPerLicense = window.calculateHighestRepPerCompanyPerLicense(jobs, licenses, userLevel);
+        const container = document.getElementById('highestRepPerCompanyPerLicenseContainer');
+        if (container) {
+            if (highestRepPerCompanyPerLicense.length === 0) {
+                container.innerHTML = '<p class="text-muted">No jobs found for purchased licenses.</p>';
+            } else {
+                container.innerHTML = highestRepPerCompanyPerLicense.slice(0, 10).map((result, idx) => `
+                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                        <div class="card-header">
+                            <strong>${window.escapeHtml(result.license.name || 'Unknown License')} - ${window.escapeHtml(result.company || 'Unknown')}</strong>
+                            <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                        </div>
+                        <div class="value-display">${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')} REP</div>
+                        <div class="job-details">
+                            <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
+                            <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.money) : result.job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')}</div>
+                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+    }
+    
     if (window.debug) window.debug.log('=== RENDER ANALYSIS COMPLETED ===');
 };
 

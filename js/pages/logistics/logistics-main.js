@@ -28,6 +28,10 @@ const CONFIG_STORAGE_KEY = 'logistics_config_expanded';
 const BEST_HAZARD_STORAGE_KEY = 'logistics_best_hazard_expanded';
 const HIGHEST_REP_ONLY_STORAGE_KEY = 'logistics_highest_rep_only_expanded';
 const HIGHEST_REP_PER_MILE_STORAGE_KEY = 'logistics_highest_rep_per_mile_expanded';
+const HIGHEST_PAY_PER_LICENSE_STORAGE_KEY = 'logistics_highest_pay_per_license_expanded';
+const HIGHEST_REP_PER_LICENSE_STORAGE_KEY = 'logistics_highest_rep_per_license_expanded';
+const HIGHEST_PAY_PER_COMPANY_PER_LICENSE_STORAGE_KEY = 'logistics_highest_pay_per_company_per_license_expanded';
+const HIGHEST_REP_PER_COMPANY_PER_LICENSE_STORAGE_KEY = 'logistics_highest_rep_per_company_per_license_expanded';
 
 // Initialize How to Use collapse state
 window.initHowToUseCollapse = function() {
@@ -617,6 +621,150 @@ window.initHighestRepPerMileCollapse = function() {
     }
 };
 
+// Initialize Highest Pay per License collapse state
+window.initHighestPayPerLicenseCollapse = function() {
+    const stored = localStorage.getItem(HIGHEST_PAY_PER_LICENSE_STORAGE_KEY);
+    const shouldExpand = stored === null ? true : stored === 'true';
+    
+    const collapseElement = document.getElementById('highestPayPerLicenseCollapse');
+    const toggleIcon = document.getElementById('highestPayPerLicenseToggle');
+    const toggleButton = document.querySelector('[data-bs-target="#highestPayPerLicenseCollapse"]');
+    
+    if (collapseElement && typeof bootstrap !== 'undefined') {
+        const bsCollapse = new bootstrap.Collapse(collapseElement, { toggle: false });
+        
+        if (!shouldExpand) {
+            bsCollapse.hide();
+            if (toggleIcon) toggleIcon.textContent = '▶';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+        } else {
+            bsCollapse.show();
+            if (toggleIcon) toggleIcon.textContent = '▼';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+        }
+        
+        collapseElement.addEventListener('shown.bs.collapse', function() {
+            localStorage.setItem(HIGHEST_PAY_PER_LICENSE_STORAGE_KEY, 'true');
+            if (toggleIcon) toggleIcon.textContent = '▼';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+        });
+        
+        collapseElement.addEventListener('hidden.bs.collapse', function() {
+            localStorage.setItem(HIGHEST_PAY_PER_LICENSE_STORAGE_KEY, 'false');
+            if (toggleIcon) toggleIcon.textContent = '▶';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+        });
+    }
+};
+
+// Initialize Highest Rep per License collapse state
+window.initHighestRepPerLicenseCollapse = function() {
+    const stored = localStorage.getItem(HIGHEST_REP_PER_LICENSE_STORAGE_KEY);
+    const shouldExpand = stored === null ? true : stored === 'true';
+    
+    const collapseElement = document.getElementById('highestRepPerLicenseCollapse');
+    const toggleIcon = document.getElementById('highestRepPerLicenseToggle');
+    const toggleButton = document.querySelector('[data-bs-target="#highestRepPerLicenseCollapse"]');
+    
+    if (collapseElement && typeof bootstrap !== 'undefined') {
+        const bsCollapse = new bootstrap.Collapse(collapseElement, { toggle: false });
+        
+        if (!shouldExpand) {
+            bsCollapse.hide();
+            if (toggleIcon) toggleIcon.textContent = '▶';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+        } else {
+            bsCollapse.show();
+            if (toggleIcon) toggleIcon.textContent = '▼';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+        }
+        
+        collapseElement.addEventListener('shown.bs.collapse', function() {
+            localStorage.setItem(HIGHEST_REP_PER_LICENSE_STORAGE_KEY, 'true');
+            if (toggleIcon) toggleIcon.textContent = '▼';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+        });
+        
+        collapseElement.addEventListener('hidden.bs.collapse', function() {
+            localStorage.setItem(HIGHEST_REP_PER_LICENSE_STORAGE_KEY, 'false');
+            if (toggleIcon) toggleIcon.textContent = '▶';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+        });
+    }
+};
+
+// Initialize Highest Pay per Company per License collapse state
+window.initHighestPayPerCompanyPerLicenseCollapse = function() {
+    const stored = localStorage.getItem(HIGHEST_PAY_PER_COMPANY_PER_LICENSE_STORAGE_KEY);
+    const shouldExpand = stored === null ? true : stored === 'true';
+    
+    const collapseElement = document.getElementById('highestPayPerCompanyPerLicenseCollapse');
+    const toggleIcon = document.getElementById('highestPayPerCompanyPerLicenseToggle');
+    const toggleButton = document.querySelector('[data-bs-target="#highestPayPerCompanyPerLicenseCollapse"]');
+    
+    if (collapseElement && typeof bootstrap !== 'undefined') {
+        const bsCollapse = new bootstrap.Collapse(collapseElement, { toggle: false });
+        
+        if (!shouldExpand) {
+            bsCollapse.hide();
+            if (toggleIcon) toggleIcon.textContent = '▶';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+        } else {
+            bsCollapse.show();
+            if (toggleIcon) toggleIcon.textContent = '▼';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+        }
+        
+        collapseElement.addEventListener('shown.bs.collapse', function() {
+            localStorage.setItem(HIGHEST_PAY_PER_COMPANY_PER_LICENSE_STORAGE_KEY, 'true');
+            if (toggleIcon) toggleIcon.textContent = '▼';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+        });
+        
+        collapseElement.addEventListener('hidden.bs.collapse', function() {
+            localStorage.setItem(HIGHEST_PAY_PER_COMPANY_PER_LICENSE_STORAGE_KEY, 'false');
+            if (toggleIcon) toggleIcon.textContent = '▶';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+        });
+    }
+};
+
+// Initialize Highest Rep per Company per License collapse state
+window.initHighestRepPerCompanyPerLicenseCollapse = function() {
+    const stored = localStorage.getItem(HIGHEST_REP_PER_COMPANY_PER_LICENSE_STORAGE_KEY);
+    const shouldExpand = stored === null ? true : stored === 'true';
+    
+    const collapseElement = document.getElementById('highestRepPerCompanyPerLicenseCollapse');
+    const toggleIcon = document.getElementById('highestRepPerCompanyPerLicenseToggle');
+    const toggleButton = document.querySelector('[data-bs-target="#highestRepPerCompanyPerLicenseCollapse"]');
+    
+    if (collapseElement && typeof bootstrap !== 'undefined') {
+        const bsCollapse = new bootstrap.Collapse(collapseElement, { toggle: false });
+        
+        if (!shouldExpand) {
+            bsCollapse.hide();
+            if (toggleIcon) toggleIcon.textContent = '▶';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+        } else {
+            bsCollapse.show();
+            if (toggleIcon) toggleIcon.textContent = '▼';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+        }
+        
+        collapseElement.addEventListener('shown.bs.collapse', function() {
+            localStorage.setItem(HIGHEST_REP_PER_COMPANY_PER_LICENSE_STORAGE_KEY, 'true');
+            if (toggleIcon) toggleIcon.textContent = '▼';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'true');
+        });
+        
+        collapseElement.addEventListener('hidden.bs.collapse', function() {
+            localStorage.setItem(HIGHEST_REP_PER_COMPANY_PER_LICENSE_STORAGE_KEY, 'false');
+            if (toggleIcon) toggleIcon.textContent = '▶';
+            if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
+        });
+    }
+};
+
 // Update Local time
 window.updateAESTTime = function() {
     const now = new Date();
@@ -660,6 +808,10 @@ function initializeLogisticsPage() {
     window.initBestHazardCollapse();
     window.initHighestRepOnlyCollapse();
     window.initHighestRepPerMileCollapse();
+    window.initHighestPayPerLicenseCollapse();
+    window.initHighestRepPerLicenseCollapse();
+    window.initHighestPayPerCompanyPerLicenseCollapse();
+    window.initHighestRepPerCompanyPerLicenseCollapse();
     window.initJobsSectionCollapse();
     window.loadFromStorage();
     

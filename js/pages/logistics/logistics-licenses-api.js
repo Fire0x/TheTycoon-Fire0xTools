@@ -4,14 +4,14 @@
 
 // Default licenses to load if localStorage is empty
 const DEFAULT_LICENSES = [
-    { "id": "license-1", "name": "Hazmat Class 1 (Explosives)", "level": 5, "price": 5000000.00, "purchased": false, "display_order": 0 },
-    { "id": "license-2", "name": "Hazmat Class 2 (Gases)", "level": 6, "price": 5500000.00, "purchased": false, "display_order": 1 },
-    { "id": "license-3", "name": "Hazmat Class 3 (Flammable Liquids)", "level": 8, "price": 6000000.00, "purchased": false, "display_order": 2 },
-    { "id": "license-4", "name": "Hazmat Class 4 (Flammable Solids)", "level": 10, "price": 6500000.00, "purchased": false, "display_order": 3 },
-    { "id": "license-5", "name": "Hazmat Class 6 (Toxic)", "level": 12, "price": 7000000.00, "purchased": false, "display_order": 4 },
-    { "id": "license-6", "name": "Hazmat Class 8 (Corrosive)", "level": 15, "price": 7500000.00, "purchased": false, "display_order": 5 },
-    { "id": "license-7", "name": "Heavy Cargo", "level": 18, "price": 9000000.00, "purchased": false, "display_order": 6 },
-    { "id": "license-8", "name": "High Value Cargo", "level": 20, "price": 10000000.00, "purchased": false, "display_order": 7 }
+    { "id": "license-1", "name": "Hazmat Class 1 (Explosives)", "level": 5, "price": 5000000.00, "purchased": false, "display_order": 0, "parseString": "ADR_1" },
+    { "id": "license-2", "name": "Hazmat Class 2 (Gases)", "level": 6, "price": 5500000.00, "purchased": false, "display_order": 1, "parseString": "ADR_2" },
+    { "id": "license-3", "name": "Hazmat Class 3 (Flammable Liquids)", "level": 8, "price": 6000000.00, "purchased": false, "display_order": 2, "parseString": "ADR_3" },
+    { "id": "license-4", "name": "Hazmat Class 4 (Flammable Solids)", "level": 10, "price": 6500000.00, "purchased": false, "display_order": 3, "parseString": "ADR_4" },
+    { "id": "license-5", "name": "Hazmat Class 6 (Toxic)", "level": 12, "price": 7000000.00, "purchased": false, "display_order": 4, "parseString": "ADR_6" },
+    { "id": "license-6", "name": "Hazmat Class 8 (Corrosive)", "level": 15, "price": 7500000.00, "purchased": false, "display_order": 5, "parseString": "ADR_8" },
+    { "id": "license-7", "name": "Heavy Cargo", "level": 18, "price": 9000000.00, "purchased": false, "display_order": 6, "parseString": "HEAVY" },
+    { "id": "license-8", "name": "High Value Cargo", "level": 20, "price": 10000000.00, "purchased": false, "display_order": 7, "parseString": "HIGH_VALUE" }
 ];
 
 // Load licenses from localStorage
@@ -109,7 +109,8 @@ window.saveLicenses = async function() {
                 level: parseInt(window.getLicenseValue(license.id, 'level-input')) || 0,
                 price: parseFloat(window.getLicenseValue(license.id, 'price-input')) || 0,
                 purchased: document.querySelector(`input[data-id="${license.id}"][data-field="purchased"]`)?.checked || false,
-                display_order: license.display_order !== undefined ? license.display_order : licensesToSave.length
+                display_order: license.display_order !== undefined ? license.display_order : licensesToSave.length,
+                parseString: window.getLicenseValue(license.id, 'parseString-input') || ''
             };
             
             licensesToSave.push(licenseData);
@@ -245,7 +246,8 @@ window.addLicense = function() {
         level: 0,
         price: 0,
         purchased: false,
-        display_order: window.licenses.length
+        display_order: window.licenses.length,
+        parseString: ''
     };
     
     window.licenses.push(newLicense);

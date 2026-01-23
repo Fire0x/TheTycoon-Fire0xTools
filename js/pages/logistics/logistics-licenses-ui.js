@@ -23,7 +23,7 @@ window.renderLicenses = function() {
     if (window.debug) window.debug.log(`[LICENSES-UI] Licenses count: ${window.licenses.length}`);
     
     if (window.licenses.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No licenses found. Click "Add New License" to create one.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No licenses found. Click "Add New License" to create one.</td></tr>';
         return;
     }
 
@@ -31,6 +31,7 @@ window.renderLicenses = function() {
         const name = window.escapeHtml(license.name || '');
         const level = license.level || 0;
         const price = license.price || 0;
+        const parseString = window.escapeHtml(license.parseString || '');
         const purchased = license.purchased || false;
         
         return `
@@ -59,6 +60,14 @@ window.renderLicenses = function() {
                                placeholder="0.00"
                                style="width: 150px;">
                     </div>
+                </td>
+                <td>
+                    <input type="text" class="form-control form-control-sm parseString-input" 
+                           value="${parseString}" 
+                           data-id="${license.id}"
+                           placeholder="e.g., ADR_1, HIGH_VALUE"
+                           style="width: 150px;"
+                           title="Parse string that matches job types (e.g., ADR_1, ADR_4, HIGH_VALUE, HIGH TIER, HEAVY)">
                 </td>
                 <td class="text-center">
                     <input type="checkbox" class="form-check-input" 

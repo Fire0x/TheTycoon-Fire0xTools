@@ -76,7 +76,45 @@
             </div>
         </div>
 
-        <!-- Profile Section (Company Reputation) -->
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs mb-4" id="logisticsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" 
+                        id="reputation-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#reputation" 
+                        type="button" 
+                        role="tab">
+                    ⭐ Reputation
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="licenses-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#licenses" 
+                        type="button" 
+                        role="tab">
+                    📜 Licenses
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="job-analysis-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#job-analysis" 
+                        type="button" 
+                        role="tab">
+                    📦 Job Analysis
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="logisticsTabsContent">
+            <!-- Reputation Tab -->
+            <div class="tab-pane fade show active" id="reputation" role="tabpanel">
+                <!-- Profile Section (Company Reputation) -->
         <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
             <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
                 <h5 class="mb-0">👤 Company Reputation (Profile)</h5>
@@ -154,8 +192,11 @@
                 </div>
             </div>
         </div>
+            </div>
 
-        <!-- My Licenses Section -->
+            <!-- Licenses Tab -->
+            <div class="tab-pane fade" id="licenses" role="tabpanel">
+                <!-- My Licenses Section -->
         <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
             <div class="card-header d-flex justify-content-between align-items-center" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
                 <button class="btn btn-link text-decoration-none text-start p-0 flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#myLicensesCollapse" aria-expanded="true" aria-controls="myLicensesCollapse" style="color: var(--text-color); font-weight: 600; text-align: left;">
@@ -175,13 +216,14 @@
                                     <th>Name</th>
                                     <th>Level</th>
                                     <th>Price</th>
+                                    <th>Parse String</th>
                                     <th>Purchased</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="licensesBody">
                                 <tr>
-                                    <td colspan="5" class="text-center">
+                                    <td colspan="6" class="text-center">
                                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                                         Loading licenses...
                                     </td>
@@ -289,6 +331,22 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="calcHighestRepPerMilePerCompany" checked onchange="toggleCalculation('highestRepPerMilePerCompany')">
                             <label class="form-check-label" for="calcHighestRepPerMilePerCompany">Highest Rep per Mile per Company</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestPayPerLicense" checked onchange="toggleCalculation('highestPayPerLicense')">
+                            <label class="form-check-label" for="calcHighestPayPerLicense">Highest Pay per License</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestRepPerLicense" checked onchange="toggleCalculation('highestRepPerLicense')">
+                            <label class="form-check-label" for="calcHighestRepPerLicense">Highest Rep per License</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestPayPerCompanyPerLicense" checked onchange="toggleCalculation('highestPayPerCompanyPerLicense')">
+                            <label class="form-check-label" for="calcHighestPayPerCompanyPerLicense">Highest Pay per Company per License</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calcHighestRepPerCompanyPerLicense" checked onchange="toggleCalculation('highestRepPerCompanyPerLicense')">
+                            <label class="form-check-label" for="calcHighestRepPerCompanyPerLicense">Highest Rep per Company per License</label>
                         </div>
                     </div>
                 </div>
@@ -444,6 +502,66 @@
                     </div>
                 </div>
                 </div>
+
+                <!-- Highest Pay per License -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestPayPerLicenseCollapse" aria-expanded="true" aria-controls="highestPayPerLicenseCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>💰 Highest Pay per License</span>
+                        <span class="float-end" id="highestPayPerLicenseToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestPayPerLicenseCollapse">
+                <div class="mb-4">
+                    <div id="highestPayPerLicenseContainer">
+                        <!-- Highest pay per license will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Highest Rep per License -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestRepPerLicenseCollapse" aria-expanded="true" aria-controls="highestRepPerLicenseCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>⭐ Highest Rep per License</span>
+                        <span class="float-end" id="highestRepPerLicenseToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestRepPerLicenseCollapse">
+                <div class="mb-4">
+                    <div id="highestRepPerLicenseContainer">
+                        <!-- Highest rep per license will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Highest Pay per Company per License -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestPayPerCompanyPerLicenseCollapse" aria-expanded="true" aria-controls="highestPayPerCompanyPerLicenseCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>💰 Highest Pay per Company per License</span>
+                        <span class="float-end" id="highestPayPerCompanyPerLicenseToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestPayPerCompanyPerLicenseCollapse">
+                <div class="mb-4">
+                    <div id="highestPayPerCompanyPerLicenseContainer">
+                        <!-- Highest pay per company per license will be displayed here -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Highest Rep per Company per License -->
+                <div class="card-header mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
+                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#highestRepPerCompanyPerLicenseCollapse" aria-expanded="true" aria-controls="highestRepPerCompanyPerLicenseCollapse" style="color: var(--text-color); font-weight: 600;">
+                        <span>⭐ Highest Rep per Company per License</span>
+                        <span class="float-end" id="highestRepPerCompanyPerLicenseToggle">▼</span>
+                    </button>
+                </div>
+                <div class="collapse show" id="highestRepPerCompanyPerLicenseCollapse">
+                <div class="mb-4">
+                    <div id="highestRepPerCompanyPerLicenseContainer">
+                        <!-- Highest rep per company per license will be displayed here -->
+                    </div>
+                </div>
+                </div>
             </div>
             </div>
         </div>
@@ -463,6 +581,8 @@
                         <p class="text-muted">No jobs added yet. Paste job data above to get started!</p>
                     </div>
                 </div>
+            </div>
+        </div>
             </div>
         </div>
     </main>
@@ -509,6 +629,8 @@
     <script src="js/pages/logistics/logistics-licenses-ui.js"></script>
     <script src="js/pages/logistics/logistics-licenses-export-import.js"></script>
     <script src="js/pages/logistics/logistics-calculations.js"></script>
+    <script src="js/pages/logistics/logistics-license-calculations.js"></script>
+    <script src="js/pages/logistics/logistics-tabs.js"></script>
     <script src="js/pages/logistics/logistics-ui.js"></script>
     <script src="js/pages/logistics/logistics-main.js"></script>
 </body>

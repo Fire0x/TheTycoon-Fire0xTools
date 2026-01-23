@@ -84,10 +84,11 @@ window.parseJobData = function(text) {
             }
             
             // Extract job type tags
-            const jobTypeTags = ['FRAGILE', 'HEAVY', 'CONVOY (MAX 4)', 'HIGH_VALUE', 'HIGH TIER', 'ADR_4'];
+            const jobTypeTags = ['FRAGILE', 'HEAVY', 'CONVOY (MAX 4)', 'HIGH_VALUE', 'HIGH TIER', 'ADR_1', 'ADR_2', 'ADR_3', 'ADR_4', 'ADR_6', 'ADR_8'];
             jobTypeTags.forEach(tag => {
                 if (line.includes(tag) && !currentJob.jobType.includes(tag)) {
                     currentJob.jobType.push(tag);
+                    if (window.debug) window.debug.log(`Found job type tag: ${tag} for job: ${currentJob.company}`);
                 }
             });
             

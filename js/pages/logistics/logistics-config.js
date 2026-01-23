@@ -15,7 +15,11 @@ const LogisticsConfig = {
         bestHazard: true,
         highestRep: true,
         highestRepPerCompany: true,
-        highestRepPerMilePerCompany: true
+        highestRepPerMilePerCompany: true,
+        highestPayPerLicense: true,
+        highestRepPerLicense: true,
+        highestPayPerCompanyPerLicense: true,
+        highestRepPerCompanyPerLicense: true
     },
     
     // Save config to localStorage
