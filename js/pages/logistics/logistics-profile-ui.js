@@ -98,12 +98,18 @@ window.renderCompanyCard = function(company) {
     const companyId = company.id || company.company_name;
     const originalName = company.company_name; // Store original name for lookup
     const originalMotto = company.motto || ''; // Store original motto for lookup
+    const notes = company.notes || '';
+    // Convert postal to string (for backward compatibility with existing JSON objects)
+    const postal = company.postal ? (typeof company.postal === 'string' ? company.postal : String(company.postal)) : '';
     
     // Escape custom name and motto for HTML attribute values, but preserve emojis in display
     const escapedCustomName = customName.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     const escapedCustomMotto = customMotto.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     const escapedOriginalName = originalName.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     const escapedOriginalMotto = originalMotto.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    // Escape textarea content - only escape </textarea> to prevent XSS
+    const escapedNotes = notes.replace(/<\/textarea>/gi, '&lt;/textarea&gt;');
+    const escapedPostal = postal.replace(/<\/textarea>/gi, '&lt;/textarea&gt;');
     
     return `
         <div class="card company-card" id="company-${companyId}" data-company-id="${companyId}" data-original-name="${escapedOriginalName}" data-original-motto="${escapedOriginalMotto}">
@@ -169,6 +175,22 @@ window.renderCompanyCard = function(company) {
                     </div>
                     <small class="text-muted">Left border accent color for display card</small>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted mb-1"><strong>Notes</strong> <span class="text-muted small">(optional)</span></label>
+                    <textarea class="form-control form-control-sm editable-field" 
+                              rows="3"
+                              placeholder="Enter notes..."
+                              data-field="notes"
+                              data-company-id="${companyId}">${escapedNotes}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-muted mb-1"><strong>Postal</strong> <span class="text-muted small">(optional)</span></label>
+                    <textarea class="form-control form-control-sm editable-field" 
+                              rows="3"
+                              placeholder="Enter postal information..."
+                              data-field="postal"
+                              data-company-id="${companyId}">${escapedPostal}</textarea>
+                </div>
                 <hr>
                 <button class="btn btn-primary btn-sm w-100" onclick="saveCompanyFromCard('${company.id || company.company_name}')">💾 Save</button>
             </div>
@@ -230,6 +252,10 @@ window.renderCompanyDisplayCard = function(company) {
         : company.total_earnings || 0;
     const lastUpdated = company.reputation_last_updated ? formatRelativeTime(company.reputation_last_updated) : null;
     const companyId = company.id || company.company_name;
+    const notes = company.notes || '';
+    // Convert postal to string (for backward compatibility)
+    const postal = company.postal ? (typeof company.postal === 'string' ? company.postal : String(company.postal)) : '';
+    const postalDisplay = postal || '';
     
     if (window.debug && accentColor) {
         window.debug.log(`[ACCENT-COLOUR] Rendering display card for ${companyName} with accent colour: ${accentColor}`);
@@ -252,6 +278,8 @@ window.renderCompanyDisplayCard = function(company) {
                 <div class="company-display-line"><strong>Reputation:</strong> ${reputation}</div>
                 <div class="company-display-line"><strong>Total Earnings:</strong> $${formattedEarnings}</div>
                 ${lastUpdated ? `<div class="company-display-line text-muted small">Last updated: ${lastUpdated}</div>` : ''}
+                ${notes ? `<div class="company-display-line mt-2"><strong>Notes:</strong> ${window.escapeHtml(notes)}</div>` : ''}
+                ${postalDisplay ? `<div class="company-display-line mt-2"><strong>Postal:</strong> ${window.escapeHtml(postalDisplay)}</div>` : ''}
             </div>
         </div>
     `;
@@ -395,6 +423,18 @@ window.saveCompanyFromCard = async function(companyId) {
             if (value === '' || value === originalMotto) {
                 value = null;
             }
+        } else if (field === 'postal') {
+            // For postal, just trim like notes
+            value = value.trim();
+            if (value === '') {
+                value = null;
+            }
+        } else if (field === 'notes') {
+            // For notes, just trim
+            value = value.trim();
+            if (value === '') {
+                value = null;
+            }
         } else {
             // For other fields, trim but preserve content
             value = value.trim();
@@ -404,6 +444,8 @@ window.saveCompanyFromCard = async function(companyId) {
         // For other fields, use null for empty strings
         if (field === 'custom_name' || field === 'custom_motto') {
             companyData[field] = value === null || value === '' ? null : value;
+        } else if (field === 'postal' || field === 'notes') {
+            companyData[field] = value; // Can be null or string
         } else {
             companyData[field] = value || null; // Use null for empty strings
         }

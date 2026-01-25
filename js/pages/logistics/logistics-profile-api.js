@@ -78,6 +78,8 @@ window.createCompanyRep = async function(companyData) {
             custom_name: companyData.custom_name || null,
             custom_motto: companyData.custom_motto || null,
             accent_color: companyData.accent_color || null,
+            notes: companyData.notes || null,
+            postal: companyData.postal || null,
             reputation_last_updated: null
         };
         
@@ -169,6 +171,12 @@ window.saveCompanyRep = async function(companyData) {
             }
             if (companyData.accent_color !== undefined) {
                 updates.accent_color = companyData.accent_color;
+            }
+            if (companyData.notes !== undefined) {
+                updates.notes = companyData.notes;
+            }
+            if (companyData.postal !== undefined) {
+                updates.postal = companyData.postal;
             }
             
             // Check if reputation changed

@@ -71,7 +71,55 @@
 
                     <h6 class="mb-2"><strong>Step 6: Job Cards</strong></h6>
                     <p class="mb-0">View all imported jobs as cards. You can remove individual jobs using the <span class="badge bg-danger">🗑️ Remove Job</span> button.</p>
-                    </div>
+
+
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#HQCompanyCollapse" aria-expanded="true" aria-controls="HQCompanyCollapseCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📖 New: Known Company HQ</span>
+                    <span class="float-end" id="HQCompanyToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="HQCompanyCollapse">
+                <div class="card-body">
+                     <h6 class="mb-2"><strong>New: Known Company HQ</strong></h6>
+                    <ul class="mb-2">
+                        <li><strong>Ammu-Nation</strong> - 285</li>
+                        <li><strong>Bean Machine</strong> - 689 or 065</li>
+                        <li><strong>Bilgeco</strong> - 643</li>
+                        <li><strong>Burger Shot</strong> - 24</li>
+                        <li><strong>Clucking Bell</strong> - 21 or 837</li>
+                        <li><strong>Doners</strong> - 848</li>
+                        <li><strong>E-Cola</strong> - 815</li>
+                        <li><strong>Fleeca Bank</strong> - 663</li>
+                        <li><strong>FlyUS</strong> - 266</li>
+                        <li><strong>Globe Oil</strong> - 297 or 320</li>
+                        <li><strong>GoPostal</strong> - 45</li>
+                        <li><strong>Gruppe Sechs</strong> - 908</li>
+                        <li><strong>Humane Labs</strong> - 328</li>
+                        <li><strong>Jack Sheepe</strong> - 531</li>
+                        <li><strong>LS Water & Power</strong> - 615</li>
+                        <li><strong>LTD Gasoline</strong> - 834 or 319</li>
+                        <li><strong>Merryweather</strong> - 623</li>
+                        <li><strong>Pisswasser</strong> - 115</li>
+                        <li><strong>Post OP</strong> - 46</li>
+                        <li><strong>Redwood</strong> - 713</li>
+                        <li><strong>RON Oil</strong> - 684 or 308</li>
+                        <li><strong>Schlongberg Sachs</strong> - 662</li>
+                        <li><strong>Suburban</strong> - 714</li>
+                        <li><strong>Up-n-Atom</strong> - 41 or 597</li>
+                        <li><strong>Vanilla Unicorn</strong> - 835 or 636</li>
+                        <li><strong>Wireless</strong> - 847</li>
+                        <li><strong>Xero gas</strong> - 857</li>
+                        <li><strong>You Tool</strong> - 313</li>
+                    </ul>
+                        This knowledge is best of research of <strong>Brooks</strong> all credits to him.
+
+                </div>
                 </div>
             </div>
         </div>
@@ -108,6 +156,16 @@
                     📦 Job Analysis
                 </button>
             </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" 
+                        id="importExport-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#importExport" 
+                        type="button" 
+                        role="tab">
+                    📦 Import/Export
+                </button>
+            </li>
         </ul>
 
         <!-- Tab Content -->
@@ -137,36 +195,6 @@
                 </div>
 
                 <!-- Export/Import Section -->
-                <div class="card-header mt-4 mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
-                    <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#companyRepExportImportCollapse" aria-expanded="true" aria-controls="companyRepExportImportCollapse" style="color: var(--text-color); font-weight: 600;">
-                        <span>📦 Export/Import Company Reputation</span>
-                        <span class="float-end" id="companyRepExportImportToggle">▼</span>
-                    </button>
-                </div>
-                <div class="collapse show" id="companyRepExportImportCollapse">
-                    <div class="d-flex flex-wrap gap-2 mb-3">
-                        <button type="button" class="btn btn-success btn-sm" onclick="exportCompanyReputation()">
-                            📤 Export Company Reputation
-                        </button>
-                        <button type="button" class="btn btn-warning btn-sm" onclick="document.getElementById('companyRepFileInput').click()">
-                            📥 Import Company Reputation
-                        </button>
-                        <input type="file" id="companyRepFileInput" accept=".json" style="display: none;" onchange="handleCompanyReputationFileImport(event)">
-                        <div class="btn-group btn-group-sm" role="group">
-                            <input type="radio" class="btn-check" name="companyRepImportMode" id="companyRepImportModeReplace" value="replace">
-                            <label class="btn btn-outline-secondary" for="companyRepImportModeReplace">Replace</label>
-                            <input type="radio" class="btn-check" name="companyRepImportMode" id="companyRepImportModeMerge" value="merge" checked>
-                            <label class="btn btn-outline-secondary" for="companyRepImportModeMerge">Merge</label>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="companyRepJsonInput" class="form-label small">Or Paste JSON Data:</label>
-                        <textarea id="companyRepJsonInput" class="form-control form-control-sm" rows="4" placeholder="Paste JSON data here..."></textarea>
-                        <button type="button" class="btn btn-warning btn-sm mt-2" onclick="importCompanyReputationFromString(document.getElementById('companyRepJsonInput').value)">
-                            📥 Import from JSON
-                        </button>
-                    </div>
-                </div>
 
                 <div class="card-header mt-4 mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
                     <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#companyReputationEditableCollapse" aria-expanded="true" aria-controls="companyReputationEditableCollapse" style="color: var(--text-color); font-weight: 600;">
@@ -232,37 +260,6 @@
                         </table>
                     </div>
                     
-                    <!-- Export/Import Section -->
-                    <div class="card-header mt-4 mb-3" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border); padding: 0.5rem 0;">
-                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#licensesExportImportCollapse" aria-expanded="true" aria-controls="licensesExportImportCollapse" style="color: var(--text-color); font-weight: 600;">
-                            <span>📦 Export/Import Licenses</span>
-                            <span class="float-end" id="licensesExportImportToggle">▼</span>
-                        </button>
-                    </div>
-                    <div class="collapse show" id="licensesExportImportCollapse">
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <button type="button" class="btn btn-success btn-sm" onclick="exportLicenses()">
-                                📤 Export Licenses
-                            </button>
-                            <button type="button" class="btn btn-warning btn-sm" onclick="document.getElementById('licensesFileInput').click()">
-                                📥 Import Licenses
-                            </button>
-                            <input type="file" id="licensesFileInput" accept=".json" style="display: none;" onchange="handleLicensesFileImport(event)">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <input type="radio" class="btn-check" name="licensesImportMode" id="licensesImportModeReplace" value="replace">
-                                <label class="btn btn-outline-secondary" for="licensesImportModeReplace">Replace</label>
-                                <input type="radio" class="btn-check" name="licensesImportMode" id="licensesImportModeMerge" value="merge" checked>
-                                <label class="btn btn-outline-secondary" for="licensesImportModeMerge">Merge</label>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="licensesJsonInput" class="form-label small">Or Paste JSON Data:</label>
-                            <textarea id="licensesJsonInput" class="form-control form-control-sm" rows="4" placeholder="Paste JSON data here..."></textarea>
-                            <button type="button" class="btn btn-warning btn-sm mt-2" onclick="importLicensesFromString(document.getElementById('licensesJsonInput').value)">
-                                📥 Import from JSON
-                            </button>
-                        </div>
-                    </div>
                     
                     <div class="mt-3">
                         <button type="button" class="btn btn-success" onclick="saveLicenses()">
@@ -273,7 +270,10 @@
                 </div>
             </div>
         </div>
+            </div>
 
+            <!-- Job Analysis Tab -->
+            <div class="tab-pane fade" id="job-analysis" role="tabpanel">
         <!-- Configuration Section -->
         <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
             <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
@@ -583,6 +583,81 @@
                 </div>
             </div>
         </div>
+            </div>
+
+            <!-- Import/Export Tab -->
+            <div class="tab-pane fade" id="importExport" role="tabpanel">
+                <!-- Company Reputation Export/Import Section -->
+                <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#companyRepExportImportCollapse" aria-expanded="true" aria-controls="companyRepExportImportCollapse" style="color: var(--text-color); font-weight: 600;">
+                            <span>📦 Export/Import Company Reputation</span>
+                            <span class="float-end" id="companyRepExportImportToggle">▼</span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="companyRepExportImportCollapse">
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <button type="button" class="btn btn-success btn-sm" onclick="exportCompanyReputation()">
+                                    📤 Export Company Reputation
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm" onclick="document.getElementById('companyRepFileInput').click()">
+                                    📥 Import Company Reputation
+                                </button>
+                                <input type="file" id="companyRepFileInput" accept=".json" style="display: none;" onchange="handleCompanyReputationFileImport(event)">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <input type="radio" class="btn-check" name="companyRepImportMode" id="companyRepImportModeReplace" value="replace">
+                                    <label class="btn btn-outline-secondary" for="companyRepImportModeReplace">Replace</label>
+                                    <input type="radio" class="btn-check" name="companyRepImportMode" id="companyRepImportModeMerge" value="merge" checked>
+                                    <label class="btn btn-outline-secondary" for="companyRepImportModeMerge">Merge</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="companyRepJsonInput" class="form-label small">Or Paste JSON Data:</label>
+                                <textarea id="companyRepJsonInput" class="form-control form-control-sm" rows="4" placeholder="Paste JSON data here..."></textarea>
+                                <button type="button" class="btn btn-warning btn-sm mt-2" onclick="importCompanyReputationFromString(document.getElementById('companyRepJsonInput').value)">
+                                    📥 Import from JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Licenses Export/Import Section -->
+                <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#licensesExportImportCollapse" aria-expanded="true" aria-controls="licensesExportImportCollapse" style="color: var(--text-color); font-weight: 600;">
+                            <span>📦 Export/Import Licenses</span>
+                            <span class="float-end" id="licensesExportImportToggle">▼</span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="licensesExportImportCollapse">
+                        <div class="card-body">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <button type="button" class="btn btn-success btn-sm" onclick="exportLicenses()">
+                                    📤 Export Licenses
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm" onclick="document.getElementById('licensesFileInput').click()">
+                                    📥 Import Licenses
+                                </button>
+                                <input type="file" id="licensesFileInput" accept=".json" style="display: none;" onchange="handleLicensesFileImport(event)">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <input type="radio" class="btn-check" name="licensesImportMode" id="licensesImportModeReplace" value="replace">
+                                    <label class="btn btn-outline-secondary" for="licensesImportModeReplace">Replace</label>
+                                    <input type="radio" class="btn-check" name="licensesImportMode" id="licensesImportModeMerge" value="merge" checked>
+                                    <label class="btn btn-outline-secondary" for="licensesImportModeMerge">Merge</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="licensesJsonInput" class="form-label small">Or Paste JSON Data:</label>
+                                <textarea id="licensesJsonInput" class="form-control form-control-sm" rows="4" placeholder="Paste JSON data here..."></textarea>
+                                <button type="button" class="btn btn-warning btn-sm mt-2" onclick="importLicensesFromString(document.getElementById('licensesJsonInput').value)">
+                                    📥 Import from JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

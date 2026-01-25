@@ -393,7 +393,6 @@ window.renderAnalysis = function() {
     
     // License-based calculations
     const licenses = window.licenses || [];
-    const userLevel = getUserLevel();
     
     if (enabled.highestPayPerLicense !== false) {
         const highestPayPerLicense = window.calculateHighestPayPerLicense(jobs, licenses, userLevel);

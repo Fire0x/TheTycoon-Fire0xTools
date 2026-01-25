@@ -200,7 +200,9 @@
                             total_earnings: company.total_earnings,
                             custom_name: company.custom_name,
                             custom_motto: company.custom_motto,
-                            accent_color: company.accent_color
+                            accent_color: company.accent_color,
+                            notes: company.notes,
+                            postal: company.postal
                         });
                         updatedCount++;
                     } else {
@@ -213,7 +215,9 @@
                             total_earnings: company.total_earnings ?? 0,
                             custom_name: company.custom_name,
                             custom_motto: company.custom_motto,
-                            accent_color: company.accent_color
+                            accent_color: company.accent_color,
+                            notes: company.notes,
+                            postal: company.postal
                         });
                         savedCount++;
                     }
