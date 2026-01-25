@@ -109,10 +109,10 @@ const ConfigData = {
         'apartment.html': '0.1.5',
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
-        'changelog.html': '0.0.5',
+        'changelog.html': '0.0.6',
         'import.html': '0.0.7',
         'fishing.html': '0.0.2',
-        'logistics.html': '0.0.4'
+        'logistics.html': '0.0.5'
     }
 };
 

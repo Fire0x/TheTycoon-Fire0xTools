@@ -53,6 +53,61 @@ window.escapeHtml = function(text) {
     return div.innerHTML;
 };
 
+// Get matching licenses for a job based on parseString
+function getMatchingLicenses(job) {
+    const licenses = window.licenses || [];
+    const matchingLicenses = [];
+    
+    if (!job.jobType || job.jobType.length === 0) {
+        return matchingLicenses;
+    }
+    
+    licenses.forEach(license => {
+        if (license.parseString && license.parseString.trim()) {
+            const parseString = license.parseString.trim();
+            const matches = job.jobType.some(type => 
+                type.includes(parseString)
+            );
+            if (matches) {
+                matchingLicenses.push(license);
+            }
+        }
+    });
+    
+    return matchingLicenses;
+}
+
+// Generate tags HTML for CONVOY, HIGH TIER, and license parse-strings
+function generateJobTags(job) {
+    const tags = [];
+    
+    // Check for CONVOY
+    const hasConvoy = job.jobType && job.jobType.some(type => 
+        type.includes('CONVOY')
+    );
+    if (hasConvoy) {
+        tags.push('<span class="badge bg-primary me-1">CONVOY</span>');
+    }
+    
+    // Check for HIGH TIER
+    const hasHighTier = job.jobType && job.jobType.some(type => 
+        type.includes('HIGH TIER')
+    );
+    if (hasHighTier) {
+        tags.push('<span class="badge bg-warning me-1">HIGH TIER</span>');
+    }
+    
+    // Get matching licenses
+    const matchingLicenses = getMatchingLicenses(job);
+    matchingLicenses.forEach(license => {
+        if (license.parseString && license.parseString.trim()) {
+            tags.push(`<span class="badge bg-info me-1" title="${window.escapeHtml(license.name || '')}">${window.escapeHtml(license.parseString)}</span>`);
+        }
+    });
+    
+    return tags.length > 0 ? `<div class="mb-2">${tags.join('')}</div>` : '';
+}
+
 // Get user level
 function getUserLevel() {
     const input = cachedElements.userLevelInput;
@@ -133,6 +188,9 @@ window.renderJobs = function() {
         const levelClass = userLevel > 0 && job.level > userLevel ? 'too-low' : 'available';
         const levelText = userLevel > 0 && job.level > userLevel ? 'Level Too Low' : `Lvl ${job.level}`;
         
+        // Generate tags
+        const jobTags = generateJobTags(job);
+        
         return `
             <div class="card job-card" id="job-${job.id}">
                 <div class="card-body">
@@ -146,6 +204,7 @@ window.renderJobs = function() {
                             ${job.edited ? '<span class="badge bg-warning ms-2">Edited</span>' : ''}
                         </div>
                     </div>
+                    ${jobTags}
                     ${jobTypeBadges ? `<div class="mb-2">${jobTypeBadges}</div>` : ''}
                     <hr>
                     <div class="job-info">
@@ -256,18 +315,22 @@ window.renderAnalysis = function() {
             if (bestMoney.length === 0) {
                 moneyContainer.innerHTML = '<p class="text-muted">No jobs found.</p>';
             } else {
-                moneyContainer.innerHTML = bestMoney.slice(0, 10).map((job, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(job.jobName || 'Unknown')}</strong>
+                moneyContainer.innerHTML = bestMoney.slice(0, 10).map((job, idx) => {
+                    const jobTags = generateJobTags(job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(job.jobName || 'Unknown')}</strong>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">$${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')}</div>
+                            <div class="job-details">
+                                <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
+                                <div>XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')} | REP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.rep) : job.rep.toLocaleString('en-US')}</div>
+                            </div>
                         </div>
-                        <div class="value-display">$${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')}</div>
-                        <div class="job-details">
-                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
-                            <div>XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')} | REP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.rep) : job.rep.toLocaleString('en-US')}</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -279,18 +342,22 @@ window.renderAnalysis = function() {
             if (bestConvoy.length === 0) {
                 convoyContainer.innerHTML = '<p class="text-muted">No convoy jobs found.</p>';
             } else {
-                convoyContainer.innerHTML = bestConvoy.slice(0, 10).map((job, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(job.jobName || 'Unknown')}</strong>
+                convoyContainer.innerHTML = bestConvoy.slice(0, 10).map((job, idx) => {
+                    const jobTags = generateJobTags(job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(job.jobName || 'Unknown')}</strong>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">${window.formatRatio(job.overallRating)}</div>
+                            <div class="job-details">
+                                <div>Overall Rating: ($${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} + ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')} XP + ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.rep) : job.rep.toLocaleString('en-US')} REP) / ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
+                                <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
+                            </div>
                         </div>
-                        <div class="value-display">${window.formatRatio(job.overallRating)}</div>
-                        <div class="job-details">
-                            <div>Overall Rating: ($${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} + ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')} XP + ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.rep) : job.rep.toLocaleString('en-US')} REP) / ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
-                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -302,18 +369,22 @@ window.renderAnalysis = function() {
             if (bestHazard.length === 0) {
                 hazardContainer.innerHTML = '<p class="text-muted">No hazard jobs found.</p>';
             } else {
-                hazardContainer.innerHTML = bestHazard.slice(0, 10).map((job, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(job.jobName || 'Unknown')}</strong>
+                hazardContainer.innerHTML = bestHazard.slice(0, 10).map((job, idx) => {
+                    const jobTags = generateJobTags(job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(job.jobName || 'Unknown')}</strong>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">${window.formatRatio(job.overallRating)}</div>
+                            <div class="job-details">
+                                <div>Overall Rating: ($${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} + ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')} XP + ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.rep) : job.rep.toLocaleString('en-US')} REP) / ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
+                                <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
+                            </div>
                         </div>
-                        <div class="value-display">${window.formatRatio(job.overallRating)}</div>
-                        <div class="job-details">
-                            <div>Overall Rating: ($${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} + ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')} XP + ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.rep) : job.rep.toLocaleString('en-US')} REP) / ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
-                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -325,18 +396,22 @@ window.renderAnalysis = function() {
             if (highestRep.length === 0) {
                 repOnlyContainer.innerHTML = '<p class="text-muted">No jobs found.</p>';
             } else {
-                repOnlyContainer.innerHTML = highestRep.slice(0, 10).map((job, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(job.jobName || 'Unknown')}</strong>
+                repOnlyContainer.innerHTML = highestRep.slice(0, 10).map((job, idx) => {
+                    const jobTags = generateJobTags(job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(job.jobName || 'Unknown')}</strong>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.rep) : job.rep.toLocaleString('en-US')} REP</div>
+                            <div class="job-details">
+                                <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')}</div>
+                                <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
+                            </div>
                         </div>
-                        <div class="value-display">${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.rep) : job.rep.toLocaleString('en-US')} REP</div>
-                        <div class="job-details">
-                            <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')}</div>
-                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -349,19 +424,23 @@ window.renderAnalysis = function() {
                 repContainer.innerHTML = '<p class="text-muted">No jobs found.</p>';
             } else {
                 const repBonus = config.repBonusPerCompany || 0;
-                repContainer.innerHTML = bestRep.slice(0, 10).map((job, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(job.company || 'Unknown')}</strong>
-                            <br><small class="text-muted">${window.escapeHtml(job.jobName || '')}</small>
+                repContainer.innerHTML = bestRep.slice(0, 10).map((job, idx) => {
+                    const jobTags = generateJobTags(job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(job.company || 'Unknown')}</strong>
+                                <br><small class="text-muted">${window.escapeHtml(job.jobName || '')}</small>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">${window.formatRatio(job.repPerKm)}</div>
+                            <div class="job-details">
+                                <div>Rep per km: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.repWithBonus || job.rep) : (job.repWithBonus || job.rep).toLocaleString('en-US')} REP${repBonus > 0 ? ` (+${repBonus} bonus)` : ''} / ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
+                                <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')}</div>
+                            </div>
                         </div>
-                        <div class="value-display">${window.formatRatio(job.repPerKm)}</div>
-                        <div class="job-details">
-                            <div>Rep per km: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.repWithBonus || job.rep) : (job.repWithBonus || job.rep).toLocaleString('en-US')} REP${repBonus > 0 ? ` (+${repBonus} bonus)` : ''} / ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(job.distance.toFixed(1))) : job.distance.toFixed(1)} km</div>
-                            <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')}</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -374,19 +453,23 @@ window.renderAnalysis = function() {
                 repPerMileContainer.innerHTML = '<p class="text-muted">No jobs found.</p>';
             } else {
                 const repBonus = config.repBonusPerCompany || 0;
-                repPerMileContainer.innerHTML = bestRepPerMile.slice(0, 10).map((job, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(job.company || 'Unknown')}</strong>
-                            <br><small class="text-muted">${window.escapeHtml(job.jobName || '')}</small>
+                repPerMileContainer.innerHTML = bestRepPerMile.slice(0, 10).map((job, idx) => {
+                    const jobTags = generateJobTags(job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(job.company || 'Unknown')}</strong>
+                                <br><small class="text-muted">${window.escapeHtml(job.jobName || '')}</small>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">${window.formatRatio(job.repPerMile)}</div>
+                            <div class="job-details">
+                                <div>Rep per mile: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.repWithBonus || job.rep) : (job.repWithBonus || job.rep).toLocaleString('en-US')} REP${repBonus > 0 ? ` (+${repBonus} bonus)` : ''} / ${window.formatRatio(job.distanceInMiles)} miles</div>
+                                <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')}</div>
+                            </div>
                         </div>
-                        <div class="value-display">${window.formatRatio(job.repPerMile)}</div>
-                        <div class="job-details">
-                            <div>Rep per mile: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.repWithBonus || job.rep) : (job.repWithBonus || job.rep).toLocaleString('en-US')} REP${repBonus > 0 ? ` (+${repBonus} bonus)` : ''} / ${window.formatRatio(job.distanceInMiles)} miles</div>
-                            <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.money) : job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(job.xp) : job.xp.toLocaleString('en-US')}</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -401,20 +484,24 @@ window.renderAnalysis = function() {
             if (highestPayPerLicense.length === 0) {
                 container.innerHTML = '<p class="text-muted">No jobs found for purchased licenses.</p>';
             } else {
-                container.innerHTML = highestPayPerLicense.slice(0, 10).map((result, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(result.license.name || 'Unknown License')}</strong>
-                            <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                container.innerHTML = highestPayPerLicense.slice(0, 10).map((result, idx) => {
+                    const jobTags = generateJobTags(result.job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(result.license.name || 'Unknown License')}</strong>
+                                <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">$${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')}</div>
+                            <div class="job-details">
+                                <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
+                                <div>XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')} | REP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.rep) : result.job.rep.toLocaleString('en-US')}</div>
+                                <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
+                            </div>
                         </div>
-                        <div class="value-display">$${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')}</div>
-                        <div class="job-details">
-                            <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
-                            <div>XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')} | REP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.rep) : result.job.rep.toLocaleString('en-US')}</div>
-                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -426,20 +513,24 @@ window.renderAnalysis = function() {
             if (highestRepPerLicense.length === 0) {
                 container.innerHTML = '<p class="text-muted">No jobs found for purchased licenses.</p>';
             } else {
-                container.innerHTML = highestRepPerLicense.slice(0, 10).map((result, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(result.license.name || 'Unknown License')}</strong>
-                            <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                container.innerHTML = highestRepPerLicense.slice(0, 10).map((result, idx) => {
+                    const jobTags = generateJobTags(result.job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(result.license.name || 'Unknown License')}</strong>
+                                <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')} REP</div>
+                            <div class="job-details">
+                                <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
+                                <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.money) : result.job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')}</div>
+                                <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
+                            </div>
                         </div>
-                        <div class="value-display">${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')} REP</div>
-                        <div class="job-details">
-                            <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
-                            <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.money) : result.job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')}</div>
-                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -451,20 +542,24 @@ window.renderAnalysis = function() {
             if (highestPayPerCompanyPerLicense.length === 0) {
                 container.innerHTML = '<p class="text-muted">No jobs found for purchased licenses.</p>';
             } else {
-                container.innerHTML = highestPayPerCompanyPerLicense.slice(0, 10).map((result, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(result.license.name || 'Unknown License')} - ${window.escapeHtml(result.company || 'Unknown')}</strong>
-                            <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                container.innerHTML = highestPayPerCompanyPerLicense.slice(0, 10).map((result, idx) => {
+                    const jobTags = generateJobTags(result.job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(result.license.name || 'Unknown License')} - ${window.escapeHtml(result.company || 'Unknown')}</strong>
+                                <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">$${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')}</div>
+                            <div class="job-details">
+                                <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
+                                <div>XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')} | REP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.rep) : result.job.rep.toLocaleString('en-US')}</div>
+                                <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
+                            </div>
                         </div>
-                        <div class="value-display">$${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')}</div>
-                        <div class="job-details">
-                            <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
-                            <div>XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')} | REP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.rep) : result.job.rep.toLocaleString('en-US')}</div>
-                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }
@@ -476,20 +571,24 @@ window.renderAnalysis = function() {
             if (highestRepPerCompanyPerLicense.length === 0) {
                 container.innerHTML = '<p class="text-muted">No jobs found for purchased licenses.</p>';
             } else {
-                container.innerHTML = highestRepPerCompanyPerLicense.slice(0, 10).map((result, idx) => `
-                    <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
-                        <div class="card-header">
-                            <strong>${window.escapeHtml(result.license.name || 'Unknown License')} - ${window.escapeHtml(result.company || 'Unknown')}</strong>
-                            <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                container.innerHTML = highestRepPerCompanyPerLicense.slice(0, 10).map((result, idx) => {
+                    const jobTags = generateJobTags(result.job);
+                    return `
+                        <div class="analysis-card ${idx < 3 ? 'top-3' : ''}">
+                            <div class="card-header">
+                                <strong>${window.escapeHtml(result.license.name || 'Unknown License')} - ${window.escapeHtml(result.company || 'Unknown')}</strong>
+                                <br><small class="text-muted">${window.escapeHtml(result.job.jobName || '')}</small>
+                            </div>
+                            ${jobTags}
+                            <div class="value-display">${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')} REP</div>
+                            <div class="job-details">
+                                <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
+                                <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.money) : result.job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')}</div>
+                                <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
+                            </div>
                         </div>
-                        <div class="value-display">${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.value) : result.value.toLocaleString('en-US')} REP</div>
-                        <div class="job-details">
-                            <div>License Level: ${result.license.level} | Purchased: ${result.license.purchased ? 'Yes' : 'No'}</div>
-                            <div>Money: $${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.money) : result.job.money.toLocaleString('en-US')} | XP: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(result.job.xp) : result.job.xp.toLocaleString('en-US')}</div>
-                            <div>Distance: ${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(parseFloat(result.job.distance.toFixed(1))) : result.job.distance.toFixed(1)} km</div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
     }

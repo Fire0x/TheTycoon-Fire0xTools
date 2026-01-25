@@ -20,9 +20,16 @@
     <!-- Navbar is injected by js/navbar.js -->
 
     <main class="container py-5">
-        <div class="text-center mb-5">
-            <h1 class="glow-text">Changelog</h1>
-            <p class="lead">Summary of updates and improvements across all TheTycoon tools.</p>
+        <div class="position-relative mb-4">
+            <div class="text-center">
+                <h1 class="glow-text mb-0">Changelog</h1>
+                <p class="lead">Summary of updates and improvements across all TheTycoon tools.</p>
+            </div>
+            <button id="changelogDebugToggleBtn"
+                    class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0"
+                    onclick="if(window.toggleChangelogDebug) window.toggleChangelogDebug()">
+                <span id="changelogDebugToggleText">🔍 Debug: OFF</span>
+            </button>
         </div>
         <div class="row">
             <div class="col-lg-8 mx-auto">
@@ -35,12 +42,42 @@
                 <!-- 3. Update the version, date, and bullet points with your notes.                    -->
                 <!--                                                                                     -->
                 <!-- You only need to edit TEXT inside the tags; do not change the structure.           -->
+                <!--                                                                                     -->
+                <!-- Older entries are stored in archive files and can be loaded via the file selector.  -->
                 <!-- ===================================================================================== -->
 
                 <section id="changelog" class="mb-5">
                     <h2 class="mb-4 text-center">Release Notes</h2>
 
+                    <!-- File Selector Container -->
+                    <div id="changelogFileSelector" class="mb-4"></div>
+
+                    <!-- Archive Entries Container (for loaded archive entries) -->
+                    <div id="changelogArchiveContainer"></div>
+
                     <!-- Latest Entry -->                  
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.0.6</h3>
+                                <p class="text-muted mb-3">2026-01-25</p>
+                                <ul class="mb-0">
+                                    <li><strong>Logistics - Job Analysis Tab Restructure:</strong> Moved "Job Analysis" and "Job Cards" sections from the Licenses tab to a dedicated "Job Analysis" tab. The Licenses tab now only contains "My Licenses" and "Configuration" sections, while all job-related content (level input, job data import, analysis sections, and job cards) is now properly organized in the Job Analysis tab.</li>
+                                    <li><strong>Logistics - Job Tags Display:</strong> Added visual tags to job cards and all analysis sections showing CONVOY (blue badge), HIGH TIER (yellow badge), and license parse-string matches (info badge). Tags are automatically displayed when jobs are parsed, making it easier to identify job types and license requirements at a glance.</li>
+                                    <li><strong>Logistics - Tag Helper Functions:</strong> Created <code>getMatchingLicenses()</code> and <code>generateJobTags()</code> helper functions in <code>logistics-ui.js</code> to automatically detect and display job type tags based on jobType array and license parseString matches.</li>
+                                    <li><strong>Logistics - Analysis Section Tags:</strong> Updated all analysis sections (Highest Money, Best Convoy, Best Hazard, Highest Rep, Highest Rep per Company, Highest Rep per Mile per Company, and all license-based calculations) to display job tags, providing consistent visual information across all analysis views.</li>
+                                    <li><strong>Logistics - License Parse-String Tags:</strong> License parse-string tags now appear on jobs that match any license's parseString value, with the license name displayed as a tooltip on hover. This helps users quickly identify which jobs require specific licenses.</li>
+                                    <li><strong>Changelog - Modular Archive System:</strong> Refactored changelog page into a modular system with separate archive files for older entries. Created JavaScript modules (<code>changelog-config.js</code>, <code>changelog-core.js</code>, <code>changelog-ui.js</code>, <code>changelog-init.js</code>) for file loading, HTML parsing, entry management, and UI rendering. Older entries (1.0.3, 1.0.2, 1.0.1, 1.0.0) moved to <code>pages/changelog/changelog-archive-1.html</code>.</li>
+                                    <li><strong>Changelog - File Selector UI:</strong> Added collapsible file selector interface allowing users to manually select which archive files to load. Supports multiple file selection with checkboxes and a "Load Selected Files" button. Archive files are stored in <code>pages/changelog/</code> directory for easy management.</li>
+                                    <li><strong>Changelog - Load More Functionality:</strong> Implemented progressive loading with "Load More" button. Initial display shows configurable count (default 5 entries), with additional entries loaded incrementally (default 5 per click). Button automatically hides when all entries are displayed.</li>
+                                    <li><strong>Changelog - Debug Integration:</strong> Added DebugManager integration with toggle button in page header. Comprehensive logging for file loading, entry parsing, UI updates, and pagination state changes. Debug state persists in localStorage.</li>
+                                    <li><strong>Changelog - Entry Management:</strong> Automatic sorting by date (newest first) across all loaded files. Entries from current page and archive files are merged and sorted together. HTML parsing extracts <code>&lt;article class="changelog-entry"&gt;</code> elements from archive files.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Previous Entry -->                  
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
@@ -105,90 +142,9 @@
                             </div>
                         </div>
                     </article>
-                    
-                    <article class="changelog-entry mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title mb-1">Version 1.0.3</h3>
-                                <p class="text-muted mb-3">2026-01-13</p>
-                                <ul class="mb-0">
-                                    <li><strong>Checklist - Emoji Picker Refactoring:</strong> Created shared emoji picker module (<code>js/pages/checklist/emoji-picker.js</code>) to centralize emoji picker functionality and remove ~475 lines of duplicate inline HTML from <code>checklist.html</code> and <code>checklist-1.html</code>.</li>
-                                    <li><strong>Checklist - Code Cleanup:</strong> Removed all leftover inline emoji HTML from both checklist pages. Emoji picker is now dynamically generated via JavaScript for improved maintainability.</li>
-                                    <li><strong>Checklist - Summary Calculation Fix:</strong> Fixed console warnings for tiers with no businesses. Updated <code>calculateTierSummary()</code> to gracefully handle tiers without businesses and skip unnecessary calculations.</li>
-                                    <li><strong>Checklist - Performance:</strong> Optimized summary calculation by checking for businesses before processing, reducing unnecessary DOM queries and function calls.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </article>
-                    
-                    <article class="changelog-entry mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title mb-1">Version 1.0.2</h3>
-                                <p class="text-muted mb-3">2026-01-12</p>
-                                <ul class="mb-0">
-                                    <li>Added config-driven hero sections to all pages for centralized management.</li>
-                                    <li>Standardized hero section styling and structure across all HTML pages.</li>
-                                    <li>Updated script loading order in changelog.html to match apartment.html pattern (theme.js loads before config files).</li>
-                                    <li>Adjusted time display width to match "How to Use This Page" card width in merchants and education timer pages.</li>
-                                    <li>Standardized navbar injection comments across all pages.</li>
-                                    <li>Implemented modular CSS architecture across all pages for improved maintainability.</li>
-                                    <li>Created base CSS files (variables.css, common.css, responsive.css) for shared styles and components.</li>
-                                    <li>Extracted all inline styles to external CSS files organized by page.</li>
-                                    <li>Added page-specific CSS files for checklist, merchants, apartment, education timer, vehicle deliveries, info pages, changelog, and index.</li>
-                                    <li>Established primary/variant CSS structure for checklist and info page pairs (checklist.html/checklist-1.html, Info.html/Info-Ref.html).</li>
-                                    <li>Removed all inline &lt;style&gt; blocks from HTML files, improving code organization and browser caching.</li>
-                                    <li>Added comprehensive documentation comments to all CSS files explaining purpose, usage, and update instructions.</li>
-                                    <li>Updated all HTML pages to load CSS in correct cascade order (base → page-base → page-specific → variant-specific).</li>
-                                    <li>Fixed apartment page initialization errors - corrected initNumberFormatting function calls to use window.NumberFormatter.initNumberFormatting instead of window.initNumberFormatting.</li>
-                                    <li>Fixed apartment modals duplicate declaration error - removed duplicate formatDateDDMMMYYYYWithTime constant declaration.</li>
-                                    <li>Fixed apartment page missing function exports - ensured all export/import functions (exportAll, loadApartmentData, exportTimers, etc.) are properly exported to global scope.</li>
-                                    <li>Fixed education timer parseAndSave functionality - synchronized window.trainings reference after all data modifications to ensure renderTimers() displays correctly.</li>
-                                    <li>Optimized merchants page performance - throttled localStorage saves to every 30 seconds and re-renders to every 10 seconds, reducing excessive DOM operations and improving click handler performance.</li>
-                                    <li>Fixed merchants page duplicate setInterval calls - consolidated multiple timer initialization blocks into a single initializePage() function.</li>
-                                    <li>Fixed VehicleDeliveries.html duplicate theme.js script tag and corrected script loading order.</li>
-                                    <li>Created apartments-import.json template file - added sample import file with example apartment data structure for easy testing and reference.</li>
-                                    <li><strong>Checklist - Emoji Picker Refactoring:</strong> Created shared emoji picker module (<code>js/pages/checklist/emoji-picker.js</code>) to centralize emoji picker functionality and 
-                                    <li><strong>Checklist - Code Cleanup:</strong> Removed all leftover inline emoji HTML from both checklist pages. Emoji picker is now dynamically generated via JavaScript for improved mainta
-                                    <li><strong>Checklist - Summary Calculation Fix:</strong> Fixed console warnings for tiers with no businesses. Updated <code>calculateTierSummary()</code> to gracefully handle tiers without
-                                    <li><strong>Checklist - Performance:</strong> Optimized summary calculation by checking for businesses before processing, reducing unnecessary DOM queries and function calls.</li>       
-                                    <li>Credits to <strong>Brooks</strong> for testing and providing feedback on the changes.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </article>
-                    
-                    <article class="changelog-entry mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title mb-1">Version 1.0.1</h3>
-                                <p class="text-muted mb-3">2026-01-08</p>
-                                <ul class="mb-0">
-                                    <li>Fixed how internal things worked.</li>
-                                    <li>Replaced the broken "How to Use This Page" section with a new "How to Use This Page" section.</li>
-                                    <li>Fixed Summaries on the Checklist page.</li>
-                                    <li>Fixed Checklist Editing Products.</li>
-                                    <li>Fixed Checklist Editing Business</li>
-                                    <li>Added a feedback form to the changelog page.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </article>
 
-                    <article class="changelog-entry mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title mb-1">Version 1.0.0</h3>
-                                <p class="text-muted mb-3">2026-01-06</p>
-                                <ul class="mb-0">
-                                    <li>Initial public changelog page created.</li>
-                                    <li>Added section to embed an external feedback form for updates.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </article>
-
-                    <!-- Older entries go here. Copy/paste the <article> above and edit as needed. -->
+                    <!-- Load More Button Container -->
+                    <div id="changelogLoadMoreContainer"></div>
 
                 </section>
 
@@ -270,12 +226,15 @@
                         <div class="card-body">
                             <h2 class="card-title">How this page works</h2>
                             <p class="mb-2">
-                                This page is completely static and uses only HTML and Bootstrap styling. To update it:
+                                This page now uses a modular system for managing changelog entries:
                             </p>
                             <ol class="mb-0">
-                                <li>Open <code>changelog.html</code> in a text editor.</li>
-                                <li>Copy an existing changelog <code>&lt;article class=\"changelog-entry\"&gt;</code> block and edit the text.</li>
-                                <li>Paste external form embed code into the Feedback &amp; Suggestions section when you are ready.</li>
+                                <li><strong>Recent Entries:</strong> Keep the latest 2-3 versions in <code>changelog.html</code> for immediate visibility.</li>
+                                <li><strong>Archive Files:</strong> Older entries are stored in <code>pages/changelog/</code> directory as separate HTML files (e.g., <code>changelog-archive-1.html</code>).</li>
+                                <li><strong>Loading Archives:</strong> Use the "Load Archive Files" section above to select and load older changelog entries.</li>
+                                <li><strong>Load More:</strong> After loading archives, use the "Load More" button to progressively display additional entries.</li>
+                                <li><strong>Adding New Entries:</strong> Copy an existing <code>&lt;article class="changelog-entry"&gt;</code> block and paste it ABOVE existing entries in <code>changelog.html</code>.</li>
+                                <li><strong>Moving to Archive:</strong> When you have more than 3 recent entries, move older ones to archive files in <code>pages/changelog/</code>.</li>
                             </ol>
                         </div>
                     </div>
@@ -304,6 +263,13 @@
     <script src="js/site-config.js"></script>
     <!-- Navbar Manager -->
     <script src="js/navbar.js"></script>
+    <!-- Debug Manager -->
+    <script src="js/debug-manager.js"></script>
+    <!-- Changelog Modules (load in order) -->
+    <script src="js/pages/changelog/changelog-config.js"></script>
+    <script src="js/pages/changelog/changelog-core.js"></script>
+    <script src="js/pages/changelog/changelog-ui.js"></script>
+    <script src="js/pages/changelog/changelog-init.js"></script>
 </body>
 </html>
 

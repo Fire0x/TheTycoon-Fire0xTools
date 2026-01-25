@@ -4,7 +4,7 @@
  * 
  * PURPOSE:
  * - Contains styles specific to changelog.html
- * - Ready for future style additions
+ * - Styles for file selector, Load More button, and loading states
  * 
  * APPLIES TO:
  * - changelog.html ONLY
@@ -14,5 +14,97 @@
  * - To update shared styles used by changelog.html: Edit css/base/common.css
  */
 
-/* Add changelog.html-specific styles here */
-/* Currently no unique styles - page uses base/common styles */
+/* File Selector Styles */
+#changelogFileSelector .file-selector-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 1px solid var(--card-border, #dee2e6);
+    border-radius: 0.25rem;
+    background-color: var(--card-bg, #fff);
+}
+
+#changelogFileSelector .form-check {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--card-border, #dee2e6);
+}
+
+#changelogFileSelector .form-check:last-child {
+    border-bottom: none;
+}
+
+#changelogFileSelector .form-check-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+#changelogFileSelector .form-check-input {
+    cursor: pointer;
+}
+
+/* Load More Button Styles */
+#changelogLoadMoreContainer {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+#changelogLoadMoreBtn {
+    min-width: 200px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+}
+
+#changelogLoadMoreBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+/* Loading State Styles */
+#changelogArchiveContainer .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3em;
+}
+
+#changelogArchiveContainer .text-muted {
+    color: var(--text-muted, #6c757d) !important;
+}
+
+/* Archive Container Styles */
+#changelogArchiveContainer {
+    margin-top: 1rem;
+}
+
+#changelogArchiveContainer .changelog-entry {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Debug Toggle Button */
+#changelogDebugToggleBtn {
+    margin-top: 0.5rem;
+}
+
+/* File Selector Collapse Toggle */
+#fileSelectorToggle {
+    transition: transform 0.2s ease;
+}
+
+#fileSelectorCollapse.show #fileSelectorToggle {
+    transform: rotate(0deg);
+}
+
+#fileSelectorCollapse:not(.show) #fileSelectorToggle {
+    transform: rotate(-90deg);
+}
