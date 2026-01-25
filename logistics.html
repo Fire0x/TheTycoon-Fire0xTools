@@ -47,31 +47,69 @@
             <div class="collapse show" id="howToUseCollapse">
                 <div class="card-body">
                     <div class="mb-3">
-                    <h6 class="mb-2"><strong>Step 1: Company Reputation (Profile)</strong></h6>
-                    <p class="mb-2">Copy company reputation data from the game and paste into the Profile section text area below. Click <span class="badge bg-primary">Parse & Save Companies</span> to import all companies. You can edit individual company fields and click Save. Reputation Last Updated shows when reputation value was last changed.</p>
+                    <p class="mb-3">This page is organized into <strong>four main tabs</strong>. Use the tab navigation at the top to switch between sections.</p>
+
+                    <h6 class="mb-2"><strong>📖 Reference: Known Company HQ</strong></h6>
+                    <p class="mb-3">Above the tabs, you'll find a reference section listing known company headquarters locations. This is useful for identifying company locations in the game.</p>
+
+                    <h6 class="mb-2"><strong>⭐ Tab 1: Reputation</strong></h6>
+                    <p class="mb-2">Manage company reputation data:</p>
                     <ul class="mb-2">
-                        <li><strong>Custom Name:</strong> This will be displayed instead of the company name if set.</li>
-                        <li><strong>Custom Motto:</strong> This will be displayed instead of the motto if set.</li>
-                        <li><strong>Reputation:</strong> Edit the reputation value. The \"Last updated\" timestamp will update when the reputation value changes.</li>
-                        <li><strong>Total Earnings:</strong> Edit the total earnings amount.</li>
-                        <li><strong>Accent Color:</strong> Set a custom accent color (hex format, e.g., #007bff) for the company's display card.</li>
+                        <li><strong>Import Company Reputation Data:</strong> Copy company reputation data from the game and paste into the text area. Click <span class="badge bg-primary">Parse & Save Companies</span> to import all companies.</li>
+                        <li><strong>Company Reputation (Editable):</strong> Edit individual company fields:
+                            <ul>
+                                <li><strong>Custom Name:</strong> Display name instead of the company name if set.</li>
+                                <li><strong>Custom Motto:</strong> Display motto instead of the default if set.</li>
+                                <li><strong>Reputation:</strong> Edit the reputation value. The \"Last updated\" timestamp updates automatically.</li>
+                                <li><strong>Total Earnings:</strong> Edit the total earnings amount.</li>
+                                <li><strong>Accent Color:</strong> Set a custom accent color (hex format, e.g., #007bff) for the company's display card.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Company Reputation (Display):</strong> View a formatted display of all company reputation data.</li>
                     </ul>
 
-                    <h6 class="mb-2"><strong>Step 2: My Licenses</strong></h6>
-                    <p class="mb-2">Manage your logistics licenses. Click <span class="badge bg-primary">➕ Add New License</span> to create a license entry. For each license, you can set the name, required level, price, and mark it as purchased. Click <span class="badge bg-success">💾 Save Changes</span> to save all license updates.</p>
+                    <h6 class="mb-2"><strong>📜 Tab 2: Licenses</strong></h6>
+                    <p class="mb-2">Manage your logistics licenses:</p>
+                    <ul class="mb-2">
+                        <li>Click <span class="badge bg-primary">➕ Add New License</span> to create a new license entry.</li>
+                        <li>For each license, set the name, required level, price, and mark it as purchased.</li>
+                        <li>Click <span class="badge bg-success">💾 Save Changes</span> to save all license updates.</li>
+                    </ul>
 
-                    <h6 class="mb-2"><strong>Step 3: Set Your Level</strong></h6>
-                    <p class="mb-2">Enter your current level in the level input field. Only jobs at or below your level will be shown in the analysis.</p>
+                    <h6 class="mb-2"><strong>📦 Tab 3: Job Analysis</strong></h6>
+                    <p class="mb-2">This tab contains all job-related features:</p>
+                    <ul class="mb-2">
+                        <li><strong>⚙️ Configuration:</strong>
+                            <ul>
+                                <li><strong>Reputation Bonus per Company:</strong> Set a bonus value added to rep when calculating \"Highest Rep per Company\".</li>
+                                <li><strong>Level Filter Mode:</strong> Choose between \"Include Below\" (show jobs at or below your level) or \"Exact Level Only\" (show only jobs at your exact level).</li>
+                                <li><strong>Enabled Calculations:</strong> Toggle which analysis calculations are displayed (Highest Money, Best Convoy, Best Hazard, Highest Rep, and various per-company/per-license calculations).</li>
+                            </ul>
+                        </li>
+                        <li><strong>📦 Job Analysis:</strong>
+                            <ul>
+                                <li><strong>Your Level:</strong> Enter your current level. Only jobs matching your level filter mode will be shown.</li>
+                                <li><strong>Import Job Data:</strong> Copy job data from the game (all available jobs) and paste into the text area. Click <span class="badge bg-primary">Parse & Save Jobs</span> to extract and save jobs. Only \"Accept Job\" entries will be saved (filters out \"Level Too Low\"). Click <span class="badge bg-danger">🗑️ Clear All Jobs</span> to remove all saved jobs.</li>
+                            </ul>
+                        </li>
+                        <li><strong>📊 Analysis:</strong> View various analysis sections including Highest Money, Best Convoy, Best Hazard, Highest Rep, and calculations per company/per license. These sections appear after jobs are imported.</li>
+                        <li><strong>📋 Job Cards:</strong> View all imported jobs as cards. You can remove individual jobs using the <span class="badge bg-danger">🗑️ Remove Job</span> button.</li>
+                    </ul>
 
-                    <h6 class="mb-2"><strong>Step 4: Import Job Data</strong></h6>
-                    <p class="mb-2">Copy job data from the game (all available jobs) and paste into the Job Data section text area below. Click <span class="badge bg-primary">Parse & Save Jobs</span> to extract and save jobs. Only \"Accept Job\" entries will be saved (filters out \"Level Too Low\"). You can also click <span class="badge bg-danger">🗑️ Clear All Jobs</span> to remove all saved jobs.</p>
+                    <h6 class="mb-2"><strong>📦 Tab 4: Import/Export</strong></h6>
+                    <p class="mb-2">Backup and restore your data:</p>
+                    <ul class="mb-2">
+                        <li><strong>Export/Import Company Reputation:</strong> Export your company reputation data to a JSON file, or import from a file or pasted JSON. Choose between \"Replace\" (overwrites existing data) or \"Merge\" (combines with existing data).</li>
+                        <li><strong>Export/Import Licenses:</strong> Export your licenses to a JSON file, or import from a file or pasted JSON. Choose between \"Replace\" or \"Merge\" modes.</li>
+                    </ul>
 
-                    <h6 class="mb-2"><strong>Step 5: View Analysis</strong></h6>
-                    <p class="mb-2">View the analysis sections to see: <strong>Highest Money</strong>, <strong>Best Convoy</strong>, <strong>Highest Rep to Company</strong>, and more.</p>
-
-                    <h6 class="mb-2"><strong>Step 6: Job Cards</strong></h6>
-                    <p class="mb-0">View all imported jobs as cards. You can remove individual jobs using the <span class="badge bg-danger">🗑️ Remove Job</span> button.</p>
-
+                    <h6 class="mb-2"><strong>💡 Tips</strong></h6>
+                    <ul class="mb-0">
+                        <li>All data is automatically saved to your browser's local storage.</li>
+                        <li>Use the Import/Export tab to backup your data or transfer it between devices.</li>
+                        <li>Collapsible sections can be expanded/collapsed by clicking their headers.</li>
+                        <li>The analysis sections will only appear after you've imported job data.</li>
+                    </ul>
 
                 </div>
                 </div>
@@ -117,7 +155,7 @@
                         <li><strong>Xero gas</strong> - 857</li>
                         <li><strong>You Tool</strong> - 313</li>
                     </ul>
-                        This knowledge is best of research of <strong>Brooks</strong> all credits to him.
+                    This knowledge has been conducted by <strong>Brooks</strong>. All credits goes to him.
 
                 </div>
                 </div>
