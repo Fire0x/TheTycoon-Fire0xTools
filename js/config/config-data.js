@@ -112,7 +112,7 @@ const ConfigData = {
         'changelog.html': '0.0.6',
         'import.html': '0.0.7',
         'fishing.html': '0.0.2',
-        'logistics.html': '0.0.5'
+        'logistics.html': '0.0.6'
     }
 };
 
