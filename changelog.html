@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
     <!-- Page-specific CSS -->
     <link href="css/pages/changelog.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navbar is injected by js/navbar.js -->
 
@@ -25,9 +27,8 @@
                 <h1 class="glow-text mb-0">Changelog</h1>
                 <p class="lead">Summary of updates and improvements across all TheTycoon tools.</p>
             </div>
-            <button id="changelogDebugToggleBtn"
-                    class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0"
-                    onclick="if(window.toggleChangelogDebug) window.toggleChangelogDebug()">
+            <button id="changelogDebugToggleBtn" class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0"
+                onclick="if(window.toggleChangelogDebug) window.toggleChangelogDebug()">
                 <span id="changelogDebugToggleText">🔍 Debug: OFF</span>
             </button>
         </div>
@@ -55,89 +56,275 @@
                     <!-- Archive Entries Container (for loaded archive entries) -->
                     <div id="changelogArchiveContainer"></div>
 
-                    <!-- Latest Entry -->                  
+                    <!-- Latest Entry -->
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.0.7</h3>
+                                <p class="text-muted mb-3">2026-02-13</p>
+                                <ul class="mb-0">
+                                    <li><strong>Centralized Debug Consolidation:</strong> Refactored the Import/Export
+                                        page and other core modules to use a consolidated <code>DebugManager</code>
+                                        class. This ensures a consistent debug experience across all tools with
+                                        standardized toggle behavior and persistent state management.</li>
+                                    <li><strong>Import/Export - Layout Standardized:</strong> Repositioned the Debug
+                                        toggle to the bottom of the Import/Export page, aligning it with the layout of
+                                        the Business Checklist and Traveling Merchants tools for a more intuitive user
+                                        interface.</li>
+                                    <li><strong>Import/Export - Script Loading Optimization:</strong> Standardized base
+                                        script imports (configuration, version manager, navbar, and theme) to match
+                                        <code>index.html</code>, ensuring all global dependencies are correctly loaded
+                                        in the optimal order.</li>
+                                    <li><strong>Import/Export - Robustness & Fixes:</strong> Resolved
+                                        <code>ReferenceError</code> issues by implementing robust shims for the
+                                        <code>debugManager</code>, <code>core</code>, and <code>ui</code> modules. This
+                                        ensures modules can log information correctly during all phases of the page
+                                        lifecyle.</li>
+                                    <li><strong>Developer Experience - AI Instructions:</strong> Added persistent
+                                        instruction blocks to <code>import.html</code> and
+                                        <code>js/debug-manager.js</code> to guide future AI assistants in maintaining
+                                        standardized patterns and extending debug functionality correctly.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Previous Entry -->
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title mb-1">Version 1.0.6</h3>
                                 <p class="text-muted mb-3">2026-01-25</p>
                                 <ul class="mb-0">
-                                    <li><strong>Logistics - Job Analysis Tab Restructure:</strong> Moved "Job Analysis" and "Job Cards" sections from the Licenses tab to a dedicated "Job Analysis" tab. The Licenses tab now only contains "My Licenses" and "Configuration" sections, while all job-related content (level input, job data import, analysis sections, and job cards) is now properly organized in the Job Analysis tab.</li>
-                                    <li><strong>Logistics - Job Tags Display:</strong> Added visual tags to job cards and all analysis sections showing CONVOY (blue badge), HIGH TIER (yellow badge), and license parse-string matches (info badge). Tags are automatically displayed when jobs are parsed, making it easier to identify job types and license requirements at a glance.</li>
-                                    <li><strong>Logistics - Tag Helper Functions:</strong> Created <code>getMatchingLicenses()</code> and <code>generateJobTags()</code> helper functions in <code>logistics-ui.js</code> to automatically detect and display job type tags based on jobType array and license parseString matches.</li>
-                                    <li><strong>Logistics - Analysis Section Tags:</strong> Updated all analysis sections (Highest Money, Best Convoy, Best Hazard, Highest Rep, Highest Rep per Company, Highest Rep per Mile per Company, and all license-based calculations) to display job tags, providing consistent visual information across all analysis views.</li>
-                                    <li><strong>Logistics - License Parse-String Tags:</strong> License parse-string tags now appear on jobs that match any license's parseString value, with the license name displayed as a tooltip on hover. This helps users quickly identify which jobs require specific licenses.</li>
-                                    <li><strong>Changelog - Modular Archive System:</strong> Refactored changelog page into a modular system with separate archive files for older entries. Created JavaScript modules (<code>changelog-config.js</code>, <code>changelog-core.js</code>, <code>changelog-ui.js</code>, <code>changelog-init.js</code>) for file loading, HTML parsing, entry management, and UI rendering. Older entries (1.0.3, 1.0.2, 1.0.1, 1.0.0) moved to <code>pages/changelog/changelog-archive-1.html</code>.</li>
-                                    <li><strong>Changelog - File Selector UI:</strong> Added collapsible file selector interface allowing users to manually select which archive files to load. Supports multiple file selection with checkboxes and a "Load Selected Files" button. Archive files are stored in <code>pages/changelog/</code> directory for easy management.</li>
-                                    <li><strong>Changelog - Load More Functionality:</strong> Implemented progressive loading with "Load More" button. Initial display shows configurable count (default 5 entries), with additional entries loaded incrementally (default 5 per click). Button automatically hides when all entries are displayed.</li>
-                                    <li><strong>Changelog - Debug Integration:</strong> Added DebugManager integration with toggle button in page header. Comprehensive logging for file loading, entry parsing, UI updates, and pagination state changes. Debug state persists in localStorage.</li>
-                                    <li><strong>Changelog - Entry Management:</strong> Automatic sorting by date (newest first) across all loaded files. Entries from current page and archive files are merged and sorted together. HTML parsing extracts <code>&lt;article class="changelog-entry"&gt;</code> elements from archive files.</li>
+                                    <li><strong>Logistics - Job Analysis Tab Restructure:</strong> Moved "Job Analysis"
+                                        and "Job Cards" sections from the Licenses tab to a dedicated "Job Analysis"
+                                        tab. The Licenses tab now only contains "My Licenses" and "Configuration"
+                                        sections, while all job-related content (level input, job data import, analysis
+                                        sections, and job cards) is now properly organized in the Job Analysis tab.</li>
+                                    <li><strong>Logistics - Job Tags Display:</strong> Added visual tags to job cards
+                                        and all analysis sections showing CONVOY (blue badge), HIGH TIER (yellow badge),
+                                        and license parse-string matches (info badge). Tags are automatically displayed
+                                        when jobs are parsed, making it easier to identify job types and license
+                                        requirements at a glance.</li>
+                                    <li><strong>Logistics - Tag Helper Functions:</strong> Created
+                                        <code>getMatchingLicenses()</code> and <code>generateJobTags()</code> helper
+                                        functions in <code>logistics-ui.js</code> to automatically detect and display
+                                        job type tags based on jobType array and license parseString matches.</li>
+                                    <li><strong>Logistics - Analysis Section Tags:</strong> Updated all analysis
+                                        sections (Highest Money, Best Convoy, Best Hazard, Highest Rep, Highest Rep per
+                                        Company, Highest Rep per Mile per Company, and all license-based calculations)
+                                        to display job tags, providing consistent visual information across all analysis
+                                        views.</li>
+                                    <li><strong>Logistics - License Parse-String Tags:</strong> License parse-string
+                                        tags now appear on jobs that match any license's parseString value, with the
+                                        license name displayed as a tooltip on hover. This helps users quickly identify
+                                        which jobs require specific licenses.</li>
+                                    <li><strong>Changelog - Modular Archive System:</strong> Refactored changelog page
+                                        into a modular system with separate archive files for older entries. Created
+                                        JavaScript modules (<code>changelog-config.js</code>,
+                                        <code>changelog-core.js</code>, <code>changelog-ui.js</code>,
+                                        <code>changelog-init.js</code>) for file loading, HTML parsing, entry
+                                        management, and UI rendering. Older entries (1.0.3, 1.0.2, 1.0.1, 1.0.0) moved
+                                        to <code>pages/changelog/changelog-archive-1.html</code>.</li>
+                                    <li><strong>Changelog - File Selector UI:</strong> Added collapsible file selector
+                                        interface allowing users to manually select which archive files to load.
+                                        Supports multiple file selection with checkboxes and a "Load Selected Files"
+                                        button. Archive files are stored in <code>pages/changelog/</code> directory for
+                                        easy management.</li>
+                                    <li><strong>Changelog - Load More Functionality:</strong> Implemented progressive
+                                        loading with "Load More" button. Initial display shows configurable count
+                                        (default 5 entries), with additional entries loaded incrementally (default 5 per
+                                        click). Button automatically hides when all entries are displayed.</li>
+                                    <li><strong>Changelog - Debug Integration:</strong> Added DebugManager integration
+                                        with toggle button in page header. Comprehensive logging for file loading, entry
+                                        parsing, UI updates, and pagination state changes. Debug state persists in
+                                        localStorage.</li>
+                                    <li><strong>Changelog - Entry Management:</strong> Automatic sorting by date (newest
+                                        first) across all loaded files. Entries from current page and archive files are
+                                        merged and sorted together. HTML parsing extracts
+                                        <code>&lt;article class="changelog-entry"&gt;</code> elements from archive
+                                        files.</li>
                                 </ul>
                             </div>
                         </div>
                     </article>
 
-                    <!-- Previous Entry -->                  
+                    <!-- Previous Entry -->
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title mb-1">Version 1.0.5</h3>
                                 <p class="text-muted mb-3">2026-01-22</p>
                                 <ul class="mb-0">
-                                    <li><strong>Logistics - Default Licenses:</strong> Added automatic default license loading functionality. When the licenses section is first accessed with no data in localStorage, the system now automatically loads 8 default licenses (Hazmat Classes 1-8, Heavy Cargo, and High Value Cargo) and saves them to localStorage.</li>
-                                    <li><strong>Logistics - License Auto-Population:</strong> Modified <code>loadLicenses()</code> function in <code>logistics-licenses-api.js</code> to check if the licenses array is empty after loading from localStorage. If empty, it automatically populates with default licenses and saves them, ensuring users always have a starting set of licenses available.</li>
-                                    <li><strong>Logistics - Default License Data:</strong> Added <code>DEFAULT_LICENSES</code> constant containing 8 pre-configured licenses with proper IDs, names, levels, prices, and display order. Default licenses include all Hazmat classes (1, 2, 3, 4, 6, 8) plus Heavy Cargo and High Value Cargo licenses.</li>
-                                    <li><strong>Logistics - Company Reputation Export/Import:</strong> Added modular export/import functionality for company reputation data. Created <code>logistics-profile-export-import.js</code> module supporting JSON file download/upload and paste-in-textarea import. Includes "Replace" and "Merge" import modes with comprehensive debugging.</li>
-                                    <li><strong>Logistics - Licenses Export/Import:</strong> Added modular export/import functionality for license data. Created <code>logistics-licenses-export-import.js</code> module supporting JSON file download/upload and paste-in-textarea import. Includes "Replace" and "Merge" import modes with format validation for multiple JSON structures.</li>
-                                    <li><strong>Logistics - Export/Import UI:</strong> Added collapsible "Export/Import Company Reputation" and "Export/Import Licenses" sections to <code>logistics.html</code> with file upload buttons, JSON paste textareas, and import mode radio buttons (Replace/Merge).</li>
-                                    <li><strong>Logistics - License Template:</strong> Created <code>licenses-template.json</code> file containing 8 default licenses (Hazmat Classes 1-8, Heavy Cargo, High Value Cargo) for reference and import purposes.</li>
-                                    <li><strong>Logistics - Storage Migration:</strong> Converted logistics page from MySQL API-based storage to localStorage. All data (companies, licenses, jobs, config) now persists locally in the browser using the unified <code>LogisticsStorage</code> API.</li>
-                                    <li><strong>Logistics - Storage Module:</strong> Created <code>logistics-storage.js</code> module providing unified localStorage operations with read/write/update functions for all logistics data types. Includes migration support from legacy localStorage keys.</li>
-                                    <li><strong>Logistics - API Conversion:</strong> Rewrote <code>logistics-profile-api.js</code> and <code>logistics-licenses-api.js</code> to use localStorage instead of API calls. Removed all <code>fetch</code> operations and CORS-related code. All data operations now use <code>LogisticsStorage</code> API.</li>
-                                    <li><strong>Logistics - Debug Manager Integration:</strong> Updated <code>logistics-main.js</code> to properly initialize DebugManager with options object instead of positional arguments, fixing initialization errors.</li>
-                                    <li><strong>Fishing Management - Storage Migration (WIP):</strong> Converted fishing management page from MySQL API-based storage to localStorage with JSON saving. All data now persists locally in the browser.</li>
-                                    <li><strong>Fishing Management - Default Data:</strong> Added default fishing locations (10 locations) and default fishing rewards (11 rewards) that automatically load on first use. Data includes locations like Del Perro Pier, Paleto Cove, and rewards from Dinghy (Small) to Patrol Boat.</li>
-                                    <li><strong>Fishing Management - Storage Module:</strong> Created <code>fishing-storage.js</code> module following the same pattern as logistics storage, providing unified localStorage operations with read/write/update functions.</li>
-                                    <li><strong>Fishing Management - Core Updates:</strong> Updated <code>fishing-core.js</code> and <code>fishing-fish-core.js</code> to use localStorage instead of API calls. Removed all async/await operations since localStorage is synchronous.</li>
-                                    <li><strong>Fishing Management - UI Updates:</strong> Updated all UI functions in <code>fishing-ui.js</code> to work with synchronous localStorage operations. Removed async/await keywords from all functions.</li>
-                                    <li><strong>Fishing Management - Default Data Templates:</strong> Added "Default Data Templates" section to the "How to Use" tab with copyable JSON for default locations and rewards, allowing users to easily reference or import the default data.</li>
-                                    <li><strong>Fishing Management - Copy Functionality:</strong> Added <code>copyFishingJson()</code> function with clipboard API support and fallback for older browsers, enabling easy copying of JSON templates.</li>
-                                    <li><strong>Fishing Management - Page Structure:</strong> Updated <code>fishing.html</code> to include base CSS files (variables, common, responsive) and proper script loading order matching other pages in the project.</li>
-                                    <li><strong>Import/Export - Fishing Support:</strong> Added fishing page support to the centralized import/export page. Fishing data can now be exported and imported alongside Checklist, Apartments, and Education.</li>
-                                    <li><strong>Import/Export - Logistics Support (WIP):</strong> Added logistics page support to the centralized import/export page. Logistics data can now be exported and imported, though full functionality is still being developed.</li>
-                                    <li><strong>Import/Export - Storage Integration:</strong> Updated <code>import-export-core.js</code> to use <code>FishingStorage.read()</code> and <code>LogisticsStorage.read()</code> APIs, ensuring default data is included in exports even if not yet saved.</li>
-                                    <li><strong>Import/Export - Status Cards:</strong> Added fishing and logistics to the data status cards on the import/export page, showing data summaries, last modified timestamps, and hash values.</li>
-                                    <li><strong>Import/Export - Script Loading:</strong> Added <code>fishing-storage.js</code> and <code>logistics-storage.js</code> to <code>import.html</code> to ensure storage APIs are available before import/export operations.</li>
-                                    <li><strong>Note - WIP Status:</strong> Fishing and Logistics features are marked as Work In Progress (WIP). Core functionality is implemented, but additional features and refinements may be added in future updates.</li>
+                                    <li><strong>Logistics - Default Licenses:</strong> Added automatic default license
+                                        loading functionality. When the licenses section is first accessed with no data
+                                        in localStorage, the system now automatically loads 8 default licenses (Hazmat
+                                        Classes 1-8, Heavy Cargo, and High Value Cargo) and saves them to localStorage.
+                                    </li>
+                                    <li><strong>Logistics - License Auto-Population:</strong> Modified
+                                        <code>loadLicenses()</code> function in <code>logistics-licenses-api.js</code>
+                                        to check if the licenses array is empty after loading from localStorage. If
+                                        empty, it automatically populates with default licenses and saves them, ensuring
+                                        users always have a starting set of licenses available.</li>
+                                    <li><strong>Logistics - Default License Data:</strong> Added
+                                        <code>DEFAULT_LICENSES</code> constant containing 8 pre-configured licenses with
+                                        proper IDs, names, levels, prices, and display order. Default licenses include
+                                        all Hazmat classes (1, 2, 3, 4, 6, 8) plus Heavy Cargo and High Value Cargo
+                                        licenses.</li>
+                                    <li><strong>Logistics - Company Reputation Export/Import:</strong> Added modular
+                                        export/import functionality for company reputation data. Created
+                                        <code>logistics-profile-export-import.js</code> module supporting JSON file
+                                        download/upload and paste-in-textarea import. Includes "Replace" and "Merge"
+                                        import modes with comprehensive debugging.</li>
+                                    <li><strong>Logistics - Licenses Export/Import:</strong> Added modular export/import
+                                        functionality for license data. Created
+                                        <code>logistics-licenses-export-import.js</code> module supporting JSON file
+                                        download/upload and paste-in-textarea import. Includes "Replace" and "Merge"
+                                        import modes with format validation for multiple JSON structures.</li>
+                                    <li><strong>Logistics - Export/Import UI:</strong> Added collapsible "Export/Import
+                                        Company Reputation" and "Export/Import Licenses" sections to
+                                        <code>logistics.html</code> with file upload buttons, JSON paste textareas, and
+                                        import mode radio buttons (Replace/Merge).</li>
+                                    <li><strong>Logistics - License Template:</strong> Created
+                                        <code>licenses-template.json</code> file containing 8 default licenses (Hazmat
+                                        Classes 1-8, Heavy Cargo, High Value Cargo) for reference and import purposes.
+                                    </li>
+                                    <li><strong>Logistics - Storage Migration:</strong> Converted logistics page from
+                                        MySQL API-based storage to localStorage. All data (companies, licenses, jobs,
+                                        config) now persists locally in the browser using the unified
+                                        <code>LogisticsStorage</code> API.</li>
+                                    <li><strong>Logistics - Storage Module:</strong> Created
+                                        <code>logistics-storage.js</code> module providing unified localStorage
+                                        operations with read/write/update functions for all logistics data types.
+                                        Includes migration support from legacy localStorage keys.</li>
+                                    <li><strong>Logistics - API Conversion:</strong> Rewrote
+                                        <code>logistics-profile-api.js</code> and <code>logistics-licenses-api.js</code>
+                                        to use localStorage instead of API calls. Removed all <code>fetch</code>
+                                        operations and CORS-related code. All data operations now use
+                                        <code>LogisticsStorage</code> API.</li>
+                                    <li><strong>Logistics - Debug Manager Integration:</strong> Updated
+                                        <code>logistics-main.js</code> to properly initialize DebugManager with options
+                                        object instead of positional arguments, fixing initialization errors.</li>
+                                    <li><strong>Fishing Management - Storage Migration (WIP):</strong> Converted fishing
+                                        management page from MySQL API-based storage to localStorage with JSON saving.
+                                        All data now persists locally in the browser.</li>
+                                    <li><strong>Fishing Management - Default Data:</strong> Added default fishing
+                                        locations (10 locations) and default fishing rewards (11 rewards) that
+                                        automatically load on first use. Data includes locations like Del Perro Pier,
+                                        Paleto Cove, and rewards from Dinghy (Small) to Patrol Boat.</li>
+                                    <li><strong>Fishing Management - Storage Module:</strong> Created
+                                        <code>fishing-storage.js</code> module following the same pattern as logistics
+                                        storage, providing unified localStorage operations with read/write/update
+                                        functions.</li>
+                                    <li><strong>Fishing Management - Core Updates:</strong> Updated
+                                        <code>fishing-core.js</code> and <code>fishing-fish-core.js</code> to use
+                                        localStorage instead of API calls. Removed all async/await operations since
+                                        localStorage is synchronous.</li>
+                                    <li><strong>Fishing Management - UI Updates:</strong> Updated all UI functions in
+                                        <code>fishing-ui.js</code> to work with synchronous localStorage operations.
+                                        Removed async/await keywords from all functions.</li>
+                                    <li><strong>Fishing Management - Default Data Templates:</strong> Added "Default
+                                        Data Templates" section to the "How to Use" tab with copyable JSON for default
+                                        locations and rewards, allowing users to easily reference or import the default
+                                        data.</li>
+                                    <li><strong>Fishing Management - Copy Functionality:</strong> Added
+                                        <code>copyFishingJson()</code> function with clipboard API support and fallback
+                                        for older browsers, enabling easy copying of JSON templates.</li>
+                                    <li><strong>Fishing Management - Page Structure:</strong> Updated
+                                        <code>fishing.html</code> to include base CSS files (variables, common,
+                                        responsive) and proper script loading order matching other pages in the project.
+                                    </li>
+                                    <li><strong>Import/Export - Fishing Support:</strong> Added fishing page support to
+                                        the centralized import/export page. Fishing data can now be exported and
+                                        imported alongside Checklist, Apartments, and Education.</li>
+                                    <li><strong>Import/Export - Logistics Support (WIP):</strong> Added logistics page
+                                        support to the centralized import/export page. Logistics data can now be
+                                        exported and imported, though full functionality is still being developed.</li>
+                                    <li><strong>Import/Export - Storage Integration:</strong> Updated
+                                        <code>import-export-core.js</code> to use <code>FishingStorage.read()</code> and
+                                        <code>LogisticsStorage.read()</code> APIs, ensuring default data is included in
+                                        exports even if not yet saved.</li>
+                                    <li><strong>Import/Export - Status Cards:</strong> Added fishing and logistics to
+                                        the data status cards on the import/export page, showing data summaries, last
+                                        modified timestamps, and hash values.</li>
+                                    <li><strong>Import/Export - Script Loading:</strong> Added
+                                        <code>fishing-storage.js</code> and <code>logistics-storage.js</code> to
+                                        <code>import.html</code> to ensure storage APIs are available before
+                                        import/export operations.</li>
+                                    <li><strong>Note - WIP Status:</strong> Fishing and Logistics features are marked as
+                                        Work In Progress (WIP). Core functionality is implemented, but additional
+                                        features and refinements may be added in future updates.</li>
                                 </ul>
                             </div>
                         </div>
                     </article>
 
-                    <!-- Previous Entry -->                  
+                    <!-- Previous Entry -->
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title mb-1">Version 1.0.4</h3>
                                 <p class="text-muted mb-3">2025-01-15</p>
                                 <ul class="mb-0">
-                                    <li><strong>New Feature - Import/Export Page:</strong> Created centralized <code>import.html</code> page for managing data across all pages. Users can now export and import data for Checklist, Apartments, and Education Timer in a single unified interface.</li>
-                                    <li><strong>Import/Export - Format Detection:</strong> Implemented automatic JSON format detection that recognizes existing export formats from individual pages (checklist, apartments, unified format, etc.) for seamless data migration.</li>
-                                    <li><strong>Import/Export - Hash-Based Change Detection:</strong> Added hash comparison system to detect "new data" indicators, showing users when their data has been modified since last export.</li>
-                                    <li><strong>Import/Export - Export Options:</strong> Supports both single-file export (all data in one JSON) and separate-file export (individual JSON files per page) for flexible backup strategies.</li>
-                                    <li><strong>Import/Export - Import Modes:</strong> Added "Replace" and "Merge" import modes, allowing users to either completely replace existing data or merge new data with existing entries.</li>
-                                    <li><strong>Import/Export - Debug Support:</strong> Integrated DebugManager with comprehensive logging for all import/export operations, format detection, and data processing steps.</li>
-                                    <li><strong>Import/Export - Page Exclusion System:</strong> Implemented configurable page exclusion toggle. Merchants and Vehicle Deliveries are excluded by default (can be toggled in code via <code>EXCLUDED_PAGES</code> array).</li>
-                                    <li><strong>Import/Export - UI Features:</strong> Added data status cards showing data counts, last modified timestamps, hash values, and "New Data" badges for each page.</li>
-                                    <li><strong>Import/Export - File Handling:</strong> Supports both file upload and paste-in-textarea methods for importing JSON data with automatic format detection.</li>
-                                    <li><strong>Navigation - Import/Export Link:</strong> Added "📥 Import / Export" link to navbar, positioned to the left of the Business dropdown menu for easy access.</li>
-                                    <li><strong>Configuration - Import Page Registration:</strong> Updated <code>config-data.js</code> to include <code>import.html</code> in page titles, hero sections, and version tracking.</li>
-                                    <li><strong>Code Organization - Modular Architecture:</strong> Created three new JavaScript modules for import/export functionality: <code>import-export-core.js</code> (data management), <code>import-export-ui.js</code> (UI rendering), and <code>import-export-init.js</code> (initialization).</li>
-                                    <li><strong>Code Organization - CSS Styling:</strong> Added <code>import-export.css</code> for page-specific styling including data status cards, format detection indicators, and status messages.</li>
-                                    <li><strong>Apartment - Export/Import Collapse Feature:</strong> Added collapsible functionality to the Export/Import section within the "Select Apartment" card. Users can now collapse/expand this section, with state persistence in localStorage. Matches the behavior of the "How to Use This Page" section.</li>
-                                    <li><strong>Apartment - Reviews Modal Fix:</strong> Fixed issue where the reviews modal close button wasn't working properly. Changed from creating new Bootstrap Modal instances to using <code>getOrCreateModal()</code> helper function, ensuring proper modal instance reuse and correct event handling.</li>
-                                    <li><strong>Apartment - Modal Instance Management:</strong> Updated all modal creation calls in <code>apartment-modals.js</code> to use <code>getOrCreateModal()</code> instead of <code>new bootstrap.Modal()</code> for consistent modal behavior across apartment management, reviews, and export/import modals.</li>
-                                    <li><strong>Apartment - Syntax Error Fix:</strong> Fixed missing ternary operator fallback in <code>apartment-ui.js</code> that was causing "Unexpected token '}'" error when rendering reviews. Added proper <code>: ''</code> fallback for cases where reviews array is empty or undefined.</li>
+                                    <li><strong>New Feature - Import/Export Page:</strong> Created centralized
+                                        <code>import.html</code> page for managing data across all pages. Users can now
+                                        export and import data for Checklist, Apartments, and Education Timer in a
+                                        single unified interface.</li>
+                                    <li><strong>Import/Export - Format Detection:</strong> Implemented automatic JSON
+                                        format detection that recognizes existing export formats from individual pages
+                                        (checklist, apartments, unified format, etc.) for seamless data migration.</li>
+                                    <li><strong>Import/Export - Hash-Based Change Detection:</strong> Added hash
+                                        comparison system to detect "new data" indicators, showing users when their data
+                                        has been modified since last export.</li>
+                                    <li><strong>Import/Export - Export Options:</strong> Supports both single-file
+                                        export (all data in one JSON) and separate-file export (individual JSON files
+                                        per page) for flexible backup strategies.</li>
+                                    <li><strong>Import/Export - Import Modes:</strong> Added "Replace" and "Merge"
+                                        import modes, allowing users to either completely replace existing data or merge
+                                        new data with existing entries.</li>
+                                    <li><strong>Import/Export - Debug Support:</strong> Integrated DebugManager with
+                                        comprehensive logging for all import/export operations, format detection, and
+                                        data processing steps.</li>
+                                    <li><strong>Import/Export - Page Exclusion System:</strong> Implemented configurable
+                                        page exclusion toggle. Merchants and Vehicle Deliveries are excluded by default
+                                        (can be toggled in code via <code>EXCLUDED_PAGES</code> array).</li>
+                                    <li><strong>Import/Export - UI Features:</strong> Added data status cards showing
+                                        data counts, last modified timestamps, hash values, and "New Data" badges for
+                                        each page.</li>
+                                    <li><strong>Import/Export - File Handling:</strong> Supports both file upload and
+                                        paste-in-textarea methods for importing JSON data with automatic format
+                                        detection.</li>
+                                    <li><strong>Navigation - Import/Export Link:</strong> Added "📥 Import / Export"
+                                        link to navbar, positioned to the left of the Business dropdown menu for easy
+                                        access.</li>
+                                    <li><strong>Configuration - Import Page Registration:</strong> Updated
+                                        <code>config-data.js</code> to include <code>import.html</code> in page titles,
+                                        hero sections, and version tracking.</li>
+                                    <li><strong>Code Organization - Modular Architecture:</strong> Created three new
+                                        JavaScript modules for import/export functionality:
+                                        <code>import-export-core.js</code> (data management),
+                                        <code>import-export-ui.js</code> (UI rendering), and
+                                        <code>import-export-init.js</code> (initialization).</li>
+                                    <li><strong>Code Organization - CSS Styling:</strong> Added
+                                        <code>import-export.css</code> for page-specific styling including data status
+                                        cards, format detection indicators, and status messages.</li>
+                                    <li><strong>Apartment - Export/Import Collapse Feature:</strong> Added collapsible
+                                        functionality to the Export/Import section within the "Select Apartment" card.
+                                        Users can now collapse/expand this section, with state persistence in
+                                        localStorage. Matches the behavior of the "How to Use This Page" section.</li>
+                                    <li><strong>Apartment - Reviews Modal Fix:</strong> Fixed issue where the reviews
+                                        modal close button wasn't working properly. Changed from creating new Bootstrap
+                                        Modal instances to using <code>getOrCreateModal()</code> helper function,
+                                        ensuring proper modal instance reuse and correct event handling.</li>
+                                    <li><strong>Apartment - Modal Instance Management:</strong> Updated all modal
+                                        creation calls in <code>apartment-modals.js</code> to use
+                                        <code>getOrCreateModal()</code> instead of <code>new bootstrap.Modal()</code>
+                                        for consistent modal behavior across apartment management, reviews, and
+                                        export/import modals.</li>
+                                    <li><strong>Apartment - Syntax Error Fix:</strong> Fixed missing ternary operator
+                                        fallback in <code>apartment-ui.js</code> that was causing "Unexpected token '}'"
+                                        error when rendering reviews. Added proper <code>: ''</code> fallback for cases
+                                        where reviews array is empty or undefined.</li>
                                 </ul>
                             </div>
                         </div>
@@ -159,7 +346,7 @@
                 <!--     1. In Google Forms, click \"Send\" -> \"<>\" (Embed HTML).                       -->
                 <!--     2. Copy the <iframe> HTML code.                                                 -->
                 <!--     3. Paste it inside the -->
-                <!--        FORM EMBED START --> 
+                <!--        FORM EMBED START -->
                 <!--        area below.             -->
                 <!-- - Typeform or other services:                                                       -->
                 <!--     1. Copy the embed code they provide (iframe or script).                         -->
@@ -169,20 +356,29 @@
                 <section id="feedback-form" class="mb-5">
                     <h2 class="mb-3 text-center">Feedback & Suggestions</h2>
                     <p class="text-center mb-4">
-                        <strong>TheTycoon - Fire0x Tools</strong> is a comprehensive web-based toolkit designed to help players manage their businesses, track progress, and optimize their gameplay experience in <strong>The Tycoon</strong> game.
+                        <strong>TheTycoon - Fire0x Tools</strong> is a comprehensive web-based toolkit designed to help
+                        players manage their businesses, track progress, and optimize their gameplay experience in
+                        <strong>The Tycoon</strong> game.
                     </p>
                     <p class="text-center mb-4">
                         This website provides various tools including:
                     </p>
                     <ul class="list-unstyled text-center mb-4" style="max-width: 600px; margin: 0 auto;">
-                        <li class="mb-2">📋 <strong>Business Checklist</strong> - Track businesses across tiers with stock calculations, product management, and summaries</li>
-                        <li class="mb-2">🛒 <strong>Traveling Merchants</strong> - Monitor merchant rotations, locations, prices, and timers</li>
-                        <li class="mb-2">🚚 <strong>Vehicle Deliveries</strong> - Track vehicle delivery progress and unlock requirements</li>
-                        <li class="mb-2">🎓 <strong>Education Timer</strong> - Monitor education and training timers with real-time countdowns</li>
-                        <li class="mb-2">🏠 <strong>Apartment Management</strong> - Manage apartment-related tasks and tracking</li>
+                        <li class="mb-2">📋 <strong>Business Checklist</strong> - Track businesses across tiers with
+                            stock calculations, product management, and summaries</li>
+                        <li class="mb-2">🛒 <strong>Traveling Merchants</strong> - Monitor merchant rotations,
+                            locations, prices, and timers</li>
+                        <li class="mb-2">🚚 <strong>Vehicle Deliveries</strong> - Track vehicle delivery progress and
+                            unlock requirements</li>
+                        <li class="mb-2">🎓 <strong>Education Timer</strong> - Monitor education and training timers
+                            with real-time countdowns</li>
+                        <li class="mb-2">🏠 <strong>Apartment Management</strong> - Manage apartment-related tasks and
+                            tracking</li>
                     </ul>
                     <p class="text-center mb-4">
-                        We value your feedback! Use the form below to report bugs, suggest new features, share ideas for improvements, or provide general feedback about any of the tools on this website. Your input helps us make TheTycoon tools better for everyone.
+                        We value your feedback! Use the form below to report bugs, suggest new features, share ideas for
+                        improvements, or provide general feedback about any of the tools on this website. Your input
+                        helps us make TheTycoon tools better for everyone.
                     </p>
 
                     <div class="card">
@@ -207,12 +403,9 @@
                                 <div data-tf-live="YOUR_TYPEFORM_ID"></div>
                                 <script src="https://embed.typeform.com/next/embed.js"></script>
                             -->
-                            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc1-mo-O-b-gluemHq49iyC7ieEl2n0E5ldQFp1uq71M7J5pw/viewform?embedded=true" 
-                                    width="100%" 
-                                    height="800" 
-                                    frameborder="0" 
-                                    marginheight="0" 
-                                    marginwidth="0">
+                            <iframe
+                                src="https://docs.google.com/forms/d/e/1FAIpQLSc1-mo-O-b-gluemHq49iyC7ieEl2n0E5ldQFp1uq71M7J5pw/viewform?embedded=true"
+                                width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">
                                 Loading…
                             </iframe>
                             <!-- FORM EMBED END -->
@@ -229,12 +422,20 @@
                                 This page now uses a modular system for managing changelog entries:
                             </p>
                             <ol class="mb-0">
-                                <li><strong>Recent Entries:</strong> Keep the latest 2-3 versions in <code>changelog.html</code> for immediate visibility.</li>
-                                <li><strong>Archive Files:</strong> Older entries are stored in <code>pages/changelog/</code> directory as separate HTML files (e.g., <code>changelog-archive-1.html</code>).</li>
-                                <li><strong>Loading Archives:</strong> Use the "Load Archive Files" section above to select and load older changelog entries.</li>
-                                <li><strong>Load More:</strong> After loading archives, use the "Load More" button to progressively display additional entries.</li>
-                                <li><strong>Adding New Entries:</strong> Copy an existing <code>&lt;article class="changelog-entry"&gt;</code> block and paste it ABOVE existing entries in <code>changelog.html</code>.</li>
-                                <li><strong>Moving to Archive:</strong> When you have more than 3 recent entries, move older ones to archive files in <code>pages/changelog/</code>.</li>
+                                <li><strong>Recent Entries:</strong> Keep the latest 2-3 versions in
+                                    <code>changelog.html</code> for immediate visibility.</li>
+                                <li><strong>Archive Files:</strong> Older entries are stored in
+                                    <code>pages/changelog/</code> directory as separate HTML files (e.g.,
+                                    <code>changelog-archive-1.html</code>).</li>
+                                <li><strong>Loading Archives:</strong> Use the "Load Archive Files" section above to
+                                    select and load older changelog entries.</li>
+                                <li><strong>Load More:</strong> After loading archives, use the "Load More" button to
+                                    progressively display additional entries.</li>
+                                <li><strong>Adding New Entries:</strong> Copy an existing
+                                    <code>&lt;article class="changelog-entry"&gt;</code> block and paste it ABOVE
+                                    existing entries in <code>changelog.html</code>.</li>
+                                <li><strong>Moving to Archive:</strong> When you have more than 3 recent entries, move
+                                    older ones to archive files in <code>pages/changelog/</code>.</li>
                             </ol>
                         </div>
                     </div>
@@ -271,6 +472,5 @@
     <script src="js/pages/changelog/changelog-ui.js"></script>
     <script src="js/pages/changelog/changelog-init.js"></script>
 </body>
+
 </html>
-
-

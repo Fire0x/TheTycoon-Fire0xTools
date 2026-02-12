@@ -1,8 +1,18 @@
 /**
  * Debug Manager - Reusable debug functionality for all pages
  * Supports per-page instances with page-specific prefixes and storage keys
+ * 
+ * AI INSTRUCTIONS:
+ * 1. To use this in a new page, ensure `js/debug-manager.js` is imported.
+ * 2. In your page's init script, instantiate it:
+ *    `const debugManager = new DebugManager({ prefix: '[MyPage Debug]', storageKey: 'myPageDebugMode' });`
+ * 3. Add a toggle button in HTML:
+ *    `<button id="debugToggleBtn" onclick="debugManager.toggle()">
+ *        <span id="debugToggleText">🔍 Debug: OFF</span>
+ *     </button>`
+ * 4. Pass the button/text IDs if they differ from the defaults.
  */
-(function() {
+(function () {
     'use strict';
 
     /**
@@ -54,7 +64,7 @@
         updateUI() {
             const btn = document.getElementById(this.buttonId);
             const text = document.getElementById(this.textId);
-            
+
             if (btn && text) {
                 if (this.enabled) {
                     btn.classList.remove('btn-outline-secondary');

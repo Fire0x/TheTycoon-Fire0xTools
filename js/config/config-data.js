@@ -11,7 +11,7 @@ const ConfigData = {
         alt: 'Site Logo',
         height: '40px'
     },
-    
+
     // Copyright information
     copyright: {
         company: 'Fire0x Incorporated',
@@ -19,10 +19,10 @@ const ConfigData = {
         gameName: 'The Tycoon',
         yearRange: '2025-2026'
     },
-    
+
     // Disclaimer information
     disclaimer: 'This website is not affiliated with, endorsed by, or officially connected to Rockstar North, Take-Two Interactive, The Tycoons FiveM Server, or any other rights holders. All trademarks and intellectual property used herein are the property of their respective owners.',
-    
+
     // Page titles mapping
     pageTitles: {
         'index.html': 'Home',
@@ -38,7 +38,7 @@ const ConfigData = {
         'fishing.html': 'Fishing Management',
         'logistics.html': 'Logistics Analysis'
     },
-    
+
     // Hero section data for each page
     heroSections: {
         'index.html': {
@@ -94,10 +94,10 @@ const ConfigData = {
             description: 'Analyze logistics jobs, company reputation, and licenses'
         }
     },
-    
+
     // Website overall version
     websiteVersion: '0.2.1',
-    
+
     // Individual page versions
     pageVersions: {
         'index.html': '0.0.6',
@@ -110,7 +110,7 @@ const ConfigData = {
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
         'changelog.html': '0.0.6',
-        'import.html': '0.0.7',
+        'import.html': '0.0.8',
         'fishing.html': '0.0.2',
         'logistics.html': '0.0.6'
     }

@@ -2,7 +2,7 @@
  * Import/Export UI Module
  * Contains UI rendering and interaction functions
  */
-(function() {
+(function () {
     'use strict';
 
     // Ensure dependencies are loaded
@@ -12,10 +12,10 @@
     }
 
     const core = window.importExportCore;
-    const debugManager = window.importExportDebugLog ? {
-        log: window.importExportDebugLog,
-        error: window.importExportDebugError || console.error
-    } : { log: () => {}, error: console.error };
+    const debugManager = {
+        log: (...args) => window.importExportDebugLog ? window.importExportDebugLog(...args) : console.log(...args),
+        error: (...args) => window.importExportDebugError ? window.importExportDebugError(...args) : console.error(...args)
+    };
 
     /**
      * Get data summary for a page
@@ -75,7 +75,7 @@
      */
     function getLastModified(data) {
         if (!data) return 'Never';
-        
+
         try {
             if (data.export_date) {
                 return new Date(data.export_date).toLocaleString();
@@ -120,7 +120,7 @@
 
         for (const pageName of availablePages) {
             if (!pageInfo[pageName]) continue;
-            
+
             const info = pageInfo[pageName];
             const data = core.getPageData(pageName);
             const summary = getDataSummary(pageName, data);
@@ -167,7 +167,7 @@
      */
     function downloadJSON(data, filename) {
         debugManager.log(`Downloading ${filename}`);
-        
+
         try {
             const jsonString = JSON.stringify(data, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
@@ -218,7 +218,7 @@
     function showFormatDetection(format) {
         const indicator = document.getElementById('formatDetectionIndicator');
         const formatText = document.getElementById('detectedFormat');
-        
+
         if (indicator && formatText) {
             if (format && format.type !== 'unknown') {
                 formatText.textContent = format.description;
@@ -258,7 +258,7 @@
         }
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             try {
                 const jsonData = JSON.parse(e.target.result);
                 debugManager.log('File parsed successfully');
@@ -268,7 +268,7 @@
                 showStatusMessage(`Error parsing JSON file: ${error.message}`, 'error');
             }
         };
-        reader.onerror = function() {
+        reader.onerror = function () {
             debugManager.error('Error reading file');
             showStatusMessage('Error reading file', 'error');
         };
@@ -280,15 +280,15 @@
      */
     function handleExportAll() {
         debugManager.log('=== handleExportAll START ===');
-        
+
         try {
             const exportData = core.exportAllData();
             downloadJSON(exportData, `tycoon-export-all-${new Date().toISOString().split('T')[0]}.json`);
-            
+
             // Update stored hashes
             const hashes = core.calculateAllHashes();
             core.storeHashes(hashes);
-            
+
             showStatusMessage('All data exported successfully!', 'success');
             renderDataStatus();
         } catch (error) {
@@ -302,7 +302,7 @@
      */
     function handleExportAllSeparate() {
         debugManager.log('=== handleExportAllSeparate START ===');
-        
+
         try {
             const pageNames = core.getAvailablePages ? core.getAvailablePages() : ['checklist', 'apartments', 'education', 'fishing', 'logistics'];
             let exported = 0;
@@ -333,7 +333,7 @@
      */
     function handleExportPage(pageName) {
         debugManager.log(`=== handleExportPage START for ${pageName} ===`);
-        
+
         try {
             const exportData = core.exportPageData(pageName);
             if (!exportData) {
@@ -342,7 +342,7 @@
             }
 
             downloadJSON(exportData, `${pageName}-export-${new Date().toISOString().split('T')[0]}.json`);
-            
+
             // Update stored hash for this page
             const hashes = core.getStoredHashes();
             hashes[pageName] = core.calculatePageHash(pageName);

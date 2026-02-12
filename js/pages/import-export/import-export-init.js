@@ -2,7 +2,7 @@
  * Import/Export Init Module
  * Page initialization and event listeners
  */
-(function() {
+(function () {
     'use strict';
 
     // Ensure dependencies are loaded
@@ -18,10 +18,21 @@
 
     const core = window.importExportCore;
     const ui = window.importExportUI;
-    const debugManager = window.importExportDebugLog ? {
-        log: window.importExportDebugLog,
-        error: window.importExportDebugError || console.error
-    } : { log: () => {}, error: console.error };
+
+    // Initialize DebugManager for import/export
+    const debugManager = new DebugManager({
+        prefix: '[Import/Export Debug]',
+        storageKey: 'importExportDebugMode',
+        buttonId: 'debugToggleBtn',
+        textId: 'debugToggleText'
+    });
+
+    // Share debug functions globally for other modules
+    window.importExportDebugLog = (...args) => debugManager.log(...args);
+    window.importExportDebugError = (...args) => debugManager.error(...args);
+    window.importExportDebugWarn = (...args) => debugManager.warn(...args);
+    window.toggleImportExportDebug = () => debugManager.toggle();
+    window.isImportExportDebugEnabled = () => debugManager.isEnabled();
 
     /**
      * Initialize page
@@ -55,7 +66,7 @@
         // Debug toggle button
         const debugToggleBtn = document.getElementById('debugToggleBtn');
         if (debugToggleBtn && typeof window.toggleImportExportDebug === 'function') {
-            debugToggleBtn.addEventListener('click', function() {
+            debugToggleBtn.addEventListener('click', function () {
                 window.toggleImportExportDebug();
             });
             debugManager.log('Debug toggle button event listener attached');
@@ -78,7 +89,7 @@
         // Export page buttons
         const exportPageBtns = document.querySelectorAll('.export-page-btn');
         exportPageBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 const pageName = this.getAttribute('data-page');
                 if (pageName) {
                     ui.handleExportPage(pageName);
@@ -95,7 +106,7 @@
         // Import page buttons
         const importPageBtns = document.querySelectorAll('.import-page-btn');
         importPageBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 const pageName = this.getAttribute('data-page');
                 if (pageName) {
                     ui.handleImportPage(pageName);
@@ -106,9 +117,9 @@
         // File upload input
         const importFileInput = document.getElementById('importFileInput');
         if (importFileInput) {
-            importFileInput.addEventListener('change', function() {
+            importFileInput.addEventListener('change', function () {
                 if (this.files && this.files.length > 0) {
-                    ui.handleFileUpload(this.files[0], function(jsonData) {
+                    ui.handleFileUpload(this.files[0], function (jsonData) {
                         const format = core.detectImportFormat(jsonData);
                         ui.showFormatDetection(format);
                     });
@@ -120,7 +131,7 @@
         const importTextarea = document.getElementById('importTextarea');
         if (importTextarea) {
             importTextarea.addEventListener('input', ui.handleTextareaInput);
-            importTextarea.addEventListener('paste', function() {
+            importTextarea.addEventListener('paste', function () {
                 // Delay to allow paste to complete
                 setTimeout(ui.handleTextareaInput, 100);
             });

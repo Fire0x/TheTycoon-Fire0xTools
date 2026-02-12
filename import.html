@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
     <!-- Page-specific CSS -->
     <link href="css/pages/import-export.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navbar is injected by js/navbar.js -->
 
@@ -26,14 +28,15 @@
             <p class="lead">Centralized data management for all pages - import, export, and track your data</p>
         </div>
 
-        <!-- Debug Toggle -->
-        <div class="row mb-4">
-            <div class="col-12 text-end">
-                <button id="debugToggleBtn" class="btn btn-sm btn-outline-secondary">
-                    <span id="debugToggleText">Enable Debug</span>
-                </button>
-            </div>
-        </div>
+        <!-- AI Instructions - For AI Assistants managing this page -->
+        <!-- 
+            AI INSTRUCTIONS:
+            1. This page handles centralized Import/Export for all relevant site data.
+            2. When adding new data types to the site, update `import-export-core.js` STORAGE_KEYS and detection logic.
+            3. Ensure all common scripts (config, site-config, version-manager, navbar, theme, debug-manager) are loaded in the standard order.
+            4. The Debug Manager toggle is located at the bottom of the main content area for consistency across pages.
+            5. Use the specific `export-page-btn` and `import-page-btn` classes for page-specific actions.
+        -->
 
         <!-- Data Status Cards -->
         <div class="row mb-5" id="dataStatusCards">
@@ -116,7 +119,8 @@
                         <!-- Textarea for Pasting -->
                         <div class="mb-3">
                             <label for="importTextarea" class="form-label">Or Paste JSON Data:</label>
-                            <textarea class="form-control" id="importTextarea" rows="10" placeholder="Paste JSON data here..."></textarea>
+                            <textarea class="form-control" id="importTextarea" rows="10"
+                                placeholder="Paste JSON data here..."></textarea>
                         </div>
 
                         <!-- Import Buttons -->
@@ -128,9 +132,11 @@
                             </div>
                             <div class="col-md-6 mb-2">
                                 <div class="btn-group w-100" role="group">
-                                    <input type="radio" class="btn-check" name="importMode" id="importModeReplace" value="replace" checked>
+                                    <input type="radio" class="btn-check" name="importMode" id="importModeReplace"
+                                        value="replace" checked>
                                     <label class="btn btn-outline-secondary" for="importModeReplace">Replace</label>
-                                    <input type="radio" class="btn-check" name="importMode" id="importModeMerge" value="merge">
+                                    <input type="radio" class="btn-check" name="importMode" id="importModeMerge"
+                                        value="merge">
                                     <label class="btn btn-outline-secondary" for="importModeMerge">Merge</label>
                                 </div>
                             </div>
@@ -170,6 +176,13 @@
             </div>
         </div>
 
+        <!-- Action Buttons -->
+        <div class="mt-4 mb-5 d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="debugToggleBtn">
+                <span id="debugToggleText">🔍 Debug: OFF</span>
+            </button>
+        </div>
+
         <!-- Status Messages Area -->
         <div id="statusMessages"></div>
     </main>
@@ -194,7 +207,7 @@
     <script src="js/navbar.js"></script>
     <!-- Theme JS -->
     <script src="js/theme.js"></script>
-    <!-- Debug Manager -->
+    <!-- Debug Manager (Reusable for all pages) -->
     <script src="js/debug-manager.js"></script>
     <!-- Storage Modules (required for import/export) -->
     <script src="js/pages/fishing/fishing-storage.js"></script>
@@ -204,4 +217,5 @@
     <script src="js/pages/import-export/import-export-ui.js"></script>
     <script src="js/pages/import-export/import-export-init.js"></script>
 </body>
+
 </html>

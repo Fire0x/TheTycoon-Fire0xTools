@@ -2,7 +2,7 @@
  * Import/Export Core Module
  * Contains data management, hash generation, format detection, and import/export functions
  */
-(function() {
+(function () {
     'use strict';
 
     // Ensure dependencies are loaded
@@ -11,49 +11,17 @@
         return;
     }
 
-    // Initialize DebugManager for import/export
-    const debugManager = new DebugManager({
-        prefix: '[Import/Export Debug]',
-        storageKey: 'importExportDebugMode',
-        buttonId: 'debugToggleBtn',
-        textId: 'debugToggleText'
-    });
-
-    // Update UI after DOM is ready (button might not exist yet during module load)
-    function updateDebugUI() {
-        const btn = document.getElementById('debugToggleBtn');
-        const text = document.getElementById('debugToggleText');
-        if (btn && text) {
-            debugManager.updateUI();
-            // Log only if debug is enabled to avoid console spam
-            if (debugManager.isEnabled()) {
-                console.log('[Import/Export Debug] Debug UI updated');
-            }
-        } else {
-            console.warn('[Import/Export Debug] Debug UI elements not found');
-        }
-    }
-    
-    // Update UI when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(updateDebugUI, 100);
-        });
-    } else {
-        // DOM already ready, but wait a bit to ensure button exists
-        setTimeout(updateDebugUI, 100);
-    }
-
-    // Expose debug functions globally
-    window.importExportDebugLog = function(...args) { debugManager.log(...args); };
-    window.importExportDebugError = function(...args) { debugManager.error(...args); };
-    window.importExportDebugWarn = function(...args) { debugManager.warn(...args); };
-    window.toggleImportExportDebug = function() { 
-        debugManager.toggle();
-        // Update UI after toggle (with small delay to ensure DOM is updated)
-        setTimeout(updateDebugUI, 50);
+    /**
+     * AI INSTRUCTIONS:
+     * 1. This file uses a local `debugManager` shim that redirects to global functions.
+     * 2. The actual `DebugManager` is initialized in `import-export-init.js`.
+     */
+    const debugManager = {
+        log: (...args) => window.importExportDebugLog ? window.importExportDebugLog(...args) : console.log(...args),
+        error: (...args) => window.importExportDebugError ? window.importExportDebugError(...args) : console.error(...args),
+        warn: (...args) => window.importExportDebugWarn ? window.importExportDebugWarn(...args) : console.warn(...args),
+        isEnabled: () => window.isImportExportDebugEnabled ? window.isImportExportDebugEnabled() : false
     };
-    window.isImportExportDebugEnabled = function() { return debugManager.isEnabled(); };
 
     // Storage keys for each page
     const STORAGE_KEYS = {
@@ -69,7 +37,7 @@
     // Excluded pages from import/export (can be toggled)
     // Set to [] to include all pages, or add page names to exclude them
     const EXCLUDED_PAGES = ['merchants', 'vehicles'];
-    
+
     /**
      * Check if a page is excluded
      * @param {string} pageName - Page name
@@ -78,7 +46,7 @@
     function isPageExcluded(pageName) {
         return EXCLUDED_PAGES.includes(pageName);
     }
-    
+
     /**
      * Get all non-excluded page names
      * @returns {Array<string>} Array of page names
@@ -122,12 +90,12 @@
             if (pageName === 'logistics' && typeof LogisticsStorage !== 'undefined') {
                 return LogisticsStorage.read();
             }
-            
+
             // Use FishingStorage API for fishing page
             if (pageName === 'fishing' && typeof FishingStorage !== 'undefined') {
                 return FishingStorage.read();
             }
-            
+
             const stored = localStorage.getItem(storageKey);
             if (!stored) {
                 debugManager.log(`No data found for ${pageName}`);
@@ -252,7 +220,7 @@
             if (jsonData.education) pages.push('education');
             if (jsonData.fishing) pages.push('fishing');
             if (jsonData.logistics) pages.push('logistics');
-            
+
             return {
                 type: 'unified',
                 page: null,
@@ -339,8 +307,8 @@
         }
 
         // Check for fishing format
-        if (jsonData.locations && Array.isArray(jsonData.locations) && 
-            jsonData.fish && Array.isArray(jsonData.fish) && 
+        if (jsonData.locations && Array.isArray(jsonData.locations) &&
+            jsonData.fish && Array.isArray(jsonData.fish) &&
             jsonData.rewards && Array.isArray(jsonData.rewards)) {
             return {
                 type: 'fishing',
@@ -374,10 +342,10 @@
      */
     function exportAllData() {
         debugManager.log('=== exportAllData START ===');
-        
+
         const allData = getAllPageData();
         const hashes = calculateAllHashes();
-        
+
         const exportData = {
             export_date: new Date().toISOString(),
             version: '1.0.0',
@@ -412,12 +380,12 @@
      */
     function exportPageData(pageName) {
         debugManager.log(`=== exportPageData START for ${pageName} ===`);
-        
+
         if (isPageExcluded(pageName)) {
             debugManager.warn(`Page ${pageName} is excluded from export`);
             return null;
         }
-        
+
         const data = getPageData(pageName);
         if (!data) {
             debugManager.warn(`No data to export for ${pageName}`);
@@ -444,7 +412,7 @@
      */
     function importChecklistData(data, mode) {
         debugManager.log('=== importChecklistData START ===', { mode });
-        
+
         const result = { success: 0, errors: 0, messages: [] };
 
         try {
@@ -485,7 +453,7 @@
      */
     function importApartmentsData(data, mode) {
         debugManager.log('=== importApartmentsData START ===', { mode });
-        
+
         const result = { success: 0, updated: 0, errors: 0, messages: [] };
 
         try {
@@ -495,7 +463,7 @@
             // Handle apartments array (can be direct or nested)
             let apartmentsToImport = null;
             let versionToUse = existingData?.version || '1.0.1';
-            
+
             if (Array.isArray(data.apartments)) {
                 // Direct array
                 apartmentsToImport = data.apartments;
@@ -521,7 +489,7 @@
                     // Merge: update existing by ID, add new
                     let added = 0;
                     let updated = 0;
-                    
+
                     apartmentsToImport.forEach(apt => {
                         const index = apartments.findIndex(a => a.id === apt.id);
                         if (index !== -1) {
@@ -532,7 +500,7 @@
                             added++;
                         }
                     });
-                    
+
                     result.success = added;
                     result.updated = updated;
                     result.messages.push(`Added ${added} new apartments, updated ${updated} existing`);
@@ -594,7 +562,7 @@
      */
     function importMerchantsData(data, mode) {
         debugManager.log('=== importMerchantsData START ===', { mode });
-        
+
         const result = { success: 0, errors: 0, messages: [] };
 
         try {
@@ -621,7 +589,7 @@
      */
     function importVehiclesData(data, mode) {
         debugManager.log('=== importVehiclesData START ===', { mode });
-        
+
         const result = { success: 0, updated: 0, errors: 0, messages: [] };
 
         try {
@@ -659,12 +627,12 @@
      */
     function importEducationData(data, mode) {
         debugManager.log('=== importEducationData START ===', { mode });
-        
+
         const result = { success: 0, errors: 0, messages: [] };
 
         try {
             let trainings = null;
-            
+
             // Handle different formats
             if (Array.isArray(data)) {
                 // Direct array
@@ -687,14 +655,14 @@
                 // Merge: combine with existing
                 const existing = getPageData('education') || [];
                 const existingMap = new Map(existing.map(t => [t.name?.toLowerCase(), t]));
-                
+
                 trainings.forEach(training => {
                     const key = training.name?.toLowerCase();
                     if (key) {
                         existingMap.set(key, training);
                     }
                 });
-                
+
                 const merged = Array.from(existingMap.values());
                 localStorage.setItem(STORAGE_KEYS.education, JSON.stringify(merged));
                 result.success = trainings.length;
@@ -720,16 +688,16 @@
      */
     function importFishingData(data, mode) {
         debugManager.log('=== importFishingData START ===', { mode });
-        
+
         const result = { success: 0, updated: 0, errors: 0, messages: [] };
 
         try {
             // Handle fishing data structure
             let fishingDataToImport = null;
             let versionToUse = '1.0.0';
-            
-            if (data.locations && Array.isArray(data.locations) && 
-                data.fish && Array.isArray(data.fish) && 
+
+            if (data.locations && Array.isArray(data.locations) &&
+                data.fish && Array.isArray(data.fish) &&
                 data.rewards && Array.isArray(data.rewards)) {
                 // Full fishing data structure
                 fishingDataToImport = {
@@ -766,7 +734,7 @@
                 let locationsAdded = 0, locationsUpdated = 0;
                 let fishAdded = 0, fishUpdated = 0;
                 let rewardsAdded = 0, rewardsUpdated = 0;
-                
+
                 // Merge locations
                 fishingDataToImport.locations.forEach(loc => {
                     const index = locations.findIndex(l => l.id === loc.id);
@@ -778,7 +746,7 @@
                         locationsAdded++;
                     }
                 });
-                
+
                 // Merge fish
                 fishingDataToImport.fish.forEach(f => {
                     const index = fish.findIndex(fish => fish.id === f.id);
@@ -790,7 +758,7 @@
                         fishAdded++;
                     }
                 });
-                
+
                 // Merge rewards
                 fishingDataToImport.rewards.forEach(rew => {
                     const index = rewards.findIndex(r => r.id === rew.id);
@@ -802,7 +770,7 @@
                         rewardsAdded++;
                     }
                 });
-                
+
                 result.success = locationsAdded + fishAdded + rewardsAdded;
                 result.updated = locationsUpdated + fishUpdated + rewardsUpdated;
                 result.messages.push(
