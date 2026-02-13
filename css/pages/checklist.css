@@ -8,16 +8,155 @@
  * 
  * APPLIES TO:
  * - checklist.html ONLY
- * 
- * UPDATE INSTRUCTIONS:
- * - To update checklist.html ONLY: Edit this file
- * - To update BOTH checklist.html and checklist-1.html: Edit checklist-base.css
- * - To update checklist-1.html ONLY: Edit checklist-1.css
- * 
- * PRIMARY/VARIANT RELATIONSHIP:
- * - Primary: checklist.html
- * - Variant: checklist-1.html (extends this file)
  */
 
-/* Add checklist.html-specific styles here */
-/* Currently no unique styles - all shared in checklist-base.css */
+/* Floating Action Button (FAB) */
+.fab-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 15px;
+}
+
+.fab-main {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--primary-color, #0d6efd);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s;
+}
+
+.fab-main:hover {
+    transform: scale(1.1);
+    background-color: var(--primary-hover, #0b5ed7);
+}
+
+.fab-main.active {
+    transform: rotate(45deg);
+    background-color: var(--danger-color, #dc3545);
+}
+
+.fab-menu {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    /* Align labels to the left of buttons if we add them */
+    gap: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fab-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.fab-item-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fab-label {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.fab-menu.show .fab-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.fab-item {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.fab-item:hover {
+    transform: scale(1.1);
+}
+
+.fab-item.btn-primary {
+    background-color: var(--primary-color, #0d6efd);
+}
+
+.fab-item.btn-success {
+    background-color: var(--success-color, #198754);
+}
+
+.fab-item.btn-info {
+    background-color: var(--info-color, #0dcaf0);
+    color: black;
+}
+
+.fab-item.btn-warning {
+    background-color: var(--warning-color, #ffc107);
+    color: black;
+}
+
+.fab-item.btn-secondary {
+    background-color: var(--secondary-color, #6c757d);
+}
+
+.fab-item.btn-danger {
+    background-color: var(--danger-color, #dc3545);
+}
+
+.fab-item.btn-outline-secondary {
+    background-color: var(--card-bg, #212529);
+    color: var(--secondary-color, #6c757d);
+    border: 2px solid var(--secondary-color, #6c757d);
+}
+
+.fab-item.btn-outline-secondary:hover {
+    background-color: var(--secondary-color, #6c757d);
+    color: white;
+}
+
+/* Pulse animation for the main button to draw attention */
+@keyframes fab-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 15px rgba(13, 110, 253, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+    }
+}

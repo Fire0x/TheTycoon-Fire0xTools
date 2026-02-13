@@ -327,17 +327,8 @@
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="mt-4 d-flex flex-wrap gap-2">
-            <button type="button" class="btn btn-primary" onclick="checkAll()">✅ Check All</button>
-            <button type="button" class="btn btn-secondary" onclick="uncheckAll()">❌ Uncheck All</button>
-            <button type="button" class="btn btn-info" onclick="saveProgress()">💾 Save Progress</button>
-            <button type="button" class="btn btn-danger" onclick="clearProgress()">🗑️ Clear Progress</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="debugToggleBtn"
-                onclick="toggleDebug()">
-                <span id="debugToggleText">🔍 Debug: OFF</span>
-            </button>
-        </div>
+
+
     </main>
 
     <!-- Tier Modal -->
@@ -614,7 +605,49 @@
     <script src="js/navbar.js"></script>
     <!-- Theme JS -->
     <script src="js/theme.js"></script>
-    <!-- Number Formatter (optional) -->
+    <!-- Floating Action UI -->
+    <div class="fab-container">
+        <div class="fab-menu" id="fabMenu">
+            <div class="fab-item-wrapper">
+                <span class="fab-label">Scroll Top</span>
+                <button class="fab-item btn-secondary"
+                    onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆️</button>
+            </div>
+            <div class="fab-item-wrapper">
+                <span class="fab-label">Generate Checklist</span>
+                <button class="fab-item btn-info" onclick="generatePersonTableString()">📋</button>
+            </div>
+            <div class="fab-item-wrapper">
+                <span class="fab-label">Add Business</span>
+                <button class="fab-item btn-primary" onclick="openAddBusinessModal()">➕</button>
+            </div>
+            <div class="fab-item-wrapper">
+                <span class="fab-label">Check All</span>
+                <button class="fab-item btn-primary" onclick="checkAll()">✅</button>
+            </div>
+            <div class="fab-item-wrapper">
+                <span class="fab-label">Uncheck All</span>
+                <button class="fab-item btn-secondary" onclick="uncheckAll()">❌</button>
+            </div>
+            <div class="fab-item-wrapper">
+                <span class="fab-label">Save Progress</span>
+                <button class="fab-item btn-info" onclick="saveProgress()">💾</button>
+            </div>
+            <div class="fab-item-wrapper">
+                <span class="fab-label">Clear Progress</span>
+                <button class="fab-item btn-danger" onclick="clearProgress()">🗑️</button>
+            </div>
+            <div class="fab-item-wrapper">
+                <span class="fab-label"><span id="debugToggleText">Debug: OFF</span></span>
+                <button class="fab-item btn-warning" id="debugToggleBtn" onclick="toggleDebug()">🐞</button>
+            </div>
+        </div>
+        <button class="fab-main" id="fabMainBtn" onclick="toggleFabMenu()">
+            ⚡
+        </button>
+    </div>
+
+    <!-- Initialization Script for Number Formatter -->
     <script>
         // Load number-formatter.js if available
         (function () {
