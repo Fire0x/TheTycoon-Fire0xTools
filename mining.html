@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mining Analysis - Fire0x Incorporated</title>
+    <link rel="icon" type="image/png" href="images/SiteLogo.png">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/pages/mining.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Navbar Container -->
+    <div id="navbar-container"></div>
+
+    <main class="container py-5">
+        <div class="position-relative mb-4">
+            <div class="text-center">
+                <h1 class="glow-text mb-0">⛏️ Mining Analysis</h1>
+                <p class="lead">Ore, ingot, sheet materials and profit calculations</p>
+            </div>
+            <div class="d-flex justify-content-center align-items-center gap-3 mt-2">
+                <p class="mb-0">
+                    <strong>🕐 Local Time:</strong> <span id="localTime">--:--:--</span>
+                </p>
+                <button id="debugToggleBtn" class="btn btn-sm btn-outline-secondary"
+                    onclick="if(window.debug) window.debug.toggle()">
+                    <span id="debugStatus">🔍 Debug: OFF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" id="miningToastContainer" style="z-index: 1050;">
+        </div>
+
+        <!-- How to Use -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header"
+                style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true"
+                    aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📖 How to Use This Page</span>
+                    <span class="float-end" id="howToUseToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="howToUseCollapse">
+                <div class="card-body">
+                    <p class="mb-2">Manage your mining operation using the <strong>Configuration Management</strong>
+                        panel below.</p>
+                    <ul class="mb-0">
+                        <li><strong>Paste Data:</strong> Use "parse from game" to paste TIER/Qty/Name data.</li>
+                        <li><strong>Template:</strong> Use <span class="badge bg-info">📋 Load Template</span> to start
+                            with standard materials/recipes.</li>
+                        <li><strong>Materials:</strong> Add/Edit ores, ingots, and sheets.</li>
+                        <li><strong>Recipes:</strong> Define how materials convert (Ore→Ingot→Sheet).</li>
+                        <li><strong>Profit:</strong> Check the "Profit Analysis" section for margins.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Panel -->
+        <div class="card config-panel mb-4">
+            <div class="card-header">
+                <button class="btn btn-link config-collapse-btn text-decoration-none text-white w-100 text-start"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#configCollapse" aria-expanded="true"
+                    aria-controls="configCollapse">
+                    ⚙️ Configuration Management <span class="float-end">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="configCollapse">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h5>Data Management</h5>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-primary" onclick="openParseDataModal()">📋 Parse Game
+                                Data</button>
+                            <button type="button" class="btn btn-warning" onclick="openImportMiningModal()">📥 Import
+                                Config (JSON)</button>
+                            <button type="button" class="btn btn-success" onclick="exportMiningConfiguration()">📤
+                                Export Config (JSON)</button>
+                            <button type="button" class="btn btn-info"
+                                onclick="if(window.loadTemplate) window.loadTemplate(); else alert('Template loader not ready')">📋
+                                Load Template</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h5>Materials & Recipes</h5>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button type="button" class="btn btn-primary" id="addMaterialBtnConfig"
+                                onclick="window.openAddMaterialModal && window.openAddMaterialModal()">➕ Add
+                                Material</button>
+                            <button type="button" class="btn btn-primary" id="addRecipeBtnConfig"
+                                onclick="window.openAddRecipeModal && window.openAddRecipeModal()">➕ Add Recipe</button>
+                            <button type="button" class="btn btn-info"
+                                onclick="if(window.autoGenerateMissingRecipes) window.autoGenerateMissingRecipes()">⚡
+                                Auto-Generate Recipes</button>
+                            <button type="button" class="btn btn-secondary"
+                                onclick="if(window.updateAllRecipeRatios) window.updateAllRecipeRatios()">🔄 Update
+                                Ratios (5:1 / 3:1)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Material & Recipe Lists (Read-Only View) -->
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- Materials List -->
+                <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <span style="color: var(--text-color); font-weight: 600;">📦 Materials</span>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#materialsCollapse" aria-expanded="true">▼</button>
+                        </div>
+                    </div>
+                    <div class="collapse show" id="materialsCollapse">
+                        <div class="card-body">
+                            <div id="materialsFilterContainer" class="mb-2"></div>
+                            <div id="materialsContainer" style="max-height: 400px; overflow-y: auto;"></div>
+                            <div id="materialsEmptyState" class="text-center py-3" style="display: none;">
+                                <p class="text-muted">No materials yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <!-- Recipes List -->
+                <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                    <div class="card-header d-flex justify-content-between align-items-center"
+                        style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <span style="color: var(--text-color); font-weight: 600;">📜 Recipes</span>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#recipesCollapse" aria-expanded="true">▼</button>
+                        </div>
+                    </div>
+                    <div class="collapse show" id="recipesCollapse">
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <input type="text" class="form-control form-control-sm" id="recipeFilterInput"
+                                    placeholder="Filter recipes...">
+                            </div>
+                            <div id="recipesContainer" style="max-height: 400px; overflow-y: auto;"></div>
+                            <div id="recipesEmptyState" class="text-center py-3" style="display: none;">
+                                <p class="text-muted">No recipes yet.</p>
+                            </div>
+                            <div id="recipesFilterEmptyState" class="text-center py-3" style="display: none;">
+                                <p class="text-muted">No recipes match your filter.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Material Modal -->
+        <div class="modal fade" id="addMaterialModal" tabindex="-1" aria-labelledby="addMaterialModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content"
+                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color);">
+                    <div class="modal-header" style="border-bottom: 1px solid var(--card-border);">
+                        <h5 class="modal-title" id="addMaterialModalLabel">Add Material</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="materialTypeInput" class="form-label">Type</label>
+                            <select class="form-select" id="materialTypeInput">
+                                <option value="ore">Ore</option>
+                                <option value="ingot">Ingot</option>
+                                <option value="sheet">Sheet</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="materialNameInput" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="materialNameInput" placeholder="e.g. Aluminum">
+                        </div>
+                        <div class="mb-3">
+                            <label for="materialTierInput" class="form-label">Tier</label>
+                            <input type="number" class="form-control" id="materialTierInput" min="1" value="1"
+                                placeholder="1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="materialWeightInput" class="form-label">Weight per unit (kg)</label>
+                            <input type="number" class="form-control" id="materialWeightInput" min="0" step="any"
+                                value="0" placeholder="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="materialValueInput" class="form-label">Value per unit ($)</label>
+                            <input type="number" class="form-control" id="materialValueInput" min="0" step="any"
+                                value="0" placeholder="0">
+                        </div>
+                        <p id="addMaterialError" class="text-danger small mb-0" style="display: none;"></p>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid var(--card-border);">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="saveMaterialBtn">Save Material</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Recipe Modal -->
+        <div class="modal fade" id="addRecipeModal" tabindex="-1" aria-labelledby="addRecipeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content"
+                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color);">
+                    <div class="modal-header" style="border-bottom: 1px solid var(--card-border);">
+                        <h5 class="modal-title" id="addRecipeModalLabel">Add Recipe</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="recipeNameInput" class="form-label">Recipe name (optional)</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="recipeNameInput"
+                                    placeholder="e.g. Aluminum Ore to Ingot">
+                                <button type="button" class="btn btn-outline-secondary" id="autoGenerateRecipeNameBtn"
+                                    title="Auto-generate name from inputs and outputs">
+                                    <span>⚡</span> Auto
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Inputs</label>
+                            <div id="recipeInputsContainer"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-1" id="addRecipeInputRow">+
+                                Add input</button>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Outputs</label>
+                            <div id="recipeOutputsContainer"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-1"
+                                id="addRecipeOutputRow">+ Add output</button>
+                        </div>
+                        <p id="addRecipeError" class="text-danger small mb-0" style="display: none;"></p>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid var(--card-border);">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="saveRecipeBtn">Save Recipe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parse Data Modal -->
+        <div class="modal fade" id="parseDataModal" tabindex="-1" aria-labelledby="parseDataModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content"
+                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color);">
+                    <div class="modal-header" style="border-bottom: 1px solid var(--card-border);">
+                        <h5 class="modal-title" id="parseDataModalLabel">Parse Mining Data</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted small mb-3">Paste data in format: TIER N, xQty, Ore/Ingot/Sheet Name, X.X
+                            kg, $unitPrice ($total). Use first $ value only.</p>
+                        <pre class="bg-light p-2 mb-3 small"
+                            style="border-radius: 0.25rem; background-color: var(--bg-color) !important; color: var(--text-color) !important;">TIER 2
+x4
+Ore Aluminum
+16.0 kg
+$640 ($2,560)</pre>
+                        <textarea id="miningPasteInput" class="form-control" rows="10"
+                            placeholder="Paste mining data here..."></textarea>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid var(--card-border);">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="runParseAndSave()">Parse & Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Config Modal -->
+        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content"
+                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color);">
+                    <div class="modal-header" style="border-bottom: 1px solid var(--card-border);">
+                        <h5 class="modal-title" id="importModalLabel">Import Configuration (JSON)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <strong>Warning:</strong> Importing will replace all your current materials, recipes, and
+                            settings!
+                        </div>
+                        <textarea id="importTextarea" class="form-control" rows="10"
+                            placeholder='Paste JSON configuration here...'></textarea>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid var(--card-border);">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary"
+                            onclick="importMiningConfiguration()">Import</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Config Modal -->
+        <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content"
+                    style="background-color: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-color);">
+                    <div class="modal-header" style="border-bottom: 1px solid var(--card-border);">
+                        <h5 class="modal-title" id="exportModalLabel">Export Configuration (JSON)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                onclick="copyToClipboard('exportTextarea')">📋 Copy to Clipboard</button>
+                        </div>
+                        <textarea id="exportTextarea" class="form-control" rows="15" readonly></textarea>
+                    </div>
+                    <div class="modal-footer" style="border-top: 1px solid var(--card-border);">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profit Analysis -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header"
+                style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#profitAnalysisCollapse" aria-expanded="true"
+                    aria-controls="profitAnalysisCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>💰 Profit Analysis</span>
+                    <span class="float-end" id="profitAnalysisToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="profitAnalysisCollapse">
+                <div class="card-body">
+                    <div id="profitAnalysisContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Analytics -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header"
+                style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#chartsCollapse" aria-expanded="false"
+                    aria-controls="chartsCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📊 Visual Analytics</span>
+                    <span class="float-end">▼</span>
+                </button>
+            </div>
+            <div class="collapse" id="chartsCollapse">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-center mb-3">Profit Margin by Recipe</h6>
+                            <canvas id="profitChart"></canvas>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-center mb-3">Material Value Chain</h6>
+                            <canvas id="valueChainChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="text-center mt-2">
+                        <button class="btn btn-sm btn-outline-primary" id="refreshChartsBtn">🔄 Refresh Charts</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Manufacturing Calculator -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header"
+                style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#calculatorCollapse" aria-expanded="false"
+                    aria-controls="calculatorCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>🧮 Manufacturing Calculator</span>
+                    <span class="float-end">▼</span>
+                </button>
+            </div>
+            <div class="collapse" id="calculatorCollapse">
+                <div class="card-body">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-5">
+                            <label for="calcTargetItem" class="form-label small">I want to make:</label>
+                            <select id="calcTargetItem" class="form-select"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="calcTargetQty" class="form-label small">Quantity:</label>
+                            <input type="number" id="calcTargetQty" class="form-control" value="1" min="1">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary w-100" id="calcBtn">Calculate Requirements</button>
+                        </div>
+                    </div>
+                    <div id="calcResults" class="mt-4" style="display: none;">
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading">Shopping List</h6>
+                            <hr>
+                            <div id="calcShoppingList"></div>
+                            <hr>
+                            <p class="mb-0 small" id="calcSummary"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All
+                rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Core Config & Utils -->
+    <script src="js/config/config-data.js"></script>
+    <script src="js/config/site-config.js"></script>
+    <script src="js/config/version-manager.js"></script>
+    <script src="js/site-config.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/debug-manager.js"></script>
+    <script src="js/number-formatter.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/utils/toast-manager.js"></script>
+
+    <!-- Mining Modules -->
+    <script src="js/pages/mining/mining-config.js"></script>
+    <script src="js/pages/mining/mining-template-data.js"></script>
+    <script src="js/pages/mining/mining-config-ui.js"></script>
+    <script src="js/pages/mining/mining-storage.js"></script>
+    <script src="js/pages/mining/mining-core.js"></script>
+    <script src="js/pages/mining/mining-parser.js"></script>
+    <script src="js/pages/mining/mining-materials-ui.js"></script>
+    <script src="js/pages/mining/mining-recipes-ui.js"></script>
+    <script src="js/pages/mining/mining-calculations.js"></script>
+    <script src="js/pages/mining/mining-ui.js"></script>
+    <script src="js/pages/mining/mining-charts.js"></script>
+    <script src="js/pages/mining/mining-calculator.js"></script>
+    <script src="js/pages/mining/mining-filters.js"></script>
+    <script src="js/pages/mining/mining-theme.js"></script>
+    <script src="js/pages/mining/mining-main.js"></script>
+</body>
+
+</html>

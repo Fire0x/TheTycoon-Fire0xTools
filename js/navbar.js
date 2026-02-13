@@ -18,13 +18,14 @@ const NavbarManager = {
         },
         {
             type: 'dropdown',
-            text: '💵 Busineses',
+            text: '💵 Businesses',
             id: 'businessDropdown',
             items: [
-                {text: '🏠 Apartment Management', href: 'apartment.html'},
-                {text: '🏠 Business Checklist', href: 'checklist.html'},
-                {text: '🚚 Logistics Analysis', href: 'logistics.html'},
-                {text: '🎣 Fishing Management', href: 'fishing.html'},
+                { text: '🏠 Apartment Management', href: 'apartment.html' },
+                { text: '🏠 Business Checklist', href: 'checklist.html' },
+                { text: '🚚 Logistics Analysis', href: 'logistics.html' },
+                { text: '⛏️ Mining Analysis', href: 'mining.html' },
+                { text: '🎣 Fishing Management', href: 'fishing.html' },
             ]
         },
         {
@@ -48,10 +49,10 @@ const NavbarManager = {
             id: 'nav-changelog'
         }
     ],
-    
+
     // Excluded HTML files (will not appear in navbar)
     excludedPages: ['checklist-1.html', 'Version Control/checklist.html'],
-    
+
     /**
      * Get current page filename
      * @returns {string} Current page filename (e.g., 'index.html')
@@ -61,7 +62,7 @@ const NavbarManager = {
         const filename = path.split('/').pop() || 'index.html';
         return filename;
     },
-    
+
     /**
      * Check if a menu item is active (current page)
      * @param {string} href - The href of the menu item
@@ -71,7 +72,7 @@ const NavbarManager = {
         const currentPage = this.getCurrentPage();
         return href === currentPage || (currentPage === '' && href === 'index.html');
     },
-    
+
     /**
      * Check if a page is excluded from the navbar
      * @param {string} href - The href of the menu item
@@ -80,7 +81,7 @@ const NavbarManager = {
     isExcluded(href) {
         return this.excludedPages.includes(href);
     },
-    
+
     /**
      * Add a page to the exclusion list
      * @param {string} href - The href of the page to exclude (e.g., 'page.html')
@@ -90,7 +91,7 @@ const NavbarManager = {
             this.excludedPages.push(href);
         }
     },
-    
+
     /**
      * Remove a page from the exclusion list
      * @param {string} href - The href of the page to include again
@@ -98,7 +99,7 @@ const NavbarManager = {
     includePage(href) {
         this.excludedPages = this.excludedPages.filter(page => page !== href);
     },
-    
+
     /**
      * Generate navbar HTML
      * @returns {string} Navbar HTML
@@ -108,7 +109,7 @@ const NavbarManager = {
         const logoPath = window.SiteConfig ? window.SiteConfig.getSiteLogoPath() : 'images/SiteLogo.png';
         const logoAlt = window.SiteConfig ? window.SiteConfig.getSiteLogoAlt() : 'Site Logo';
         const logoHeight = window.SiteConfig ? window.SiteConfig.getSiteLogoHeight() : '40px';
-        
+
         // Filter out excluded pages (only for items with href)
         const visibleMenuItems = this.menuItems.filter(item => {
             if (item.type === 'dropdown') {
@@ -120,22 +121,22 @@ const NavbarManager = {
             }
             return !this.isExcluded(item.href);
         });
-        
+
         const menuItemsHTML = visibleMenuItems.map(item => {
             // Handle dropdown items
             if (item.type === 'dropdown') {
                 // Check if any dropdown item is active
                 const hasActiveItem = item.items && item.items.some(subItem => this.isActivePage(subItem.href));
                 const dropdownActiveClass = hasActiveItem ? 'active' : '';
-                
+
                 const dropdownItemsHTML = item.items ? item.items.map(subItem => {
                     const isSubActive = this.isActivePage(subItem.href);
                     const subActiveClass = isSubActive ? 'active' : '';
                     const subAriaCurrent = isSubActive ? ' aria-current="page"' : '';
-                    
+
                     return `<li><a class="dropdown-item ${subActiveClass}"${subAriaCurrent} href="${subItem.href}" id="${subItem.id || ''}">${subItem.text}</a></li>`;
                 }).join('\n') : '';
-                
+
                 return `
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle ${dropdownActiveClass}" href="#" id="${item.id}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -146,18 +147,18 @@ ${dropdownItemsHTML}
                         </ul>
                     </li>`;
             }
-            
+
             // Handle regular menu items
             const isActive = this.isActivePage(item.href);
             const activeClass = isActive ? 'active' : '';
             const ariaCurrent = isActive ? ' aria-current="page"' : '';
-            
+
             return `
                     <li class="nav-item">
                         <a class="nav-link ${activeClass}"${ariaCurrent} href="${item.href}" id="${item.id}">${item.text}</a>
                     </li>`;
         }).join('\n');
-        
+
         return `
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -174,7 +175,7 @@ ${menuItemsHTML}
         </div>
     </nav>`;
     },
-    
+
     /**
      * Initialize navbar
      * Replaces existing navbar or inserts new one
@@ -182,14 +183,14 @@ ${menuItemsHTML}
     init() {
         // Find existing navbar
         const existingNavbar = document.querySelector('nav.navbar');
-        
+
         if (existingNavbar) {
             // Replace existing navbar
             const navbarHTML = this.generateNavbarHTML();
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = navbarHTML.trim();
             const newNavbar = tempDiv.firstElementChild;
-            
+
             // Replace the old navbar with the new one
             existingNavbar.parentNode.replaceChild(newNavbar, existingNavbar);
         } else {
@@ -201,7 +202,7 @@ ${menuItemsHTML}
             }
         }
     },
-    
+
     /**
      * Add a new menu item
      * @param {Object} item - Menu item object with href, text, and optional id
@@ -211,16 +212,16 @@ ${menuItemsHTML}
             console.error('NavbarManager: Menu item must have href and text properties');
             return;
         }
-        
+
         const menuItem = {
             href: item.href,
             text: item.text,
             id: item.id || `nav-${item.href.replace('.html', '').replace(/[^a-z0-9]/gi, '-').toLowerCase()}`
         };
-        
+
         this.menuItems.push(menuItem);
     },
-    
+
     /**
      * Remove a menu item by href
      * @param {string} href - The href of the menu item to remove
@@ -228,7 +229,7 @@ ${menuItemsHTML}
     removeMenuItem(href) {
         this.menuItems = this.menuItems.filter(item => item.href !== href);
     },
-    
+
     /**
      * Update menu items order
      * @param {Array<string>} hrefs - Array of hrefs in the desired order
@@ -236,7 +237,7 @@ ${menuItemsHTML}
     reorderMenuItems(hrefs) {
         const orderedItems = [];
         const existingItems = [...this.menuItems];
-        
+
         // Add items in the specified order
         hrefs.forEach(href => {
             const item = existingItems.find(i => i.href === href);
@@ -244,14 +245,14 @@ ${menuItemsHTML}
                 orderedItems.push(item);
             }
         });
-        
+
         // Add any remaining items that weren't in the order array
         existingItems.forEach(item => {
             if (!orderedItems.find(i => i.href === item.href)) {
                 orderedItems.push(item);
             }
         });
-        
+
         this.menuItems = orderedItems;
     }
 };
@@ -309,7 +310,7 @@ const SubNavbarManager = {
     // Page-specific subnavbar configurations
     // Format: { 'page.html': { items: [...], type: 'tabs|pills|links', id: '...' } }
     pageSubnavbars: {},
-    
+
     /**
      * Register a subnavbar for a specific page
      * @param {string} pageName - The page filename (e.g., 'apartment.html')
@@ -323,12 +324,12 @@ const SubNavbarManager = {
             console.error('SubNavbarManager: config.items must be an array');
             return;
         }
-        
+
         if (!config.type || !['tabs', 'pills', 'links', 'breadcrumbs'].includes(config.type)) {
             console.error('SubNavbarManager: config.type must be one of: tabs, pills, links, breadcrumbs');
             return;
         }
-        
+
         this.pageSubnavbars[pageName] = {
             items: config.items,
             type: config.type,
@@ -337,7 +338,7 @@ const SubNavbarManager = {
             sticky: config.sticky !== undefined ? config.sticky : false
         };
     },
-    
+
     /**
      * Get subnavbar configuration for current page
      * @returns {Object|null} Subnavbar configuration or null if not found
@@ -346,7 +347,7 @@ const SubNavbarManager = {
         const currentPage = NavbarManager.getCurrentPage();
         return this.pageSubnavbars[currentPage] || null;
     },
-    
+
     /**
      * Generate subnavbar HTML
      * @param {Object} config - Subnavbar configuration
@@ -354,25 +355,25 @@ const SubNavbarManager = {
      */
     generateSubnavbarHTML(config) {
         if (!config) return '';
-        
+
         const { items, type, id, containerClass, sticky } = config;
         const currentPage = NavbarManager.getCurrentPage();
-        
+
         let itemsHTML = '';
-        
+
         if (type === 'breadcrumbs') {
             // Generate breadcrumb navigation
             itemsHTML = items.map((item, index) => {
                 const isLast = index === items.length - 1;
                 const isActive = item.active || NavbarManager.isActivePage(item.href);
-                
+
                 if (isLast || isActive) {
                     return `<li class="breadcrumb-item active" aria-current="page">${item.text}</li>`;
                 } else {
                     return `<li class="breadcrumb-item"><a href="${item.href}">${item.text}</a></li>`;
                 }
             }).join('');
-            
+
             return `
     <!-- SubNavbar: Breadcrumbs -->
     <nav aria-label="breadcrumb" id="${id}" class="subnavbar ${sticky ? 'sticky-top' : ''}" style="background-color: #f8f9fa; padding: 0.75rem 0; border-bottom: 1px solid #dee2e6;">
@@ -389,7 +390,7 @@ ${itemsHTML}
                 const activeClass = isActive ? 'active' : '';
                 const ariaCurrent = isActive ? ' aria-current="page"' : '';
                 const targetId = item.target || item.href.replace('.html', '').replace(/[^a-z0-9]/gi, '-');
-                
+
                 // Check if it's a tab button (data-bs-toggle) or regular link
                 if (item.tabTarget) {
                     return `
@@ -403,9 +404,9 @@ ${itemsHTML}
                 </li>`;
                 }
             }).join('');
-            
+
             const navClass = type === 'tabs' ? 'nav-tabs' : 'nav-pills';
-            
+
             return `
     <!-- SubNavbar: ${type === 'tabs' ? 'Tabs' : 'Pills'} -->
     <nav id="${id}" class="subnavbar ${sticky ? 'sticky-top' : ''}" style="background-color: #f8f9fa; padding: 0.75rem 0; border-bottom: 1px solid #dee2e6;">
@@ -421,13 +422,13 @@ ${itemsHTML}
                 const isActive = item.active || NavbarManager.isActivePage(item.href);
                 const activeClass = isActive ? 'active' : '';
                 const ariaCurrent = isActive ? ' aria-current="page"' : '';
-                
+
                 return `
                 <li class="nav-item">
                     <a class="nav-link ${activeClass}"${ariaCurrent} href="${item.href}" id="${item.id || ''}">${item.text}</a>
                 </li>`;
             }).join('');
-            
+
             return `
     <!-- SubNavbar: Links -->
     <nav id="${id}" class="subnavbar ${sticky ? 'sticky-top' : ''}" style="background-color: #f8f9fa; padding: 0.75rem 0; border-bottom: 1px solid #dee2e6;">
@@ -439,7 +440,7 @@ ${itemsHTML}
     </nav>`;
         }
     },
-    
+
     /**
      * Initialize subnavbar for current page
      * Inserts subnavbar after the main navbar if configuration exists
@@ -447,7 +448,7 @@ ${itemsHTML}
     init() {
         const config = this.getCurrentPageSubnavbar();
         if (!config) return;
-        
+
         // Check if subnavbar already exists
         const existingSubnavbar = document.getElementById(config.id);
         if (existingSubnavbar) {
@@ -469,14 +470,14 @@ ${itemsHTML}
             }
         }
     },
-    
+
     /**
      * Remove subnavbar from current page
      */
     remove() {
         const config = this.getCurrentPageSubnavbar();
         if (!config) return;
-        
+
         const subnavbar = document.getElementById(config.id);
         if (subnavbar) {
             subnavbar.remove();

@@ -1,0 +1,404 @@
+/* Mining page styles */
+.material-card,
+.recipe-card {
+    margin-bottom: 1rem;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* Modern Materials Table Styling */
+.mining-table {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--card-border);
+}
+
+.mining-table thead {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-bottom: 2px solid rgba(99, 102, 241, 0.25);
+}
+
+.mining-table thead th {
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-color);
+    padding: 1rem 0.75rem;
+    border: none;
+    vertical-align: middle;
+}
+
+.mining-table tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.mining-table tbody tr:hover {
+    background-color: rgba(99, 102, 241, 0.05);
+    transform: scale(1.01);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Visual grouping for name-grouped materials - add separator between different name groups */
+.mining-table tbody tr.name-grouped-row.name-group-start {
+    border-top: 2px solid var(--card-border) !important;
+    margin-top: 0.5rem;
+}
+
+.mining-table tbody tr.name-grouped-row.name-group-start:first-child {
+    border-top: 1px solid var(--card-border) !important;
+}
+
+/* Visual grouping for tier-name-grouped materials - add separator between tier groups and name groups */
+.mining-table tbody tr.tier-name-grouped-row.tier-group-start {
+    border-top: 3px solid var(--card-border) !important;
+    margin-top: 0.75rem;
+}
+
+.mining-table tbody tr.tier-name-grouped-row.tier-group-start:first-child {
+    border-top: 1px solid var(--card-border) !important;
+}
+
+.mining-table tbody tr.tier-name-grouped-row.name-group-start {
+    border-top: 2px solid var(--card-border) !important;
+    margin-top: 0.5rem;
+}
+
+.mining-table tbody tr.tier-name-grouped-row.name-group-start.tier-group-start {
+    border-top: 3px solid var(--card-border) !important;
+}
+
+.mining-table tbody tr:hover td {
+    color: #212529 !important;
+    font-weight: 600;
+}
+
+.mining-table tbody tr:hover .material-name-cell {
+    font-weight: 700;
+}
+
+[data-theme="dark"] .mining-table tbody tr:hover td {
+    color: #ffffff !important;
+}
+
+.mining-table tbody td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    color: #212529 !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .mining-table tbody td {
+    color: #ffffff !important;
+}
+
+/* Material Type Badges */
+.material-type-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.material-type-badge.badge-ore {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    color: #fff;
+}
+
+.material-type-badge.badge-ingot {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #fff;
+}
+
+.material-type-badge.badge-sheet {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    color: #fff;
+}
+
+.material-type-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Tier Badge */
+.tier-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.7rem;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+    color: #212529 !important;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    display: inline-block;
+}
+
+[data-theme="dark"] .tier-badge {
+    color: #ffffff !important;
+}
+
+/* Material Name Styling - Slightly larger and bolder for emphasis */
+.mining-table tbody td:nth-child(3),
+.mining-table tbody td.material-name-cell {
+    font-weight: 600;
+    font-size: 1rem;
+    padding-left: 1rem;
+}
+
+/* Override Bootstrap striped table styles for all columns */
+.mining-table.table-striped > tbody > tr:nth-of-type(odd) > td {
+    color: #212529 !important;
+    background-color: transparent !important;
+}
+
+.mining-table.table-striped > tbody > tr:nth-of-type(even) > td {
+    color: #212529 !important;
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .mining-table.table-striped > tbody > tr:nth-of-type(odd) > td {
+    color: #ffffff !important;
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .mining-table.table-striped > tbody > tr:nth-of-type(even) > td {
+    color: #ffffff !important;
+    background-color: transparent !important;
+}
+
+/* Input Fields in Table */
+.mining-table .form-control {
+    border-radius: 0.5rem;
+    border: 2px solid var(--card-border);
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: var(--bg-color);
+    color: #212529 !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.mining-table .form-control:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    outline: none;
+    background-color: var(--bg-color);
+    color: #212529 !important;
+}
+
+[data-theme="dark"] .mining-table .form-control {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .mining-table .form-control:focus {
+    color: #ffffff !important;
+}
+
+.mining-table .form-control-sm {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.875rem;
+}
+
+/* Action Buttons */
+.mining-table .btn-create-variants {
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #fff;
+}
+
+.mining-table .btn-create-variants:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+.mining-table .btn-edit-recipe {
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #fff;
+}
+
+.mining-table .btn-edit-recipe:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+.mining-table .btn-remove-material,
+.mining-table .btn-remove-recipe {
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mining-table .btn-remove-material:hover,
+.mining-table .btn-remove-recipe:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Customise Container */
+#materialsCustomiseContainer {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    margin-bottom: 1rem;
+}
+
+#materialsCustomiseContainer label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+#materialsCustomiseContainer .form-select {
+    border-radius: 0.5rem;
+    border: 2px solid var(--card-border);
+    padding: 0.4rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+#materialsCustomiseContainer .form-select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    outline: none;
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .mining-table {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .mining-table thead {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+}
+
+[data-theme="dark"] .mining-table tbody tr:hover {
+    background-color: rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="dark"] .tier-badge {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+[data-theme="dark"] #materialsCustomiseContainer {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-color: rgba(99, 102, 241, 0.25);
+}
+
+/* Auto-generate recipe name button */
+#autoGenerateRecipeNameBtn {
+    border-radius: 0 0.5rem 0.5rem 0;
+    border-left: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+#autoGenerateRecipeNameBtn:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-color: #6366f1;
+    color: #6366f1;
+    transform: translateY(-1px);
+}
+
+#autoGenerateRecipeNameBtn:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: #6366f1;
+}
+
+/* Recipe filter input */
+#recipeFilterInput {
+    border-radius: 0.5rem;
+    border: 2px solid var(--card-border);
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 0.875rem;
+}
+
+#recipeFilterInput:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    outline: none;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+#recipeFilterInput::placeholder {
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+/* Update ratios button */
+#updateRecipeRatiosBtn {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    color: #fff;
+    border: none;
+}
+
+#updateRecipeRatiosBtn:hover {
+    background: linear-gradient(135deg, #475569 0%, #334155 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(71, 85, 105, 0.3);
+}
+
+.paste-area pre {
+    border-radius: 0.25rem;
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Filter Container Inputs */
+#materialsFilterContainer .form-control {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+#materialsFilterContainer .form-control:focus {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: #6366f1;
+}
+
+[data-theme="dark"] #materialsFilterContainer .form-check-label,
+[data-theme="dark"] #materialsFilterContainer .btn-outline-secondary {
+    color: var(--text-color);
+    border-color: var(--card-border);
+}
+
+[data-theme="dark"] #materialsFilterContainer .btn-check:checked + .btn-outline-secondary {
+    background-color: var(--card-border);
+    color: var(--text-color);
+}
