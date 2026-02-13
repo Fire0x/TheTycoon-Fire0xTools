@@ -96,7 +96,7 @@ const ConfigData = {
     },
 
     // Website overall version
-    websiteVersion: '0.2.1',
+    websiteVersion: '0.2.2',
 
     // Individual page versions
     pageVersions: {
@@ -104,13 +104,13 @@ const ConfigData = {
         'Info.html': '0.1.2',
         'merchants.html': '0.0.9',
         'checklist.html': '0.2.3',
-        'VehicleDeliveries.html': '0.1.8',
+        'VehicleDeliveries.html': '1.0.8',
         'education_timer.html': '0.1.3',
         'apartment.html': '0.1.5',
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
         'changelog.html': '0.0.6',
-        'import.html': '0.0.8',
+        'import.html': '0.0.9',
         'fishing.html': '0.0.2',
         'logistics.html': '0.0.6',
         'mining.html': '0.0.1'

@@ -60,6 +60,40 @@
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.0.8</h3>
+                                <p class="text-muted mb-3">2026-02-14</p>
+                                <ul class="mb-0">
+                                    <li><strong>Vehicle Deliveries - Design System Port:</strong> Successfully ported
+                                        the "Vehicle Deliveries" tool to the new design system, refactoring all storage
+                                        to use <code>localStorage</code> for a fully client-side experience.</li>
+                                    <li><strong>Vehicle Deliveries - Enhanced Progress Tracking:</strong> Implemented a
+                                        new card-based layout for vehicle progress with dynamic summary statistics,
+                                        including highest reputation, total vehicles needed, and unlocked count.</li>
+                                    <li><strong>Vehicle Deliveries - Summary Card Customization:</strong> Added
+                                        persistent visibility toggles for individual summary cards, allowing users to
+                                        choose which statistics they want to see.</li>
+                                    <li><strong>Vehicle Deliveries - Manual Completed Date:</strong> Implemented a
+                                        persistent "Completed Date" field for both Event and Regular vehicles, with full
+                                        support in modals and list views.</li>
+                                    <li><strong>Vehicle Deliveries - Import/Export Integration:</strong> Consolidated
+                                        vehicle data into the centralized Import/Export system. Refactored the core data
+                                        layer to handle Event and Regular vehicles while intelligently excluding legacy
+                                        progress data.</li>
+                                    <li><strong>Vehicle Deliveries - Navigation Enhancements:</strong> Added direct "📥
+                                        Import / Export" links to the headers of both vehicle sections for faster access
+                                        to data management.</li>
+                                    <li><strong>Import/Export - User Guidance:</strong> Added helpful tooltips and
+                                        instructions to the centralized Import page to clarify that Vehicle Deliveries
+                                        data (including manual dates) is fully supported.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Previous Entry -->
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
                                 <h3 class="card-title mb-1">Version 1.0.7</h3>
                                 <p class="text-muted mb-3">2026-02-13</p>
                                 <ul class="mb-0">

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
     <!-- Page-specific CSS -->
     <link href="css/pages/vehicle-deliveries.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navbar is injected by js/navbar.js -->
 
@@ -26,40 +28,125 @@
             <p class="lead">Track your vehicle delivery progress and unlock requirements</p>
         </div>
 
-        <!-- How to Use Section -->
-        <div class="row">
-            <div class="col-md-10 mx-auto">
-                <div class="card shadow-sm mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
-                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
-                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
-                            <span>📖 How to Use This Page</span>
-                            <span class="float-end" id="howToUseToggle">▼</span>
+        <div class="position-relative mb-4">
+            <p class="aest-time mb-0 mt-2 text-center">
+                <strong>🕐 Local Time:</strong> <span id="aestTime">--:--:--</span>
+            </p>
+        </div>
+
+        <!-- Event Vehicles Section -->
+        <div class="card mt-4 mb-4">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-link text-white p-0 me-2"
+                            onclick="toggleViewMode('eventVehicles')" style="text-decoration: none; font-size: 1.2rem;"
+                            title="Toggle view/edit mode">
+                            <span id="eventVehiclesViewIcon">👁️</span>
+                        </button>
+                        <h2 class="mb-0">🎉 Event Vehicles</h2>
+                        <span id="eventVehiclesViewMode" class="badge bg-light text-dark ms-2"
+                            style="display: none;">View Only</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="import.html" class="btn btn-outline-light btn-sm">
+                            📥 Import / Export
+                        </a>
+                        <button type="button" class="btn btn-light btn-sm" id="eventVehiclesAddBtn"
+                            onclick="addEventVehicle()">
+                            ➕ Add New Event
                         </button>
                     </div>
-                    <div class="collapse show" id="howToUseCollapse">
-                        <div class="card-body">
-                            <div class="mb-3">
-                            <h6 class="mb-2"><strong>Step 1: In-Game</strong></h6>
-                            <p class="mb-2">Navigate to a Vehicle Dealer and go to the Vehicle Section.</p>
-                            
-                            <h6 class="mb-2"><strong>Step 2: Copy the Data</strong></h6>
-                            <p class="mb-2">Select all the vehicle progress data that appears:</p>
-                            <ul class="mb-3">
-                                <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd></li>
-                                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then <kbd>Cmd</kbd> + <kbd>C</kbd></li>
-                            </ul>
-                            
-                            <h6 class="mb-2"><strong>Step 3: Paste on This Page</strong></h6>
-                            <p class="mb-2">Click in the text area below and paste your data:</p>
-                            <ul class="mb-3">
-                                <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
-                                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
-                            </ul>
-                            
-                            <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
-                            <p class="mb-0">Click the <span class="badge bg-primary">✨ Parse & Save Progress</span> button to add them to your tracker!</p>
-                            </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="eventVehiclesBody" class="d-flex flex-column gap-2">
+                    <div class="text-center py-4">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Loading event vehicles...
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="button" class="btn btn-success" id="eventVehiclesSaveBtn"
+                        onclick="saveEventVehicles()">
+                        💾 Save Changes
+                    </button>
+                    <span id="eventVehiclesStatus" class="ms-3"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Normal Vehicles Section -->
+        <div class="card mt-4 mb-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-link text-white p-0 me-2"
+                            onclick="toggleViewMode('normalVehicles')" style="text-decoration: none; font-size: 1.2rem;"
+                            title="Toggle view/edit mode">
+                            <span id="normalVehiclesViewIcon">👁️</span>
+                        </button>
+                        <h2 class="mb-0">🚙 Regular Vehicles</h2>
+                        <span id="normalVehiclesViewMode" class="badge bg-light text-dark ms-2"
+                            style="display: none;">View Only</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="import.html" class="btn btn-outline-light btn-sm">
+                            📥 Import / Export
+                        </a>
+                        <button type="button" class="btn btn-light btn-sm" id="normalVehiclesAddBtn"
+                            onclick="showAddNormalVehicleModal()">
+                            ➕ Add New Vehicle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="normalVehiclesBody" class="d-flex flex-column gap-2">
+                    <div class="text-center py-4">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Loading vehicles...
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="button" class="btn btn-success" id="normalVehiclesSaveBtn"
+                        onclick="saveNormalVehicles()">
+                        💾 Save Changes
+                    </button>
+                    <span id="normalVehiclesStatus" class="ms-3"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Normal Vehicle Modal -->
+        <div class="modal fade" id="addNormalVehicleModal" tabindex="-1" aria-labelledby="addNormalVehicleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addNormalVehicleModalLabel">Add New Vehicle</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="newVehicleDealer" class="form-label">Dealer</label>
+                            <input type="text" class="form-control" id="newVehicleDealer"
+                                placeholder="Enter dealer name">
                         </div>
+                        <div class="mb-3">
+                            <label for="newVehicleType" class="form-label">Type</label>
+                            <input type="text" class="form-control" id="newVehicleType"
+                                placeholder="Enter vehicle type">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newVehicleCompletedDate" class="form-label">Completed Date</label>
+                            <input type="date" class="form-control" id="newVehicleCompletedDate">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="addNormalVehicleFromModal()">Add
+                            Vehicle</button>
                     </div>
                 </div>
             </div>
@@ -67,15 +154,154 @@
 
         <!-- Vehicle Delivery Progress Section -->
         <div class="card mt-4 mb-4 shadow-lg">
-            <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div class="card-header"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h2 class="mb-0">🚗 Vehicle Delivery Progress Tracker</h2>
-                        <p class="mb-0 mt-2" style="opacity: 0.9; font-size: 0.95rem;">Track your vehicle delivery progress and unlock requirements</p>
+                        <p class="mb-0 mt-2" style="opacity: 0.9; font-size: 0.95rem;">Track your vehicle delivery
+                            progress and unlock requirements</p>
                     </div>
                 </div>
             </div>
             <div class="card-body">
+                <!-- How to Use Section -->
+                <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                    <div class="card-header"
+                        style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true"
+                            aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                            <span>📖 How to Use This Page</span>
+                            <span class="float-end" id="howToUseToggle">▼</span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="howToUseCollapse">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="mb-2"><strong>Step 1: In-Game</strong></h6>
+                                <p class="mb-2">Navigate to a Vehicle Dealer and go to the Vehicle Section.</p>
+
+                                <h6 class="mb-2"><strong>Step 2: Copy the Data</strong></h6>
+                                <p class="mb-2">Select all the vehicle progress data that appears:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then
+                                        <kbd>Ctrl</kbd> + <kbd>C</kbd>
+                                    </li>
+                                    <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then <kbd>Cmd</kbd> +
+                                        <kbd>C</kbd>
+                                    </li>
+                                </ul>
+
+                                <h6 class="mb-2"><strong>Step 3: Paste on This Page</strong></h6>
+                                <p class="mb-2">Click in the text area below and paste your data:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
+                                    <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
+                                </ul>
+
+                                <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
+                                <p class="mb-0">Click the <span class="badge bg-primary">✨ Parse & Save Progress</span>
+                                    button to add them to your tracker!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                    <div class="card-header" id="summaryHeader"
+                        style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-link text-decoration-none p-0" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#summaryStatisticsCollapse"
+                                aria-expanded="true" aria-controls="summaryStatisticsCollapse"
+                                style="color: var(--text-color); font-weight: 600;">
+                                <span>📊 Summary Statistics</span>
+                                <span class="ms-2" id="summaryStatisticsToggle">▼</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" type="button"
+                                onclick="showAllSummaryCards()" title="Show all hidden summary cards">
+                                <span>👁️</span> Show All Cards
+                            </button>
+                        </div>
+                    </div>
+                    <div class="collapse show" id="summaryStatisticsCollapse">
+                        <div class="card-body">
+                            <div class="row mb-4" id="progressSummary" style="display: none;">
+                                <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-highestRep">
+                                    <div class="card summary-stat-card shadow-lg h-100"
+                                        style="background: var(--event-gradient); color: #000; position: relative;">
+                                        <button type="button" class="btn btn-sm btn-link text-dark p-1"
+                                            onclick="toggleSummaryCard('highestRep')"
+                                            style="position: absolute; top: 10px; right: 10px; z-index: 10; opacity: 0.5;"
+                                            title="Hide/Show">
+                                            <span id="toggleIcon-highestRep">👁️</span>
+                                        </button>
+                                        <div class="card-body text-center p-4">
+                                            <div class="summary-icon">🏆</div>
+                                            <h6 class="text-uppercase fw-bold mb-2"
+                                                style="font-size: 0.75rem; letter-spacing: 1px;">Highest Rep</h6>
+                                            <div class="summary-value" id="highestRep">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-totalVehiclesNeeded">
+                                    <div class="card summary-stat-card shadow-lg h-100"
+                                        style="background: var(--regular-gradient); color: #000; position: relative;">
+                                        <button type="button" class="btn btn-sm btn-link text-dark p-1"
+                                            onclick="toggleSummaryCard('totalVehiclesNeeded')"
+                                            style="position: absolute; top: 10px; right: 10px; z-index: 10; opacity: 0.5;"
+                                            title="Hide/Show">
+                                            <span id="toggleIcon-totalVehiclesNeeded">👁️</span>
+                                        </button>
+                                        <div class="card-body text-center p-4">
+                                            <div class="summary-icon">📦</div>
+                                            <h6 class="text-uppercase fw-bold mb-2"
+                                                style="font-size: 0.75rem; letter-spacing: 1px;">Vehicles Needed</h6>
+                                            <div class="summary-value" id="totalVehiclesNeeded">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-deliveriesLeft">
+                                    <div class="card summary-stat-card shadow-lg h-100"
+                                        style="background: linear-gradient(135deg, #81ecec 0%, #00cec9 100%); color: #000; position: relative;">
+                                        <button type="button" class="btn btn-sm btn-link text-dark p-1"
+                                            onclick="toggleSummaryCard('deliveriesLeft')"
+                                            style="position: absolute; top: 10px; right: 10px; z-index: 10; opacity: 0.5;"
+                                            title="Hide/Show">
+                                            <span id="toggleIcon-deliveriesLeft">👁️</span>
+                                        </button>
+                                        <div class="card-body text-center p-4">
+                                            <div class="summary-icon">🚚</div>
+                                            <h6 class="text-uppercase fw-bold mb-2"
+                                                style="font-size: 0.75rem; letter-spacing: 1px;">Deliveries Left</h6>
+                                            <div class="summary-value" id="deliveriesLeft">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-unlockedCount">
+                                    <div class="card summary-stat-card shadow-lg h-100"
+                                        style="background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%); color: #fff; position: relative;">
+                                        <button type="button" class="btn btn-sm btn-link text-white p-1"
+                                            onclick="toggleSummaryCard('unlockedCount')"
+                                            style="position: absolute; top: 10px; right: 10px; z-index: 10; opacity: 0.5;"
+                                            title="Hide/Show">
+                                            <span id="toggleIcon-unlockedCount">👁️</span>
+                                        </button>
+                                        <div class="card-body text-center p-4">
+                                            <div class="summary-icon">✨</div>
+                                            <h6 class="text-uppercase fw-bold mb-2"
+                                                style="font-size: 0.75rem; letter-spacing: 1px;">Unlocked</h6>
+                                            <div class="summary-value" id="unlockedCount">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Paste Area -->
                 <div class="paste-area mb-4">
                     <div class="d-flex align-items-center mb-3">
@@ -83,18 +309,21 @@
                         <span class="badge bg-info">Quick Import</span>
                     </div>
                     <p class="text-muted mb-3">
-                        Copy and paste your vehicle delivery progress from the game. The system will automatically parse vehicle names, 
-                        current progress (e.g., "0/25"), delivery requirements, and reputation needs. 
+                        Copy and paste your vehicle delivery progress from the game. The system will automatically parse
+                        vehicle names,
+                        current progress (e.g., "0/25"), delivery requirements, and reputation needs.
                         <strong>Each vehicle should be on separate lines</strong> with its progress and requirements.
                     </p>
                     <div class="alert alert-info d-flex align-items-start mb-3" role="alert">
                         <div class="me-2">💡</div>
                         <div>
-                            <strong>Format Example:</strong> Each vehicle entry should include the vehicle name, progress ratio, and requirements. 
+                            <strong>Format Example:</strong> Each vehicle entry should include the vehicle name,
+                            progress ratio, and requirements.
                             Unlocked vehicles will show "✅ Unlocked for purchase!" instead of requirements.
                         </div>
                     </div>
-                    <pre class="bg-dark text-light p-3 mb-3 small" style="border-radius: 0.5rem; border: 1px solid #444; font-family: 'Courier New', monospace;">AKUMA
+                    <pre class="bg-dark text-light p-3 mb-3 small"
+                        style="border-radius: 0.5rem; border: 1px solid #444; font-family: 'Courier New', monospace;">AKUMA
 0/25
 Need 25 more deliveries & 8100 more reputation
 
@@ -105,7 +334,9 @@ Need 24 more deliveries & 7600 more reputation
 SANCTUS
 5/5
 ✅ Unlocked for purchase!</pre>
-                    <textarea id="vehicleProgressInput" class="form-control" rows="8" placeholder="Paste your vehicle progress data here...&#10;&#10;Example:&#10;AKUMA&#10;0/25&#10;Need 25 more deliveries & 8100 more reputation" style="font-family: 'Courier New', monospace; background-color: var(--bg-color); color: var(--text-color);"></textarea>
+                    <textarea id="vehicleProgressInput" class="form-control" rows="8"
+                        placeholder="Paste your vehicle progress data here...&#10;&#10;Example:&#10;AKUMA&#10;0/25&#10;Need 25 more deliveries & 8100 more reputation"
+                        style="font-family: 'Courier New', monospace; background-color: var(--bg-color); color: var(--text-color);"></textarea>
                     <div class="mt-3 d-flex gap-2">
                         <button class="btn btn-primary btn-lg" onclick="parseAndSaveVehicleProgress()">
                             <span>✨</span> Parse & Save Progress
@@ -113,78 +344,18 @@ SANCTUS
                         <button class="btn btn-outline-danger btn-lg" onclick="clearAllVehicleProgress()">
                             <span>🗑️</span> Clear All Progress
                         </button>
-                        <button class="btn btn-outline-secondary btn-sm ms-2 align-self-center" id="debugToggleBtn" onclick="toggleDebug()">
+                        <button class="btn btn-outline-secondary btn-sm ms-2 align-self-center" id="debugToggleBtn"
+                            onclick="toggleDebug()">
                             <span id="debugToggleText">🔍 Debug: OFF</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Summary Statistics Header -->
-                <div class="d-flex justify-content-between align-items-center mb-3" id="summaryHeader" style="display: none;">
-                    <h5 class="mb-0">📊 Summary Statistics</h5>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showAllSummaryCards()" title="Show all hidden summary cards">
-                            <span>👁️</span> Show All Cards
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary" id="summaryToggleBtn" onclick="toggleSummary()">
-                            <span id="summaryToggleIcon">▼</span> <span id="summaryToggleText">Hide Summary</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Summary Statistics -->
-                <div class="row mb-4" id="progressSummary" style="display: none;">
-                    <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-highestRep">
-                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%); border: none; position: relative;">
-                            <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('highestRep')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
-                                <span id="toggleIcon-highestRep">👁️</span>
-                            </button>
-                            <div class="card-body text-center d-flex flex-column justify-content-center">
-                                <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">🏆 Highest Reputation Needed</h5>
-                                <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="highestRep">
-                                    0
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-totalVehiclesNeeded">
-                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); border: none; position: relative;">
-                            <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('totalVehiclesNeeded')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
-                                <span id="toggleIcon-totalVehiclesNeeded">👁️</span>
-                            </button>
-                            <div class="card-body text-center d-flex flex-column justify-content-center">
-                                <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">📦 Total Vehicles Needed</h5>
-                                <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="totalVehiclesNeeded">
-                                    0
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-deliveriesLeft">
-                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); border: none; position: relative;">
-                            <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('deliveriesLeft')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
-                                <span id="toggleIcon-deliveriesLeft">👁️</span>
-                            </button>
-                            <div class="card-body text-center d-flex flex-column justify-content-center">
-                                <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">🚚 Deliveries Left</h5>
-                                <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="deliveriesLeft">
-                                    0
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3 mb-3" id="summaryCard-unlockedCount">
-                        <div class="card shadow-sm h-100" style="background: linear-gradient(135deg, #dda0dd 0%, #ba55d3 100%); border: none; position: relative;">
-                            <button type="button" class="btn btn-sm btn-link text-dark p-1" onclick="toggleSummaryCard('unlockedCount')" style="position: absolute; top: 5px; right: 5px; z-index: 10; opacity: 0.7;" title="Hide/Show this card">
-                                <span id="toggleIcon-unlockedCount">👁️</span>
-                            </button>
-                            <div class="card-body text-center d-flex flex-column justify-content-center">
-                                <h5 class="card-title mb-3" style="color: #000; font-weight: bold; font-size: 1rem;">✅ Unlocked Vehicles</h5>
-                                <p class="card-text mb-0" style="font-size: 2rem; font-weight: bold; color: #000;" id="unlockedCount">
-                                    0
-                                </p>
-                            </div>
-                        </div>
+                <!-- Filter Controls -->
+                <div class="d-flex justify-content-end mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="hideUnlockedToggle" checked>
+                        <label class="form-check-label" for="hideUnlockedToggle">Hide Unlocked Vehicles</label>
                     </div>
                 </div>
 
@@ -197,7 +368,8 @@ SANCTUS
                 <div id="vehicleProgressEmptyState" class="text-center py-5">
                     <div class="mb-3" style="font-size: 4rem;">🚗</div>
                     <h4 class="text-muted mb-2">No Vehicle Progress Data</h4>
-                    <p class="text-muted">Paste your vehicle progress data above to get started tracking your deliveries.</p>
+                    <p class="text-muted">Paste your vehicle progress data above to get started tracking your
+                        deliveries.</p>
                 </div>
             </div>
         </div>
@@ -230,5 +402,5 @@ SANCTUS
     <script src="js/pages/vehicle-deliveries/vehicle-ui.js"></script>
     <script src="js/pages/vehicle-deliveries/vehicle-init.js"></script>
 </body>
-</html>
 
+</html>

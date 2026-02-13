@@ -2,7 +2,7 @@
  * Vehicle Deliveries Core Module
  * Contains vehicle progress parsing, storage, and data management
  */
-(function() {
+(function () {
     'use strict';
 
     // Ensure dependencies are loaded
@@ -20,14 +20,21 @@
     });
 
     // Expose debug functions globally for backward compatibility
-    window.debugLog = function(...args) { debugManager.log(...args); };
-    window.debugError = function(...args) { debugManager.error(...args); };
-    window.toggleDebug = function() { debugManager.toggle(); };
+    window.debugLog = function (...args) { debugManager.log(...args); };
+    window.debugError = function (...args) { debugManager.error(...args); };
+    window.toggleDebug = function () { debugManager.toggle(); };
 
     // Storage keys
+    // Storage keys
+    // Storage keys
     const PROGRESS_STORAGE_KEY = 'vehicle_delivery_progress';
+    const EVENT_VEHICLES_KEY = 'vehicle_delivery_event_vehicles';
+    const NORMAL_VEHICLES_KEY = 'vehicle_delivery_normal_vehicles';
+
     let vehicleProgress = {};
-    
+    let eventVehicles = [];
+    let normalVehicles = [];
+
     debugManager.log('Vehicle Deliveries Core Module initialized');
     debugManager.log('Initial vehicleProgress state:', vehicleProgress);
     debugManager.log('Initial window.vehicleProgress state:', window.vehicleProgress);
@@ -45,29 +52,29 @@
         debugManager.log('=== parseVehicleProgress START ===');
         debugManager.log('Input text length:', text.length);
         debugManager.log('Input text preview (first 200 chars):', text.substring(0, 200));
-        
+
         const vehicles = [];
         const lines = text.split('\n').map(l => l.trim()).filter(l => l);
         debugManager.log('Total non-empty lines after filtering:', lines.length);
         debugManager.log('Lines array:', lines);
-        
+
         let i = 0;
         let skippedCount = 0;
         while (i < lines.length) {
             const line = lines[i];
             debugManager.log(`Processing line ${i}: "${line}"`);
-            
+
             if (!line || line.includes('Need') || line.includes('✅') || line.match(/^\d+\/\d+$/)) {
                 debugManager.log(`  -> Skipping line ${i} (matches skip pattern)`);
                 skippedCount++;
                 i++;
                 continue;
             }
-            
+
             const vehicleName = line;
             debugManager.log(`  -> Found potential vehicle name: "${vehicleName}"`);
             i++;
-            
+
             if (i >= lines.length) {
                 debugManager.log(`  -> No more lines after vehicle name, breaking`);
                 break;
@@ -75,25 +82,25 @@
             const progressLine = lines[i];
             debugManager.log(`  -> Checking progress line ${i}: "${progressLine}"`);
             const progressMatch = progressLine.match(/^(\d+)\/(\d+)$/);
-            
+
             if (!progressMatch) {
                 debugManager.log(`  -> Progress line doesn't match pattern, skipping`);
                 i++;
                 continue;
             }
-            
+
             const current = parseInt(progressMatch[1]);
             const total = parseInt(progressMatch[2]);
             const remaining = total - current;
             const unlocked = current >= total;
             debugManager.log(`  -> Parsed progress: ${current}/${total}, Remaining: ${remaining}, Unlocked: ${unlocked}`);
             i++;
-            
+
             let reputation = null;
             if (i < lines.length) {
                 const needLine = lines[i];
                 debugManager.log(`  -> Checking need line ${i}: "${needLine}"`);
-                
+
                 if (needLine.includes('✅ Unlocked')) {
                     debugManager.log(`  -> Vehicle is unlocked`);
                     i++;
@@ -113,7 +120,7 @@
                     }
                 }
             }
-            
+
             const vehicleData = {
                 name: vehicleName,
                 current: current,
@@ -125,7 +132,7 @@
             vehicles.push(vehicleData);
             debugManager.log(`  -> Added vehicle:`, vehicleData);
         }
-        
+
         debugManager.log(`=== parseVehicleProgress END ===`);
         debugManager.log(`Total vehicles parsed: ${vehicles.length}`);
         debugManager.log(`Total lines skipped: ${skippedCount}`);
@@ -142,11 +149,11 @@
         debugManager.log('Saving vehicle progress, total vehicles:', vehicleCount);
         debugManager.log('vehicleProgress object keys:', Object.keys(vehicleProgress));
         debugManager.log('vehicleProgress object:', vehicleProgress);
-        
+
         const jsonString = JSON.stringify(vehicleProgress);
         debugManager.log('JSON string length:', jsonString.length);
         debugManager.log('JSON string preview (first 500 chars):', jsonString.substring(0, 500));
-        
+
         localStorage.setItem(PROGRESS_STORAGE_KEY, jsonString);
         debugManager.log('Successfully saved to localStorage with key:', PROGRESS_STORAGE_KEY);
         debugManager.log('=== saveVehicleProgress END ===');
@@ -158,7 +165,7 @@
         debugManager.log('Current vehicleProgress before load:', vehicleProgress);
         debugManager.log('Current window.vehicleProgress before load:', window.vehicleProgress);
         debugManager.log('Checking localStorage for key:', PROGRESS_STORAGE_KEY);
-        
+
         const stored = localStorage.getItem(PROGRESS_STORAGE_KEY);
         if (stored) {
             debugManager.log('Found stored data, length:', stored.length);
@@ -167,11 +174,11 @@
                 const parsed = JSON.parse(stored);
                 debugManager.log('Successfully parsed JSON, vehicle count:', Object.keys(parsed).length);
                 debugManager.log('Parsed data keys:', Object.keys(parsed));
-                
+
                 vehicleProgress = parsed;
                 debugManager.log('Updated local vehicleProgress variable');
                 debugManager.log('vehicleProgress after assignment:', vehicleProgress);
-                
+
                 // Update the global reference to point to the loaded data
                 window.vehicleProgress = vehicleProgress;
                 debugManager.log('Updated window.vehicleProgress reference');
@@ -198,24 +205,24 @@
         debugManager.log('Current vehicleProgress before parse:', vehicleProgress);
         debugManager.log('Current window.vehicleProgress before parse:', window.vehicleProgress);
         debugManager.log('Current vehicle count:', Object.keys(vehicleProgress).length);
-        
+
         const input = document.getElementById('vehicleProgressInput');
         if (!input) {
             debugManager.error('vehicleProgressInput element not found');
             return;
         }
         debugManager.log('Found vehicleProgressInput element');
-        
+
         const inputValue = input.value;
         debugManager.log('Input value length:', inputValue.length);
         debugManager.log('Input value (first 500 chars):', inputValue.substring(0, 500));
-        
+
         if (!inputValue.trim()) {
             debugManager.log('Input is empty, showing alert');
             alert('Please paste vehicle progress data first!');
             return;
         }
-        
+
         const parsed = parseVehicleProgress(inputValue);
         debugManager.log('Parsed vehicles count:', parsed.length);
         if (parsed.length === 0) {
@@ -223,44 +230,44 @@
             alert('No valid vehicle progress data found. Please check the format.');
             return;
         }
-        
+
         debugManager.log('Processing parsed vehicles...');
         const beforeCount = Object.keys(vehicleProgress).length;
         parsed.forEach((vehicle, idx) => {
             const key = vehicle.name.toLowerCase().replace(/\s+/g, '-');
             const isUpdate = vehicleProgress[key] !== undefined;
             const oldVehicle = vehicleProgress[key];
-            
+
             debugManager.log(`[${idx}] Processing vehicle: "${vehicle.name}"`);
             debugManager.log(`  -> Generated key: "${key}"`);
             debugManager.log(`  -> Is update? ${isUpdate}`);
             if (isUpdate && oldVehicle) {
                 debugManager.log(`  -> Old vehicle data:`, oldVehicle);
             }
-            
+
             vehicleProgress[key] = vehicle;
             debugManager.log(`  -> ${isUpdate ? 'Updated' : 'Added'} vehicle: ${key} (${vehicle.name})`);
             debugManager.log(`  -> Vehicle data:`, vehicle);
         });
-        
+
         const afterCount = Object.keys(vehicleProgress).length;
         debugManager.log(`Vehicle count: ${beforeCount} -> ${afterCount}`);
         debugManager.log('vehicleProgress after adding vehicles:', vehicleProgress);
-        
+
         // Ensure global reference is updated
         debugManager.log('Updating window.vehicleProgress reference...');
         window.vehicleProgress = vehicleProgress;
         debugManager.log('window.vehicleProgress after update:', window.vehicleProgress);
         debugManager.log('Reference check - are they the same?', window.vehicleProgress === vehicleProgress);
-        debugManager.log('Reference check - same keys?', 
+        debugManager.log('Reference check - same keys?',
             JSON.stringify(Object.keys(window.vehicleProgress).sort()) === JSON.stringify(Object.keys(vehicleProgress).sort()));
-        
+
         saveVehicleProgress();
         debugManager.log('Saved to localStorage, total vehicles:', Object.keys(vehicleProgress).length);
-        
+
         input.value = '';
         debugManager.log('Cleared input field');
-        
+
         if (typeof window.renderVehicleProgress === 'function') {
             debugManager.log('Calling window.renderVehicleProgress()...');
             window.renderVehicleProgress();
@@ -268,7 +275,7 @@
         } else {
             debugManager.error('window.renderVehicleProgress is not a function!');
         }
-        
+
         debugManager.log('Showing success alert');
         alert(`Successfully added ${parsed.length} vehicle(s)!`);
         debugManager.log('=== parseAndSaveVehicleProgress END ===');
@@ -281,30 +288,30 @@
         debugManager.log('clearAllVehicleProgress called, current count:', count);
         debugManager.log('Current vehicleProgress:', vehicleProgress);
         debugManager.log('Current window.vehicleProgress:', window.vehicleProgress);
-        
+
         if (count === 0) {
             debugManager.log('No vehicles to clear, showing alert');
             alert('No vehicle progress to clear.');
             return;
         }
-        
+
         debugManager.log('Showing confirmation dialog...');
         if (confirm('Are you sure you want to clear ALL vehicle progress?')) {
             debugManager.log('User confirmed, clearing all vehicle progress');
             debugManager.log('Vehicle keys before clear:', Object.keys(vehicleProgress));
-            
+
             vehicleProgress = {};
             debugManager.log('Reset local vehicleProgress to empty object');
-            
+
             window.vehicleProgress = vehicleProgress;
             debugManager.log('Updated window.vehicleProgress reference');
             debugManager.log('Reference check - are they the same?', window.vehicleProgress === vehicleProgress);
             debugManager.log('vehicleProgress after clear:', vehicleProgress);
             debugManager.log('window.vehicleProgress after clear:', window.vehicleProgress);
-            
+
             saveVehicleProgress();
             debugManager.log('Saved empty vehicleProgress to localStorage');
-            
+
             if (typeof window.renderVehicleProgress === 'function') {
                 debugManager.log('Calling window.renderVehicleProgress()...');
                 window.renderVehicleProgress();
@@ -312,7 +319,7 @@
             } else {
                 debugManager.error('window.renderVehicleProgress is not a function!');
             }
-            
+
             debugManager.log('Showing success alert');
             alert('All vehicle progress cleared!');
         } else {
@@ -321,20 +328,158 @@
         debugManager.log('=== clearAllVehicleProgress END ===');
     }
 
+    // === Event Vehicles Logic ===
+
+    function loadEventVehicles() {
+        debugManager.log('Loading event vehicles from localStorage');
+        const stored = localStorage.getItem(EVENT_VEHICLES_KEY);
+        if (stored) {
+            try {
+                eventVehicles = JSON.parse(stored);
+                debugManager.log(`Loaded ${eventVehicles.length} event vehicles`);
+            } catch (e) {
+                debugManager.error('Error parsing event vehicles:', e);
+                eventVehicles = [];
+            }
+        } else {
+            eventVehicles = [];
+            debugManager.log('No event vehicles found in storage');
+        }
+        window.eventVehicles = eventVehicles;
+        return eventVehicles;
+    }
+
+    function saveEventVehiclesData() {
+        debugManager.log('Saving event vehicles to localStorage', eventVehicles);
+        localStorage.setItem(EVENT_VEHICLES_KEY, JSON.stringify(eventVehicles));
+    }
+
+    function addEventVehicleCore(vehicle) {
+        vehicle.id = Date.now().toString();
+        vehicle.lastUpdated = new Date().toLocaleString();
+        if (!vehicle.completedDate) vehicle.completedDate = '';
+        eventVehicles.push(vehicle);
+        saveEventVehiclesData();
+        debugManager.log('Added event vehicle:', vehicle);
+        return vehicle;
+    }
+
+    function updateEventVehicleCore(id, updates) {
+        const index = eventVehicles.findIndex(v => v.id === id);
+        if (index !== -1) {
+            eventVehicles[index] = { ...eventVehicles[index], ...updates, lastUpdated: new Date().toLocaleString() };
+            saveEventVehiclesData();
+            debugManager.log('Updated event vehicle:', eventVehicles[index]);
+            return true;
+        }
+        debugManager.error(`Event vehicle not found for update: ${id}`);
+        return false;
+    }
+
+    function deleteEventVehicleCore(id) {
+        const index = eventVehicles.findIndex(v => v.id === id);
+        if (index !== -1) {
+            eventVehicles.splice(index, 1);
+            saveEventVehiclesData();
+            debugManager.log(`Deleted event vehicle with ID: ${id}`);
+            return true;
+        }
+        debugManager.error(`Event vehicle not found for delete: ${id}`);
+        return false;
+    }
+
+    // === Normal Vehicles Logic ===
+
+    function loadNormalVehicles() {
+        debugManager.log('Loading normal vehicles from localStorage');
+        const stored = localStorage.getItem(NORMAL_VEHICLES_KEY);
+        if (stored) {
+            try {
+                normalVehicles = JSON.parse(stored);
+                debugManager.log(`Loaded ${normalVehicles.length} normal vehicles`);
+            } catch (e) {
+                debugManager.error('Error parsing normal vehicles:', e);
+                normalVehicles = [];
+            }
+        } else {
+            normalVehicles = [];
+            debugManager.log('No normal vehicles found in storage');
+        }
+        window.normalVehicles = normalVehicles;
+        return normalVehicles;
+    }
+
+    function saveNormalVehiclesData() {
+        debugManager.log('Saving normal vehicles to localStorage', normalVehicles);
+        localStorage.setItem(NORMAL_VEHICLES_KEY, JSON.stringify(normalVehicles));
+    }
+
+    function addNormalVehicleCore(vehicle) {
+        vehicle.id = Date.now().toString();
+        vehicle.lastUpdated = new Date().toLocaleString();
+        if (!vehicle.completedDate) vehicle.completedDate = '';
+        normalVehicles.push(vehicle);
+        saveNormalVehiclesData();
+        debugManager.log('Added normal vehicle:', vehicle);
+        return vehicle;
+    }
+
+    function updateNormalVehicleCore(id, updates) {
+        const index = normalVehicles.findIndex(v => v.id === id);
+        if (index !== -1) {
+            normalVehicles[index] = { ...normalVehicles[index], ...updates, lastUpdated: new Date().toLocaleString() };
+            saveNormalVehiclesData();
+            debugManager.log('Updated normal vehicle:', normalVehicles[index]);
+            return true;
+        }
+        debugManager.error(`Normal vehicle not found for update: ${id}`);
+        return false;
+    }
+
+    function deleteNormalVehicleCore(id) {
+        const index = normalVehicles.findIndex(v => v.id === id);
+        if (index !== -1) {
+            normalVehicles.splice(index, 1);
+            saveNormalVehiclesData();
+            debugManager.log(`Deleted normal vehicle with ID: ${id}`);
+            return true;
+        }
+        debugManager.error(`Normal vehicle not found for delete: ${id}`);
+        return false;
+    }
+
     // Export functions and variables to global scope
     debugManager.log('Exporting functions to global scope...');
     window.vehicleProgress = vehicleProgress;
+    window.eventVehicles = eventVehicles;
+    window.normalVehicles = normalVehicles;
+
     debugManager.log('Exported window.vehicleProgress:', window.vehicleProgress);
     debugManager.log('Reference check - are they the same?', window.vehicleProgress === vehicleProgress);
-    
+
     window.escapeHtml = escapeHtml;
     window.parseVehicleProgress = parseVehicleProgress;
     window.saveVehicleProgress = saveVehicleProgress;
     window.loadVehicleProgress = loadVehicleProgress;
     window.parseAndSaveVehicleProgress = parseAndSaveVehicleProgress;
     window.clearAllVehicleProgress = clearAllVehicleProgress;
+
+    // Export Event Vehicle Functions
+    window.loadEventVehicles = loadEventVehicles;
+    window.saveEventVehiclesData = saveEventVehiclesData;
+    window.addEventVehicleCore = addEventVehicleCore;
+    window.updateEventVehicleCore = updateEventVehicleCore;
+    window.deleteEventVehicleCore = deleteEventVehicleCore;
+
+    // Export Normal Vehicle Functions
+    window.loadNormalVehicles = loadNormalVehicles;
+    window.saveNormalVehiclesData = saveNormalVehiclesData;
+    window.addNormalVehicleCore = addNormalVehicleCore;
+    window.updateNormalVehicleCore = updateNormalVehicleCore;
+    window.deleteNormalVehicleCore = deleteNormalVehicleCore;
+
     window.vehicleDebugManager = debugManager;
-    
+
     debugManager.log('All functions exported to global scope');
     debugManager.log('Module initialization complete');
 

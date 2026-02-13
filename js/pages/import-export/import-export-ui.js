@@ -39,8 +39,9 @@
                     const merchantCount = Object.keys(data).length;
                     return `${merchantCount} merchant${merchantCount !== 1 ? 's' : ''}`;
                 case 'vehicles':
-                    const vehicleCount = Object.keys(data).length;
-                    return `${vehicleCount} vehicle${vehicleCount !== 1 ? 's' : ''}`;
+                    const vEventCount = data.eventVehicles?.length || 0;
+                    const vNormalCount = data.normalVehicles?.length || 0;
+                    return `${vEventCount} event, ${vNormalCount} regular`;
                 case 'education':
                     // Education is stored as an array
                     if (Array.isArray(data)) {
@@ -103,7 +104,7 @@
             checklist: { name: 'Checklist', icon: '📋' },
             apartments: { name: 'Apartments', icon: '🏠' },
             merchants: { name: 'Merchants', icon: '🛒' },
-            vehicles: { name: 'Vehicles', icon: '🚚' },
+            vehicles: { name: 'Vehicle Deliveries', icon: '🚗' },
             education: { name: 'Education', icon: '⏱️' },
             fishing: { name: 'Fishing', icon: '🎣' },
             logistics: { name: 'Logistics', icon: '🚚' }

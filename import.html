@@ -96,6 +96,11 @@
                                     ⛏️ Mining
                                 </button>
                             </div>
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <button class="btn btn-outline-primary w-100 export-page-btn" data-page="vehicles">
+                                    🚗 Vehicle Deliveries
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -121,11 +126,15 @@
                             <input type="file" class="form-control" id="importFileInput" accept=".json">
                         </div>
 
-                        <!-- Textarea for Pasting -->
                         <div class="mb-3">
                             <label for="importTextarea" class="form-label">Or Paste JSON Data:</label>
                             <textarea class="form-control" id="importTextarea" rows="10"
                                 placeholder="Paste JSON data here..."></textarea>
+                            <div class="form-text mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                <strong>Tip:</strong> The "Vehicle Deliveries" data includes both Event and Regular
+                                vehicles, along with your manual completion dates.
+                            </div>
                         </div>
 
                         <!-- Import Buttons -->
@@ -178,6 +187,11 @@
                             <div class="col-md-4 col-sm-6 mb-2">
                                 <button class="btn btn-outline-success w-100 import-page-btn" data-page="mining">
                                     ⛏️ Mining
+                                </button>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-2">
+                                <button class="btn btn-outline-success w-100 import-page-btn" data-page="vehicles">
+                                    🚗 Vehicle Deliveries
                                 </button>
                             </div>
                         </div>

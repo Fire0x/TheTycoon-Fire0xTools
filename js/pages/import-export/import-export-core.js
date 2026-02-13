@@ -28,7 +28,9 @@
         checklist: 'checklistConfigData',
         apartments: 'apartmentsData',
         merchants: 'traveling_merchants',
-        vehicles: 'vehicle_delivery_progress',
+        vehicles: 'vehicle_delivery_progress', // Note: This will be handled differently to exlude progress
+        eventVehicles: 'vehicle_delivery_event_vehicles',
+        normalVehicles: 'vehicle_delivery_normal_vehicles',
         education: 'educationTimers',  // Note: stored as array, not object
         fishing: 'fishingData',
         logistics: 'logisticsData'
@@ -36,7 +38,7 @@
 
     // Excluded pages from import/export (can be toggled)
     // Set to [] to include all pages, or add page names to exclude them
-    const EXCLUDED_PAGES = ['merchants', 'vehicles'];
+    const EXCLUDED_PAGES = ['merchants'];
 
     /**
      * Check if a page is excluded
@@ -80,12 +82,20 @@
      */
     function getPageData(pageName) {
         const storageKey = STORAGE_KEYS[pageName];
-        if (!storageKey) {
+        if (!storageKey && pageName !== 'vehicles') {
             debugManager.error(`Unknown page name: ${pageName}`);
             return null;
         }
 
         try {
+            // Specialized handling for consolidated 'vehicles' page
+            if (pageName === 'vehicles') {
+                return {
+                    eventVehicles: JSON.parse(localStorage.getItem(STORAGE_KEYS.eventVehicles) || '[]'),
+                    normalVehicles: JSON.parse(localStorage.getItem(STORAGE_KEYS.normalVehicles) || '[]')
+                };
+            }
+
             // Use LogisticsStorage API for logistics page
             if (pageName === 'logistics' && typeof LogisticsStorage !== 'undefined') {
                 return LogisticsStorage.read();
@@ -211,12 +221,14 @@
         debugManager.log('Detecting format for data:', Object.keys(jsonData));
 
         // Check for unified format (has multiple page data types)
-        if (jsonData.checklist || jsonData.apartments || jsonData.merchants || jsonData.vehicles || jsonData.education || jsonData.fishing || jsonData.logistics) {
+        if (jsonData.checklist || jsonData.apartments || jsonData.merchants || jsonData.vehicles || jsonData.eventVehicles || jsonData.normalVehicles || jsonData.education || jsonData.fishing || jsonData.logistics) {
             const pages = [];
             if (jsonData.checklist) pages.push('checklist');
             if (jsonData.apartments) pages.push('apartments');
             if (jsonData.merchants) pages.push('merchants');
             if (jsonData.vehicles) pages.push('vehicles');
+            if (jsonData.eventVehicles) pages.push('eventVehicles');
+            if (jsonData.normalVehicles) pages.push('normalVehicles');
             if (jsonData.education) pages.push('education');
             if (jsonData.fishing) pages.push('fishing');
             if (jsonData.logistics) pages.push('logistics');
@@ -282,11 +294,16 @@
         }
 
         // Check for vehicles format (verify structure)
-        if (jsonData.vehicles && typeof jsonData.vehicles === 'object') {
+        if (jsonData.eventVehicles || jsonData.normalVehicles || (jsonData.vehicles && typeof jsonData.vehicles === 'object')) {
+            const descriptionParts = [];
+            if (jsonData.eventVehicles) descriptionParts.push('Event Vehicles');
+            if (jsonData.normalVehicles) descriptionParts.push('Regular Vehicles');
+            if (jsonData.vehicles) descriptionParts.push('Vehicle Progress (Legacy)');
+
             return {
                 type: 'vehicles',
                 page: 'vehicles',
-                description: 'Vehicles format'
+                description: 'Vehicles format (Event and/or Normal)'
             };
         }
 
@@ -359,11 +376,21 @@
         if (allData.fishing) exportData.fishing = allData.fishing;
         if (allData.logistics) exportData.logistics = allData.logistics;
 
+        // Add vehicles data (Event and Normal)
+        if (allData.vehicles) {
+            if (allData.vehicles.eventVehicles && allData.vehicles.eventVehicles.length > 0) {
+                exportData.eventVehicles = allData.vehicles.eventVehicles;
+            }
+            if (allData.vehicles.normalVehicles && allData.vehicles.normalVehicles.length > 0) {
+                exportData.normalVehicles = allData.vehicles.normalVehicles;
+            }
+        }
+
         debugManager.log('Exported data summary:', {
             checklist: allData.checklist ? 'present' : 'empty',
             apartments: allData.apartments ? 'present' : 'empty',
             merchants: isPageExcluded('merchants') ? 'excluded' : (allData.merchants ? 'present' : 'empty'),
-            vehicles: isPageExcluded('vehicles') ? 'excluded' : (allData.vehicles ? 'present' : 'empty'),
+            vehicles: allData.vehicles ? 'present' : 'empty',
             education: allData.education ? 'present' : 'empty',
             fishing: allData.fishing ? 'present' : 'empty',
             logistics: allData.logistics ? 'present' : 'empty'
@@ -380,6 +407,19 @@
      */
     function exportPageData(pageName) {
         debugManager.log(`=== exportPageData START for ${pageName} ===`);
+
+        // Special handling for vehicles to include both sub-types
+        if (pageName === 'vehicles') {
+            const data = getPageData('vehicles');
+            const exportData = {
+                export_date: new Date().toISOString(),
+                version: '1.0.0',
+                eventVehicles: data.eventVehicles,
+                normalVehicles: data.normalVehicles
+            };
+            debugManager.log(`=== exportPageData END for ${pageName} ===`);
+            return exportData;
+        }
 
         if (isPageExcluded(pageName)) {
             debugManager.warn(`Page ${pageName} is excluded from export`);
@@ -593,20 +633,37 @@
         const result = { success: 0, updated: 0, errors: 0, messages: [] };
 
         try {
-            const existingData = getPageData('vehicles') || {};
-            const vehicles = data.vehicles || data;
-
-            if (mode === 'replace') {
-                localStorage.setItem(STORAGE_KEYS.vehicles, JSON.stringify(vehicles));
-                result.success = Object.keys(vehicles).length;
-                result.messages.push(`Replaced ${result.success} vehicles`);
-            } else {
-                // Merge
-                const merged = { ...existingData, ...vehicles };
-                localStorage.setItem(STORAGE_KEYS.vehicles, JSON.stringify(merged));
-                result.success = Object.keys(vehicles).length;
-                result.messages.push(`Merged ${result.success} vehicles`);
+            // Handle Event Vehicles
+            if (data.eventVehicles) {
+                const existing = JSON.parse(localStorage.getItem(STORAGE_KEYS.eventVehicles) || '[]');
+                if (mode === 'replace') {
+                    localStorage.setItem(STORAGE_KEYS.eventVehicles, JSON.stringify(data.eventVehicles));
+                    result.messages.push(`Replaced ${data.eventVehicles.length} event vehicles`);
+                } else {
+                    const merged = [...existing, ...data.eventVehicles];
+                    localStorage.setItem(STORAGE_KEYS.eventVehicles, JSON.stringify(merged));
+                    result.messages.push(`Merged ${data.eventVehicles.length} event vehicles`);
+                }
+                result.success += data.eventVehicles.length;
             }
+
+            // Handle Normal Vehicles
+            if (data.normalVehicles) {
+                const existing = JSON.parse(localStorage.getItem(STORAGE_KEYS.normalVehicles) || '[]');
+                if (mode === 'replace') {
+                    localStorage.setItem(STORAGE_KEYS.normalVehicles, JSON.stringify(data.normalVehicles));
+                    result.messages.push(`Replaced ${data.normalVehicles.length} normal vehicles`);
+                } else {
+                    const merged = [...existing, ...data.normalVehicles];
+                    localStorage.setItem(STORAGE_KEYS.normalVehicles, JSON.stringify(merged));
+                    result.messages.push(`Merged ${data.normalVehicles.length} normal vehicles`);
+                }
+                result.success += data.normalVehicles.length;
+            }
+
+            // Handle legacy "vehicles" (progress) if still present but user asked to exclude
+            // We'll skip it if direct Page Import or All-detect, but if explicit, we can handle or ignore.
+            // For now, focusing on Event and Normal as requested.
 
             debugManager.log('Vehicles import successful');
         } catch (error) {

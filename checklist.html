@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +18,7 @@
     <link href="css/pages/checklist-base.css" rel="stylesheet">
     <link href="css/pages/checklist.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navbar is injected by js/navbar.js -->
 
@@ -24,7 +26,8 @@
     <main class="container py-5">
         <div class="text-center mb-5">
             <h1 class="glow-text">Business Checklist</h1>
-            <p class="lead">Comprehensive business management tool with tier and business creation, editing, and tracking.</p>
+            <p class="lead">Comprehensive business management tool with tier and business creation, editing, and
+                tracking.</p>
         </div>
 
         <!-- Time Displays -->
@@ -35,22 +38,26 @@
                         <div class="row text-center">
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <div class="time-display">
-                                    <strong>🕐 Local time:</strong> 
-                                    <div id="local-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <strong>🕐 Local time:</strong>
+                                    <div id="local-time" class="text-info"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <div class="time-display">
-                                    <strong>🕐 Eastern Time:</strong> 
-                                    <div id="eastern-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <strong>🕐 Eastern Time:</strong>
+                                    <div id="eastern-time" class="text-info"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
                                     <span id="eastern-tz" class="text-muted small">EST</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="time-display">
-                                    <strong>🔄 Server Reboot:</strong> 
-                                    <div id="reboot-countdown" class="text-warning" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
-                                    <small class="text-muted d-block mt-1">Next: <span id="reboot-time-et">3:00 AM EST</span> / <span id="reboot-time-local">--:--</span></small>
+                                    <strong>🔄 Server Reboot:</strong>
+                                    <div id="reboot-countdown" class="text-warning"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <small class="text-muted d-block mt-1">Next: <span id="reboot-time-et">3:00 AM
+                                            EST</span> / <span id="reboot-time-local">--:--</span></small>
                                 </div>
                             </div>
                         </div>
@@ -63,8 +70,11 @@
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="card mb-4">
-                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
-                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <div class="card-header"
+                        style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true"
+                            aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
                             <span>📖 How to Use This Page</span>
                             <span class="float-end" id="howToUseToggle">▼</span>
                         </button>
@@ -73,73 +83,120 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <h6 class="mb-2"><strong>Step 1: Set Up Your Tiers</strong></h6>
-                                <p class="mb-2">Click on <strong>⚙️ Configuration Management</strong> above to expand it, then click <span class="badge bg-primary">➕ Add Tier</span> to create your first tier. Give it a name (e.g., "Tier 1: Fruit Stand"), choose an icon (emoji), and select a color.</p>
-                                
+                                <p class="mb-2">Click on <strong>⚙️ Configuration Management</strong> above to expand
+                                    it, then click <span class="badge bg-primary">➕ Add Tier</span> to create your first
+                                    tier. Give it a name (e.g., "Tier 1: Fruit Stand"), choose an icon (emoji), and
+                                    select a color.</p>
+
                                 <h6 class="mb-2"><strong>Step 2: Add Products</strong></h6>
-                                <p class="mb-2">Before adding businesses, you can set up products for each tier. In the Configuration Management panel, click <span class="badge bg-primary">➕ Add Product</span> to create products:</p>
+                                <p class="mb-2">Before adding businesses, you can set up products for each tier. In the
+                                    Configuration Management panel, click <span class="badge bg-primary">➕ Add
+                                        Product</span> to create products:</p>
                                 <ul class="mb-3">
-                                    <li><strong>Tier:</strong> Select which tier this product belongs to (products are tier-specific)</li>
-                                    <li><strong>Product Name:</strong> Enter the product name (e.g., "Apple", "Orange", "Banana")</li>
+                                    <li><strong>Tier:</strong> Select which tier this product belongs to (products are
+                                        tier-specific)</li>
+                                    <li><strong>Product Name:</strong> Enter the product name (e.g., "Apple", "Orange",
+                                        "Banana")</li>
                                 </ul>
-                                <p class="mb-2"><em>Note:</em> Products help you track which items each business is producing. You can add products at any time, but it's recommended to set them up before adding businesses.</p>
-                                
+                                <p class="mb-2"><em>Note:</em> Products help you track which items each business is
+                                    producing. You can add products at any time, but it's recommended to set them up
+                                    before adding businesses.</p>
+
                                 <h6 class="mb-2"><strong>Step 3: Add Businesses</strong></h6>
-                                <p class="mb-2">In the Configuration Management panel, click <span class="badge bg-primary">➕ Add Business</span> to add businesses to your tiers. Fill in:</p>
+                                <p class="mb-2">In the Configuration Management panel, click <span
+                                        class="badge bg-primary">➕ Add Business</span> to add businesses to your tiers.
+                                    Fill in:</p>
                                 <ul class="mb-3">
                                     <li><strong>Business Code:</strong> A unique identifier (e.g., "TIER1-BIZ001")</li>
-                                    <li><strong>Business Name:</strong> The location or name (e.g., "Route 68, Grand Senora Desert")</li>
+                                    <li><strong>Business Name:</strong> The location or name (e.g., "Route 68, Grand
+                                        Senora Desert")</li>
                                     <li><strong>Tier:</strong> Select which tier this business belongs to</li>
                                     <li><strong>Max Stock:</strong> Maximum stock capacity for this business</li>
                                     <li><strong>Collection Storage:</strong> Maximum collection storage capacity</li>
-                                    <li><strong>Notes:</strong> <em>Optional</em> - Add notes to help remember which business this is, such as employee names or other identifying information. Hover over the ℹ️ icon for more details. This makes it easy to identify businesses when you have multiple locations.</li>
+                                    <li><strong>Notes:</strong> <em>Optional</em> - Add notes to help remember which
+                                        business this is, such as employee names or other identifying information. Hover
+                                        over the ℹ️ icon for more details. This makes it easy to identify businesses
+                                        when you have multiple locations.</li>
                                 </ul>
-                                
+
                                 <h6 class="mb-2"><strong>Step 4: Track Your Progress</strong></h6>
-                                <p class="mb-2">Once businesses are added, they will appear in the checklist below. You can:</p>
+                                <p class="mb-2">Once businesses are added, they will appear in the checklist below. You
+                                    can:</p>
                                 <ul class="mb-3">
-                                    <li><strong>Check off businesses:</strong> Click the checkbox when you've completed a task (checked businesses are excluded from summary calculations)</li>
-                                    <li><strong>Add Money:</strong> Enter the current money amount in the Money field</li>
-                                    <li><strong>Track Stock:</strong> Enter current stock to see how much more is needed to reach max. The system automatically calculates "Stock Needed" based on Max Stock - Current Stock</li>
-                                    <li><strong>Select Product:</strong> Choose which product this business is producing from the Product dropdown. This is used for summary calculations</li>
-                                    <li><strong>Track Collection:</strong> Enter collection storage amounts (if applicable)</li>
+                                    <li><strong>Check off businesses:</strong> Click the checkbox when you've completed
+                                        a task (checked businesses are excluded from summary calculations)</li>
+                                    <li><strong>Add Money:</strong> Enter the current money amount in the Money field
+                                    </li>
+                                    <li><strong>Track Stock:</strong> Enter current stock to see how much more is needed
+                                        to reach max. The system automatically calculates "Stock Needed" based on Max
+                                        Stock - Current Stock</li>
+                                    <li><strong>Select Product:</strong> Choose which product this business is producing
+                                        from the Product dropdown. This is used for summary calculations</li>
+                                    <li><strong>Track Collection:</strong> Enter collection storage amounts (if
+                                        applicable)</li>
                                     <li><strong>Add Notes:</strong> Add any notes or reminders for each business</li>
                                 </ul>
-                                
+
                                 <h6 class="mb-2"><strong>Step 5: View Tier Summaries</strong></h6>
-                                <p class="mb-2">Each tier card has a <span class="badge bg-info">📊 Show Summary</span> / <span class="badge bg-info">📊 Hide Summary</span> button. Click it to view a summary table showing:</p>
+                                <p class="mb-2">Each tier card has a <span class="badge bg-info">📊 Show Summary</span>
+                                    / <span class="badge bg-info">📊 Hide Summary</span> button. Click it to view a
+                                    summary table showing:</p>
                                 <ul class="mb-3">
-                                    <li><strong>Product Name:</strong> All products assigned to businesses in this tier</li>
-                                    <li><strong>Total Products Needed:</strong> Sum of stock needed for each product across all businesses in the tier</li>
+                                    <li><strong>Product Name:</strong> All products assigned to businesses in this tier
+                                    </li>
+                                    <li><strong>Total Products Needed:</strong> Sum of stock needed for each product
+                                        across all businesses in the tier</li>
                                 </ul>
-                                <p class="mb-2"><em>Note:</em> Businesses with checked checkboxes are excluded from summary calculations. The summary only counts businesses that need stock.</p>
-                                
+                                <p class="mb-2"><em>Note:</em> Businesses with checked checkboxes are excluded from
+                                    summary calculations. The summary only counts businesses that need stock.</p>
+
                                 <h6 class="mb-2"><strong>Step 6: View All Business Summary</strong></h6>
-                                <p class="mb-2">Below the tier cards, you'll find the <strong>📊 All Business Summary</strong> card (appears when products are selected). This shows:</p>
+                                <p class="mb-2">Below the tier cards, you'll find the <strong>📊 All Business
+                                        Summary</strong> card (appears when products are selected). This shows:</p>
                                 <ul class="mb-3">
                                     <li><strong>Product Name:</strong> All products across all tiers</li>
                                     <li><strong>Tier Columns:</strong> Stock needed for each product per tier</li>
-                                    <li><strong>Grand Total:</strong> Total stock needed for each product across all tiers</li>
-                                    <li><strong>Footer Row:</strong> Grand totals for each tier and overall grand total</li>
+                                    <li><strong>Grand Total:</strong> Total stock needed for each product across all
+                                        tiers</li>
+                                    <li><strong>Footer Row:</strong> Grand totals for each tier and overall grand total
+                                    </li>
                                 </ul>
-                                <p class="mb-2">This summary helps you see at a glance how much of each product you need across all your businesses.</p>
-                                
+                                <p class="mb-2">This summary helps you see at a glance how much of each product you need
+                                    across all your businesses.</p>
+
                                 <h6 class="mb-2"><strong>Step 7: Import/Export Configuration</strong></h6>
-                                <p class="mb-2">You can backup and restore your configuration (including tiers, businesses, products, and product selections):</p>
+                                <p class="mb-2">You can backup and restore your configuration (including tiers,
+                                    businesses, products, and product selections):</p>
                                 <ul class="mb-3">
-                                    <li><strong>Export:</strong> Click <span class="badge bg-success">📤 Export Configuration</span> to copy your setup. Then copy the JSON text:</li>
+                                    <li><strong>Export:</strong> Click <span class="badge bg-success">📤 Export
+                                            Configuration</span> to copy your setup. Then copy the JSON text:</li>
                                     <ul class="mb-2">
-                                        <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd></li>
-                                        <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then <kbd>Cmd</kbd> + <kbd>C</kbd></li>
+                                        <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then
+                                            <kbd>Ctrl</kbd> + <kbd>C</kbd>
+                                        </li>
+                                        <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then
+                                            <kbd>Cmd</kbd> + <kbd>C</kbd>
+                                        </li>
                                     </ul>
-                                    <li><strong>Import:</strong> Click <span class="badge bg-warning">📥 Import Configuration</span>, then paste your saved JSON:</li>
+                                    <li><strong>Import:</strong> Click <span class="badge bg-warning">📥 Import
+                                            Configuration</span>, then paste your saved JSON:</li>
                                     <ul class="mb-2">
                                         <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
                                         <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
                                     </ul>
-                                    <li>Click <span class="badge bg-primary">Import</span> to load your configuration</li>
-                                    <li><strong>Template:</strong> Click <span class="badge bg-primary">📋 Load Template</span> to load an example configuration. The template file (<code>checklist-template.json</code>) contains sample tiers, businesses, and products that you can customize. The template loads into the import modal for review before applying. You can edit the template file directly to create your own starting configuration.</li>
+                                    <li>Click <span class="badge bg-primary">Import</span> to load your configuration
+                                    </li>
+                                    <li><strong>Template:</strong> Click <span class="badge bg-primary">📋 Load
+                                            Template</span> to load an example configuration. The template file
+                                        (<code>checklist-template.json</code>) contains sample tiers, businesses, and
+                                        products that you can customize. The template loads into the import modal for
+                                        review before applying. You can edit the template file directly to create your
+                                        own starting configuration.</li>
                                 </ul>
-                                <p class="mb-0">All your progress is automatically saved to your browser. Use <span class="badge bg-info">📋 Generate Checklist</span> to create a CSV report (includes product information). For more details on copy/paste shortcuts, see the <a href="merchants.html">Traveling Merchants</a> page.</p>
+                                <p class="mb-0">All your progress is automatically saved to your browser. Use <span
+                                        class="badge bg-info">📋 Generate Checklist</span> to create a CSV report
+                                    (includes product information). For more details on copy/paste shortcuts, see the <a
+                                        href="merchants.html">Traveling Merchants</a> page.</p>
                             </div>
                         </div>
                     </div>
@@ -149,8 +206,11 @@
 
         <!-- All Business Summary -->
         <div class="card mt-4 mb-4" id="allBusinessSummaryCard" style="display: none;">
-            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
-                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#allBusinessSummaryCollapse" aria-expanded="true" aria-controls="allBusinessSummaryCollapse" style="color: var(--text-color); font-weight: 600;">
+            <div class="card-header"
+                style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#allBusinessSummaryCollapse" aria-expanded="true"
+                    aria-controls="allBusinessSummaryCollapse" style="color: var(--text-color); font-weight: 600;">
                     <span>📊 All Business Summary</span>
                     <span class="float-end" id="allBusinessSummaryToggle">▼</span>
                 </button>
@@ -183,7 +243,9 @@
         <!-- Configuration Panel -->
         <div class="card config-panel">
             <div class="card-header">
-                <button class="btn btn-link config-collapse-btn text-decoration-none text-white" type="button" data-bs-toggle="collapse" data-bs-target="#configCollapse" aria-expanded="false" aria-controls="configCollapse">
+                <button class="btn btn-link config-collapse-btn text-decoration-none text-white" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#configCollapse" aria-expanded="false"
+                    aria-controls="configCollapse">
                     ⚙️ Configuration Management <span class="float-end">▼</span>
                 </button>
             </div>
@@ -192,32 +254,43 @@
                     <div class="mb-3">
                         <h5>Tier Management</h5>
                         <div class="d-flex flex-wrap gap-2 mb-3">
-                            <button type="button" class="btn btn-primary" onclick="openAddTierModal()">➕ Add Tier</button>
-                            <button type="button" class="btn btn-info" onclick="openEditTierModal()">✏️ Edit Tier</button>
+                            <button type="button" class="btn btn-primary" onclick="openAddTierModal()">➕ Add
+                                Tier</button>
+                            <button type="button" class="btn btn-info" onclick="openEditTierModal()">✏️ Edit
+                                Tier</button>
                         </div>
                     </div>
                     <div class="mb-3">
                         <h5>Business Management</h5>
                         <div class="d-flex flex-wrap gap-2 mb-3">
-                            <button type="button" class="btn btn-primary" onclick="openAddBusinessModal()">➕ Add Business</button>
-                            <button type="button" class="btn btn-info" onclick="openEditBusinessModal()">✏️ Edit Business</button>
+                            <button type="button" class="btn btn-primary" onclick="openAddBusinessModal()">➕ Add
+                                Business</button>
+                            <button type="button" class="btn btn-info" onclick="openEditBusinessModal()">✏️ Edit
+                                Business</button>
                         </div>
                     </div>
                     <div class="mb-3">
                         <h5>Product Management</h5>
                         <div class="d-flex flex-wrap gap-2 mb-3">
-                            <button type="button" class="btn btn-primary" onclick="openAddProductModal()">➕ Add Product</button>
-                            <button type="button" class="btn btn-info" onclick="openEditProductModal()">✏️ Edit Product</button>
-                            <button type="button" class="btn btn-secondary" onclick="openProductOrderModal()">📋 Edit Product Order</button>
+                            <button type="button" class="btn btn-primary" onclick="openAddProductModal()">➕ Add
+                                Product</button>
+                            <button type="button" class="btn btn-info" onclick="openEditProductModal()">✏️ Edit
+                                Product</button>
+                            <button type="button" class="btn btn-secondary" onclick="openProductOrderModal()">📋 Edit
+                                Product Order</button>
                         </div>
                     </div>
                     <div class="mb-3">
                         <h5>Import/Export</h5>
                         <div class="d-flex flex-wrap gap-2 mb-3">
-                            <button type="button" class="btn btn-success" onclick="exportConfiguration()">📤 Export Configuration</button>
-                            <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Configuration</button>
-                            <button type="button" class="btn btn-primary" onclick="loadTemplate()">📋 Load Template</button>
-                            <button type="button" class="btn btn-info" onclick="generatePersonTableString()">📋 Generate Checklist</button>
+                            <button type="button" class="btn btn-success" onclick="exportConfiguration()">📤 Export
+                                Configuration</button>
+                            <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import
+                                Configuration</button>
+                            <button type="button" class="btn btn-primary" onclick="loadTemplate()">📋 Load
+                                Template</button>
+                            <button type="button" class="btn btn-info" onclick="generatePersonTableString()">📋 Generate
+                                Checklist</button>
                         </div>
                     </div>
                 </div>
@@ -236,8 +309,11 @@
 
         <!-- Summary -->
         <div class="card mt-4" id="summaryAlert" style="display: none;">
-            <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
-                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#summaryCollapse" aria-expanded="true" aria-controls="summaryCollapse" style="color: var(--text-color); font-weight: 600;">
+            <div class="card-header"
+                style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#summaryCollapse" aria-expanded="true"
+                    aria-controls="summaryCollapse" style="color: var(--text-color); font-weight: 600;">
                     <span>📊 Summary</span>
                     <span class="float-end" id="summaryToggle">▼</span>
                 </button>
@@ -257,7 +333,8 @@
             <button type="button" class="btn btn-secondary" onclick="uncheckAll()">❌ Uncheck All</button>
             <button type="button" class="btn btn-info" onclick="saveProgress()">💾 Save Progress</button>
             <button type="button" class="btn btn-danger" onclick="clearProgress()">🗑️ Clear Progress</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="debugToggleBtn" onclick="toggleDebug()">
+            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="debugToggleBtn"
+                onclick="toggleDebug()">
                 <span id="debugToggleText">🔍 Debug: OFF</span>
             </button>
         </div>
@@ -276,13 +353,16 @@
                         <input type="hidden" id="tierId" value="">
                         <div class="mb-3">
                             <label for="tierName" class="form-label">Tier Name</label>
-                            <input type="text" class="form-control" id="tierName" required placeholder="e.g., Tier 1: Fruit Stand">
+                            <input type="text" class="form-control" id="tierName" required
+                                placeholder="e.g., Tier 1: Fruit Stand">
                         </div>
                         <div class="mb-3">
                             <label for="tierIcon" class="form-label">Icon (Emoji)</label>
                             <div class="input-group mb-2">
-                                <input type="text" class="form-control" id="tierIcon" placeholder="e.g., 🍎" maxlength="2">
-                                <button class="btn btn-outline-secondary" type="button" onclick="toggleEmojiPicker()" title="Show emoji picker">
+                                <input type="text" class="form-control" id="tierIcon" placeholder="e.g., 🍎"
+                                    maxlength="2">
+                                <button class="btn btn-outline-secondary" type="button" onclick="toggleEmojiPicker()"
+                                    title="Show emoji picker">
                                     😀
                                 </button>
                             </div>
@@ -318,7 +398,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="saveTier()">Save Tier</button>
-                    <button type="button" class="btn btn-danger" id="deleteTierBtn" onclick="deleteTier()" style="display: none;">Delete Tier</button>
+                    <button type="button" class="btn btn-danger" id="deleteTierBtn" onclick="deleteTier()"
+                        style="display: none;">Delete Tier</button>
                 </div>
             </div>
         </div>
@@ -336,13 +417,15 @@
                     <form id="productForm">
                         <input type="hidden" id="productId" value="">
                         <div class="mb-3">
-                            <label for="productTierId" class="form-label">Tier <span class="text-danger">*</span></label>
+                            <label for="productTierId" class="form-label">Tier <span
+                                    class="text-danger">*</span></label>
                             <select class="form-select" id="productTierId" required>
                                 <option value="">Select a tier...</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="productName" class="form-label">Product Name <span class="text-danger">*</span></label>
+                            <label for="productName" class="form-label">Product Name <span
+                                    class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="productName" required placeholder="e.g., Apple">
                         </div>
                     </form>
@@ -350,14 +433,16 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="saveProduct()">Save Product</button>
-                    <button type="button" class="btn btn-danger" id="deleteProductBtn" onclick="deleteProduct()" style="display: none;">Delete Product</button>
+                    <button type="button" class="btn btn-danger" id="deleteProductBtn" onclick="deleteProduct()"
+                        style="display: none;">Delete Product</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Product Order Modal -->
-    <div class="modal fade" id="productOrderModal" tabindex="-1" aria-labelledby="productOrderModalLabel" aria-hidden="true">
+    <div class="modal fade" id="productOrderModal" tabindex="-1" aria-labelledby="productOrderModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -365,16 +450,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-muted mb-3">Use the up/down buttons to reorder products. Products will appear in this order in Tier Summary and All Business Summary.</p>
+                    <p class="text-muted mb-3">Use the up/down buttons to reorder products. Products will appear in this
+                        order in Tier Summary and All Business Summary.</p>
                     <div id="productOrderList" class="list-group">
                         <!-- Product order items will be dynamically generated here -->
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-outline-info" onclick="sortProductsByTier()">Sort by Tier</button>
+                    <button type="button" class="btn btn-outline-info" onclick="sortProductsByTier()">Sort by
+                        Tier</button>
                     <button type="button" class="btn btn-primary" onclick="saveProductOrder()">Save Order</button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="resetProductOrder()">Reset to Alphabetical</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="resetProductOrder()">Reset to
+                        Alphabetical</button>
                 </div>
             </div>
         </div>
@@ -392,21 +480,28 @@
                     <form id="businessForm">
                         <input type="hidden" id="businessCodeOriginal" value="">
                         <div class="mb-3">
-                            <label for="businessCode" class="form-label">Business Code <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="businessCode" required placeholder="e.g., TIER1-BIZ001">
+                            <label for="businessCode" class="form-label">Business Code <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="businessCode" required
+                                placeholder="e.g., TIER1-BIZ001">
                             <small class="form-text text-muted">Required: A unique identifier for this business</small>
                         </div>
                         <div class="mb-3">
                             <label for="businessName" class="form-label">Business Name</label>
-                            <input type="text" class="form-control" id="businessName" required placeholder="e.g., Route 68, Grand Senora Desert">
+                            <input type="text" class="form-control" id="businessName" required
+                                placeholder="e.g., Route 68, Grand Senora Desert">
                         </div>
                         <div class="mb-3">
                             <label for="businessNotes" class="form-label">
                                 Notes
-                                <span class="text-muted" style="cursor: help;" title="Use this field to remember which business this is, such as employee names or other identifying information. This helps you easily identify businesses when tracking multiple locations." data-bs-toggle="tooltip" data-bs-placement="right">ℹ️</span>
+                                <span class="text-muted" style="cursor: help;"
+                                    title="Use this field to remember which business this is, such as employee names or other identifying information. This helps you easily identify businesses when tracking multiple locations."
+                                    data-bs-toggle="tooltip" data-bs-placement="right">ℹ️</span>
                             </label>
-                            <textarea class="form-control" id="businessNotes" rows="2" placeholder="e.g., Employee: John Smith, or Location notes..."></textarea>
-                            <small class="form-text text-muted">Optional: Add notes to help remember which business this is (e.g., employee names)</small>
+                            <textarea class="form-control" id="businessNotes" rows="2"
+                                placeholder="e.g., Employee: John Smith, or Location notes..."></textarea>
+                            <small class="form-text text-muted">Optional: Add notes to help remember which business this
+                                is (e.g., employee names)</small>
                         </div>
                         <div class="mb-3">
                             <label for="businessTierId" class="form-label">Tier</label>
@@ -423,11 +518,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="businessMaxStock" class="form-label">Max Stock</label>
-                            <input type="text" class="form-control number-input" id="businessMaxStock" value="0" placeholder="0">
+                            <input type="text" class="form-control number-input" id="businessMaxStock" value="0"
+                                placeholder="0">
                         </div>
                         <div class="mb-3">
                             <label for="businessCollectionStorage" class="form-label">Collection Storage</label>
-                            <input type="text" class="form-control number-input" id="businessCollectionStorage" value="0" placeholder="0">
+                            <input type="text" class="form-control number-input" id="businessCollectionStorage"
+                                value="0" placeholder="0">
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="businessCanCollectItems">
@@ -438,7 +535,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="saveBusiness()">Save Business</button>
-                    <button type="button" class="btn btn-danger" id="deleteBusinessBtn" onclick="deleteBusiness()" style="display: none;">Delete Business</button>
+                    <button type="button" class="btn btn-danger" id="deleteBusinessBtn" onclick="deleteBusiness()"
+                        style="display: none;">Delete Business</button>
                 </div>
             </div>
         </div>
@@ -454,11 +552,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-warning">
-                        <strong>Warning:</strong> Importing will replace your current configuration. Make sure to export your current config first!
+                        <strong>Warning:</strong> Importing will replace your current configuration. Make sure to export
+                        your current config first!
                     </div>
                     <div class="mb-3">
                         <label for="importTextarea" class="form-label">Paste JSON Configuration:</label>
-                        <textarea class="form-control" id="importTextarea" rows="10" placeholder='{"tiers": [...], "businesses": [...]}'></textarea>
+                        <textarea class="form-control" id="importTextarea" rows="10"
+                            placeholder='{"tiers": [...], "businesses": [...]}'></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -479,7 +579,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="copyToClipboard('exportTextarea')">📋 Copy to Clipboard</button>
+                        <button type="button" class="btn btn-sm btn-secondary"
+                            onclick="copyToClipboard('exportTextarea')">📋 Copy to Clipboard</button>
                     </div>
                     <div class="mb-3">
                         <label for="exportTextarea" class="form-label">Generated String:</label>
@@ -516,10 +617,10 @@
     <!-- Number Formatter (optional) -->
     <script>
         // Load number-formatter.js if available
-        (function() {
+        (function () {
             const script = document.createElement('script');
             script.src = 'js/number-formatter.js';
-            script.onerror = function() {
+            script.onerror = function () {
                 console.warn('number-formatter.js not found, continuing without it');
             };
             document.head.appendChild(script);
@@ -531,9 +632,10 @@
     <script src="js/pages/checklist/checklist-core.js"></script>
     <script src="js/pages/checklist/checklist-ui.js"></script>
     <script src="js/pages/checklist/checklist-summary.js"></script>
+    <script src="js/pages/checklist/checklist-template-data.js"></script>
     <script src="js/pages/checklist/checklist-modals.js"></script>
     <script src="js/pages/checklist/emoji-picker.js"></script>
     <script src="js/pages/checklist/checklist-init.js"></script>
 </body>
+
 </html>
- 
