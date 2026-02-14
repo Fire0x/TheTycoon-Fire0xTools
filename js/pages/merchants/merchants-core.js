@@ -2,7 +2,7 @@
  * Merchants Core Module
  * Contains merchant data management, parsing, and storage functions
  */
-(function() {
+(function () {
     'use strict';
 
     // Ensure dependencies are loaded
@@ -20,40 +20,40 @@
     });
 
     // Expose debug functions globally for backward compatibility
-    window.debugLog = function(...args) { debugManager.log(...args); };
-    window.debugError = function(...args) { debugManager.error(...args); };
-    window.toggleDebug = function() { debugManager.toggle(); };
+    window.debugLog = function (...args) { debugManager.log(...args); };
+    window.debugError = function (...args) { debugManager.error(...args); };
+    window.toggleDebug = function () { debugManager.toggle(); };
 
     // Storage keys
     const STORAGE_KEY = 'traveling_merchants';
-    
+
     // Store merchants data
-    let merchants = {};
+    const merchants = {};
 
     // Parse time string to seconds
     function parseTimeToSeconds(timeStr) {
         let totalSeconds = 0;
-        
+
         const daysMatch = timeStr.match(/(\d+)d/);
         if (daysMatch) {
             totalSeconds += parseInt(daysMatch[1]) * 86400;
         }
-        
+
         const hoursMatch = timeStr.match(/(\d+)h/);
         if (hoursMatch) {
             totalSeconds += parseInt(hoursMatch[1]) * 3600;
         }
-        
+
         const minutesMatch = timeStr.match(/(\d+)m/);
         if (minutesMatch) {
             totalSeconds += parseInt(minutesMatch[1]) * 60;
         }
-        
+
         const secondsMatch = timeStr.match(/(\d+)s/);
         if (secondsMatch) {
             totalSeconds += parseInt(secondsMatch[1]);
         }
-        
+
         return totalSeconds;
     }
 
@@ -61,26 +61,26 @@
     function parseMerchantData(text) {
         debugManager.log('Parsing merchant data, input length:', text.length);
         const merchants = [];
-        
+
         let normalizedText = text
             .replace(/×/g, '\n')
             .replace(/📍 Set Waypoint/gi, '\n---SEPARATOR---\n')
             .replace(/Set Waypoint/gi, '')
             .replace(/📍\s*$/gm, '');
-        
+
         let blocks = normalizedText.split(/\n\s*---SEPARATOR---\s*\n/).filter(block => block.trim());
         debugManager.log('Initial blocks found:', blocks.length);
-        
+
         if (blocks.length <= 1) {
             const lines = normalizedText.split('\n');
             const newBlocks = [];
             let currentBlock = [];
             let lastMerchantNum = null;
-            
+
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 const merchantMatch = line.match(/Merchant #(\d+)/);
-                
+
                 if (merchantMatch) {
                     const merchantNum = parseInt(merchantMatch[1]);
                     if (currentBlock.length > 0 && lastMerchantNum !== null && merchantNum !== lastMerchantNum) {
@@ -89,16 +89,16 @@
                     }
                     lastMerchantNum = merchantNum;
                 }
-                
+
                 if (line || currentBlock.length > 0) {
                     currentBlock.push(line);
                 }
             }
-            
+
             if (currentBlock.length > 0) {
                 newBlocks.push(currentBlock.join('\n'));
             }
-            
+
             if (newBlocks.length > 1) {
                 blocks = newBlocks;
                 debugManager.log('Split by merchant numbers, found:', blocks.length, 'blocks');
@@ -107,20 +107,20 @@
                 debugManager.log('Split by triple newlines, found:', blocks.length, 'blocks');
             }
         }
-        
+
         debugManager.log('Processing', blocks.length, 'merchant blocks');
         blocks.forEach((block, index) => {
             debugManager.log(`Processing block ${index + 1}/${blocks.length}`);
             const lines = block.split('\n')
                 .map(l => l.trim())
                 .filter(l => l && !l.match(/^📍 Set Waypoint$/i) && !l.match(/Set Waypoint/i) && l !== '×' && l !== '📍');
-            
+
             if (lines.length < 2) return;
-            
+
             let emoji = '';
             let itemName = '';
             let firstLineIndex = -1;
-            
+
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
                 const emojiMatch = line.match(/^([^\s]+)\s+(.+)$/);
@@ -141,14 +141,14 @@
                     }
                 }
             }
-            
+
             if (!emoji || !itemName) return;
-            
+
             const merchantMatch = lines.find(line => line.includes('Merchant #'));
             if (!merchantMatch) return;
             const merchantNum = merchantMatch.match(/Merchant #(\d+)/)?.[1];
             if (!merchantNum) return;
-            
+
             let location = '';
             const locationIndex = lines.findIndex(line => line.includes('📍 Location'));
             if (locationIndex !== -1) {
@@ -161,7 +161,7 @@
                     }
                 }
             }
-            
+
             let distance = '';
             const distanceIndex = lines.findIndex(line => line.includes('📏 Distance'));
             if (distanceIndex !== -1) {
@@ -174,7 +174,7 @@
                     }
                 }
             }
-            
+
             let price = '';
             const priceIndex = lines.findIndex(line => line.includes('💰 Price'));
             if (priceIndex !== -1) {
@@ -187,7 +187,7 @@
                     }
                 }
             }
-            
+
             let buying = itemName;
             const buyingIndex = lines.findIndex(line => line.includes('🛒 Buying'));
             if (buyingIndex !== -1) {
@@ -200,7 +200,7 @@
                     }
                 }
             }
-            
+
             let rotationTimeStr = '';
             const rotationIndex = lines.findIndex(line => line.includes('⏰ Next Rotation'));
             if (rotationIndex !== -1) {
@@ -213,9 +213,9 @@
                     }
                 }
             }
-            
+
             const rotationSeconds = rotationTimeStr ? parseTimeToSeconds(rotationTimeStr) : 0;
-            
+
             if (itemName && merchantNum && rotationSeconds > 0) {
                 const merchant = {
                     emoji: emoji,
@@ -235,7 +235,7 @@
                 debugManager.log('Skipped invalid merchant block - itemName:', itemName, 'merchantNum:', merchantNum, 'rotationSeconds:', rotationSeconds);
             }
         });
-        
+
         debugManager.log('Total merchants parsed:', merchants.length);
         return merchants;
     }
@@ -251,7 +251,14 @@
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
             try {
-                merchants = JSON.parse(stored);
+                const parsed = JSON.parse(stored);
+                // Clear existing merchants
+                for (const key in merchants) {
+                    delete merchants[key];
+                }
+                // Load new merchants
+                Object.assign(merchants, parsed);
+
                 const now = new Date();
                 Object.keys(merchants).forEach(key => {
                     const merchant = merchants[key];
@@ -269,7 +276,10 @@
                 debugManager.log('Loaded merchants from storage:', Object.keys(merchants).length, 'merchants');
             } catch (e) {
                 debugManager.error('Error loading from storage:', e);
-                merchants = {};
+                // Clear on error
+                for (const key in merchants) {
+                    delete merchants[key];
+                }
             }
         }
     }
@@ -281,21 +291,21 @@
             debugManager.error('pasteInput element not found');
             return;
         }
-        
+
         const inputValue = input.value;
         debugManager.log('parseAndSave called, input length:', inputValue.length);
         if (!inputValue.trim()) {
             alert('Please paste merchant data first!');
             return;
         }
-        
+
         const parsed = parseMerchantData(inputValue);
         debugManager.log('Parsed merchants:', parsed.length);
         if (parsed.length === 0) {
             alert('No valid merchant data found. Please check the format.');
             return;
         }
-        
+
         parsed.forEach(merchant => {
             const key = `merchant-${merchant.merchantNumber}`;
             const isUpdate = merchants[key] !== undefined;
@@ -306,18 +316,18 @@
             merchants[key] = merchant;
             debugManager.log(isUpdate ? 'Updated' : 'Added', 'merchant:', key);
         });
-        
+
         saveToStorage();
         debugManager.log('Saved to storage, total merchants:', Object.keys(merchants).length);
         input.value = '';
-        
+
         if (typeof window.renderMerchants === 'function') {
             window.renderMerchants();
         }
         if (typeof window.renderMerchantsRotation === 'function') {
             window.renderMerchantsRotation();
         }
-        
+
         alert(`Successfully added ${parsed.length} merchant(s)!`);
     }
 
@@ -328,7 +338,7 @@
             debugManager.log('Attempted to remove non-existent merchant:', key);
             return;
         }
-        
+
         if (confirm(`Are you sure you want to remove Merchant #${merchant.merchantNumber} (${merchant.itemName})?`)) {
             debugManager.log('Removing merchant:', key, merchant.itemName);
             delete merchants[key];
@@ -353,10 +363,12 @@
             alert('No merchants to clear.');
             return;
         }
-        
+
         if (confirm('Are you sure you want to clear ALL merchants?')) {
             debugManager.log('Clearing all merchants');
-            merchants = {};
+            for (const key in merchants) {
+                delete merchants[key];
+            }
             saveToStorage();
             if (typeof window.renderMerchants === 'function') {
                 window.renderMerchants();
