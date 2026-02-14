@@ -20,6 +20,8 @@
     flex-direction: column-reverse;
     align-items: center;
     gap: 15px;
+    pointer-events: none;
+    /* Allow clicks to pass through the container */
 }
 
 .fab-main {
@@ -36,6 +38,8 @@
     justify-content: center;
     cursor: pointer;
     transition: transform 0.3s ease, background-color 0.3s;
+    pointer-events: auto;
+    /* Re-enable clicks for the button */
 }
 
 .fab-main:hover {
@@ -103,6 +107,8 @@
     justify-content: center;
     cursor: pointer;
     transition: transform 0.2s ease;
+    pointer-events: auto;
+    /* Re-enable clicks for the items */
 }
 
 .fab-item:hover {
