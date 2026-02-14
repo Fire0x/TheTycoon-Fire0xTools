@@ -327,6 +327,12 @@
         if (typeof window.renderMerchantsRotation === 'function') {
             window.renderMerchantsRotation();
         }
+        if (typeof window.renderBestPrices === 'function') {
+            window.renderBestPrices();
+        }
+        if (typeof window.renderProfitCalculator === 'function') {
+            window.renderProfitCalculator();
+        }
 
         alert(`Successfully added ${parsed.length} merchant(s)!`);
     }
@@ -351,6 +357,9 @@
             }
             if (typeof window.renderBestPrices === 'function') {
                 window.renderBestPrices();
+            }
+            if (typeof window.renderProfitCalculator === 'function') {
+                window.renderProfitCalculator();
             }
         }
     }
@@ -378,6 +387,9 @@
             }
             if (typeof window.renderBestPrices === 'function') {
                 window.renderBestPrices();
+            }
+            if (typeof window.renderProfitCalculator === 'function') {
+                window.renderProfitCalculator();
             }
             alert('All merchants cleared!');
         }

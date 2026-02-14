@@ -102,7 +102,7 @@ const ConfigData = {
     pageVersions: {
         'index.html': '0.0.6',
         'Info.html': '0.1.2',
-        'merchants.html': '0.1.0',
+        'merchants.html': '0.1.1',
         'checklist.html': '0.2.4',
         'VehicleDeliveries.html': '1.0.8',
         'education_timer.html': '0.1.3',

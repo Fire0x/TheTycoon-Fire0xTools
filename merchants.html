@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
     <!-- Page-specific CSS -->
     <link href="css/pages/merchants.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navbar is injected by js/navbar.js -->
 
@@ -28,7 +30,7 @@
         <div class="row mb-4">
             <div class="col-md-10 mx-auto">
                 <p class="aest-time mb-0">
-                    <strong>Current Time (Local):</strong> 
+                    <strong>Current Time (Local):</strong>
                     <span id="aestTime"></span>
                 </p>
             </div>
@@ -38,8 +40,11 @@
         <div class="row mb-4">
             <div class="col-md-10 mx-auto">
                 <div class="card merchant-card mb-4">
-        <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
-                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <div class="card-header"
+                        style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true"
+                            aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
                             <span>📖 How to Use This Page</span>
                             <span class="float-end" id="howToUseToggle">▼</span>
                         </button>
@@ -47,32 +52,38 @@
                     <div class="collapse show" id="howToUseCollapse">
                         <div class="card-body">
                             <div class="mb-3">
-                            <h6 class="mb-2"><strong>Step 1: In-Game</strong></h6>
-                            <p class="mb-2">Open your chat and type the command:</p>
-                            <code class="d-block p-2 mb-3" style="background-color: var(--bg-color); border: 1px solid var(--card-border); border-radius: 0.25rem; color: var(--link-color);">/merchants</code>
-                            
-                            <h6 class="mb-2"><strong>Step 2: Copy the Data</strong></h6>
-                            <p class="mb-2">Select all the merchant data that appears:</p>
-                            <ul class="mb-3">
-                                <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd></li>
-                                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then <kbd>Cmd</kbd> + <kbd>C</kbd></li>
-                            </ul>
-                            
-                            <h6 class="mb-2"><strong>Step 3: Paste on This Page</strong></h6>
-                            <p class="mb-2">Click in the text area below and paste your data:</p>
-                            <ul class="mb-3">
-                                <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
-                                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
-                            </ul>
-                            
-                            <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
-                                <p class="mb-0">Click the <span class="badge bg-primary">Parse &amp; Save Merchants</span> button to add them to your tracker!</p>
+                                <h6 class="mb-2"><strong>Step 1: In-Game</strong></h6>
+                                <p class="mb-2">Open your chat and type the command:</p>
+                                <code class="d-block p-2 mb-3"
+                                    style="background-color: var(--bg-color); border: 1px solid var(--card-border); border-radius: 0.25rem; color: var(--link-color);">/merchants</code>
+
+                                <h6 class="mb-2"><strong>Step 2: Copy the Data</strong></h6>
+                                <p class="mb-2">Select all the merchant data that appears:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd> then
+                                        <kbd>Ctrl</kbd> + <kbd>C</kbd>
+                                    </li>
+                                    <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd> then <kbd>Cmd</kbd> +
+                                        <kbd>C</kbd>
+                                    </li>
+                                </ul>
+
+                                <h6 class="mb-2"><strong>Step 3: Paste on This Page</strong></h6>
+                                <p class="mb-2">Click in the text area below and paste your data:</p>
+                                <ul class="mb-3">
+                                    <li><strong>Windows/Linux:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
+                                    <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
+                                </ul>
+
+                                <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
+                                <p class="mb-0">Click the <span class="badge bg-primary">Parse &amp; Save
+                                        Merchants</span> button to add them to your tracker!</p>
                             </div>
                         </div>
                     </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-10 mx-auto">
@@ -97,11 +108,13 @@ Merchant #2
 🛒 Buying: 🍊 Oranges
 ⏰ Next Rotation: 4h 53m
 📍 Set Waypoint</pre>
-                    <textarea id="pasteInput" class="form-control" rows="6" placeholder="Paste merchant data here..."></textarea>
+                    <textarea id="pasteInput" class="form-control" rows="6"
+                        placeholder="Paste merchant data here..."></textarea>
                     <div class="mt-3">
                         <button class="btn btn-primary" onclick="parseAndSave()">Parse & Save Merchants</button>
                         <button class="btn btn-danger" onclick="clearAllMerchants()">Clear All Merchants</button>
-                        <button class="btn btn-outline-secondary btn-sm ms-2" id="debugToggleBtn" onclick="toggleDebug()">
+                        <button class="btn btn-outline-secondary btn-sm ms-2" id="debugToggleBtn"
+                            onclick="toggleDebug()">
                             <span id="debugToggleText">🔍 Debug: OFF</span>
                         </button>
                     </div>
@@ -126,6 +139,20 @@ Merchant #2
                             <h5 class="card-title mb-3">💰 Best Price to Sell</h5>
                             <div id="bestPricesContainer">
                                 <!-- Best prices will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profit Calculator Section -->
+                <div id="profitCalculatorSection" class="mb-4" style="display: none;">
+                    <div class="card merchant-card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">💸 Profit Calculator</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="profitCalculatorContainer">
+                                <!-- Calculator table will be generated here -->
                             </div>
                         </div>
                     </div>
@@ -166,9 +193,13 @@ Merchant #2
     <script src="js/theme.js"></script>
     <!-- Debug Manager -->
     <script src="js/debug-manager.js"></script>
+    <!-- Number Formatter (for calculator) -->
+    <script src="js/number-formatter.js"></script>
     <!-- Merchants Modules -->
     <script src="js/pages/merchants/merchants-core.js"></script>
     <script src="js/pages/merchants/merchants-ui.js"></script>
+    <script src="js/pages/merchants/merchants-calculator.js"></script>
     <script src="js/pages/merchants/merchants-init.js"></script>
 </body>
+
 </html>

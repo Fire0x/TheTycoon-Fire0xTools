@@ -2,7 +2,7 @@
  * Merchants UI Module
  * Contains rendering functions and timer updates
  */
-(function() {
+(function () {
     'use strict';
 
     // Ensure dependencies are loaded
@@ -46,7 +46,7 @@
         if (seconds <= 0) {
             return 'Rotated';
         }
-        
+
         const days = Math.floor(seconds / 86400);
         const hours = Math.floor((seconds % 86400) / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
@@ -95,14 +95,14 @@
     function calculateBestPrices() {
         const bestPrices = {};
         const merchants = window.merchants || {};
-        
+
         Object.keys(merchants).forEach(key => {
             const merchant = merchants[key];
             if (merchant.secondsRemaining <= 0) return;
-            
+
             const buyingItem = merchant.buying || merchant.itemName;
             const price = extractPrice(merchant.price);
-            
+
             if (!bestPrices[buyingItem]) {
                 bestPrices[buyingItem] = {
                     item: buyingItem,
@@ -127,7 +127,7 @@
                 }
             }
         });
-        
+
         return bestPrices;
     }
 
@@ -135,23 +135,23 @@
     function renderMerchantsRotation() {
         const section = document.getElementById('merchantsRotationSection');
         const container = document.getElementById('merchantsRotationContainer');
-        
+
         if (!section || !container) return;
-        
+
         const merchants = window.merchants || {};
         const activeKeys = Object.keys(merchants).filter(key => {
             return merchants[key].secondsRemaining > 0;
         });
-        
+
         if (activeKeys.length === 0) {
             section.style.display = 'none';
             return;
         }
-        
+
         section.style.display = 'block';
-        
+
         const groupedByRotation = {};
-        
+
         activeKeys.forEach(key => {
             const merchant = merchants[key];
             const roundedTime = Math.round(merchant.secondsRemaining / 10) * 10;
@@ -160,22 +160,22 @@
             }
             groupedByRotation[roundedTime].push(merchant);
         });
-        
+
         const sortedGroups = Object.keys(groupedByRotation)
             .map(time => parseInt(time))
             .sort((a, b) => a - b);
-        
+
         container.innerHTML = sortedGroups.map(roundedTime => {
             const merchantsInGroup = groupedByRotation[roundedTime];
             const merchantNumbers = merchantsInGroup
                 .map(m => m.merchantNumber)
                 .sort((a, b) => a - b);
-            
+
             const actualTime = merchantsInGroup[0].secondsRemaining;
             const timeDisplay = formatTime(actualTime);
             const statusClass = actualTime <= 0 ? 'timer-complete' : '';
             const groupKey = `rotation-${roundedTime}`;
-            
+
             return `
                 <div class="d-flex justify-content-between align-items-center mb-2 p-2" style="background-color: var(--card-bg); border-radius: 0.25rem; border: 1px solid var(--card-border);">
                     <div class="d-flex align-items-center">
@@ -198,21 +198,21 @@
     function renderBestPrices() {
         const section = document.getElementById('bestPricesSection');
         const container = document.getElementById('bestPricesContainer');
-        
+
         if (!section || !container) return;
-        
+
         const bestPrices = calculateBestPrices();
         const items = Object.keys(bestPrices);
-        
+
         if (items.length === 0) {
             section.style.display = 'none';
             return;
         }
-        
+
         section.style.display = 'block';
-        
+
         items.sort((a, b) => bestPrices[b].price - bestPrices[a].price);
-        
+
         container.innerHTML = items.map(item => {
             const best = bestPrices[item];
             return `
@@ -241,28 +241,28 @@
     function renderMerchants() {
         const container = document.getElementById('merchantsContainer');
         const emptyState = document.getElementById('emptyState');
-        
+
         if (!container) return;
-        
+
         const merchants = window.merchants || {};
         const keys = Object.keys(merchants).sort((a, b) => {
             return merchants[a].merchantNumber - merchants[b].merchantNumber;
         });
-        
+
         if (keys.length === 0) {
             container.innerHTML = '';
             if (emptyState) emptyState.style.display = 'block';
             return;
         }
-        
+
         if (emptyState) emptyState.style.display = 'none';
-        
+
         container.innerHTML = keys.map(key => {
             const merchant = merchants[key];
             const timeDisplay = formatTime(merchant.secondsRemaining);
             const expiration = merchant.secondsRemaining > 0 ? getExpirationTime(merchant.secondsRemaining) : 'Rotated';
             const statusClass = merchant.secondsRemaining <= 0 ? 'timer-complete' : '';
-            
+
             return `
                 <div class="card merchant-card" id="merchant-${key}">
                     <div class="card-body">
@@ -305,9 +305,12 @@
                 </div>
             `;
         }).join('');
-        
+
         renderMerchantsRotation();
         renderBestPrices();
+        if (typeof window.renderProfitCalculator === 'function') {
+            window.renderProfitCalculator();
+        }
     }
 
     // Store original remaining time when merchant starts
@@ -323,7 +326,7 @@
     let lastRenderTime = 0;
     const SAVE_INTERVAL = 30000; // Save every 30 seconds
     const RENDER_INTERVAL = 10000; // Re-render every 10 seconds
-    
+
     function updateTimers() {
         const now = new Date();
         const nowTime = now.getTime();
@@ -331,16 +334,16 @@
         let needsSave = false;
         let needsRender = false;
         const merchants = window.merchants || {};
-        
+
         Object.keys(merchants).forEach(key => {
             const merchant = merchants[key];
             const originalRemaining = getOriginalRemainingTime(merchant);
-            
+
             if (originalRemaining > 0) {
                 const startTime = new Date(merchant.startTime);
                 const elapsed = Math.floor((now - startTime) / 1000);
                 const newRemaining = Math.max(0, originalRemaining - elapsed);
-                
+
                 if (newRemaining !== merchant.secondsRemaining) {
                     merchant.secondsRemaining = newRemaining;
                     hasChanges = true;
@@ -353,21 +356,21 @@
                         needsRender = true;
                     }
                 }
-                
+
                 const timerElement = document.getElementById(`timer-display-${key}`);
                 const expiresElement = document.getElementById(`expires-${key}`);
-                
+
                 if (timerElement) {
                     const timeDisplay = formatTime(merchant.secondsRemaining);
                     timerElement.textContent = timeDisplay;
-                    
+
                     if (merchant.secondsRemaining <= 0) {
                         timerElement.classList.add('timer-complete');
                     } else {
                         timerElement.classList.remove('timer-complete');
                     }
                 }
-                
+
                 if (expiresElement && merchant.secondsRemaining > 0) {
                     expiresElement.textContent = getExpirationTime(merchant.secondsRemaining);
                 } else if (expiresElement) {
@@ -375,7 +378,7 @@
                 }
             }
         });
-        
+
         if (hasChanges) {
             // Only save periodically or when timer reaches 0
             if (needsSave) {
@@ -388,14 +391,17 @@
             if (needsRender) {
                 renderMerchantsRotation();
                 renderBestPrices();
+                if (typeof window.renderProfitCalculator === 'function') {
+                    window.renderProfitCalculator();
+                }
                 lastRenderTime = nowTime;
             }
         }
-        
+
         const activeKeys = Object.keys(merchants).filter(key => {
             return merchants[key].secondsRemaining > 0;
         });
-        
+
         const groupedByRotation = {};
         activeKeys.forEach(key => {
             const merchant = merchants[key];
@@ -405,17 +411,17 @@
             }
             groupedByRotation[roundedTime].push({ key, merchant });
         });
-        
+
         Object.keys(groupedByRotation).forEach(roundedTime => {
             const group = groupedByRotation[roundedTime];
             const actualTime = group[0].merchant.secondsRemaining;
             const groupKey = `rotation-${roundedTime}`;
             const timerElement = document.getElementById(`rotation-timer-${groupKey}`);
-            
+
             if (timerElement) {
                 const timeDisplay = formatTime(actualTime);
                 timerElement.textContent = timeDisplay;
-                
+
                 if (actualTime <= 0) {
                     timerElement.classList.add('timer-complete');
                 } else {
@@ -430,7 +436,7 @@
         const merchants = window.merchants || {};
         const merchant = merchants[key];
         if (!merchant) return;
-        
+
         alert(`Waypoint set for ${merchant.itemName} at ${merchant.location}`);
     }
 
