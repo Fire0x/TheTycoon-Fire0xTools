@@ -77,11 +77,11 @@
                     <thead class="table-light">
                         <tr>
                             <th style="width: 25%">Item</th>
-                            <th style="width: 15%">Best Price</th>
+                            <th style="width: 15%" class="text-end">Best Price</th>
                             <th style="width: 15%">Quantity</th>
                             <th style="width: 15%">Total Cost</th>
-                            <th style="width: 15%">Total Profit</th>
-                            <th style="width: 15%">Profit / Unit</th>
+                            <th style="width: 15%" class="text-end">Total Profit</th>
+                            <th style="width: 15%" class="text-end">Profit / Unit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,7 +113,7 @@
                             <strong>${escapeHtml(itemData.item)}</strong>
                         </div>
                     </td>
-                    <td>
+                    <td class="text-end">
                         <div class="fw-bold text-primary">$${formatNumber(bestPrice)}</div>
                     </td>
                     <td>
@@ -124,11 +124,11 @@
                         <input type="text" class="form-control form-control-sm calc-cost money-input" 
                                data-item="${safeKey}" value="${formatNumber(totalCost, true)}" inputmode="decimal">
                     </td>
-                    <td>
-                        <div class="fw-bold ${profitClass} calc-total-profit">$${formatNumber(totalProfit)}</div>
+                    <td class="text-end">
+                        <div class="fw-bold ${profitClass} calc-total-profit">$${formatProfitNumber(totalProfit)}</div>
                     </td>
-                    <td>
-                        <div class="fw-bold ${unitClass} calc-unit-profit">$${formatNumber(profitPerUnit)}</div>
+                    <td class="text-end">
+                        <div class="fw-bold ${unitClass} calc-unit-profit">$${formatProfitNumber(profitPerUnit)}</div>
                     </td>
                 </tr>
             `;
@@ -204,12 +204,12 @@
                 const unitEl = row.querySelector('.calc-unit-profit');
 
                 if (totalEl) {
-                    totalEl.textContent = '$' + formatNumber(totalProfit);
+                    totalEl.textContent = '$' + formatProfitNumber(totalProfit);
                     totalEl.className = `fw-bold calc-total-profit ${totalProfit >= 0 ? 'text-success' : 'text-danger'}`;
                 }
 
                 if (unitEl) {
-                    unitEl.textContent = '$' + formatNumber(profitPerUnit);
+                    unitEl.textContent = '$' + formatProfitNumber(profitPerUnit);
                     unitEl.className = `fw-bold calc-unit-profit ${profitPerUnit >= 0 ? 'text-success' : 'text-danger'}`;
                 }
             }
@@ -222,6 +222,11 @@
             return window.NumberFormatter.formatNumber(num, isMoney);
         }
         return num.toLocaleString('en-US', { minimumFractionDigits: isMoney ? 2 : 0, maximumFractionDigits: 2 });
+    }
+
+    function formatProfitNumber(num) {
+        // Format profit values with 2 decimal places (always shown)
+        return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function parseFormattedNumber(str) {
@@ -240,7 +245,24 @@
         return div.innerHTML;
     }
 
+    // Clear all calculator inputs
+    function clearProfitCalculator() {
+        if (!confirm('Are you sure you want to clear all Profit Calculator inputs?')) {
+            return;
+        }
+
+        // Clear the stored inputs
+        userInputs.clear();
+        saveToStorage();
+
+        // Re-render the calculator with default values
+        if (typeof window.renderProfitCalculator === 'function') {
+            window.renderProfitCalculator();
+        }
+    }
+
     // Export to global scope
     window.renderProfitCalculator = renderProfitCalculator;
+    window.clearProfitCalculator = clearProfitCalculator;
 
 })();

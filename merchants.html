@@ -145,15 +145,17 @@ Merchant #2
                 </div>
 
                 <!-- Profit Calculator Section -->
-                <div id="profitCalculatorSection" class="mb-4" style="display: none;">
-                    <div class="card merchant-card">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">💸 Profit Calculator</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div id="profitCalculatorContainer">
-                                <!-- Calculator table will be generated here -->
-                            </div>
+                <div class="card mb-4" id="profitCalculatorSection" style="display: none;">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">💸 Profit Calculator</h5>
+                        <button class="btn btn-sm btn-outline-light" onclick="window.clearProfitCalculator()"
+                            title="Clear all inputs">
+                            <i class="bi bi-trash"></i> Clear All
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="profitCalculatorContainer">
+                            <!-- Calculator table will be generated here -->
                         </div>
                     </div>
                 </div>
