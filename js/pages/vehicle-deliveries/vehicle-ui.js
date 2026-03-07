@@ -46,7 +46,7 @@
 
         if (emptyState) emptyState.style.display = 'none';
         if (summaryHeader) summaryHeader.style.display = 'flex';
-        if (typeof window.updateSummaryVisibility === 'function') window.updateSummaryVisibility();
+        if (summary) summary.style.display = 'flex';
 
         let highestRep = 0;
         let totalVehiclesNeeded = 0;
