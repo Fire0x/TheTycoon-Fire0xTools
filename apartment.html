@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
     <!-- Page-specific CSS -->
     <link href="css/pages/apartment.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navbar is injected by js/navbar.js -->
 
@@ -30,8 +32,11 @@
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="card mb-4">
-                    <div class="card-header" style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
-                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true" aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <div class="card-header"
+                        style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true"
+                            aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
                             <span>📖 How to Use This Page</span>
                             <span class="float-end" id="howToUseToggle">▼</span>
                         </button>
@@ -40,57 +45,83 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <h6 class="mb-2"><strong>Step 1: Add an Apartment</strong></h6>
-                                <p class="mb-2">Select <strong>"➕ Create New Apartment"</strong> from the dropdown menu, or click <span class="badge bg-primary">➕ Create New Apartment</span> in the selector. Fill in the required fields:</p>
+                                <p class="mb-2">Select <strong>"➕ Create New Apartment"</strong> from the dropdown menu,
+                                    or click <span class="badge bg-primary">➕ Create New Apartment</span> in the
+                                    selector. Fill in the required fields:</p>
                                 <ul class="mb-3">
-                                    <li><strong>Location:</strong> The area where the apartment is located (e.g., "Del Perrro")</li>
-                                    <li><strong>Apartment Name:</strong> A descriptive name (e.g., "Ocean Breeze Suite #1")</li>
+                                    <li><strong>Location:</strong> The area where the apartment is located (e.g., "Del
+                                        Perrro")</li>
+                                    <li><strong>Apartment Name:</strong> A descriptive name (e.g., "Ocean Breeze Suite
+                                        #1")</li>
                                     <li><strong>Apartment No.:</strong> The apartment number</li>
-                                    <li><strong>Owned Number:</strong> Leave empty to auto-assign, or enter a sequential number</li>
+                                    <li><strong>Owned Number:</strong> Leave empty to auto-assign, or enter a sequential
+                                        number</li>
                                     <li><strong>Postal:</strong> <em>Optional</em> - Postal code</li>
-                                    <li><strong>Class:</strong> <em>Optional</em> - Apartment class (e.g., Luxury, Standard)</li>
-                                    <li><strong>Description:</strong> <em>Optional</em> - Additional notes about the apartment</li>
-                                    <li><strong>Prices:</strong> <em>Optional</em> - Purchased price and renting out price</li>
+                                    <li><strong>Class:</strong> <em>Optional</em> - Apartment class (e.g., Luxury,
+                                        Standard)</li>
+                                    <li><strong>Description:</strong> <em>Optional</em> - Additional notes about the
+                                        apartment</li>
+                                    <li><strong>Prices:</strong> <em>Optional</em> - Purchased price and renting out
+                                        price</li>
                                 </ul>
-                                
+
                                 <h6 class="mb-2"><strong>Step 2: Set Rental Due Dates</strong></h6>
-                                <p class="mb-2">Set when rent is due using the <strong>Due Date (Rent)</strong> field:</p>
+                                <p class="mb-2">Set when rent is due using the <strong>Due Date (Rent)</strong> field:
+                                </p>
                                 <ul class="mb-3">
-                                    <li>Click <span class="badge bg-success">Rent Out</span> to set it to current Brisbane time + 7 days</li>
-                                    <li>Click <span class="badge bg-info">+7 Days</span> to add 7 days to a manually entered date</li>
+                                    <li>Click <span class="badge bg-success">Rent Out</span> to set it to current
+                                        Brisbane time + 7 days</li>
+                                    <li>Click <span class="badge bg-info">+7 Days</span> to add 7 days to a manually
+                                        entered date</li>
                                     <li>Or manually enter a date and time</li>
                                     <li>The date will be displayed in Local and Eastern time zones</li>
                                 </ul>
-                                
+
                                 <h6 class="mb-2"><strong>Step 3: Set Cleaning Times</strong></h6>
-                                <p class="mb-2">Set when cleaning is due using the <strong>Clean Time</strong> field:</p>
+                                <p class="mb-2">Set when cleaning is due using the <strong>Clean Time</strong> field:
+                                </p>
                                 <ul class="mb-3">
-                                    <li>Click <span class="badge bg-success">Clean Now +4h</span> to set it to current local time + 4 hours</li>
+                                    <li>Click <span class="badge bg-success">Clean Now +4h</span> to set it to current
+                                        local time + 4 hours</li>
                                     <li>Or manually enter a date and time</li>
                                     <li><strong>Note:</strong> Cleaning time and due date cannot be the same time</li>
                                 </ul>
-                                
+
                                 <h6 class="mb-2"><strong>Step 4: Manage Apartments</strong></h6>
                                 <p class="mb-2">Once apartments are added, you can:</p>
                                 <ul class="mb-3">
-                                    <li><strong>View All Apartments:</strong> See all apartments in card format with tabs for Info and Reviews</li>
-                                    <li><strong>Edit Apartments:</strong> Click <span class="badge bg-primary">Edit</span> to modify apartment details</li>
-                                    <li><strong>Add Reviews:</strong> Click <span class="badge bg-info">Reviews</span> to add and manage reviews with ratings (0.5-5 stars)</li>
-                                    <li><strong>Edit Rent Price:</strong> Click the ✏️ icon next to the rent price in the table to quickly edit it</li>
-                                    <li><strong>Hide/Show Apartments:</strong> Use checkboxes in the "All Apartments" section to toggle visibility</li>
-                                    <li><strong>Lock Apartments:</strong> Use <span class="badge bg-secondary">🔒 Lock All</span> to prevent accidental edits</li>
+                                    <li><strong>View All Apartments:</strong> See all apartments in card format with
+                                        tabs for Info and Reviews</li>
+                                    <li><strong>Edit Apartments:</strong> Click <span
+                                            class="badge bg-primary">Edit</span> to modify apartment details</li>
+                                    <li><strong>Add Reviews:</strong> Click <span class="badge bg-info">Reviews</span>
+                                        to add and manage reviews with ratings (0.5-5 stars)</li>
+                                    <li><strong>Edit Rent Price:</strong> Click the ✏️ icon next to the rent price in
+                                        the table to quickly edit it</li>
+                                    <li><strong>Hide/Show Apartments:</strong> Use checkboxes in the "All Apartments"
+                                        section to toggle visibility</li>
+                                    <li><strong>Lock Apartments:</strong> Use <span class="badge bg-secondary">🔒 Lock
+                                            All</span> to prevent accidental edits</li>
                                 </ul>
-                                
+
                                 <h6 class="mb-2"><strong>Step 5: Export/Import Data</strong></h6>
                                 <p class="mb-2">Backup and restore your apartment data:</p>
                                 <ul class="mb-3">
-                                    <li><strong>Export Apartments:</strong> Click <span class="badge bg-success">📤 Export Apartments</span> to backup apartment data</li>
-                                    <li><strong>Export Timers:</strong> Click <span class="badge bg-info">⏱️ Export Timers</span> to backup due dates and clean times</li>
-                                    <li><strong>Export Reviews:</strong> Click <span class="badge bg-primary">⭐ Export Reviews</span> to backup all reviews</li>
-                                    <li><strong>Export All Data:</strong> Click <span class="badge bg-success">📦 Export All Data</span> to backup everything at once</li>
-                                    <li><strong>Import:</strong> Use the corresponding import buttons to restore your data</li>
-                                    <li>Copy the JSON text using <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> + <kbd>C</kbd> (or <kbd>Cmd</kbd> + <kbd>A</kbd> / <kbd>Cmd</kbd> + <kbd>C</kbd> on Mac)</li>
+                                    <li><strong>Export Apartments:</strong> Click <span class="badge bg-success">📤
+                                            Export Apartments</span> to backup apartment data</li>
+                                    <li><strong>Export Timers:</strong> Click <span class="badge bg-info">⏱️ Export
+                                            Timers</span> to backup due dates and clean times</li>
+                                    <li><strong>Export Reviews:</strong> Click <span class="badge bg-primary">⭐ Export
+                                            Reviews</span> to backup all reviews</li>
+                                    <li><strong>Export All Data:</strong> Click <span class="badge bg-success">📦 Export
+                                            All Data</span> to backup everything at once</li>
+                                    <li><strong>Import:</strong> Use the corresponding import buttons to restore your
+                                        data</li>
+                                    <li>Copy the JSON text using <kbd>Ctrl</kbd> + <kbd>A</kbd> then <kbd>Ctrl</kbd> +
+                                        <kbd>C</kbd> (or <kbd>Cmd</kbd> + <kbd>A</kbd> / <kbd>Cmd</kbd> + <kbd>C</kbd>
+                                        on Mac)</li>
                                 </ul>
-                                
+
                                 <h6 class="mb-2"><strong>Step 6: View Statistics</strong></h6>
                                 <p class="mb-2">Check the <strong>Overview</strong> tab to see:</p>
                                 <ul class="mb-3">
@@ -98,8 +129,11 @@
                                     <li>Overall rating across all apartments</li>
                                     <li>Total number of reviews</li>
                                 </ul>
-                                
-                                <p class="mb-0"><strong>💡 Tip:</strong> All data is automatically saved to your browser's localStorage. The page will show alerts for apartments with rent due soon or cleaning overdue. Use the <span class="badge bg-secondary">🐛 Debug</span> button to enable debug logging in the browser console.</p>
+
+                                <p class="mb-0"><strong>💡 Tip:</strong> All data is automatically saved to your
+                                    browser's localStorage. The page will show alerts for apartments with rent due soon
+                                    or cleaning overdue. Use the <span class="badge bg-secondary">🐛 Debug</span> button
+                                    to enable debug logging in the browser console.</p>
                             </div>
                         </div>
                     </div>
@@ -108,7 +142,8 @@
         </div>
 
         <!-- Actions Needed Alert -->
-        <div id="actionsNeededAlert" class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none; margin-bottom: 1.5rem;">
+        <div id="actionsNeededAlert" class="alert alert-warning alert-dismissible fade show" role="alert"
+            style="display: none; margin-bottom: 1.5rem;">
             <h5 class="alert-heading mb-3">⚠️ Actions Needed</h5>
             <div id="actionsNeededContent">
                 <!-- Actions will be populated here -->
@@ -124,21 +159,24 @@
                         <div class="row text-center">
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <div class="time-display">
-                                    <strong>🕐 Local Time:</strong> 
-                                    <div id="local-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <strong>🕐 Local Time:</strong>
+                                    <div id="local-time" class="text-info"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <div class="time-display">
-                                    <strong>🕐 Eastern Time:</strong> 
-                                    <div id="eastern-time" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <strong>🕐 Eastern Time:</strong>
+                                    <div id="eastern-time" class="text-info"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
                                     <span id="eastern-tz" class="text-muted small">EST</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="time-display">
-                                    <strong>📅 Current Date:</strong> 
-                                    <div id="current-date" class="text-info" style="font-size: 1.2rem; margin-top: 0.5rem;">--/--/----</div>
+                                    <strong>📅 Current Date:</strong>
+                                    <div id="current-date" class="text-info"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--/--/----</div>
                                 </div>
                             </div>
                         </div>
@@ -154,7 +192,8 @@
                     <div class="col-md-12">
                         <h3 class="mb-0">
                             <span class="text-info">🏢 Apartments Owned by Fire0x Incorporated:</span>
-                            <span id="apartmentCount" class="text-info" style="font-size: 2rem; font-weight: 700; margin-left: 0.5rem;">0</span>
+                            <span id="apartmentCount" class="text-info"
+                                style="font-size: 2rem; font-weight: 700; margin-left: 0.5rem;">0</span>
                             <span class="ms-3" style="font-size: 1.5rem;">
                                 <span id="overallRating" class="text-warning">⭐ --</span>
                                 <small class="text-muted ms-1" id="overallRatingText">(Overall Rating)</small>
@@ -180,10 +219,12 @@
                         </select>
                     </div>
                     <div class="col-md-6 d-flex align-items-end gap-2">
-                        <button type="button" class="btn btn-success" id="saveApartmentBtn" onclick="saveApartmentFromSelector()" style="display: none;">
+                        <button type="button" class="btn btn-success" id="saveApartmentBtn"
+                            onclick="saveApartmentFromSelector()" style="display: none;">
                             💾 Save Apartment
                         </button>
-                        <button type="button" class="btn btn-light btn-sm" id="debugToggleBtn" onclick="toggleDebugMode()" title="Toggle debug logging to console">
+                        <button type="button" class="btn btn-light btn-sm" id="debugToggleBtn"
+                            onclick="toggleDebugMode()" title="Toggle debug logging to console">
                             🐛 Debug: OFF
                         </button>
                     </div>
@@ -194,7 +235,9 @@
         <!-- Export/Import Section -->
         <div class="card mb-4">
             <div class="card-header bg-info text-white">
-                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#exportImportCollapse" aria-expanded="true" aria-controls="exportImportCollapse" style="color: white; font-weight: 600;">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#exportImportCollapse" aria-expanded="true"
+                    aria-controls="exportImportCollapse" style="color: white; font-weight: 600;">
                     <span>📦 Export/Import</span>
                     <span class="float-end" id="exportImportToggle">▼</span>
                 </button>
@@ -202,17 +245,24 @@
             <div class="collapse show" id="exportImportCollapse">
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2 mb-3">
-                        <button type="button" class="btn btn-success" onclick="exportApartments()">📤 Export Apartments</button>
-                        <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import Apartments</button>
+                        <button type="button" class="btn btn-success" onclick="exportApartments()">📤 Export
+                            Apartments</button>
+                        <button type="button" class="btn btn-warning" onclick="openImportModal()">📥 Import
+                            Apartments</button>
                         <button type="button" class="btn btn-info" onclick="exportTimers()">⏱️ Export Timers</button>
-                        <button type="button" class="btn btn-secondary" onclick="openImportTimersModal()">⏱️ Import Timers</button>
-                        <button type="button" class="btn btn-primary" onclick="exportReviews()">⭐ Export Reviews</button>
-                        <button type="button" class="btn btn-danger" onclick="openImportReviewsModal()">⭐ Import Reviews</button>
+                        <button type="button" class="btn btn-secondary" onclick="openImportTimersModal()">⏱️ Import
+                            Timers</button>
+                        <button type="button" class="btn btn-primary" onclick="exportReviews()">⭐ Export
+                            Reviews</button>
+                        <button type="button" class="btn btn-danger" onclick="openImportReviewsModal()">⭐ Import
+                            Reviews</button>
                     </div>
                     <hr>
                     <div class="d-flex flex-wrap gap-2">
-                        <button type="button" class="btn btn-success btn-lg" onclick="exportAll()">📦 Export All Data</button>
-                        <button type="button" class="btn btn-warning btn-lg" onclick="openImportAllModal()">📦 Import All Data</button>
+                        <button type="button" class="btn btn-success btn-lg" onclick="exportAll()">📦 Export All
+                            Data</button>
+                        <button type="button" class="btn btn-warning btn-lg" onclick="openImportAllModal()">📦 Import
+                            All Data</button>
                     </div>
                 </div>
             </div>
@@ -221,17 +271,20 @@
         <!-- Tab Navigation -->
         <ul class="nav nav-tabs mb-4" id="apartmentTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="apartments-tab" data-bs-toggle="tab" data-bs-target="#apartments" type="button" role="tab">
+                <button class="nav-link active" id="apartments-tab" data-bs-toggle="tab" data-bs-target="#apartments"
+                    type="button" role="tab">
                     Apartments
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button"
+                    role="tab">
                     Reviews
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"
+                    role="tab">
                     Overview
                 </button>
             </li>
@@ -245,7 +298,8 @@
                     <div class="card-header bg-primary text-white">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="mb-0">Apartments</h3>
-                            <button type="button" class="btn btn-light btn-sm" id="toggleTableBtn" onclick="toggleApartmentsTable()" title="Toggle table visibility">
+                            <button type="button" class="btn btn-light btn-sm" id="toggleTableBtn"
+                                onclick="toggleApartmentsTable()" title="Toggle table visibility">
                                 🙈 Hide Table
                             </button>
                         </div>
@@ -292,16 +346,20 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="mb-0">All Apartments</h3>
                             <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-light" onclick="showAllApartments()" title="Show All Apartments">
+                                <button class="btn btn-sm btn-light" onclick="showAllApartments()"
+                                    title="Show All Apartments">
                                     👁️ Show All
                                 </button>
-                                <button class="btn btn-sm btn-light" onclick="hideAllApartments()" title="Hide All Apartments">
+                                <button class="btn btn-sm btn-light" onclick="hideAllApartments()"
+                                    title="Hide All Apartments">
                                     🙈 Hide All
                                 </button>
-                                <button class="btn btn-sm btn-light" onclick="lockAllApartments()" title="Lock All Apartments">
+                                <button class="btn btn-sm btn-light" onclick="lockAllApartments()"
+                                    title="Lock All Apartments">
                                     🔒 Lock All
                                 </button>
-                                <button class="btn btn-sm btn-light" onclick="unlockAllApartments()" title="Unlock All Apartments">
+                                <button class="btn btn-sm btn-light" onclick="unlockAllApartments()"
+                                    title="Unlock All Apartments">
                                     🔓 Unlock All
                                 </button>
                             </div>
@@ -348,29 +406,35 @@
                         <div id="overviewContainer">
                             <div class="row g-4">
                                 <div class="col-md-4">
-                                    <div class="card h-100 shadow-sm border-0" style="background: var(--primary-gradient);">
+                                    <div class="card h-100 shadow-sm border-0"
+                                        style="background: var(--primary-gradient);">
                                         <div class="card-body text-white text-center">
                                             <div class="mb-3" style="font-size: 3rem;">🏠</div>
                                             <h5 class="card-title mb-2" style="opacity: 0.95;">Total Apartments</h5>
-                                            <p class="card-text mb-0" style="font-size: 3rem; font-weight: 700;" id="overviewTotalApartments">0</p>
+                                            <p class="card-text mb-0" style="font-size: 3rem; font-weight: 700;"
+                                                id="overviewTotalApartments">0</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="card h-100 shadow-sm border-0" style="background: var(--warning-gradient);">
+                                    <div class="card h-100 shadow-sm border-0"
+                                        style="background: var(--warning-gradient);">
                                         <div class="card-body text-white text-center">
                                             <div class="mb-3" style="font-size: 3rem;">⭐</div>
                                             <h5 class="card-title mb-2" style="opacity: 0.95;">Overall Rating</h5>
-                                            <p class="card-text mb-0" style="font-size: 2.5rem; font-weight: 700;" id="overviewOverallRating">--</p>
+                                            <p class="card-text mb-0" style="font-size: 2.5rem; font-weight: 700;"
+                                                id="overviewOverallRating">--</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="card h-100 shadow-sm border-0" style="background: var(--info-gradient);">
+                                    <div class="card h-100 shadow-sm border-0"
+                                        style="background: var(--info-gradient);">
                                         <div class="card-body text-white text-center">
                                             <div class="mb-3" style="font-size: 3rem;">📝</div>
                                             <h5 class="card-title mb-2" style="opacity: 0.95;">Total Reviews</h5>
-                                            <p class="card-text mb-0" style="font-size: 3rem; font-weight: 700;" id="overviewTotalReviews">0</p>
+                                            <p class="card-text mb-0" style="font-size: 3rem; font-weight: 700;"
+                                                id="overviewTotalReviews">0</p>
                                         </div>
                                     </div>
                                 </div>
@@ -395,23 +459,28 @@
                         <input type="hidden" id="apartmentId">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                                <label for="location" class="form-label">Location <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="location" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="apartmentName" class="form-label">Apartment Name <span class="text-danger">*</span></label>
+                                <label for="apartmentName" class="form-label">Apartment Name <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="apartmentName" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="apartmentNo" class="form-label">Apartment No. <span class="text-danger">*</span></label>
+                                <label for="apartmentNo" class="form-label">Apartment No. <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="apartmentNo" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="ownedNumber" class="form-label">Owned Number</label>
-                                <input type="number" class="form-control" id="ownedNumber" placeholder="Auto-assigned if empty">
-                                <small class="form-text text-muted">Sequential number for apartments owned by Fire0x Incorporated</small>
+                                <input type="number" class="form-control" id="ownedNumber"
+                                    placeholder="Auto-assigned if empty">
+                                <small class="form-text text-muted">Sequential number for apartments owned by Fire0x
+                                    Incorporated</small>
                             </div>
                         </div>
                         <div class="row">
@@ -422,7 +491,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="apartmentClass" class="form-label">Class</label>
-                            <input type="text" class="form-control" id="apartmentClass" placeholder="e.g., Luxury, Standard, Economy">
+                            <input type="text" class="form-control" id="apartmentClass"
+                                placeholder="e.g., Luxury, Standard, Economy">
                         </div>
                         <div class="mb-3">
                             <label for="apartmentDescription" class="form-label">Apartment Description</label>
@@ -435,18 +505,20 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="rentingOutPrice" class="form-label">Renting out Price</label>
-                                <input type="text" class="form-control money-input" id="rentingOutPrice" placeholder="0">
+                                <input type="text" class="form-control money-input" id="rentingOutPrice"
+                                    placeholder="0">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="dueDate" class="form-label">Due Date (Rent)</label>
                             <div class="input-group">
                                 <input type="datetime-local" class="form-control" id="dueDate">
-                                <button type="button" class="btn btn-success" onclick="setRentOutNow()">Rent Out</button>
+                                <button type="button" class="btn btn-success" onclick="setRentOutNow()">Rent
+                                    Out</button>
                                 <button type="button" class="btn btn-info" onclick="addSevenDays()">+7 Days</button>
                             </div>
                             <small class="form-text text-muted timezone-display">
-                                Local: <span id="dueDateLocal">--</span> | 
+                                Local: <span id="dueDateLocal">--</span> |
                                 Eastern: <span id="dueDateEastern">--</span>
                             </small>
                         </div>
@@ -454,11 +526,12 @@
                             <label for="cleanTime" class="form-label">Clean Time</label>
                             <div class="input-group">
                                 <input type="datetime-local" class="form-control" id="cleanTime">
-                                <button type="button" class="btn btn-success" onclick="setCleanNow()">Clean Now +4h</button>
+                                <button type="button" class="btn btn-success" onclick="setCleanNow()">Clean Now
+                                    +4h</button>
                             </div>
                             <small class="form-text text-muted timezone-display">
-                                Local: <span id="cleanTimeLocal">--</span> | 
-                                Brisbane: <span id="cleanTimeBrisbane">--</span> | 
+                                Local: <span id="cleanTimeLocal">--</span> |
+                                Brisbane: <span id="cleanTimeBrisbane">--</span> |
                                 Eastern: <span id="cleanTimeEastern" class="eastern-date">--</span>
                             </small>
                         </div>
@@ -499,8 +572,9 @@
                     <form id="reviewForm">
                         <input type="hidden" id="reviewApartmentId">
                         <div class="mb-3">
-                            <label for="reviewRating" class="form-label">Rating <span class="text-danger">*</span></label>
-                            
+                            <label for="reviewRating" class="form-label">Rating <span
+                                    class="text-danger">*</span></label>
+
                             <!-- Star Rating Visual -->
                             <div class="star-rating mb-3" id="reviewStarRating">
                                 <input type="radio" id="star10" name="rating" value="5">
@@ -540,32 +614,44 @@
                                 <input type="radio" id="star1" name="rating" value="0.5">
                                 <input type="hidden" id="selectedRating" name="selectedRating" value="" required>
                             </div>
-                            
+
                             <!-- Numeric Rating Buttons -->
                             <div class="mb-2">
                                 <label class="form-label small text-muted">Or select a rating:</label>
                                 <div class="d-flex flex-wrap gap-2">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="0.5" onclick="selectRatingButton(0.5)">0.5</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="1" onclick="selectRatingButton(1)">1</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="1.5" onclick="selectRatingButton(1.5)">1.5</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="2" onclick="selectRatingButton(2)">2</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="2.5" onclick="selectRatingButton(2.5)">2.5</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="3" onclick="selectRatingButton(3)">3</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="3.5" onclick="selectRatingButton(3.5)">3.5</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="4" onclick="selectRatingButton(4)">4</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="4.5" onclick="selectRatingButton(4.5)">4.5</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn" data-rating="5" onclick="selectRatingButton(5)">5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="0.5" onclick="selectRatingButton(0.5)">0.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="1" onclick="selectRatingButton(1)">1</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="1.5" onclick="selectRatingButton(1.5)">1.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="2" onclick="selectRatingButton(2)">2</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="2.5" onclick="selectRatingButton(2.5)">2.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="3" onclick="selectRatingButton(3)">3</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="3.5" onclick="selectRatingButton(3.5)">3.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="4" onclick="selectRatingButton(4)">4</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="4.5" onclick="selectRatingButton(4.5)">4.5</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rating-btn"
+                                        data-rating="5" onclick="selectRatingButton(5)">5</button>
                                 </div>
                             </div>
-                            
-                            <small class="form-text text-muted">Click stars above or use buttons to select rating (0.5-5 stars)</small>
+
+                            <small class="form-text text-muted">Click stars above or use buttons to select rating (0.5-5
+                                stars)</small>
                             <div id="selectedRatingDisplay" class="mt-2 text-info" style="display: none;">
                                 <strong>Selected Rating:</strong> <span id="selectedRatingValue">--</span> ⭐
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="reviewComment" class="form-label">Comment</label>
-                            <textarea class="form-control" id="reviewComment" rows="4" placeholder="Share your thoughts about this apartment..."></textarea>
+                            <textarea class="form-control" id="reviewComment" rows="4"
+                                placeholder="Share your thoughts about this apartment..."></textarea>
                         </div>
                         <button type="button" class="btn btn-primary" onclick="saveReview()">Submit Review</button>
                     </form>
@@ -587,7 +673,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <button type="button" class="btn btn-sm btn-secondary" onclick="copyToClipboard('exportTextarea')">📋 Copy to Clipboard</button>
+                        <button type="button" class="btn btn-sm btn-secondary"
+                            onclick="copyToClipboard('exportTextarea')">📋 Copy to Clipboard</button>
                     </div>
                     <div class="mb-3">
                         <label for="exportTextarea" class="form-label">Exported Data:</label>
@@ -611,11 +698,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-warning">
-                        <strong>Warning:</strong> Importing will create new apartments or update existing ones based on IDs. Make sure to export your current data first!
+                        <strong>Warning:</strong> Importing will create new apartments or update existing ones based on
+                        IDs. Make sure to export your current data first!
                     </div>
                     <div class="mb-3">
                         <label for="importTextarea" class="form-label">Paste JSON Data:</label>
-                        <textarea class="form-control" id="importTextarea" rows="10" placeholder='[{"id": 1, "location": "...", ...}]'></textarea>
+                        <textarea class="form-control" id="importTextarea" rows="10"
+                            placeholder='[{"id": 1, "location": "...", ...}]'></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -627,7 +716,8 @@
     </div>
 
     <!-- Import Timers Modal -->
-    <div class="modal fade" id="importTimersModal" tabindex="-1" aria-labelledby="importTimersModalLabel" aria-hidden="true">
+    <div class="modal fade" id="importTimersModal" tabindex="-1" aria-labelledby="importTimersModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -636,11 +726,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-warning">
-                        <strong>Warning:</strong> This will update due_date and clean_time for apartments. Make sure to export your current timers first!
+                        <strong>Warning:</strong> This will update due_date and clean_time for apartments. Make sure to
+                        export your current timers first!
                     </div>
                     <div class="mb-3">
                         <label for="importTimersTextarea" class="form-label">Paste JSON Data:</label>
-                        <textarea class="form-control" id="importTimersTextarea" rows="10" placeholder='[{"apartment_id": 1, "due_date": "...", "clean_time": "..."}]'></textarea>
+                        <textarea class="form-control" id="importTimersTextarea" rows="10"
+                            placeholder='[{"apartment_id": 1, "due_date": "...", "clean_time": "..."}]'></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -652,7 +744,8 @@
     </div>
 
     <!-- Import Reviews Modal -->
-    <div class="modal fade" id="importReviewsModal" tabindex="-1" aria-labelledby="importReviewsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="importReviewsModal" tabindex="-1" aria-labelledby="importReviewsModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -661,11 +754,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-warning">
-                        <strong>Warning:</strong> This will add or update reviews for apartments. Reviews with existing IDs will be updated, new reviews will be added. Make sure to export your current reviews first!
+                        <strong>Warning:</strong> This will add or update reviews for apartments. Reviews with existing
+                        IDs will be updated, new reviews will be added. Make sure to export your current reviews first!
                     </div>
                     <div class="mb-3">
                         <label for="importReviewsTextarea" class="form-label">Paste JSON Data:</label>
-                        <textarea class="form-control" id="importReviewsTextarea" rows="10" placeholder='[{"id": 1234567890, "apartment_id": 1, "rating": 5, "comment": "...", "created_at": "...", "updated_at": "..."}]'></textarea>
+                        <textarea class="form-control" id="importReviewsTextarea" rows="10"
+                            placeholder='[{"id": 1234567890, "apartment_id": 1, "rating": 5, "comment": "...", "created_at": "...", "updated_at": "..."}]'></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -686,7 +781,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger">
-                        <strong>⚠️ Warning:</strong> This will import apartments, timers, and reviews all at once. This operation will:
+                        <strong>⚠️ Warning:</strong> This will import apartments, timers, and reviews all at once. This
+                        operation will:
                         <ul class="mb-0 mt-2">
                             <li>Create new apartments or update existing ones based on IDs</li>
                             <li>Update due_date and clean_time for apartments</li>
@@ -696,7 +792,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="importAllTextarea" class="form-label">Paste JSON Data:</label>
-                        <textarea class="form-control" id="importAllTextarea" rows="15" placeholder='{"apartments": [...], "timers": [...], "reviews": [...]}'></textarea>
+                        <textarea class="form-control" id="importAllTextarea" rows="15"
+                            placeholder='{"apartments": [...], "timers": [...], "reviews": [...]}'></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -724,7 +821,7 @@
     <script src="js/config/config-data.js"></script>
     <script src="js/config/site-config.js"></script>
     <script src="js/config/version-manager.js"></script>
-    <script src="js/site-config.js"></script>
+    <script src="js/site-init.js"></script>
     <!-- Navbar Manager -->
     <script src="js/navbar.js"></script>
     <!-- Number Formatter -->
@@ -738,5 +835,5 @@
     <script src="js/pages/apartment/apartment-init.js"></script>
     <!-- Inline script removed - using modular scripts above -->
 </body>
-</html>
 
+</html>

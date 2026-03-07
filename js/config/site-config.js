@@ -3,15 +3,15 @@
  * Handles site branding, page titles, navbar, and footer initialization
  */
 
-(function() {
+(function () {
     'use strict';
-    
+
     // Ensure ConfigData is available
     if (typeof ConfigData === 'undefined') {
         console.error('ConfigData is required for SiteConfig');
         return;
     }
-    
+
     const SiteConfig = {
         /**
          * Get page title for a specific page
@@ -21,7 +21,7 @@
         getPageTitle(pageName) {
             return ConfigData.pageTitles[pageName] || '';
         },
-        
+
         /**
          * Get current page title based on window.location
          * @returns {string} Current page title
@@ -30,7 +30,7 @@
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
             return this.getPageTitle(currentPage);
         },
-        
+
         /**
          * Get the site name
          * @returns {string} Site name
@@ -38,7 +38,7 @@
         getSiteName() {
             return ConfigData.siteName;
         },
-        
+
         /**
          * Get the site logo path
          * @returns {string} Logo path
@@ -46,7 +46,7 @@
         getSiteLogoPath() {
             return ConfigData.siteLogo.path;
         },
-        
+
         /**
          * Get the site logo alt text
          * @returns {string} Logo alt text
@@ -54,7 +54,7 @@
         getSiteLogoAlt() {
             return ConfigData.siteLogo.alt;
         },
-        
+
         /**
          * Get the site logo height
          * @returns {string} Logo height
@@ -62,7 +62,7 @@
         getSiteLogoHeight() {
             return ConfigData.siteLogo.height;
         },
-        
+
         /**
          * Get copyright text
          * @returns {string} Copyright text
@@ -71,7 +71,7 @@
             const c = ConfigData.copyright;
             return `&copy; ${c.yearRange} ${c.company}. ${c.gameName} is owned and created by ${c.gameOwner}. All rights reserved.`;
         },
-        
+
         /**
          * Get disclaimer text
          * @returns {string} Disclaimer text
@@ -79,7 +79,7 @@
         getDisclaimerText() {
             return ConfigData.disclaimer;
         },
-        
+
         /**
          * Get hero section data for a specific page
          * @param {string} pageName - The page filename (e.g., 'merchants.html')
@@ -88,7 +88,7 @@
         getHeroSection(pageName) {
             return ConfigData.heroSections[pageName] || null;
         },
-        
+
         /**
          * Get current page hero section data based on window.location
          * @returns {Object|null} Current page hero section data
@@ -97,7 +97,7 @@
             const currentPage = window.location.pathname.split('/').pop() || 'index.html';
             return this.getHeroSection(currentPage);
         },
-        
+
         /**
          * Initialize hero section
          * Updates hero section title and description if hero section exists on page
@@ -107,25 +107,25 @@
             if (!heroSection) {
                 return; // No hero section on this page
             }
-            
+
             const heroData = this.getCurrentHeroSection();
             if (!heroData) {
                 return; // No hero data configured for this page
             }
-            
+
             // Update title
             const titleElement = heroSection.querySelector('h1.glow-text, h1');
             if (titleElement) {
                 titleElement.textContent = heroData.title;
             }
-            
+
             // Update description
             const descElement = heroSection.querySelector('p.lead, p');
             if (descElement) {
                 descElement.textContent = heroData.description;
             }
         },
-        
+
         /**
          * Initialize navbar brand (logo + name)
          * Updates all navbar-brand elements on the page
@@ -137,11 +137,11 @@
                 const logoPath = this.getSiteLogoPath();
                 const logoAlt = this.getSiteLogoAlt();
                 const logoHeight = this.getSiteLogoHeight();
-                
+
                 brand.innerHTML = `<img src="${logoPath}" alt="${logoAlt}" style="height: ${logoHeight}; margin-right: 10px;">${siteName}`;
             });
         },
-        
+
         /**
          * Initialize page title
          * Updates the <title> tag and favicon
@@ -152,13 +152,13 @@
             if (!pageTitle) {
                 pageTitle = this.getCurrentPageTitle();
             }
-            
-            const title = pageTitle 
+
+            const title = pageTitle
                 ? `${pageTitle} - ${this.getSiteName()}`
                 : this.getSiteName();
-            
+
             document.title = title;
-            
+
             // Update favicon if it exists
             let favicon = document.querySelector('link[rel="icon"]');
             if (!favicon) {
@@ -169,7 +169,7 @@
             }
             favicon.href = this.getSiteLogoPath();
         },
-        
+
         /**
          * Initialize footer copyright and disclaimer
          * Updates all footer copyright text and adds disclaimer
@@ -183,19 +183,19 @@
                 const copyrightParagraphs = allParagraphs.filter(p => {
                     if (p.id === 'site-disclaimer') return false;
                     const text = p.textContent;
-                    return text.includes('©') || text.includes('&copy;') || 
-                           (text.includes('Copyright') && text.includes('Fire0x')) ||
-                           (text.includes('Fire0x Incorporated') && text.includes('The Tycoon'));
+                    return text.includes('©') || text.includes('&copy;') ||
+                        (text.includes('Copyright') && text.includes('Fire0x')) ||
+                        (text.includes('Fire0x Incorporated') && text.includes('The Tycoons'));
                 });
-                
+
                 // Remove all existing copyright paragraphs first
                 copyrightParagraphs.forEach(p => p.remove());
-                
+
                 // Create copyright paragraph at the top of footer
                 const copyrightP = document.createElement('p');
                 copyrightP.innerHTML = this.getCopyrightText();
                 copyrightP.style.textAlign = 'center';
-                
+
                 // Insert at the very top of footer content
                 const container = footer.querySelector('.container') || footer;
                 const firstChild = container.firstElementChild || container.firstChild;
@@ -204,7 +204,7 @@
                 } else {
                     container.appendChild(copyrightP);
                 }
-                
+
                 // Add or update disclaimer (only one)
                 let disclaimerP = footer.querySelector('#site-disclaimer');
                 if (!disclaimerP) {
@@ -227,7 +227,7 @@
                 disclaimerP.textContent = this.getDisclaimerText();
             });
         },
-        
+
         /**
          * Initialize all site branding elements
          * Call this function on page load to automatically update all branding
@@ -240,7 +240,7 @@
             this.initFooterCopyright();
         }
     };
-    
+
     // Make available globally
     if (typeof window !== 'undefined') {
         window.SiteConfig = SiteConfig;
