@@ -104,7 +104,7 @@ const ConfigData = {
         'Info.html': '0.1.2',
         'merchants.html': '0.1.1',
         'checklist.html': '0.2.4',
-        'VehicleDeliveries.html': '1.0.8',
+        'VehicleDeliveries.html': '1.0.9',
         'education_timer.html': '0.1.3',
         'apartment.html': '0.1.5',
         'Info-Ref.html': '0.1.3',
