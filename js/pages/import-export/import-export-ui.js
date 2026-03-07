@@ -41,7 +41,10 @@
                 case 'vehicles':
                     const vEventCount = data.eventVehicles?.length || 0;
                     const vNormalCount = data.normalVehicles?.length || 0;
-                    return `${vEventCount} event, ${vNormalCount} regular`;
+                    const allVehicles = [...(data.eventVehicles || []), ...(data.normalVehicles || [])];
+                    const withNotes = allVehicles.filter(v => v.note && v.note.trim()).length;
+                    const totalLeft = allVehicles.reduce((sum, v) => sum + (v.left || 0), 0);
+                    return `${vEventCount} event, ${vNormalCount} regular — ${withNotes} note${withNotes !== 1 ? 's' : ''}, ${totalLeft.toLocaleString('en-US')} left total`;
                 case 'education':
                     // Education is stored as an array
                     if (Array.isArray(data)) {

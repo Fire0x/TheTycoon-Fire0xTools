@@ -142,6 +142,20 @@
                             <label for="newVehicleCompletedDate" class="form-label">Completed Date</label>
                             <input type="date" class="form-control" id="newVehicleCompletedDate">
                         </div>
+                        <div class="mb-3">
+                            <label for="newVehicleLeft" class="form-label"
+                                title="How many vehicles left to complete">Left
+                                <span class="text-muted small">(how many to complete)</span></label>
+                            <input type="text" inputmode="numeric" class="form-control number-input" id="newVehicleLeft"
+                                value="0" title="How many vehicles is left to complete">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newVehicleNote" class="form-label"
+                                title="You can add notes: Postal, address or other info you want to keep">Note
+                                <span class="text-muted small">(postal, address, etc.)</span></label>
+                            <input type="text" class="form-control" id="newVehicleNote" placeholder="Optional note..."
+                                title="You can add notes: Postal, address or other info you want to keep">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -203,6 +217,67 @@
                                 <h6 class="mb-2"><strong>Step 4: Save</strong></h6>
                                 <p class="mb-0">Click the <span class="badge bg-primary">✨ Parse & Save Progress</span>
                                     button to add them to your tracker!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import Vehicle Progress Section -->
+                <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                    <div class="card-header"
+                        style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                        <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#importProgressCollapse" aria-expanded="true"
+                            aria-controls="importProgressCollapse" style="color: var(--text-color); font-weight: 600;">
+                            <span>📋 Import Vehicle Progress</span>
+                            <span class="float-end" id="importProgressToggle">▼</span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="importProgressCollapse">
+                        <div class="card-body">
+                            <div class="paste-area">
+                                <p class="text-muted mb-3">
+                                    Copy and paste your vehicle delivery progress from the game. The system will
+                                    automatically parse vehicle names,
+                                    current progress (e.g., "0/25"), delivery requirements, and reputation needs.
+                                    <strong>Each vehicle should be on separate lines</strong> with its progress and
+                                    requirements.
+                                </p>
+                                <div class="alert alert-info d-flex align-items-start mb-3" role="alert">
+                                    <div class="me-2">💡</div>
+                                    <div>
+                                        <strong>Format Example:</strong> Each vehicle entry should include the vehicle
+                                        name, progress ratio, and requirements.
+                                        Unlocked vehicles will show "✅ Unlocked for purchase!" instead of requirements.
+                                    </div>
+                                </div>
+                                <pre class="bg-dark text-light p-3 mb-3 small"
+                                    style="border-radius: 0.5rem; border: 1px solid #444; font-family: 'Courier New', monospace;">AKUMA
+0/25
+Need 25 more deliveries & 8100 more reputation
+
+BATI
+0/24
+Need 24 more deliveries & 7600 more reputation
+
+SANCTUS
+5/5
+✅ Unlocked for purchase!</pre>
+                                <textarea id="vehicleProgressInput" class="form-control" rows="8"
+                                    placeholder="Paste your vehicle progress data here...&#10;&#10;Example:&#10;AKUMA&#10;0/25&#10;Need 25 more deliveries & 8100 more reputation"
+                                    style="font-family: 'Courier New', monospace; background-color: var(--bg-color); color: var(--text-color);"></textarea>
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-primary btn-lg" onclick="parseAndSaveVehicleProgress()">
+                                        <span>✨</span> Parse & Save Progress
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-lg" onclick="clearAllVehicleProgress()">
+                                        <span>🗑️</span> Clear All Progress
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm ms-2 align-self-center"
+                                        id="debugToggleBtn" onclick="toggleDebug()">
+                                        <span id="debugToggleText">🔍 Debug: OFF</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -302,55 +377,6 @@
                     </div>
                 </div>
 
-                <!-- Paste Area -->
-                <div class="paste-area mb-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <h5 class="mb-0 me-2">📋 Import Vehicle Progress</h5>
-                        <span class="badge bg-info">Quick Import</span>
-                    </div>
-                    <p class="text-muted mb-3">
-                        Copy and paste your vehicle delivery progress from the game. The system will automatically parse
-                        vehicle names,
-                        current progress (e.g., "0/25"), delivery requirements, and reputation needs.
-                        <strong>Each vehicle should be on separate lines</strong> with its progress and requirements.
-                    </p>
-                    <div class="alert alert-info d-flex align-items-start mb-3" role="alert">
-                        <div class="me-2">💡</div>
-                        <div>
-                            <strong>Format Example:</strong> Each vehicle entry should include the vehicle name,
-                            progress ratio, and requirements.
-                            Unlocked vehicles will show "✅ Unlocked for purchase!" instead of requirements.
-                        </div>
-                    </div>
-                    <pre class="bg-dark text-light p-3 mb-3 small"
-                        style="border-radius: 0.5rem; border: 1px solid #444; font-family: 'Courier New', monospace;">AKUMA
-0/25
-Need 25 more deliveries & 8100 more reputation
-
-BATI
-0/24
-Need 24 more deliveries & 7600 more reputation
-
-SANCTUS
-5/5
-✅ Unlocked for purchase!</pre>
-                    <textarea id="vehicleProgressInput" class="form-control" rows="8"
-                        placeholder="Paste your vehicle progress data here...&#10;&#10;Example:&#10;AKUMA&#10;0/25&#10;Need 25 more deliveries & 8100 more reputation"
-                        style="font-family: 'Courier New', monospace; background-color: var(--bg-color); color: var(--text-color);"></textarea>
-                    <div class="mt-3 d-flex gap-2">
-                        <button class="btn btn-primary btn-lg" onclick="parseAndSaveVehicleProgress()">
-                            <span>✨</span> Parse & Save Progress
-                        </button>
-                        <button class="btn btn-outline-danger btn-lg" onclick="clearAllVehicleProgress()">
-                            <span>🗑️</span> Clear All Progress
-                        </button>
-                        <button class="btn btn-outline-secondary btn-sm ms-2 align-self-center" id="debugToggleBtn"
-                            onclick="toggleDebug()">
-                            <span id="debugToggleText">🔍 Debug: OFF</span>
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Filter Controls -->
                 <div class="d-flex justify-content-end mb-3">
                     <div class="form-check form-switch">
@@ -397,6 +423,8 @@ SANCTUS
     <script src="js/theme.js"></script>
     <!-- Debug Manager -->
     <script src="js/debug-manager.js"></script>
+    <!-- Number Formatter -->
+    <script src="js/number-formatter.js"></script>
     <!-- Vehicle Deliveries Modules -->
     <script src="js/pages/vehicle-deliveries/vehicle-core.js"></script>
     <script src="js/pages/vehicle-deliveries/vehicle-ui.js"></script>

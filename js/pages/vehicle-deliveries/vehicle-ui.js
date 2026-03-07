@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Vehicle Deliveries UI Module
  * Contains rendering functions and UI state management
  */
@@ -153,39 +153,8 @@
         debugManager.log('=== renderVehicleProgress END ===');
     }
 
-    // Summary Statistics Toggle State
-    const SUMMARY_STORAGE_KEY = 'vehicle_deliveries_summary_expanded';
-    let summaryExpanded = true;
-
-    function toggleSummary() {
-        summaryExpanded = !summaryExpanded;
-        localStorage.setItem(SUMMARY_STORAGE_KEY, summaryExpanded.toString());
-        updateSummaryVisibility();
-    }
-
-    function updateSummaryVisibility() {
-        const summaryEl = document.getElementById('progressSummary');
-        const toggleIcon = document.getElementById('summaryToggleIcon');
-        const toggleText = document.getElementById('summaryToggleText');
-
-        if (summaryEl) {
-            if (summaryExpanded) {
-                summaryEl.style.display = 'flex';
-                if (toggleIcon) toggleIcon.textContent = '▼';
-                if (toggleText) toggleText.textContent = 'Hide Summary';
-            } else {
-                summaryEl.style.display = 'none';
-                if (toggleIcon) toggleIcon.textContent = '▶';
-                if (toggleText) toggleText.textContent = 'Show Summary';
-            }
-        }
-    }
-
-    function initSummaryToggle() {
-        const stored = localStorage.getItem(SUMMARY_STORAGE_KEY);
-        summaryExpanded = stored === null ? true : stored === 'true';
-        updateSummaryVisibility();
-    }
+    // Summary Statistics display is handled by renderVehicleProgress
+    // Card collapse is handled by vehicle-init.js
 
     // Individual Summary Card Visibility State
     const SUMMARY_CARDS_STORAGE_KEY = 'vehicle_deliveries_summary_cards_visibility';
@@ -294,12 +263,20 @@
                     <div class="vehicle-meta">
                         Last Updated: ${escapeHtml(v.lastUpdated || '-')}
                     </div>
+                    ${eventViewMode === 'edit'
+                ? `<div class="mt-2"><input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Note (postal, address, etc.)" title="You can add notes: Postal, address or other info you want to keep" value="${escapeHtml(v.note || '')}" onchange="updateEventVehicleUI('${v.id}', 'note', this.value)"></div>`
+                : `<div class="vehicle-meta mt-1" title="You can add notes: Postal, address or other info you want to keep">📝 ${v.note ? escapeHtml(v.note) : '<span class="opacity-50">No note</span>'}</div>`}
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <div class="vehicle-completed-date text-muted small">
                         ${eventViewMode === 'edit'
                 ? `<input type="date" class="form-control form-control-sm bg-dark text-white border-secondary" value="${v.completedDate || ''}" onchange="updateEventVehicleUI('${v.id}', 'completedDate', this.value)">`
                 : (v.completedDate ? `Done: ${escapeHtml(v.completedDate)}` : '')}
+                    </div>
+                    <div title="How many vehicles is left to complete">
+                        ${eventViewMode === 'edit'
+                ? `<input type="text" inputmode="numeric" class="form-control form-control-sm bg-dark text-white border-secondary number-input" style="width:110px" placeholder="Left" title="How many vehicles is left to complete" value="${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(v.left || 0) : (v.left || 0)}" onchange="updateEventVehicleUI('${v.id}', 'left', window.NumberFormatter ? window.NumberFormatter.parseFormattedNumber(this.value) : parseInt(this.value) || 0)">`
+                : `<span class="badge bg-info text-dark" title="How many vehicles is left to complete" style="font-size:0.9rem;padding:0.45em 0.75em">🔢 ${(v.left !== undefined ? v.left : 0).toLocaleString('en-US')} left</span>`}
                     </div>
                     <div class="vehicle-status">
                         ${eventViewMode === 'edit'
@@ -354,12 +331,20 @@
                 : ''}
                         Last Updated: ${escapeHtml(v.lastUpdated || '-')}
                     </div>
+                    ${normalViewMode === 'edit'
+                ? `<div class="mt-2"><input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Note (postal, address, etc.)" title="You can add notes: Postal, address or other info you want to keep" value="${escapeHtml(v.note || '')}" onchange="updateNormalVehicleUI('${v.id}', 'note', this.value)"></div>`
+                : `<div class="vehicle-meta mt-1" title="You can add notes: Postal, address or other info you want to keep">📝 ${v.note ? escapeHtml(v.note) : '<span class="opacity-50">No note</span>'}</div>`}
                 </div>
                 <div class="d-flex align-items-center gap-3">
                     <div class="vehicle-completed-date text-muted small">
                         ${normalViewMode === 'edit'
                 ? `<input type="date" class="form-control form-control-sm bg-dark text-white border-secondary" value="${v.completedDate || ''}" onchange="updateNormalVehicleUI('${v.id}', 'completedDate', this.value)">`
                 : (v.completedDate ? `Done: ${escapeHtml(v.completedDate)}` : '')}
+                    </div>
+                    <div title="How many vehicles is left to complete">
+                        ${normalViewMode === 'edit'
+                ? `<input type="text" inputmode="numeric" class="form-control form-control-sm bg-dark text-white border-secondary number-input" style="width:110px" placeholder="Left" title="How many vehicles is left to complete" value="${window.NumberFormatter ? window.NumberFormatter.formatNumberDisplay(v.left || 0) : (v.left || 0)}" onchange="updateNormalVehicleUI('${v.id}', 'left', window.NumberFormatter ? window.NumberFormatter.parseFormattedNumber(this.value) : parseInt(this.value) || 0)">`
+                : `<span class="badge bg-info text-dark" title="How many vehicles is left to complete" style="font-size:0.9rem;padding:0.45em 0.75em">🔢 ${(v.left !== undefined ? v.left : 0).toLocaleString('en-US')} left</span>`}
                     </div>
                     <div class="vehicle-status">
                         ${normalViewMode === 'edit'
@@ -419,12 +404,16 @@
         const dealer = document.getElementById('newVehicleDealer').value;
         const type = document.getElementById('newVehicleType').value;
         const completedDate = document.getElementById('newVehicleCompletedDate').value;
+        const left = (window.NumberFormatter ? window.NumberFormatter.parseFormattedNumber(document.getElementById('newVehicleLeft').value) : parseInt(document.getElementById('newVehicleLeft').value)) || 0;
+        const note = document.getElementById('newVehicleNote').value.trim();
         if (dealer && type) {
             window.addNormalVehicleCore({
                 dealer: dealer,
                 type: type,
                 status: 'Not Started',
-                completedDate: completedDate
+                completedDate: completedDate,
+                left: left,
+                note: note
             });
             const modalEl = document.getElementById('addNormalVehicleModal');
             const modal = bootstrap.Modal.getInstance(modalEl);
@@ -432,6 +421,8 @@
             document.getElementById('newVehicleDealer').value = '';
             document.getElementById('newVehicleType').value = '';
             document.getElementById('newVehicleCompletedDate').value = '';
+            document.getElementById('newVehicleLeft').value = '0';
+            document.getElementById('newVehicleNote').value = '';
             renderNormalVehicles();
         } else {
             alert('Please fill in all fields.');
@@ -470,9 +461,6 @@
 
     // Export functions to global scope
     window.renderVehicleProgress = renderVehicleProgress;
-    window.toggleSummary = toggleSummary;
-    window.updateSummaryVisibility = updateSummaryVisibility;
-    window.initSummaryToggle = initSummaryToggle;
     window.toggleSummaryCard = toggleSummaryCard;
     window.initSummaryCardsVisibility = initSummaryCardsVisibility;
     window.showAllSummaryCards = showAllSummaryCards;
@@ -494,3 +482,4 @@
     window.saveVehicleFilter = saveVehicleFilter;
 
 })();
+

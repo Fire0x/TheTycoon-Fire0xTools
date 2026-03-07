@@ -358,6 +358,8 @@
         vehicle.id = Date.now().toString();
         vehicle.lastUpdated = new Date().toLocaleString();
         if (!vehicle.completedDate) vehicle.completedDate = '';
+        if (vehicle.note === undefined) vehicle.note = '';
+        if (vehicle.left === undefined) vehicle.left = 0;
         eventVehicles.push(vehicle);
         saveEventVehiclesData();
         debugManager.log('Added event vehicle:', vehicle);
@@ -418,6 +420,8 @@
         vehicle.id = Date.now().toString();
         vehicle.lastUpdated = new Date().toLocaleString();
         if (!vehicle.completedDate) vehicle.completedDate = '';
+        if (vehicle.note === undefined) vehicle.note = '';
+        if (vehicle.left === undefined) vehicle.left = 0;
         normalVehicles.push(vehicle);
         saveNormalVehiclesData();
         debugManager.log('Added normal vehicle:', vehicle);
