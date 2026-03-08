@@ -60,11 +60,70 @@
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.1.4</h3>
+                                <p class="text-muted mb-3">2026-03-08</p>
+                                <ul class="mb-0">
+                                    <li><strong>Remote Checklist - Sync Fixes:</strong> Resolved issue where product
+                                        selections were not updating in real-time across tabs. Added
+                                        <code>storage</code>
+                                        event listeners to ensure product dropdowns stay perfectly in sync.</li>
+                                    <li><strong>Remote Checklist - Orphaned Business Cleanup:</strong> Implemented
+                                        automatic detection and removal of "orphaned" businesses (businesses in the run
+                                        list
+                                        that no longer exist in the configuration), fixing persistent developer console
+                                        warnings.</li>
+                                    <li><strong>Import/Export - Checklist Product Migration:</strong> Fixed an issue
+                                        where importing a JSON configuration didn't automatically select products.
+                                        Implemented a migration step that extracts embedded <code>productId</code>
+                                        values
+                                        into the unified tracking storage upon import.</li>
+                                    <li><strong>Shared Module - Enhanced Initialization:</strong> Optimized
+                                        <code>checklist-shared.js</code> to handle external data updates more
+                                        gracefully, ensuring immediate consistency between the main and remote
+                                        checklists.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.1.3</h3>
+                                <p class="text-muted mb-3">2026-03-08</p>
+                                <ul class="mb-0">
+                                    <li><strong>Checklist - Enhanced Export/Import:</strong> Bundled
+                                        <code>checklistProductTracking</code> (selected products) and
+                                        <code>checklistRemoteRunList</code> (remote run list order) into the same JSON
+                                        file. One export now saves your entire checklist state.
+                                    </li>
+                                    <li><strong>Checklist - Data Structure:</strong> Updated checklist configuration
+                                        version to <code>1.0.2</code> and moved the <code>version</code> field to the
+                                        bottom of exported files for better readability.</li>
+                                    <li><strong>Templates - Updated Examples:</strong> Added example <code>notes</code>
+                                        and <code>checklistRunList</code> to the embedded template data and
+                                        <code>checklist-template.json</code>.
+                                    </li>
+                                    <li><strong>UI - Label Consistency:</strong> Removed redundant inline product names
+                                        from the "Product:" label on both <code>checklist.html</code> and
+                                        <code>checklistremote.html</code>.
+                                    </li>
+                                    <li><strong>Navbar - Bug Fix:</strong> Fixed broken links when rendering Dividers in
+                                        dropdown menus.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
                                 <h3 class="card-title mb-1">Version 1.1.2</h3>
                                 <p class="text-muted mb-3">2026-03-08</p>
                                 <ul class="mb-0">
-                                    <li><strong>Remote Checklist - Restored:</strong> Fully restored and rebuilt
-                                        <code>checklistremote.html</code> including all business card fields (money,
+                                    <li><strong>Remote Checklist -</strong> Added <code>checklistremote.html</code>
+                                        including all business card fields (money,
                                         stock, product, collection, notes), drag-to-reorder, run list management, and
                                         real-time sync with the main checklist.
                                     </li>
@@ -74,12 +133,14 @@
                                         <code>checklist-base.css</code>) to <code>checklistremote.html</code>, restoring
                                         the <code>.stock-calc-container</code> styles and other shared components.
                                     </li>
-                                    <li><strong>Remote Checklist - Product Dropdown:</strong> Fixed unreadable product
+                                    <li><strong>Remote Checklist - Bug fix - Product Dropdown:</strong> Fixed unreadable
+                                        product
                                         dropdown text in dark mode with high-contrast CSS overrides. Resolved
                                         <code>TypeError: window.getProductNameOnly is not a function</code> by exporting
                                         shared helpers from <code>checklist-shared.js</code>.
                                     </li>
-                                    <li><strong>Remote Checklist - Product Population:</strong> Unified product selector
+                                    <li><strong>Remote Checklist - Bug fix - Product Population:</strong> Unified
+                                        product selector
                                         population to use the same <code>populateProductSelectorsForTier</code> function
                                         as <code>checklist.html</code> via a new shared helper in
                                         <code>checklist-shared.js</code>. Added <code>data-tier</code> attribute to

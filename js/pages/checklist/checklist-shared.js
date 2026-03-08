@@ -29,7 +29,7 @@
     // localStorage Configuration Data Structure
     const CONFIG_STORAGE_KEY = 'checklistConfigData';
     const TRACKING_STORAGE_KEY = 'checklistProductTracking';
-    const CONFIG_VERSION = '1.0.1';
+    const CONFIG_VERSION = '1.0.2';
 
     // Global state
     let checklistConfigData = null;
@@ -310,5 +310,26 @@
 
     // Export debugManager for use in other modules
     window.checklistDebugManager = debugManager;
+
+    // Listen for storage changes from other tabs to keep internal state in sync
+    window.addEventListener('storage', (event) => {
+        if (event.key === CONFIG_STORAGE_KEY && event.newValue) {
+            try {
+                checklistConfigData = JSON.parse(event.newValue);
+                debugManager.log('🔄 Updated configuration from storage event');
+                // Run migration to extract any new product IDs from the imported config
+                migrateProductTracking();
+            } catch (e) {
+                debugManager.error('Error parsing config from storage event:', e);
+            }
+        } else if (event.key === TRACKING_STORAGE_KEY && event.newValue) {
+            try {
+                productTrackingData = JSON.parse(event.newValue);
+                debugManager.log('🔄 Updated product tracking from storage event');
+            } catch (e) {
+                debugManager.error('Error parsing tracking from storage event:', e);
+            }
+        }
+    });
 
 })();

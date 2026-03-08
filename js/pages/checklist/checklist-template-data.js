@@ -39,6 +39,13 @@ window.ChecklistTemplateData = {
             "icon": "🍻",
             "color": "bg-secondary",
             "visible": true
+        },
+        {
+            "id": 6,
+            "name": "Tier 6: Vineyard",
+            "icon": "🍷",
+            "color": "bg-danger",
+            "visible": true
         }
     ],
     "businesses": [
@@ -48,6 +55,7 @@ window.ChecklistTemplateData = {
             "tierId": 1,
             "status": "Open",
             "maxStock": 5100,
+            "notes": "Example: Managed by Fire0x",
             "collectionStorage": 0,
             "canCollectItems": false
         },
@@ -104,6 +112,24 @@ window.ChecklistTemplateData = {
             "maxStock": 5000,
             "collectionStorage": 5000,
             "canCollectItems": true
+        },
+        {
+            "businessCode": "TIER6-BIZ01",
+            "businessName": "Vineyard #1",
+            "tierId": 6,
+            "status": "Open",
+            "maxStock": 5000,
+            "collectionStorage": 5000,
+            "canCollectItems": false
+        },
+        {
+            "businessCode": "TIER6-BIZ02",
+            "businessName": "Vineyard Offsite #2",
+            "tierId": 6,
+            "status": "Open",
+            "maxStock": 5000,
+            "collectionStorage": 5000,
+            "canCollectItems": true
         }
     ],
     "products": [
@@ -125,7 +151,7 @@ window.ChecklistTemplateData = {
         {
             "id": 4,
             "tierId": 1,
-            "productName": "Oranges"
+            "productName": "Oranges 🍊"
         },
         {
             "id": 5,
@@ -176,8 +202,31 @@ window.ChecklistTemplateData = {
             "id": 14,
             "tierId": 5,
             "productName": "Hops Seeds 🌱"
+        },
+        {
+            "id": 15,
+            "tierId": 6,
+            "productName": "Cabernet Sauvignon 🍷"
+        },
+        {
+            "id": 16,
+            "tierId": 6,
+            "productName": "Chardonnay 🍹"
+        },
+        {
+            "id": 17,
+            "tierId": 6,
+            "productName": "Wine Grape Seeds 🍇"
         }
     ],
     "productOrder": [],
-    "version": "1.0.1"
+    "checklistRunList": [
+        "TIER1-BIZ01"
+    ],
+    "checklistTracking": {
+        "Tier 1: Fruit Stand": {
+            "TIER1-BIZ01": 1
+        }
+    },
+    "version": "1.0.2"
 };

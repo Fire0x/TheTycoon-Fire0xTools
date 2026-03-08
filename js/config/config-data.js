@@ -101,25 +101,25 @@ const ConfigData = {
     },
 
     // Website overall version
-    websiteVersion: '0.2.3',
+    websiteVersion: '1.1.4',
 
     // Individual page versions
     pageVersions: {
         'index.html': '0.0.6',
         'Info.html': '0.1.2',
         'merchants.html': '0.1.1',
-        'checklist.html': '0.2.4',
+        'checklist.html': '0.2.6',
         'VehicleDeliveries.html': '1.1.1',
         'education_timer.html': '0.1.3',
         'apartment.html': '0.1.5',
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
-        'changelog.html': '0.0.9',
-        'import.html': '0.0.9',
+        'changelog.html': '0.1.0',
+        'import.html': '0.1.0',
         'fishing.html': '0.0.2',
         'logistics.html': '0.0.6',
         'mining.html': '0.0.1',
-        'checklistremote.html': '0.0.2'
+        'checklistremote.html': '0.0.4'
     }
 };
 

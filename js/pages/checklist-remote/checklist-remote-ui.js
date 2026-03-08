@@ -12,9 +12,23 @@ window.buildRemoteChecklist = function () {
     const container = document.getElementById('checklistRemoteContainer');
     if (!container) return;
 
-    const runList = window.getRemoteRunList();
     const loadingAlert = document.getElementById('loadingAlert');
     if (loadingAlert) loadingAlert.style.display = 'none';
+
+    const originalRunList = window.getRemoteRunList();
+    const runList = originalRunList.filter(code => {
+        if (!window.allOpenBusinesses[code]) {
+            if (window.debug) window.debug.warn(`⚠️ Business ${code} not found in allOpenBusinesses (orphaned)`);
+            return false;
+        }
+        return true;
+    });
+
+    if (runList.length !== originalRunList.length) {
+        if (window.debug) window.debug.log(`🧹 Cleaning up ${originalRunList.length - runList.length} orphaned businesses from run list`);
+        window.saveRemoteRunList(runList);
+        // Continue rendering with the filtered runList
+    }
 
     if (runList.length === 0) {
         container.innerHTML = `
@@ -31,10 +45,7 @@ window.buildRemoteChecklist = function () {
 
     runList.forEach((code, index) => {
         const biz = window.allOpenBusinesses[code];
-        if (!biz) {
-            if (window.debug) window.debug.warn(`⚠️ Business ${code} not found in allOpenBusinesses (skipped)`);
-            return;
-        }
+        // biz is guaranteed to exist here due to filter above
 
         const displayName = biz.business_name || biz.business_code;
         const hasCollection = biz.can_collect_items === true || biz.can_collect_items === 1 || biz.can_collect_items === '1';
@@ -120,7 +131,7 @@ window.buildRemoteChecklist = function () {
                         </div>
                         <div class="${hasCollection ? 'col-md-2' : 'col-md-3'}">
                             <small class="text-muted d-block mb-1" style="font-weight:600;">
-                                <strong>📦 Product:</strong> <span id="product-label-${code}" class="product-name-label text-info ms-1" style="display: none;"></span>
+                                <strong>📦 Product:</strong>
                             </small>
                             <select class="form-select form-select-sm product-selector"
                                     data-business-code="${code}"
@@ -255,26 +266,27 @@ async function _restoreProductSelectionsFromDb() {
 }
 
 function _restoreProductSelectionsFromLocalStorage() {
-    const saved = localStorage.getItem('checklistProductTracking');
-    if (!saved) return;
-    let tracking;
-    try { tracking = JSON.parse(saved); } catch (e) { return; }
+    const configData = window.checklistConfigData();
+    if (!configData) return;
 
     document.querySelectorAll('.product-selector').forEach(sel => {
         const code = sel.dataset.businessCode;
-        const tier = sel.dataset.tier; // Now set directly on the element
+        const tier = sel.dataset.tier;
         if (!code || !tier) return;
 
-        if (tracking[tier] && tracking[tier][code]) {
-            const productId = String(tracking[tier][code]);
-            if ([...sel.options].some(o => o.value === productId)) {
-                sel.value = productId;
+        // Use shared helper to get persistent selection
+        const productId = window.getProductSelection(tier, code);
+
+        if (productId !== null) {
+            const productIdStr = String(productId);
+            if ([...sel.options].some(o => o.value === productIdStr)) {
+                sel.value = productIdStr;
             }
         } else {
             sel.value = '';
         }
 
-        // Update product info display label
+        // Update display column label if it exists
         _updateRemoteProductInfoDisplay(code, tier);
     });
 }
@@ -291,24 +303,27 @@ window.handleRemoteProductSelection = function (code) {
     const sel = document.querySelector(`.product-selector[data-business-code="${code}"]`);
     if (!sel) return;
 
-    const biz = window.allOpenBusinesses[code];
-    const tier = biz ? biz.tier_name : '';
-    if (!tier) {
-        if (window.debug) window.debug.warn(`Cannot save product for ${code} - tier name missing`);
-        return;
+    const productId = sel.value;
+    const tier = sel.dataset.tier;
+
+    if (window.debug) window.debug.log(`🎯 Product selection for ${code} (${tier}): ${productId}`);
+
+    // Use shared helper for unified persistence
+    if (typeof window.setProductSelection === 'function') {
+        window.setProductSelection(tier, code, productId);
+        // Save using the shared key
+        if (typeof window.saveTrackingToLocalStorage === 'function') {
+            window.saveTrackingToLocalStorage();
+        }
     }
 
-    // Use unified setProductSelection helper (handles both tracking and config storage)
-    window.setProductSelection(tier, code, sel.value);
-
-    // Update local product display label
+    // Update the column display label
     _updateRemoteProductInfoDisplay(code, tier);
 
-    // Save to DB
-    _saveProductToDb(code, sel.value || null);
-
-    if (window.debug) window.debug.log(`📦 Product selected for ${code} (Tier: ${tier}):`, sel.options[sel.selectedIndex]?.text);
-    window.calculateAllBusinessSummary(); // Recalculate summary on product selection change
+    // Trigger summary recalculation
+    if (typeof window.calculateAllBusinessSummary === 'function') {
+        window.calculateAllBusinessSummary();
+    }
 };
 
 async function _saveProductToDb(code, productId) {
@@ -742,19 +757,22 @@ window.scrollToBottom = function () {
  * Display the currently selected product name in the column label (Remote)
  */
 function _updateRemoteProductInfoDisplay(code, tier) {
-    const productId = window.getProductSelection(tier, code);
-    const labelEl = document.getElementById(`product-label-${code}`);
+    const sel = document.querySelector(`.product-selector[data-business-code="${code}"]`);
+    if (!sel) return;
 
-    if (labelEl) {
-        if (productId) {
-            const productName = window.getProductNameOnly(productId);
-            if (productName) {
-                labelEl.innerHTML = `<span class="text-info">${productName}</span>`;
-                labelEl.style.display = 'inline';
-                return;
-            }
+    const productId = sel.value;
+    const productName = productId ? window.getProductName(productId) : null;
+
+    // In checklist-remote, we don't currently have the "inline-product-name" spans 
+    // in the column headers like in checklist.html, but we support them if added.
+    const label = document.getElementById(`product-label-${code}`);
+    if (label) {
+        if (productName) {
+            label.textContent = `Product: ${productName}`;
+            label.classList.add('has-product');
+        } else {
+            label.textContent = 'Product:';
+            label.classList.remove('has-product');
         }
-        labelEl.textContent = '';
-        labelEl.style.display = 'none';
     }
 }

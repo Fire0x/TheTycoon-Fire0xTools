@@ -1250,13 +1250,36 @@
             return;
         }
 
+        // Also bundle product tracking and remote run list so a single JSON captures everything
+        let tracking = null;
+        let runList = null;
+        try {
+            const rawTracking = localStorage.getItem('checklistProductTracking');
+            if (rawTracking) tracking = JSON.parse(rawTracking);
+
+            const rawRunList = localStorage.getItem('checklistRemoteRunList');
+            if (rawRunList) runList = JSON.parse(rawRunList);
+        } catch (e) {
+            debugManager.warn('Could not read checklist data from localStorage:', e);
+        }
+
+        const { version, ...configDataWithoutVersion } = configData;
+        const exportObj = { ...configDataWithoutVersion };
+        if (tracking) exportObj.checklistTracking = tracking;
+        if (runList) exportObj.checklistRunList = runList;
+
+        // Add version at the very end
+        exportObj.version = version || '1.0.2';
+
         debugManager.log('Exporting configuration:', {
             tiers: configData.tiers?.length || 0,
             businesses: configData.businesses?.length || 0,
-            products: configData.products?.length || 0
+            products: configData.products?.length || 0,
+            hasTracking: !!tracking,
+            hasRunList: !!runList
         });
 
-        const exportData = JSON.stringify(configData, null, 2);
+        const exportData = JSON.stringify(exportObj, null, 2);
         document.getElementById('exportTextarea').value = exportData;
         document.getElementById('exportModalLabel').textContent = 'Export Configuration';
         const modal = new bootstrap.Modal(document.getElementById('exportModal'));
@@ -1404,6 +1427,28 @@
             if (!imported.productOrder || !Array.isArray(imported.productOrder)) {
                 debugManager.log('No productOrder array found, initializing empty array');
                 imported.productOrder = [];
+            }
+
+            // Restore product tracking if bundled in the same JSON
+            if (imported.checklistTracking && typeof imported.checklistTracking === 'object') {
+                try {
+                    localStorage.setItem('checklistProductTracking', JSON.stringify(imported.checklistTracking));
+                    debugManager.log('✅ Restored checklistProductTracking from import');
+                } catch (e) {
+                    debugManager.warn('Could not restore checklistProductTracking:', e);
+                }
+                delete imported.checklistTracking;
+            }
+
+            // Restore remote run list if bundled
+            if (imported.checklistRunList && Array.isArray(imported.checklistRunList)) {
+                try {
+                    localStorage.setItem('checklistRemoteRunList', JSON.stringify(imported.checklistRunList));
+                    debugManager.log('✅ Restored checklistRemoteRunList from import');
+                } catch (e) {
+                    debugManager.warn('Could not restore checklistRemoteRunList:', e);
+                }
+                delete imported.checklistRunList;
             }
 
             window.setChecklistConfigData(imported);

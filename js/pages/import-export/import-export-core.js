@@ -505,6 +505,12 @@
                 result.messages.push('Checklist data merged successfully');
             }
 
+            // Trigger initialization and migration in the shared module if available
+            if (typeof window.initializeConfig === 'function') {
+                window.initializeConfig();
+                debugManager.log('Triggered initializeConfig() after import');
+            }
+
             debugManager.log('Checklist import successful');
         } catch (error) {
             result.errors = 1;

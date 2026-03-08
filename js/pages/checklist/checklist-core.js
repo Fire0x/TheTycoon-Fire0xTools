@@ -209,7 +209,7 @@
                                                 </div>
                                                 <div class="${colClass}">
                                                     <small class="text-muted d-block mb-1" style="font-weight: 600;">
-                                                        <strong>📦 Product:</strong> <span id="product-label-${tier.name}-${biz.businessCode}" class="product-name-label text-info ms-1" style="display: none;"></span>
+                                                        <strong>📦 Product:</strong>
                                                     </small>
                                                     <select class="form-select form-select-sm product-selector" 
                                                             data-tier="${tier.name}" 
