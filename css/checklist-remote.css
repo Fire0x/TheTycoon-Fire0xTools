@@ -1,0 +1,187 @@
+/* 
+ * Checklist Remote Styles
+ * Modern, premium look for the remote checklist view
+ */
+
+:root {
+    --remote-bg: #0f172a;
+    --remote-card-bg: #1e293b;
+    --remote-accent: #38bdf8;
+    --remote-text: #f8fafc;
+    --remote-text-muted: #94a3b8;
+    --remote-border: #334155;
+    --remote-success: #22c55e;
+    --remote-warning: #eab308;
+}
+
+body.remote-view {
+    background-color: var(--remote-bg);
+    color: var(--remote-text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.remote-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Run List Header */
+.run-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--remote-border);
+}
+
+.run-list-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--remote-text);
+}
+
+/* Business Item Card */
+.business-item {
+    background: var(--remote-card-bg);
+    border: 1px solid var(--remote-border);
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    cursor: grab;
+}
+
+.business-item:active {
+    cursor: grabbing;
+}
+
+.business-item:hover {
+    border-color: var(--remote-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+}
+
+.business-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed var(--remote-accent);
+}
+
+/* Business Icon & Details */
+.business-icon {
+    font-size: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    background: rgba(56, 189, 248, 0.1);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.25rem;
+}
+
+.business-info {
+    flex-grow: 1;
+}
+
+.business-name {
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0.25rem;
+}
+
+.business-tier {
+    font-size: 0.8125rem;
+    color: var(--remote-text-muted);
+}
+
+/* Progress Section */
+.business-progress {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.progress-stat {
+    text-align: right;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--remote-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Product Selector */
+.product-selector {
+    background: var(--remote-bg);
+    color: var(--remote-text);
+    border: 1px solid var(--remote-border);
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    min-width: 180px;
+}
+
+.product-selector:focus {
+    outline: none;
+    border-color: var(--remote-accent);
+}
+
+/* Action Buttons */
+.fab-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.fab-btn {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--remote-accent);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fab-btn:hover {
+    transform: scale(1.1);
+    background: #0ea5e9;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.business-item {
+    animation: fadeIn 0.3s ease forwards;
+}

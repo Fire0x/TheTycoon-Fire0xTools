@@ -21,8 +21,10 @@ const NavbarManager = {
             text: '💵 Businesses',
             id: 'businessDropdown',
             items: [
+                { text: '✅ Business Checklist', href: 'checklist.html' },
+                { text: '❌ Business Checklist (Remote)', href: 'checklistremote.html' },
+                { type: 'divider' },
                 { text: '🏠 Apartment Management', href: 'apartment.html' },
-                { text: '🏠 Business Checklist', href: 'checklist.html' },
                 { text: '🚚 Logistics Analysis', href: 'logistics.html' },
                 { text: '⛏️ Mining Analysis', href: 'mining.html' },
                 { text: '🎣 Fishing Management', href: 'fishing.html' },
@@ -130,6 +132,9 @@ const NavbarManager = {
                 const dropdownActiveClass = hasActiveItem ? 'active' : '';
 
                 const dropdownItemsHTML = item.items ? item.items.map(subItem => {
+                    if (subItem.type === 'divider') {
+                        return `<li><hr class="dropdown-divider"></li>`;
+                    }
                     const isSubActive = this.isActivePage(subItem.href);
                     const subActiveClass = isSubActive ? 'active' : '';
                     const subAriaCurrent = isSubActive ? ' aria-current="page"' : '';

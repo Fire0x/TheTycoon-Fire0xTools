@@ -258,15 +258,29 @@
         }
     });
 
-    // Floating Action Button Toggle
+    // Floating Action Button Toggle (matches remote checklist)
     function toggleFabMenu() {
-        const menu = document.getElementById('fabMenu');
-        const mainBtn = document.getElementById('fabMainBtn');
-        if (menu && mainBtn) {
-            menu.classList.toggle('show');
-            mainBtn.classList.toggle('active');
-        }
+        const menu = document.getElementById('fab-menu');
+        const btn = document.getElementById('fabMainBtn');
+        const icon = document.getElementById('fab-icon');
+        if (!menu || !btn || !icon) return;
+        menu.classList.toggle('open');
+        btn.classList.toggle('open');
+        icon.textContent = menu.classList.contains('open') ? '✖' : '⚡';
     }
+
+    // Close FAB when clicking outside
+    document.addEventListener('click', function (e) {
+        const fab = document.querySelector('.fab-container');
+        const menu = document.getElementById('fab-menu');
+        const btn = document.getElementById('fabMainBtn');
+        const icon = document.getElementById('fab-icon');
+        if (fab && !fab.contains(e.target) && menu && menu.classList.contains('open')) {
+            menu.classList.remove('open');
+            btn && btn.classList.remove('open');
+            if (icon) icon.textContent = '⚡';
+        }
+    });
 
     // Export functions to global scope
     window.toggleBusinessVisibility = toggleBusinessVisibility;

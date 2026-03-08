@@ -179,7 +179,8 @@ hr {
 /* ========================================
    FORMS
    ======================================== */
-.form-control, .form-select {
+.form-control,
+.form-select {
     border-radius: 0.75rem;
     border: 2px solid var(--card-border);
     padding: 0.625rem 1rem;
@@ -188,7 +189,8 @@ hr {
     color: var(--text-color);
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     outline: none;

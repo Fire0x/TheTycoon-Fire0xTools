@@ -33,7 +33,9 @@
         normalVehicles: 'vehicle_delivery_normal_vehicles',
         education: 'educationTimers',  // Note: stored as array, not object
         fishing: 'fishingData',
-        logistics: 'logisticsData'
+        logistics: 'logisticsData',
+        checklistTracking: 'checklistProductTracking',
+        checklistRunList: 'checklistRemoteRunList'
     };
 
     // Excluded pages from import/export (can be toggled)
@@ -232,6 +234,8 @@
             if (jsonData.education) pages.push('education');
             if (jsonData.fishing) pages.push('fishing');
             if (jsonData.logistics) pages.push('logistics');
+            if (jsonData.checklistTracking) pages.push('checklistTracking');
+            if (jsonData.checklistRunList) pages.push('checklistRunList');
 
             return {
                 type: 'unified',
@@ -340,9 +344,29 @@
             jsonData.jobs && Array.isArray(jsonData.jobs) &&
             jsonData.config && typeof jsonData.config === 'object') {
             return {
-                type: 'logistics',
-                page: 'logistics',
-                description: 'Logistics format (companies + licenses + jobs + config)'
+            };
+        }
+
+        // Check for checklist tracking format
+        if (jsonData.checklistTracking || (typeof jsonData === 'object' && !Array.isArray(jsonData) && Object.keys(jsonData).every(k => typeof jsonData[k] === 'object'))) {
+            // This is a bit broad, but checklistTracking is a Tier -> Biz -> Product mapping
+            const keys = Object.keys(jsonData);
+            if (keys.some(k => k.toLowerCase().includes('tier') || k.toLowerCase().includes('collector'))) {
+                return {
+                    type: 'checklistTracking',
+                    page: 'checklistTracking',
+                    description: 'Checklist Product Tracking format'
+                };
+            }
+        }
+
+        // Check for checklist run list format
+        if (Array.isArray(jsonData) && jsonData.length > 0 && typeof jsonData[0] === 'string' && jsonData[0].length <= 10) {
+            // Business codes are usually short strings
+            return {
+                type: 'checklistRunList',
+                page: 'checklistRunList',
+                description: 'Checklist Run List format (array of business codes)'
             };
         }
 
@@ -352,6 +376,7 @@
             description: 'Unknown format - cannot detect data type'
         };
     }
+
 
     /**
      * Export all data in single file (excluding excluded pages)
@@ -386,6 +411,10 @@
             }
         }
 
+        // Add ChecklistRemote data
+        if (allData.checklistTracking) exportData.checklistTracking = allData.checklistTracking;
+        if (allData.checklistRunList) exportData.checklistRunList = allData.checklistRunList;
+
         debugManager.log('Exported data summary:', {
             checklist: allData.checklist ? 'present' : 'empty',
             apartments: allData.apartments ? 'present' : 'empty',
@@ -393,7 +422,9 @@
             vehicles: allData.vehicles ? 'present' : 'empty',
             education: allData.education ? 'present' : 'empty',
             fishing: allData.fishing ? 'present' : 'empty',
-            logistics: allData.logistics ? 'present' : 'empty'
+            logistics: allData.logistics ? 'present' : 'empty',
+            checklistTracking: allData.checklistTracking ? 'present' : 'empty',
+            checklistRunList: allData.checklistRunList ? 'present' : 'empty'
         });
 
         debugManager.log('=== exportAllData END ===');
@@ -1005,6 +1036,16 @@
                     return importFishingData(jsonData, mode);
                 case 'logistics':
                     return importLogisticsData(jsonData, mode);
+                case 'checklistTracking':
+                    localStorage.setItem(STORAGE_KEYS.checklistTracking, JSON.stringify(jsonData));
+                    result.success = 1;
+                    result.messages.push('Checklist tracking data imported successfully');
+                    return result;
+                case 'checklistRunList':
+                    localStorage.setItem(STORAGE_KEYS.checklistRunList, JSON.stringify(jsonData));
+                    result.success = 1;
+                    result.messages.push('Checklist run list imported successfully');
+                    return result;
                 default:
                     throw new Error(`Unknown page name: ${pageName}`);
             }
@@ -1109,4 +1150,111 @@
     };
 
     debugManager.log('Import/Export Core module loaded');
+    /**
+     * Import data with format detection
+     * @param {object} jsonData - JSON data
+     * @param {string} mode - Import mode
+     * @returns {object} Consolidated results
+     */
+    function importWithFormatDetection(jsonData, mode) {
+        const format = detectImportFormat(jsonData);
+        debugManager.log('Importing with detected format:', format);
+
+        if (format.type === 'unified') {
+            const results = { success: 0, updated: 0, errors: 0, messages: [] };
+
+            if (jsonData.checklist) {
+                const r = importChecklistData(jsonData.checklist, mode);
+                results.success += r.success; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+            if (jsonData.apartments || jsonData.timers || jsonData.reviews) {
+                const r = importApartmentsData(jsonData, mode);
+                results.success += r.success; results.updated += r.updated; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+            if (jsonData.merchants) {
+                const r = importMerchantsData(jsonData.merchants, mode);
+                results.success += r.success; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+            if (jsonData.eventVehicles || jsonData.normalVehicles) {
+                const r = importVehiclesData(jsonData, mode);
+                results.success += r.success; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+            if (jsonData.education) {
+                const r = importEducationData(jsonData.education, mode);
+                results.success += r.success; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+            if (jsonData.fishing) {
+                const r = importFishingData(jsonData.fishing, mode);
+                results.success += r.success; results.updated += r.updated; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+            if (jsonData.logistics) {
+                const r = importLogisticsData(jsonData.logistics, mode);
+                results.success += r.success; results.updated += r.updated; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+            if (jsonData.checklistTracking) {
+                const r = importChecklistTrackingData(jsonData.checklistTracking, mode);
+                results.success += r.success; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+            if (jsonData.checklistRunList) {
+                const r = importChecklistRunListData(jsonData.checklistRunList, mode);
+                results.success += r.success; results.errors += r.errors; results.messages.push(...r.messages);
+            }
+
+            return results;
+        }
+
+        // Direct mapping for simple formats
+        switch (format.type) {
+            case 'checklist': return importChecklistData(jsonData, mode);
+            case 'apartment-all':
+            case 'apartment-only':
+            case 'timer-only':
+            case 'review-only': return importApartmentsData(jsonData, mode);
+            case 'merchants': return importMerchantsData(jsonData, mode);
+            case 'vehicles': return importVehiclesData(jsonData, mode);
+            case 'education': return importEducationData(jsonData, mode);
+            case 'fishing': return importFishingData(jsonData, mode);
+            case 'logistics': return importLogisticsData(jsonData, mode);
+            case 'checklistTracking': return importChecklistTrackingData(jsonData, mode);
+            case 'checklistRunList': return importChecklistRunListData(jsonData, mode);
+            default: return { success: 0, errors: 1, messages: ['Unknown format'] };
+        }
+    }
+
+    /**
+     * Unified import function for page-specific imports
+     */
+    function importPageData(pageName, data, mode) {
+        switch (pageName) {
+            case 'checklist': return importChecklistData(data, mode);
+            case 'apartments': return importApartmentsData(data, mode);
+            case 'merchants': return importMerchantsData(data, mode);
+            case 'vehicles': return importVehiclesData(data, mode);
+            case 'education': return importEducationData(data, mode);
+            case 'fishing': return importFishingData(data, mode);
+            case 'logistics': return importLogisticsData(data, mode);
+            case 'checklistTracking': return importChecklistTrackingData(data, mode);
+            case 'checklistRunList': return importChecklistRunListData(data, mode);
+            default: return { success: 0, errors: 1, messages: [`Unknown page: ${pageName}`] };
+        }
+    }
+
+    // Export core functions to global scope
+    window.importExportCore = {
+        STORAGE_KEYS,
+        getAvailablePages,
+        getPageData,
+        getAllPageData,
+        calculatePageHash,
+        calculateAllHashes,
+        getStoredHashes,
+        storeHashes,
+        compareHashes,
+        detectImportFormat,
+        exportAllData,
+        exportPageData,
+        importWithFormatDetection,
+        importPageData
+    };
+
 })();

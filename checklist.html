@@ -30,6 +30,19 @@
                 tracking.</p>
         </div>
 
+        <!-- Backup Warning -->
+        <div class="alert alert-warning d-flex gap-3 align-items-start mb-4" role="alert">
+            <span style="font-size:1.4rem;flex-shrink:0;">⚠️</span>
+            <div>
+                <strong>Backup Reminder:</strong> Keep a regular backup of your <code>.json</code> file and store it
+                somewhere safe. Browser updates or clearing site data can wipe localStorage — this is outside my
+                control, though I do my best to prevent it. A simple way to keep your data safe is to create a private
+                repository on <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>. Need help? Here is
+                a <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories"
+                    target="_blank" rel="noopener">quick guide to get started</a>. — Thank you, Fire0x
+            </div>
+        </div>
+
         <!-- Time Displays -->
         <div class="row mb-4">
             <div class="col-md-12">
@@ -197,6 +210,9 @@
                                         class="badge bg-info">📋 Generate Checklist</span> to create a CSV report
                                     (includes product information). For more details on copy/paste shortcuts, see the <a
                                         href="merchants.html">Traveling Merchants</a> page.</p>
+                                <p class="mb-0 mt-2">💡 <strong>Running a route?</strong> Use the <a
+                                        href="checklistremote.html">📋 Remote Checklist</a> to build a custom ordered
+                                    run list of your businesses for easy on-the-go tracking.</p>
                             </div>
                         </div>
                     </div>
@@ -605,46 +621,49 @@
     <script src="js/navbar.js"></script>
     <!-- Theme JS -->
     <script src="js/theme.js"></script>
-    <!-- Floating Action UI -->
+    <!-- Floating Action Button (matches remote checklist style) -->
     <div class="fab-container">
-        <div class="fab-menu" id="fabMenu">
-            <div class="fab-item-wrapper">
+        <button class="fab-main-btn" id="fabMainBtn" onclick="toggleFabMenu()" title="Toggle Action Menu">
+            <span id="fab-icon">⚡</span>
+        </button>
+        <div class="fab-menu" id="fab-menu">
+            <div class="fab-item" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
                 <span class="fab-label">Scroll Top</span>
-                <button class="fab-item btn-secondary"
-                    onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆️</button>
+                <button class="fab-btn fab-scroll-top">⬆️</button>
             </div>
-            <div class="fab-item-wrapper">
+            <div class="fab-item" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})">
+                <span class="fab-label">Scroll Down</span>
+                <button class="fab-btn fab-scroll-bottom">⬇️</button>
+            </div>
+            <div class="fab-item" onclick="generatePersonTableString()">
                 <span class="fab-label">Generate Checklist</span>
-                <button class="fab-item btn-info" onclick="generatePersonTableString()">📋</button>
+                <button class="fab-btn fab-generate">📋</button>
             </div>
-            <div class="fab-item-wrapper">
+            <div class="fab-item" onclick="openAddBusinessModal()">
                 <span class="fab-label">Add Business</span>
-                <button class="fab-item btn-primary" onclick="openAddBusinessModal()">➕</button>
+                <button class="fab-btn fab-add">➕</button>
             </div>
-            <div class="fab-item-wrapper">
+            <div class="fab-item" onclick="checkAll()">
                 <span class="fab-label">Check All</span>
-                <button class="fab-item btn-primary" onclick="checkAll()">✅</button>
+                <button class="fab-btn fab-check-all">✅</button>
             </div>
-            <div class="fab-item-wrapper">
+            <div class="fab-item" onclick="uncheckAll()">
                 <span class="fab-label">Uncheck All</span>
-                <button class="fab-item btn-secondary" onclick="uncheckAll()">❌</button>
+                <button class="fab-btn fab-uncheck-all">❌</button>
             </div>
-            <div class="fab-item-wrapper">
+            <div class="fab-item" onclick="saveProgress()">
                 <span class="fab-label">Save Progress</span>
-                <button class="fab-item btn-info" onclick="saveProgress()">💾</button>
+                <button class="fab-btn fab-save">💾</button>
             </div>
-            <div class="fab-item-wrapper">
+            <div class="fab-item" onclick="clearProgress()">
                 <span class="fab-label">Clear Progress</span>
-                <button class="fab-item btn-danger" onclick="clearProgress()">🗑️</button>
+                <button class="fab-btn fab-clear-progress">🗑️</button>
             </div>
-            <div class="fab-item-wrapper">
+            <div class="fab-item" onclick="toggleDebug()">
                 <span class="fab-label"><span id="debugToggleText">Debug: OFF</span></span>
-                <button class="fab-item btn-warning" id="debugToggleBtn" onclick="toggleDebug()">🐞</button>
+                <button class="fab-btn fab-debug" id="debugToggleBtn">🐞</button>
             </div>
         </div>
-        <button class="fab-main" id="fabMainBtn" onclick="toggleFabMenu()">
-            ⚡
-        </button>
     </div>
 
     <!-- Initialization Script for Number Formatter -->

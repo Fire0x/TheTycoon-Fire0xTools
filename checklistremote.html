@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Business Checklist - Fire0x Incorporated</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/SiteLogo.png">
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- Base CSS (load order matters, matches checklist.html) -->
+    <link href="css/base/variables.css" rel="stylesheet">
+    <link href="css/base/common.css" rel="stylesheet">
+    <link href="css/base/responsive.css" rel="stylesheet">
+    <!-- Shared checklist component styles (stock-calc-container, business-item, etc.) -->
+    <link href="css/pages/checklist-base.css" rel="stylesheet">
+    <!-- Checklist base CSS (shared card/FAB/business-item styles) -->
+    <link href="css/pages/checklist.css" rel="stylesheet">
+    <!-- ChecklistRemote-specific CSS (picker, drag handles, etc.) -->
+    <link href="css/pages/checklist-remote.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div id="navbar-container"></div>
+    <!-- Config Data (must load before navbar) -->
+    <script src="js/config/config-data.js"></script>
+    <script src="js/navbar.js"></script>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="glow-text">📋 Remote Checklist</h1>
+            <p class="lead">Build your custom run list — pick businesses and set your preferred order</p>
+        </div>
+
+        <!-- Backup Warning -->
+        <div class="alert alert-warning d-flex gap-3 align-items-start mb-4" role="alert">
+            <span style="font-size:1.4rem;flex-shrink:0;">⚠️</span>
+            <div>
+                <strong>Backup Reminder:</strong> Keep a regular backup of your <code>.json</code> file and store it
+                somewhere safe. Browser updates or clearing site data can wipe localStorage — this is outside my
+                control, though I do my best to prevent it. A simple way to keep your data safe is to create a private
+                repository on <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>. Need help? Here is
+                a <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories"
+                    target="_blank" rel="noopener">quick guide to get started</a>. — Thank you, Fire0x
+            </div>
+        </div>
+
+        <!-- Time Displays -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="time-display">
+                                    <strong>🕐 Brisbane, Australia:</strong>
+                                    <div id="brisbane-time" class="text-info"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <div class="time-display">
+                                    <strong>🕐 Eastern Time:</strong>
+                                    <div id="eastern-time" class="text-info"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <span id="eastern-tz" class="text-muted small">EST</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="time-display">
+                                    <strong>🔄 Server Reboot:</strong>
+                                    <div id="reboot-countdown" class="text-warning"
+                                        style="font-size: 1.2rem; margin-top: 0.5rem;">--:--:--</div>
+                                    <small class="text-muted d-block mt-1">Next: <span id="reboot-time-et">3:00 AM
+                                            EST</span> / <span id="reboot-time-brisbane">--:-- AEST</span></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How to Use Section -->
+        <div class="card mb-4" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header"
+                style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <button class="btn btn-link text-decoration-none w-100 text-start p-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#howToUseCollapse" aria-expanded="true"
+                    aria-controls="howToUseCollapse" style="color: var(--text-color); font-weight: 600;">
+                    <span>📖 How to Use This Page</span>
+                    <span class="float-end" id="howToUseToggle">▼</span>
+                </button>
+            </div>
+            <div class="collapse show" id="howToUseCollapse">
+                <div class="card-body">
+                    <h6 class="mb-2"><strong>Step 1: Build Your Run List</strong></h6>
+                    <p class="mb-3">Type a business code or name in the search box. Click a result to add it to your
+                        run list. Only open businesses appear.</p>
+
+                    <h6 class="mb-2"><strong>Step 2: Set Your Order</strong></h6>
+                    <p class="mb-3">Click <span class="badge"
+                            style="background:linear-gradient(135deg,#667eea,#764ba2)">🔀 Reorder</span>
+                        to reveal drag handles on each card. Drag cards to your preferred run order, then click
+                        <strong>🔀 Reorder</strong> again to lock it in. Your order is saved automatically.
+                    </p>
+
+                    <h6 class="mb-2"><strong>Step 3: Track Your Progress</strong></h6>
+                    <p class="mb-2">For each business you can:</p>
+                    <ul class="mb-3">
+                        <li><strong>Check the checkbox</strong> to mark it as completed</li>
+                        <li><strong>Enter Money</strong> collected from the business</li>
+                        <li><strong>Enter Current Stock</strong> to calculate how much stock is needed</li>
+                        <li><strong>Enter Collection</strong> amount (if the business has collection storage)</li>
+                        <li><strong>Select a Product</strong> to track inventory needs</li>
+                        <li><strong>Add Notes</strong> for any extra info</li>
+                    </ul>
+
+                    <h6 class="mb-2"><strong>Step 4: Manage Your List</strong></h6>
+                    <ul class="mb-3">
+                        <li>Click <strong>❌</strong> on a card to remove it from your run list</li>
+                        <li>Click <strong>👁️</strong> on a card to hide it temporarily without removing it</li>
+                        <li>Use the ⚡ FAB menu to Check All, Uncheck All, Clear Products, or Clear Progress</li>
+                        <li>Progress is auto-saved as you type</li>
+                    </ul>
+                    <p class="mb-0">💡 <strong>Need to configure tiers, businesses, or products?</strong> Do that first
+                        on the <a href="checklist.html">📋 Business Checklist</a> — your data syncs automatically to
+                        this page.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Picker + Reorder Controls -->
+        <div class="remote-controls-card mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <div class="section-label">🔍 Add Business to Run List</div>
+                    <div class="biz-picker-wrapper">
+                        <input type="text" id="bizPickerInput" class="form-control biz-picker-input"
+                            placeholder="Type a business code or name…" autocomplete="off">
+                        <div id="bizPickerDropdown" class="biz-picker-dropdown"></div>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex gap-2 justify-content-md-end">
+                    <button id="reorderToggleBtn" class="btn btn-outline-secondary btn-reorder"
+                        title="Drag to reorder businesses" onclick="toggleReorderMode()">
+                        🔀 Reorder
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Alert -->
+        <div class="alert alert-secondary" role="alert" id="loadingAlert">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Loading open businesses…
+        </div>
+
+        <!-- All Business Summary Section -->
+        <div class="card mb-4" id="allBusinessSummaryCard"
+            style="display: none; background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="card-header d-flex justify-content-between align-items-center"
+                style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
+                <h5 class="mb-0" style="color: var(--text-color); font-weight: 600;">📊 All Business Summary</h5>
+                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#allBusinessSummaryCollapse" aria-expanded="true"
+                    aria-controls="allBusinessSummaryCollapse">
+                    Toggle Summary
+                </button>
+            </div>
+            <div class="collapse show" id="allBusinessSummaryCollapse">
+                <div class="card-body">
+                    <p class="text-muted small mb-3">This table aggregates all product needs across your custom run
+                        list. Checked or hidden businesses are excluded.</p>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered" style="color: var(--text-color);">
+                            <thead>
+                                <tr id="allBusinessSummaryHeaderRow">
+                                    <th>Product Name</th>
+                                    <!-- Tier columns dynamically generated -->
+                                    <th class="text-end"><strong>Grand Total</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody id="allBusinessSummaryBody">
+                                <tr>
+                                    <td colspan="100%" class="text-center text-muted">No products selected yet</td>
+                                </tr>
+                            </tbody>
+                            <tfoot id="allBusinessSummaryFooter">
+                                <!-- Grand Total row dynamically generated -->
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="alert alert-info mt-2 mb-3" role="alert" id="remoteSummaryAlert" style="display:none;">
+            <span id="remoteSummaryContent"></span>
+        </div>
+
+        <!-- Dynamic Content Container -->
+        <div id="checklistRemoteContainer">
+            <!-- Business cards rendered here by checklist-remote-ui.js -->
+        </div>
+
+        <!-- Floating Action Button Menu -->
+        <div class="fab-container">
+            <button class="fab-main-btn" onclick="toggleFabMenu()" title="Toggle Action Menu">
+                <span id="fab-icon">⚡</span>
+            </button>
+            <div class="fab-menu" id="fab-menu">
+                <div class="fab-item" onclick="checkAllRemote()">
+                    <span class="fab-label">Check All</span>
+                    <button class="fab-btn fab-check-all">✅</button>
+                </div>
+                <div class="fab-item" onclick="uncheckAllRemote()">
+                    <span class="fab-label">Uncheck All</span>
+                    <button class="fab-btn fab-uncheck-all">❌</button>
+                </div>
+                <div class="fab-item" onclick="saveRemoteProgress()">
+                    <span class="fab-label">Save Progress</span>
+                    <button class="fab-btn fab-save">💾</button>
+                </div>
+                <div class="fab-item" onclick="showAllRemoteBusinesses()">
+                    <span class="fab-label">Show All</span>
+                    <button class="fab-btn fab-show-all">👁️</button>
+                </div>
+                <div class="fab-item" onclick="scrollToTop()">
+                    <span class="fab-label">Scroll Top</span>
+                    <button class="fab-btn fab-scroll-top">⬆️</button>
+                </div>
+                <div class="fab-item" onclick="scrollToBottom()">
+                    <span class="fab-label">Scroll Down</span>
+                    <button class="fab-btn fab-scroll-bottom">⬇️</button>
+                </div>
+                <div class="fab-item" onclick="clearRemoteProducts()">
+                    <span class="fab-label">Clear Products</span>
+                    <button class="fab-btn fab-clear-products">🗑️</button>
+                </div>
+                <div class="fab-item" onclick="clearRemoteProgress()">
+                    <span class="fab-label">Clear Progress</span>
+                    <button class="fab-btn fab-clear-progress">⚠️</button>
+                </div>
+                <div class="fab-item" onclick="window.debug.toggle()">
+                    <span class="fab-label">Toggle Debug</span>
+                    <button class="fab-btn fab-debug">🐛</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light py-3">
+        <div class="container text-center">
+            <p>&copy; 2025-2026 Fire0x Incorporated. The Tycoon is owned and created by OneLonelyDad (Troublesum). All
+                rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Theme JS -->
+    <script src="js/theme.js"></script>
+    <!-- Debug Module -->
+    <script src="js/debug-manager.js"></script>
+    <!-- Checklist Shared Module -->
+    <script src="js/pages/checklist/checklist-shared.js"></script>
+    <!-- Site Config JS -->
+    <script src="js/config/site-config.js"></script>
+    <!-- Number Formatter -->
+    <script src="js/number-formatter.js"></script>
+    <!-- Checklist Remote JS Modules -->
+    <!-- Load order: order-config → config → core → ui → progress → main -->
+    <script src="js/pages/checklist-remote/checklist-remote-order-config.js"></script>
+    <script src="js/pages/checklist-remote/checklist-remote-config.js"></script>
+    <script src="js/pages/checklist-remote/checklist-remote-core.js"></script>
+    <script src="js/pages/checklist-remote/checklist-remote-ui.js"></script>
+    <script src="js/pages/checklist-remote/checklist-remote-progress.js"></script>
+    <!-- Time module reused from checklist -->
+    <script src="js/pages/checklist/checklist-time.js"></script>
+    <script src="js/pages/checklist-remote/checklist-remote-main.js"></script>
+
+</body>
+
+</html>

@@ -36,7 +36,8 @@ const ConfigData = {
         'changelog.html': 'Changelog',
         'import.html': 'Import / Export',
         'fishing.html': 'Fishing Management',
-        'logistics.html': 'Logistics Analysis'
+        'logistics.html': 'Logistics Analysis',
+        'checklistremote.html': 'Remote Business Checklist'
     },
 
     // Hero section data for each page
@@ -92,11 +93,15 @@ const ConfigData = {
         'logistics.html': {
             title: '🚚 Logistics Analysis',
             description: 'Analyze logistics jobs, company reputation, and licenses'
+        },
+        'checklistremote.html': {
+            title: 'Remote Business Checklist',
+            description: 'Remote version of the business checklist tool.'
         }
     },
 
     // Website overall version
-    websiteVersion: '0.2.2',
+    websiteVersion: '0.2.3',
 
     // Individual page versions
     pageVersions: {
@@ -109,11 +114,12 @@ const ConfigData = {
         'apartment.html': '0.1.5',
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
-        'changelog.html': '0.0.8',
+        'changelog.html': '0.0.9',
         'import.html': '0.0.9',
         'fishing.html': '0.0.2',
         'logistics.html': '0.0.6',
-        'mining.html': '0.0.1'
+        'mining.html': '0.0.1',
+        'checklistremote.html': '0.0.2'
     }
 };
 

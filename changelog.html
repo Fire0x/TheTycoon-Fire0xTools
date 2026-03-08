@@ -60,6 +60,70 @@
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.1.2</h3>
+                                <p class="text-muted mb-3">2026-03-08</p>
+                                <ul class="mb-0">
+                                    <li><strong>Remote Checklist - Restored:</strong> Fully restored and rebuilt
+                                        <code>checklistremote.html</code> including all business card fields (money,
+                                        stock, product, collection, notes), drag-to-reorder, run list management, and
+                                        real-time sync with the main checklist.
+                                    </li>
+                                    <li><strong>Remote Checklist - CSS Stack Fix:</strong> Added missing base CSS files
+                                        (<code>variables.css</code>, <code>common.css</code>,
+                                        <code>responsive.css</code>,
+                                        <code>checklist-base.css</code>) to <code>checklistremote.html</code>, restoring
+                                        the <code>.stock-calc-container</code> styles and other shared components.
+                                    </li>
+                                    <li><strong>Remote Checklist - Product Dropdown:</strong> Fixed unreadable product
+                                        dropdown text in dark mode with high-contrast CSS overrides. Resolved
+                                        <code>TypeError: window.getProductNameOnly is not a function</code> by exporting
+                                        shared helpers from <code>checklist-shared.js</code>.
+                                    </li>
+                                    <li><strong>Remote Checklist - Product Population:</strong> Unified product selector
+                                        population to use the same <code>populateProductSelectorsForTier</code> function
+                                        as <code>checklist.html</code> via a new shared helper in
+                                        <code>checklist-shared.js</code>. Added <code>data-tier</code> attribute to
+                                        selectors for consistent tier-name-based restoration.
+                                    </li>
+                                    <li><strong>Remote Checklist - Label Cleanup:</strong> Removed emoji from the inline
+                                        product label next to "📦 Product:" so only the product name displays.</li>
+                                    <li><strong>Remote Checklist - Notes Label:</strong> Reverted "Employees" label back
+                                        to "📝 Notes:" as originally intended.</li>
+                                    <li><strong>Checklist &amp; Remote - FAB Redesign:</strong> Replaced old
+                                        plain-button
+                                        FAB with a new gradient circle-button FAB on both pages. Buttons feature
+                                        distinct
+                                        gradient colours per action, hover-reveal slide-in labels, smooth open/close
+                                        animation, and outside-click auto-close.</li>
+                                    <li><strong>Checklist - FAB Scroll Down:</strong> Added "⬇️ Scroll Down" button to
+                                        the main checklist FAB alongside the existing "⬆️ Scroll Top".</li>
+                                    <li><strong>FAB - Unified CSS:</strong> Consolidated FAB styles into
+                                        <code>checklist.css</code> (shared by both pages), removing the duplicate block
+                                        from <code>checklist-remote.css</code> so both FABs are pixel-identical.
+                                    </li>
+                                    <li><strong>Checklist &amp; Remote - How to Use Cross-links:</strong> Both
+                                        <code>checklist.html</code> and <code>checklistremote.html</code> "How to Use"
+                                        sections now reference and link to each other so users can easily navigate
+                                        between the two pages.
+                                    </li>
+                                    <li><strong>Backup Warning - All Pages:</strong> Added a persistent backup reminder
+                                        banner to all pages that store data in localStorage
+                                        (<code>checklist.html</code>, <code>checklistremote.html</code>,
+                                        <code>import.html</code>, <code>merchants.html</code>,
+                                        <code>apartment.html</code>, <code>logistics.html</code>,
+                                        <code>fishing.html</code>, <code>VehicleDeliveries.html</code>). The banner
+                                        links to GitHub and the quick-start guide so users can easily set up a private
+                                        backup repository.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Previous Entry -->
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
                                 <h3 class="card-title mb-1">Version 1.1.1</h3>
                                 <p class="text-muted mb-3">2026-03-08</p>
                                 <ul class="mb-0">

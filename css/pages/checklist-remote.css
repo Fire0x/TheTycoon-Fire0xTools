@@ -1,0 +1,305 @@
+/* checklist-remote.css
+   Extends checklist.css styles for the ChecklistRemote page.
+   Adds: drag-to-reorder handles, business picker autocomplete, run-order badge.
+*/
+
+/* ---------------------------------------------------------- */
+/* Business Picker                                             */
+/* ---------------------------------------------------------- */
+.biz-picker-wrapper {
+    position: relative;
+}
+
+.biz-picker-input {
+    border-radius: 0.75rem !important;
+    border: 2px solid var(--card-border) !important;
+    padding: 0.625rem 1rem !important;
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+}
+
+.biz-picker-input:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
+    outline: none;
+}
+
+.biz-picker-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 500;
+    max-height: 260px;
+    overflow-y: auto;
+    display: none;
+}
+
+.biz-picker-dropdown.open {
+    display: block;
+}
+
+.biz-picker-item {
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.biz-picker-item:last-child {
+    border-bottom: none;
+}
+
+.biz-picker-item:hover,
+.biz-picker-item.highlighted {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.08) 100%);
+}
+
+.biz-picker-item .picker-code {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 0.85rem;
+}
+
+.biz-picker-item .picker-name {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.biz-picker-item .picker-tier {
+    font-size: 0.78rem;
+    color: var(--text-muted, #6c757d);
+    opacity: 0.8;
+}
+
+/* ---------------------------------------------------------- */
+/* Tier name badge on business cards                          */
+/* ---------------------------------------------------------- */
+.business-tier-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.2rem 0.6rem;
+    border-radius: 50rem;
+    background: #6b46c1;
+    /* Vibrant purple */
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------------------------------------------------------- */
+/* Run-order number badge (Small blue circle)                  */
+/* ---------------------------------------------------------- */
+.run-order-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    background: #2563eb;
+    /* Bright blue */
+    color: white;
+    font-weight: 700;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------- */
+/* Action Buttons (Hide/Remove)                               */
+/* ---------------------------------------------------------- */
+.btn-action-remote {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-action-remote:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.remove-biz-remote {
+    color: #ff4d4d;
+    /* Bright red/pink X */
+}
+
+.remove-biz-remote:hover {
+    background: rgba(255, 77, 77, 0.15);
+    border-color: rgba(255, 77, 77, 0.3);
+}
+
+/* ---------------------------------------------------------- */
+/* Notes / Employees Display                                  */
+/* ---------------------------------------------------------- */
+.notes-display-remote {
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    margin-top: 0.5rem;
+    border-left: 3px solid #667eea;
+}
+
+.group-icon-remote {
+    font-size: 1rem;
+    margin-right: 0.25rem;
+}
+
+/* ---------------------------------------------------------- */
+/* Drag-to-Reorder                                            */
+/* ---------------------------------------------------------- */
+.drag-handle {
+    display: none;
+    /* hidden until reorder mode */
+    cursor: grab;
+    color: var(--text-muted, #6c757d);
+    font-size: 1.3rem;
+    padding: 0 0.5rem;
+    flex-shrink: 0;
+    user-select: none;
+    transition: color 0.2s ease;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.reorder-mode .drag-handle {
+    display: flex;
+    align-items: center;
+}
+
+/* Highlight the card being dragged */
+.business-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed #667eea !important;
+    transform: scale(0.98);
+}
+
+/* Ensure consistent business-item look */
+.business-item {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+}
+
+[data-theme="dark"] .business-item {
+    background: #1e1e1e !important;
+    border: 1px solid #333333 !important;
+}
+
+/* Highlight the drop target */
+.business-item.drag-over {
+    border-color: #764ba2 !important;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.08) 100%) !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* Subtle animation twitch on reorder success */
+@keyframes reorderPop {
+    0% {
+        transform: scale(1);
+    }
+
+    40% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.business-item.reorder-pop {
+    animation: reorderPop 0.25s ease;
+}
+
+/* Disable the hover lift while in reorder mode so dragging feels stable */
+.reorder-mode .business-item:hover {
+    transform: none;
+}
+
+/* Reorder mode toggle button — active state */
+.btn-reorder.active {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 10px rgba(17, 153, 142, 0.35) !important;
+}
+
+/* ---------------------------------------------------------- */
+/* Remove-from-list button                                    */
+/* ---------------------------------------------------------- */
+.remove-biz-btn {
+    border-radius: 50rem !important;
+    padding: 0.2rem 0.55rem !important;
+    font-size: 0.8rem !important;
+    line-height: 1.2 !important;
+    opacity: 0.75;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+.remove-biz-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* ---------------------------------------------------------- */
+/* Controls bar (picker + reorder row)                       */
+/* ---------------------------------------------------------- */
+.remote-controls-card {
+    border-radius: 1rem;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.remote-controls-card .section-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+/* ---------------------------------------------------------- */
+/* Empty state                                                */
+/* ---------------------------------------------------------- */
+.empty-run-list {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted, #6c757d);
+}
+
+.empty-run-list .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.empty-run-list p {
+    font-size: 1rem;
+    opacity: 0.75;
+}

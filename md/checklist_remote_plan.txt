@@ -1,0 +1,326 @@
+================================================================================
+  CHECKLISTREMOTE PAGE - AI REFERENCE PLAN
+  Source: implementation_plan.md + walkthrough.md (3e5af82d-5045-4ede-9d51-ad7e60a650ed)
+  Last updated: 2026-03-08  (v5 - Unified Product Sync + Tiered Keys)
+================================================================================
+
+OVERVIEW
+--------
+ChecklistRemote.html is a personalised run-list builder for a remote player.
+It mirrors checklist.html feature-for-feature (Money, Stock, Product selector,
+Collection, Notes, FAB actions) but replaces the tier-grouped layout with:
+
+  - A FLAT LIST of businesses in a custom run order
+  - An on-site BUSINESS PICKER (autocomplete search)
+  - DRAG-TO-REORDER cards (HTML5 Drag & Drop)
+  - RUN ORDER persisted via checklist-remote-order-config.js
+  - REAL-TIME SYNC with checklist.html (Storage Event Listener)
+  - COLLAPSIBLE "All Business Summary" aggregating product needs
+
+Only OPEN businesses appear (same filter as checklist.html).
+Placeholder Business Name entries are always excluded.
+
+================================================================================
+FILE MAP
+================================================================================
+
+HTML
+----
+  checklistremote.html
+    Path : c:\Users\Fire0x\Desktop\TheTycoon\checklistremote.html
+    Notes: Same navbar/footer/FAB shell as checklist.html.
+           Loads shared CSS (checklist.css) + own CSS (checklist-remote.css).
+           Reuses js/pages/checklist/checklist-time.js for clocks.
+           Script load order:
+             1. checklist-remote-order-config.js
+             2. checklist-remote-config.js
+             3. checklist-remote-core.js
+             4. checklist-remote-ui.js
+             5. checklist-remote-progress.js
+             6. checklist/checklist-time.js   (shared)
+             7. checklist-remote-main.js
+
+CSS
+---
+  checklist-remote.css
+    Path : c:\Users\Fire0x\Desktop\TheTycoon\css\checklist-remote\checklist-remote.css
+    Notes: Extends checklist.css. Adds:
+             .biz-picker-wrapper / .biz-picker-dropdown / .biz-picker-item
+             .picker-code / .picker-name / .picker-tier
+             .run-order-badge            (numbered position badge per card)
+             .drag-handle                (hidden until reorder mode)
+             .dragging / .drag-over      (drag-and-drop visual states)
+             .reorder-mode               (class on container; shows drag handles)
+             .btn-reorder.active         (green when reorder mode is ON)
+             .remove-biz-btn             (remove-from-list button on each card)
+             .business-tier-badge        (inline purple pill: "Tier N: Name" shown after business code on cards)
+             .remote-controls-card       (picker + reorder row wrapper)
+             .empty-run-list             (empty state display)
+
+JS MODULES
+----------
+
+1. checklist-remote-order-config.js
+   Path : c:\Users\Fire0x\Desktop\TheTycoon\js\pages\checklist-remote\checklist-remote-order-config.js
+   Role : OWNS the run list and its order. All reads/writes go through here.
+   Key  : localStorage key = 'checklistRemoteRunList'  (JSON array of codes)
+   API  :
+     window.getRemoteRunList()          -> string[]   ordered business codes
+     window.saveRemoteRunList(arr)      -> void        overwrites full list
+     window.addToRunList(code)          -> boolean     appends (no duplicates)
+     window.removeFromRunList(code)     -> void        removes one code
+     window.reorderRunList(arr)         -> void        replaces order after drag
+
+2. checklist-remote-config.js
+   Path : c:\Users\Fire0x\Desktop\TheTycoon\js\pages\checklist-remote\checklist-remote-config.js
+   Role : General constants + runtime data cache. No order logic here.
+   API  :
+     window.allOpenBusinesses           -> object map  businessCode -> enriched object
+     window.getRemoteTierColorClass(n)  -> string      CSS class for tier header
+
+3. checklist-remote-core.js
+   Path : c:\Users\Fire0x\Desktop\TheTycoon\js\pages\checklist-remote\checklist-remote-core.js
+   Role : Data loading from APIs.
+   Fetches (parallel):
+     GET /n/businesses   -> all businesses (filters to status==='Open' only)
+     GET /n/employees    -> all employees
+     GET /api/n/tiers    -> all tiers (used to populate tier_name, tier_number)
+   Populates window.allOpenBusinesses with enriched objects:
+     {
+       business_code, business_name,
+       tier_id, tier_number, tier_name,   <- tier_name/tier_number added for picker search + card badge
+       status, can_collect_items,
+       storage_capacity, collection_storage,
+       checklist_product_id,
+       employees: [{ name }]
+     }
+   After populating, calls window.buildRemoteChecklist().
+
+4. checklist-remote-ui.js
+   Path : c:\Users\Fire0x\Desktop\TheTycoon\js\pages\checklist-remote\checklist-remote-ui.js
+   Role : All rendering and interaction.
+   Key functions:
+     window.buildRemoteChecklist()
+       Reads getRemoteRunList(), renders a card per code in order.
+       Each card:
+         run-order badge | drag handle | checkbox
+         .business-code + .business-tier-badge ("Tier N: Name") + .business-name
+         employees row
+         Money / Stock / Product / Collection (if applicable) / Notes
+         hide-eye button | remove button
+       After render: loadRemoteProgress() -> _populateAllProductSelectors()
+       Note: .business-tier-badge only rendered when biz.tier_name is truthy.
+
+     window.initBusinessPicker()
+       Wires #bizPickerInput. On input:
+         Searches allOpenBusinesses by:
+           - business_code  (substring, case-insensitive)
+           - business_name  (substring, case-insensitive)
+           - tier_number    (e.g. typing "2" matches all Tier 2 businesses)
+           - tier_name      (e.g. typing "Toll" matches Toll Booth businesses)
+         Shows up to 20 results. Each result shows:
+           <code> - <name> . Tier N: <tier_name>
+         Click -> addToRunList() -> buildRemoteChecklist() -> scroll to new card.
+         Already-in-list duplicates flash the existing card instead of adding.
+
+     window.toggleReorderMode()
+       Toggles _reorderMode flag.
+       When ON : adds .reorder-mode to container, enables drag events on cards.
+       When OFF: removes .reorder-mode, disables drag events.
+       On drop  : updates DOM order, calls reorderRunList(newOrder),
+                  updates .run-order-badge numbers.
+
+     window.calculateRemoteStockNeeded(code, maxStock)
+       Mirrors checklist-calculations.js logic exactly.
+       Reads .stock-target-input, writes to #stock-needed-{code}.
+
+      window.handleRemoteProductSelection(code)
+        Saves product selection to localStorage ('checklistProductTracking')
+        using tiered structure: { "Tier": { "Code": "ID" } }.
+        Also PATCHes /api/n/businesses/{code} with checklist_product_id.
+
+      _restoreRemoteProductTracking()
+        Restores selections from the tiered 'checklistProductTracking' key.
+        Refreshed via 'storage' event for real-time sync.
+
+      window.clearRemoteProducts()
+        Resets all product selectors, clears relevant entries from
+        'checklistProductTracking', and PATCHes DB.
+
+     window.calculateAllBusinessSummary()
+       Aggregates product needs across all businesses in the run list.
+       Excludes checked or hidden businesses. Renders to #allBusinessSummaryBody.
+
+     window.toggleRemoteBusinessVisibility(button)
+       Hides/shows a business item (does not remove from run list).
+
+      window.toggleFabMenu()
+        Standard FAB open/close (matches checklist-ui.js).
+
+      window.showAllRemoteBusinesses()
+        Unhides all business cards in the current run list and saves progress.
+
+      window.scrollToTop() / window.scrollToBottom()
+        Utility functions to quickly navigate the list.
+
+     window.escapeRemoteHtml(text)
+       XSS helper. Defined at bottom of ui.js as window.escapeRemoteHtml.
+
+   Product loading:
+     _populateAllProductSelectors()
+       Groups selectors by data-tier-id, fetches /api/n/tiers/{id}/products once
+       per tier (cached in _productCache), populates <select> options.
+       Then restores selections: DB first -> localStorage override.
+
+5. checklist-remote-progress.js
+   Path : c:\Users\Fire0x\Desktop\TheTycoon\js\pages\checklist-remote\checklist-remote-progress.js
+   Role : Save / load / clear progress. Unified with main checklist.
+   Key  : localStorage key = 'businessChecklist' (SHARED KEY)
+          Progress keys: Tier Name::Business Code (Unified Format)
+   Saves: checkbox, money, stockTarget, collection, notes, hidden state.
+   API  :
+     window.saveRemoteProgress()
+     window.loadRemoteProgress()
+     window.clearRemoteProgress()    -> keeps run list order, resets all fields
+     window.checkAllRemote()
+     window.uncheckAllRemote()
+
+6. checklist-remote-main.js
+   Path : c:\Users\Fire0x\Desktop\TheTycoon\js\pages\checklist-remote\checklist-remote-main.js
+   Role : Page init, DebugManager, event delegation.
+   Debug: new DebugManager('checklistRemote') -> window.debug
+          Prefix: [CHECKLISTREMOTE DEBUG]
+          localStorage key: 'checklistRemoteDebugMode'
+   DOMContentLoaded:
+     initRemoteHowToUseCollapse()
+     initBusinessPicker()
+     updateTimes() + setInterval(updateTimes, 1000)
+     loadRemoteBusinessData()
+   Sync:
+     window.addEventListener('storage', ...)
+      Detects changes in 'businessChecklist' (progress) or
+      'checklistProductTracking' (products); calls restoration logic
+      and calculateAllBusinessSummary() instantly.
+   Delegated events:
+     input[type=checkbox] change -> saveRemoteProgress()
+     .notes-input / .money-input / .collection-input / .stock-target-input input
+       -> debounced (500ms) saveRemoteProgress()
+     .hide-business-btn click -> toggleRemoteBusinessVisibility()
+     .remove-biz-btn click    -> removeFromRunList() + buildRemoteChecklist()
+
+================================================================================
+LOCALSTORAGE KEYS
+================================================================================
+
+  checklistRemoteRunList          JSON array of business codes in run order
+  businessChecklist               Progress per business (checkbox/money/stockTarget/
+                                  collection/notes/hidden). SHARED with checklist.html.
+  checklistProductTracking        Product selector value per business code. 
+                                  Tiered structure: { "Tier Name": { "Business Code": "ID" } }.
+                                  SHARED with checklist.html.
+  checklistRemoteDebugMode        "true" / "false"
+  checklistRemote_how_to_use_expanded  "true" / "false"
+
+================================================================================
+API ENDPOINTS USED
+================================================================================
+
+  GET  /n/businesses                     All businesses (filter: status=Open)
+  GET  /n/employees                      All employees
+  GET  /api/n/tiers                      All tiers (for tier_name + tier_number mapping)
+  GET  /api/n/tiers/{tierId}/products    Products for a specific tier
+  PATCH /api/n/businesses/{code}         Save checklist_product_id to DB
+
+================================================================================
+BUSINESS CARD STRUCTURE (HTML)
+================================================================================
+
+  .business-item  [data-business-code] [data-tier-id]
+    .d-flex
+      .drag-handle            <- only visible in reorder mode
+      .run-order-badge        <- position number (1, 2, 3 ...)
+      .flex-grow-1
+        .d-flex (header row)
+          label > input[checkbox]
+                 + .business-code
+                 + .business-tier-badge   <- "Tier N: Name" purple pill (if tier_name exists)
+                 + .business-name
+          .d-flex (buttons)
+            .hide-business-btn   [data-business-code]
+            .remove-biz-btn      [data-business-code]
+        .employees row
+        .row.g-2 (fields)
+          Money        -> .money-input         [data-business-code]
+          Stock        -> .stock-target-input  [data-business-code] [data-max-stock]
+          Stock display -> #stock-needed-{code}
+          Product      -> .product-selector    [data-business-code] [data-tier-id]
+          Collection   -> .collection-input    [data-business-code]  (if applicable)
+          Notes        -> .notes-input         [data-business-code]
+
+================================================================================
+FEATURE DIFFERENCES vs checklist.html
+================================================================================
+
+  SAME:
+    - Money, Stock (max/needed calc), Product selector, Collection, Notes
+    - FAB: Check All, Uncheck All, Show All, Scroll Top, Scroll Down,
+           Save Progress, Clear Products, Clear Progress, Toggle Debug
+    - Time display (Brisbane + Eastern + Reboot countdown)
+    - Auto-save on input (500ms debounce)
+    - Hide-eye per business
+    - How-to-use collapsible section
+    - DebugManager integration
+
+  DIFFERENT / NEW:
+    - Flat list (no tier group headers)
+    - On-site business picker with autocomplete (search by code, name,
+      tier number, or tier name)
+    - Tier name badge per card ("Tier N: Name" pill after business code)
+    - Drag-to-reorder (Reorder button)
+    - Remove-from-list button per card
+    - Run-order number badge per card
+    - Run list order managed by checklist-remote-order-config.js
+    - REAL-TIME SYNC: Changes in one tab reflect in others instantly via storage events.
+    - ALL BUSINESS SUMMARY: Aggregated product needs for the custom run list.
+
+================================================================================
+CHANGE LOG
+================================================================================
+
+  v1 (2026-03-08) - Initial build
+    All 8 files created. Flat run-list, picker, drag-to-reorder, products,
+    progress, DebugManager, shared time module, FAB menu.
+
+  v2 (2026-03-08) - Tier search in picker
+    core.js  : Also fetches /api/n/tiers; stores tier_number + tier_name on
+               each business in allOpenBusinesses.
+    ui.js    : Picker filter now matches tier_number and tier_name in addition
+               to business_code and business_name.
+               Dropdown results show ". Tier N: Name" sub-label (.picker-tier).
+    css      : Added .picker-tier style.
+
+  v3 (2026-03-08) - Tier name badge on business cards
+    ui.js    : buildRemoteChecklist() now inserts .business-tier-badge
+               ("Tier N: Name") inline after the business code on each card.
+    css      : Added .business-tier-badge style.
+
+  v4 (2026-03-08) - Real-time Sync + All Business Summary
+    main.js     : Added storage event listener for 'businessChecklist' key.
+    progress.js : Changed key to 'businessChecklist', updated to 'Tier::Code' format.
+                  Fields unified (stockTarget). loadRemoteProgress resets UI on clear.
+    ui.js       : Added calculateAllBusinessSummary functionality and integrated
+                  into UI event flow. Renamed file to checklistremote.html.
+    html        : Added collapsible #allBusinessSummaryCard.
+
+  v5 (2026-03-08) - Unified Product Sync + Tiered Keys
+    ui.js       : handleRemoteProductSelection now uses 'checklistProductTracking'
+                  with tiered structure. Added storage listener for real-time
+                  product sync between tabs.
+    products.js : Added storage listener to main checklist products module.
+    Shared      : Both pages now use identical product storage format.
+
+  v6 (2026-03-08) - FAB Extensions
+    html        : Added Show All, Scroll Top, Scroll Down to FAB menus.
+    ui.js       : Added showAllRemoteBusinesses / scrollToTop / scrollToBottom.
+    progress.js : showAllRemoteBusinesses unhides all and saves.
+    checklist   : Mirrored changes to checklist.html/ui.js/progress.js.

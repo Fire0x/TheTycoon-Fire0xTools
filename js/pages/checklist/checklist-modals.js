@@ -517,21 +517,18 @@
         const selectedProduct = selector.options[selector.selectedIndex].text;
         debugManager.log(`Product selection changed:`, { tierName, businessCode, productId, productName: selectedProduct });
 
-        const configData = window.checklistConfigData();
-        const business = (configData.businesses || []).find(b => b.businessCode === businessCode);
-        if (business) {
-            const oldProductId = business.productId;
-            business.productId = productId;
-            debugManager.log(`Updated business product selection:`, { businessCode, oldProductId, newProductId: productId });
-            window.setChecklistConfigData(configData);
-            window.saveConfigToLocalStorage();
-        } else {
-            debugManager.warn(`Business not found: ${businessCode}`);
-        }
+        // Use unified setProductSelection helper
+        window.setProductSelection(tierName, businessCode, productId);
+        debugManager.log(`Updated unified product selection:`, { businessCode, tierName, productId });
 
         debugManager.log(`Triggering tier summary recalculation for ${tierName}`);
         if (typeof window.calculateTierSummary === 'function') {
             window.calculateTierSummary(tierName);
+        }
+
+        // Update product info display label
+        if (typeof window.updateProductInfoDisplay === 'function') {
+            window.updateProductInfoDisplay(tierName, businessCode);
         }
     }
 

@@ -63,6 +63,13 @@
                     const licenses = data.licenses?.length || 0;
                     const jobs = data.jobs?.length || 0;
                     return `${companies} compan${companies !== 1 ? 'ies' : 'y'}, ${licenses} license${licenses !== 1 ? 's' : ''}, ${jobs} job${jobs !== 1 ? 's' : ''}`;
+                case 'checklistTracking':
+                    const tierCount = Object.keys(data).length;
+                    const totalSelected = Object.values(data).reduce((acc, tier) => acc + Object.keys(tier).length, 0);
+                    return `${tierCount} tier${tierCount !== 1 ? 's' : ''}, ${totalSelected} product selection${totalSelected !== 1 ? 's' : ''}`;
+                case 'checklistRunList':
+                    const runListCount = Array.isArray(data) ? data.length : 0;
+                    return `${runListCount} custom business${runListCount !== 1 ? 'es' : ''} in run list`;
                 default:
                     return 'Data present';
             }
@@ -110,7 +117,9 @@
             vehicles: { name: 'Vehicle Deliveries', icon: '🚗' },
             education: { name: 'Education', icon: '⏱️' },
             fishing: { name: 'Fishing', icon: '🎣' },
-            logistics: { name: 'Logistics', icon: '🚚' }
+            logistics: { name: 'Logistics', icon: '🚚' },
+            checklistTracking: { name: 'Checklist Progress', icon: '📈' },
+            checklistRunList: { name: 'Remote Run List', icon: '🏃' }
         };
 
         const hashes = core.calculateAllHashes();
