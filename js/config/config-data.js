@@ -101,14 +101,14 @@ const ConfigData = {
     },
 
     // Website overall version
-    websiteVersion: '1.1.4',
+    websiteVersion: '1.1.5',
 
     // Individual page versions
     pageVersions: {
         'index.html': '0.0.6',
         'Info.html': '0.1.2',
         'merchants.html': '0.1.1',
-        'checklist.html': '0.2.6',
+        'checklist.html': '0.2.7',
         'VehicleDeliveries.html': '1.1.1',
         'education_timer.html': '0.1.3',
         'apartment.html': '0.1.5',

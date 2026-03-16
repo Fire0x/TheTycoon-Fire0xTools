@@ -105,6 +105,7 @@
         let checkedCount = 0;
         let skippedCount = 0;
         let processedCount = 0;
+        let tierMoneyTotal = 0;
         
         businesses.forEach(businessItem => {
             const businessCode = businessItem.dataset.businessCode;
@@ -116,7 +117,16 @@
                 debugManager.log(`Business ${businessCode}: Checkbox is checked - skipping from total calculation`);
                 return;
             }
-            
+
+            // Get money value - do this before product check to include all money
+            const moneyInput = businessItem.querySelector(`.money-input[data-tier="${tierName}"][data-business-code="${businessCode}"]`);
+            let moneyAmount = 0;
+            if (moneyInput) {
+                const moneyValue = moneyInput.value.replace(/,/g, '');
+                moneyAmount = parseFloat(moneyValue) || 0;
+            }
+            tierMoneyTotal += moneyAmount;
+
             const productSelector = businessItem.querySelector(`.product-selector[data-tier="${tierName}"][data-business-code="${businessCode}"]`);
             const stockNeededDisplay = document.getElementById(`stock-needed-${tierName}-${businessCode}`);
             
@@ -145,13 +155,14 @@
                 }
             }
             
-            debugManager.log(`Business ${businessCode}: Product="${productName}", StockNeeded=${stockNeeded}`);
+            debugManager.log(`Business ${businessCode}: Product="${productName}", StockNeeded=${stockNeeded}, Money=${moneyAmount}`);
             
             // Initialize product in map if not exists
             if (!productMap[productName]) {
                 productMap[productName] = {
                     productId: productId,
                     totalNeeded: 0,
+                    totalMoney: 0,
                     businesses: []
                 };
             }
@@ -160,9 +171,13 @@
             if (stockNeeded > 0) {
                 productMap[productName].totalNeeded += stockNeeded;
             }
+            // Add money to product total
+            productMap[productName].totalMoney += moneyAmount;
+
             productMap[productName].businesses.push({
                 code: businessCode,
-                needed: stockNeeded
+                needed: stockNeeded,
+                money: moneyAmount
             });
         });
         
@@ -180,27 +195,44 @@
         const summaryFooter = document.getElementById(`tier-summary-footer-${tierName}`);
         if (Object.keys(productMap).length === 0) {
             summaryBody.innerHTML = '<tr><td colspan="2" class="text-center text-muted">No products selected yet</td></tr>';
-            if (summaryFooter) {
+            
+            // Still render the footer if we have money!
+            if (summaryFooter && tierMoneyTotal > 0) {
+                summaryFooter.innerHTML = `
+                    <tr style="background-color: rgba(102, 126, 234, 0.1);">
+                        <td><strong>Grand Total (Stock)</strong></td>
+                        <td class="text-end"><strong style="font-size: 1.1em;">0</strong></td>
+                    </tr>
+                    <tr style="background-color: rgba(102, 126, 234, 0.05);">
+                        <td><strong>Funds to Collect</strong></td>
+                        <td class="text-end"><strong style="color: #11998e;">$${tierMoneyTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+                    </tr>
+                `;
+            } else if (summaryFooter) {
                 summaryFooter.innerHTML = '';
             }
-            debugManager.log(`No products found for tier ${tierName}`);
+            
+            debugManager.log(`No products found for tier ${tierName}, but money total is ${tierMoneyTotal}`);
             if (typeof calculateAllBusinessSummary === 'function') {
                 calculateAllBusinessSummary();
             }
             return;
         }
         
-        // Calculate grand total
-        let grandTotal = 0;
+        // Calculate grand totals
+        let grandTotalStock = 0;
+        let grandTotalMoney = 0;
         const productNames = Object.keys(productMap);
         const sortedProducts = getProductsInOrder(productNames);
         
         summaryBody.innerHTML = sortedProducts.map(productName => {
             const productData = productMap[productName];
             const totalNeeded = productData.totalNeeded;
-            grandTotal += totalNeeded;
+            const totalMoney = productData.totalMoney;
+            grandTotalStock += totalNeeded;
+            grandTotalMoney += totalMoney;
             
-            debugManager.log(`Product "${productName}": totalNeeded=${totalNeeded}`);
+            debugManager.log(`Product "${productName}": totalNeeded=${totalNeeded}, totalMoney=${totalMoney}`);
             
             return `
                 <tr>
@@ -216,13 +248,17 @@
         if (summaryFooter) {
             summaryFooter.innerHTML = `
                 <tr style="background-color: rgba(102, 126, 234, 0.1);">
-                    <td><strong>Grand Total</strong></td>
-                    <td class="text-end"><strong style="font-size: 1.1em;">${grandTotal.toLocaleString('en-US')}</strong></td>
+                    <td><strong>Grand Total (Stock)</strong></td>
+                    <td class="text-end"><strong style="font-size: 1.1em;">${grandTotalStock.toLocaleString('en-US')}</strong></td>
+                </tr>
+                <tr style="background-color: rgba(102, 126, 234, 0.05);">
+                    <td><strong>Funds to Collect</strong></td>
+                    <td class="text-end"><strong style="color: #11998e;">$${tierMoneyTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
                 </tr>
             `;
         }
         
-        debugManager.log(`Tier summary grand total for ${tierName}: ${grandTotal}`);
+        debugManager.log(`Tier summary for ${tierName}: stock=${grandTotalStock}, money=${grandTotalMoney}`);
         debugManager.log(`=== calculateTierSummary END for tier: ${tierName} ===`);
         
         // Recalculate all business summary after tier summary is updated
@@ -254,14 +290,16 @@
             summaryCard.style.display = 'none';
             return;
         }
-        
+
         let totalChecked = 0;
         let totalProcessed = 0;
         let totalSkipped = 0;
+        const tierMoneyTotalsDirect = {}; // To store money total per tier independently of products
         
         tiers.forEach(tier => {
             const tierName = tier.name;
             tierNames.push(tierName);
+            tierMoneyTotalsDirect[tierName] = 0;
             
             // Get all businesses for this tier
             const businesses = document.querySelectorAll(`.business-item[data-tier="${tierName}"]`);
@@ -277,6 +315,15 @@
                     return;
                 }
                 
+                // Get money value - do this before product check
+                const moneyInput = businessItem.querySelector(`.money-input[data-tier="${tierName}"][data-business-code="${businessCode}"]`);
+                let moneyAmount = 0;
+                if (moneyInput) {
+                    const moneyValue = moneyInput.value.replace(/,/g, '');
+                    moneyAmount = parseFloat(moneyValue) || 0;
+                }
+                tierMoneyTotalsDirect[tierName] += moneyAmount;
+
                 const productSelector = businessItem.querySelector(`.product-selector[data-tier="${tierName}"][data-business-code="${businessCode}"]`);
                 const stockNeededDisplay = document.getElementById(`stock-needed-${tierName}-${businessCode}`);
                 
@@ -308,7 +355,9 @@
                 if (!allProductsMap[productName]) {
                     allProductsMap[productName] = {
                         tiers: {},
-                        grandTotal: 0
+                        grandTotal: 0,
+                        moneyTiers: {},
+                        grandTotalMoney: 0
                     };
                 }
                 
@@ -316,12 +365,19 @@
                 if (!allProductsMap[productName].tiers[tierName]) {
                     allProductsMap[productName].tiers[tierName] = 0;
                 }
+                if (!allProductsMap[productName].moneyTiers[tierName]) {
+                    allProductsMap[productName].moneyTiers[tierName] = 0;
+                }
                 
                 // Add to tier total and grand total
                 if (stockNeeded > 0) {
                     allProductsMap[productName].tiers[tierName] += stockNeeded;
                     allProductsMap[productName].grandTotal += stockNeeded;
                 }
+                
+                // Add money
+                allProductsMap[productName].moneyTiers[tierName] += moneyAmount;
+                allProductsMap[productName].grandTotalMoney += moneyAmount;
             });
         });
         
@@ -335,13 +391,46 @@
         });
         debugManager.log(`All products map:`, allProductsMap);
         
+        // Check if there are any money totals
+        const overallMoneyTotalDirect = Object.values(tierMoneyTotalsDirect).reduce((a, b) => a + b, 0);
+
         // Check if there are any products
         if (Object.keys(allProductsMap).length === 0) {
             const colspan = tierNames.length + 2;
             summaryBody.innerHTML = `<tr><td colspan="${colspan}" class="text-center text-muted">No products selected yet</td></tr>`;
-            summaryFooter.innerHTML = '';
-            summaryCard.style.display = 'none';
-            debugManager.log(`No products found across all tiers`);
+            
+            // Still render the footer if we have money!
+            if (summaryFooter && overallMoneyTotalDirect > 0) {
+                summaryCard.style.display = 'block';
+                // Rebuild tier header columns
+                const tierHeaderCells = tierNames.map(tierName => 
+                    `<th class="text-end">${window.escapeHtml(tierName)}</th>`
+                ).join('');
+                headerRow.innerHTML = `<th>Product Name</th>${tierHeaderCells}<th class="text-end"><strong>Grand Total</strong></th>`;
+
+                const tierMoneyTotalCells = tierNames.map(tierName => {
+                    const total = tierMoneyTotalsDirect[tierName];
+                    return `<td class="text-end"><strong style="color: #11998e;">${total > 0 ? '$' + total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</strong></td>`;
+                }).join('');
+
+                summaryFooter.innerHTML = `
+                    <tr style="background-color: rgba(102, 126, 234, 0.1);">
+                        <td><strong>Grand Total (Stock)</strong></td>
+                        ${tierNames.map(() => '<td class="text-end"><strong>-</strong></td>').join('')}
+                        <td class="text-end"><strong style="font-size: 1.1em;">0</strong></td>
+                    </tr>
+                    <tr style="background-color: rgba(102, 126, 234, 0.05);">
+                        <td><strong>Funds to Collect</strong></td>
+                        ${tierMoneyTotalCells}
+                        <td class="text-end"><strong style="color: #11998e; font-size: 1.1em;">$${overallMoneyTotalDirect.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+                    </tr>
+                `;
+            } else {
+                summaryFooter.innerHTML = '';
+                summaryCard.style.display = 'none';
+            }
+            
+            debugManager.log(`No products found across all tiers, but overall money total is ${overallMoneyTotalDirect}`);
             return;
         }
         
@@ -375,10 +464,12 @@
         
         // Calculate grand totals for each tier and overall
         const tierGrandTotals = {};
+        const tierMoneyTotals = {};
         let overallGrandTotal = 0;
         
         tierNames.forEach(tierName => {
             tierGrandTotals[tierName] = 0;
+            tierMoneyTotals[tierName] = 0;
         });
         
         sortedProducts.forEach(productName => {
@@ -386,28 +477,44 @@
             tierNames.forEach(tierName => {
                 const tierTotal = productData.tiers[tierName] || 0;
                 tierGrandTotals[tierName] += tierTotal;
+                
+                const tierMoney = productData.moneyTiers[tierName] || 0;
+                tierMoneyTotals[tierName] += tierMoney;
             });
             overallGrandTotal += productData.grandTotal;
         });
         
-        // Build grand total footer row
+        const overallMoneyTotal = overallMoneyTotalDirect;
+        
+        // Build grand total rows
         const tierGrandTotalCells = tierNames.map(tierName => {
             const total = tierGrandTotals[tierName];
             return `<td class="text-end"><strong>${total > 0 ? total.toLocaleString('en-US') : '-'}</strong></td>`;
         }).join('');
         
+        const tierMoneyTotalCells = tierNames.map(tierName => {
+            const total = tierMoneyTotalsDirect[tierName];
+            return `<td class="text-end"><strong style="color: #11998e;">${total > 0 ? '$' + total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</strong></td>`;
+        }).join('');
+        
         summaryFooter.innerHTML = `
             <tr style="background-color: rgba(102, 126, 234, 0.1);">
-                <td><strong>Grand Total</strong></td>
+                <td><strong>Grand Total (Stock)</strong></td>
                 ${tierGrandTotalCells}
                 <td class="text-end"><strong style="font-size: 1.1em;">${overallGrandTotal.toLocaleString('en-US')}</strong></td>
+            </tr>
+            <tr style="background-color: rgba(102, 126, 234, 0.05);">
+                <td><strong>Funds to Collect</strong></td>
+                ${tierMoneyTotalCells}
+                <td class="text-end"><strong style="color: #11998e; font-size: 1.1em;">$${overallMoneyTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
             </tr>
         `;
         
         debugManager.log(`All business summary complete:`, {
             totalTiers: tierNames.length,
             totalProducts: sortedProducts.length,
-            overallGrandTotal
+            overallGrandTotal,
+            overallMoneyTotal
         });
         debugManager.log(`=== calculateAllBusinessSummary END ===`);
     }

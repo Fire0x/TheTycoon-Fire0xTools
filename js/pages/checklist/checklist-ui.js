@@ -238,10 +238,20 @@
             e.target.classList.contains('money-input') ||
             e.target.classList.contains('stock-input') ||
             e.target.classList.contains('collection-input')) {
+            
+            const isMoneyInput = e.target.classList.contains('money-input');
+            const tierName = e.target.dataset.tier;
+
             clearTimeout(inputTimeout);
             inputTimeout = setTimeout(() => {
                 if (typeof window.saveProgress === 'function') {
                     window.saveProgress();
+                }
+
+                // If money input changed, recalculate tier summary
+                if (isMoneyInput && tierName && typeof window.calculateTierSummary === 'function') {
+                    debugManager.log(`Money input changed for tier ${tierName} - recalculating tier summary`);
+                    window.calculateTierSummary(tierName);
                 }
             }, 500); // Save 500ms after user stops typing
         }
