@@ -101,7 +101,7 @@ const ConfigData = {
     },
 
     // Website overall version
-    websiteVersion: '1.1.5',
+    websiteVersion: '1.1.6',
 
     // Individual page versions
     pageVersions: {
@@ -119,7 +119,7 @@ const ConfigData = {
         'fishing.html': '0.0.2',
         'logistics.html': '0.0.6',
         'mining.html': '0.0.1',
-        'checklistremote.html': '0.0.4'
+        'checklistremote.html': '0.0.3'
     }
 };
 

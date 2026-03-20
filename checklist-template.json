@@ -215,14 +215,14 @@
       "productName": "Wine Grape Seeds 🍇"
     }
   ],
-  "productOrder": [],
   "checklistRunList": [
     "TIER1-BIZ01"
   ],
   "checklistTracking": {
+    "AllBusinessSummaryProductOrder": [],
     "Tier 1: Fruit Stand": {
       "TIER1-BIZ01": 1
     }
   },
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

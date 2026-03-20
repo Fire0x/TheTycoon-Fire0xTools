@@ -830,7 +830,7 @@
         productOrderList.innerHTML = '';
         debugManager.log('Cleared product order list');
 
-        const productOrder = configData.productOrder || [];
+        const productOrder = window.getProductOrder ? window.getProductOrder() : [];
         debugManager.log(`Current product order:`, productOrder);
         const orderedProducts = [];
         const unorderedProducts = [];
@@ -1029,12 +1029,12 @@
         debugManager.log(`Product order (by name):`, productNamesInOrder);
         debugManager.log(`Product order (by ID):`, productOrder);
 
-        const oldOrder = configData.productOrder || [];
-        const updatedConfig = { ...configData };
-        updatedConfig.productOrder = productOrder;
-
-        window.setChecklistConfigData(updatedConfig);
-        window.saveConfigToLocalStorage();
+        const oldOrder = window.getProductOrder ? window.getProductOrder() : [];
+        
+        if (window.setProductOrder) {
+            window.setProductOrder(productOrder);
+        }
+        
         debugManager.log(`✅ Saved product order:`, {
             oldOrder: oldOrder,
             newOrder: productOrder,
@@ -1199,20 +1199,18 @@
 
     function resetProductOrder() {
         debugManager.log(`=== resetProductOrder START ===`);
-        const configData = window.checklistConfigData();
-        const oldOrder = configData.productOrder || [];
+        const oldOrder = window.getProductOrder ? window.getProductOrder() : [];
         debugManager.log(`Current product order:`, oldOrder);
-
+ 
         if (!confirm('Reset product order to alphabetical? This will remove your custom ordering.')) {
             debugManager.log('Reset cancelled by user');
             return;
         }
-
-        const updatedConfig = { ...configData };
-        updatedConfig.productOrder = [];
-
-        window.setChecklistConfigData(updatedConfig);
-        window.saveConfigToLocalStorage();
+ 
+        if (window.setProductOrder) {
+            window.setProductOrder([]);
+        }
+        
         debugManager.log('✅ Reset product order to alphabetical', {
             oldOrder: oldOrder,
             newOrder: []
@@ -1269,7 +1267,7 @@
         if (runList) exportObj.checklistRunList = runList;
 
         // Add version at the very end
-        exportObj.version = version || '1.0.2';
+        exportObj.version = version || '1.0.3';
 
         debugManager.log('Exporting configuration:', {
             tiers: configData.tiers?.length || 0,
@@ -1424,16 +1422,27 @@
                 imported.products = [];
             }
 
-            if (!imported.productOrder || !Array.isArray(imported.productOrder)) {
-                debugManager.log('No productOrder array found, initializing empty array');
-                imported.productOrder = [];
+            // Support legacy productOrder name during import
+            const importedOrder = imported.AllBusinessSummaryProductOrder || imported.productOrder;
+            if (importedOrder && Array.isArray(importedOrder)) {
+                imported.AllBusinessSummaryProductOrder = [...importedOrder];
+                if (imported.productOrder) delete imported.productOrder;
+            } else {
+                debugManager.log('No AllBusinessSummaryProductOrder array found, initializing empty array');
+                imported.AllBusinessSummaryProductOrder = [];
             }
 
             // Restore product tracking if bundled in the same JSON
             if (imported.checklistTracking && typeof imported.checklistTracking === 'object') {
                 try {
+                    // Migrate productOrder key within tracking if it exists
+                    if (imported.checklistTracking.productOrder && !imported.checklistTracking.AllBusinessSummaryProductOrder) {
+                        imported.checklistTracking.AllBusinessSummaryProductOrder = [...imported.checklistTracking.productOrder];
+                        delete imported.checklistTracking.productOrder;
+                    }
+                    
                     localStorage.setItem('checklistProductTracking', JSON.stringify(imported.checklistTracking));
-                    debugManager.log('✅ Restored checklistProductTracking from import');
+                    debugManager.log('✅ Restored checklistProductTracking from import (with migration if needed)');
                 } catch (e) {
                     debugManager.warn('Could not restore checklistProductTracking:', e);
                 }

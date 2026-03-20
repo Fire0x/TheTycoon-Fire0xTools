@@ -6,6 +6,7 @@
 
 // ─── Reorder mode state ────────────────────────────────────────────────────
 let _reorderMode = false;
+let _summaryReorderMode = false;
 
 // ─── Build / Rebuild the checklist ────────────────────────────────────────
 window.buildRemoteChecklist = function () {
@@ -294,10 +295,65 @@ function _restoreProductSelectionsFromLocalStorage() {
 // Update on storage change for products (sync between tabs)
 window.addEventListener('storage', function (e) {
     if (e.key === 'checklistProductTracking') {
-        if (window.debug) window.debug.log('🔄 Product tracking storage change detected: Updating dropdowns (Remote)');
+        if (window.debug) window.debug.log('🔄 Product tracking storage change detected: Updating dropdowns and summary (Remote)');
         _restoreProductSelectionsFromLocalStorage();
+        if (typeof window.calculateAllBusinessSummary === 'function') {
+            window.calculateAllBusinessSummary();
+        }
     }
 });
+
+function applySortByTier() {
+    if (!window.getProductsSortedByTier || !window.setProductOrder) return;
+    
+    const sortedIds = window.getProductsSortedByTier();
+    if (sortedIds && sortedIds.length > 0) {
+        if (window.debug) window.debug.log('⚖️ Applying "Sort by Tier" order (Remote):', sortedIds);
+        window.setProductOrder(sortedIds);
+        window.calculateAllBusinessSummary();
+    }
+}
+window.applySortByTier = applySortByTier;
+
+function toggleSummaryReorderMode() {
+    _summaryReorderMode = !_summaryReorderMode;
+    if (window.debug) window.debug.log(`🔀 Summary Reorder Mode (Remote): ${_summaryReorderMode ? 'ON' : 'OFF'}`);
+    window.calculateAllBusinessSummary();
+}
+window.toggleSummaryReorderMode = toggleSummaryReorderMode;
+
+function copySummaryToClipboard() {
+    const table = document.querySelector('#allBusinessSummaryCard table');
+    if (!table) return;
+
+    let rows = Array.from(table.querySelectorAll('tr'));
+    let text = rows.map(row => {
+        let cells = Array.from(row.querySelectorAll('th, td'));
+        return cells.map(cell => cell.innerText.trim()).join('\t');
+    }).join('\n');
+
+    navigator.clipboard.writeText(text).then(() => {
+        if (window.debug) window.debug.log('📋 Summary copied to clipboard (Remote)');
+        const copyBtn = document.getElementById('summaryCopyBtn');
+        if (copyBtn) {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '✅ Copied!';
+            setTimeout(() => { copyBtn.innerHTML = originalText; }, 2000);
+        }
+    }).catch(err => {
+        if (window.debug) window.debug.error('Failed to copy summary (Remote):', err);
+    });
+}
+window.copySummaryToClipboard = copySummaryToClipboard;
+
+function applyAlphabeticalSort() {
+    if (!window.setProductOrder) return;
+    if (window.debug) window.debug.log('🔤 Applying "Alphabetical" order (Remote Reset)');
+    window.setProductOrder([]); // Resetting to empty triggers alphabetical fallback
+    window.calculateAllBusinessSummary();
+}
+
+window.applyAlphabeticalSort = applyAlphabeticalSort;
 
 window.handleRemoteProductSelection = function (code) {
     const sel = document.querySelector(`.product-selector[data-business-code="${code}"]`);
@@ -609,6 +665,93 @@ window.escapeRemoteHtml = function (text) {
         .replace(/'/g, '&#039;');
 };
 
+// --- Summary Table Drag and Drop ---
+let _summaryDragSrc = null;
+
+function _onSummaryDragStart(e) {
+    this.classList.add('dragging');
+    _summaryDragSrc = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', this.dataset.productName);
+}
+
+function _onSummaryDragOver(e) {
+    if (e.preventDefault) e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    this.classList.add('drag-over');
+    return false;
+}
+
+function _onSummaryDragLeave() {
+    this.classList.remove('drag-over');
+}
+
+function _onSummaryDrop(e) {
+    if (e.stopPropagation) e.stopPropagation();
+    
+    if (_summaryDragSrc !== this) {
+        const allRows = Array.from(this.parentNode.children);
+        const srcIdx = allRows.indexOf(_summaryDragSrc);
+        const targetIdx = allRows.indexOf(this);
+        
+        if (srcIdx < targetIdx) {
+            this.parentNode.insertBefore(_summaryDragSrc, this.nextSibling);
+        } else {
+            this.parentNode.insertBefore(_summaryDragSrc, this);
+        }
+        
+        _saveNewProductOrderFromSummary();
+    }
+    return false;
+}
+
+function _onSummaryDragEnd() {
+    document.querySelectorAll('#allBusinessSummaryBody tr').forEach(row => {
+        row.classList.remove('dragging', 'drag-over');
+    });
+    _summaryDragSrc = null;
+}
+
+function _saveNewProductOrderFromSummary() {
+    const rows = document.querySelectorAll('#allBusinessSummaryBody tr');
+    const newOrder = [];
+    rows.forEach(row => {
+        const productId = row.dataset.productId;
+        if (productId) {
+            newOrder.push(parseInt(productId));
+        }
+    });
+    
+    if (newOrder.length > 0) {
+        if (window.debug) window.debug.log('💾 Saving new product order (Remote):', newOrder);
+        if (window.setProductOrder) {
+            window.setProductOrder(newOrder);
+            // Refresh to ensure order is locked in
+            window.calculateAllBusinessSummary();
+        }
+    }
+}
+
+function _addSummaryDragHandlers(container) {
+    const rows = container.querySelectorAll('tr[draggable="true"]');
+    rows.forEach(row => {
+        row.addEventListener('dragstart', _onSummaryDragStart, false);
+        row.addEventListener('dragover', _onSummaryDragOver, false);
+        row.addEventListener('dragleave', _onSummaryDragLeave, false);
+        row.addEventListener('drop', _onSummaryDrop, false);
+        row.addEventListener('dragend', _onSummaryDragEnd, false);
+    });
+}
+
+// Inject styles
+const summaryDragStyle = document.createElement('style');
+summaryDragStyle.textContent = `
+    #allBusinessSummaryBody tr[draggable="true"] { cursor: move; }
+    #allBusinessSummaryBody tr.dragging { opacity: 0.5; background-color: rgba(102, 126, 234, 0.1); }
+    #allBusinessSummaryBody tr.drag-over { border-top: 2px solid #667eea; }
+`;
+document.head.appendChild(summaryDragStyle);
+
 // ─── All Business Summary Calculation ───────────────────────────────────
 window.calculateAllBusinessSummary = function () {
     if (window.debug) window.debug.log('=== calculateAllBusinessSummary (Remote) START ===');
@@ -649,6 +792,7 @@ window.calculateAllBusinessSummary = function () {
         if (!selectedOption || !selectedOption.value) return;
 
         const productName = selectedOption.textContent;
+        const productId = selectedOption.value;
 
         // Get stock needed
         let stockNeeded = 0;
@@ -661,7 +805,11 @@ window.calculateAllBusinessSummary = function () {
         }
 
         if (!allProductsMap[productName]) {
-            allProductsMap[productName] = { tiers: {}, grandTotal: 0 };
+            allProductsMap[productName] = { 
+                productId: productId,
+                tiers: {}, 
+                grandTotal: 0 
+            };
         }
         if (!allProductsMap[productName].tiers[tierName]) {
             allProductsMap[productName].tiers[tierName] = 0;
@@ -687,20 +835,38 @@ window.calculateAllBusinessSummary = function () {
     headerRow.innerHTML = `<th>Product Name</th>${tierHeaderCells}<th class="text-end"><strong>Grand Total</strong></th>`;
 
     // Body
-    const sortedProducts = Object.keys(allProductsMap).sort();
+    const productNames = Object.keys(allProductsMap);
+    const sortedProducts = window.getProductsInOrder ? window.getProductsInOrder(productNames) : productNames.sort();
+    
     summaryBody.innerHTML = sortedProducts.map(productName => {
         const productData = allProductsMap[productName];
+        if (!productData) return ''; // Should not happen
+
         const tierCells = tierNames.map(tn => {
             const val = productData.tiers[tn] || 0;
             return `<td class="text-end">${val > 0 ? val.toLocaleString('en-US') : '-'}</td>`;
         }).join('');
         return `
-            <tr>
+            <tr ${_summaryReorderMode ? 'draggable="true"' : ''} data-product-name="${escapeRemoteHtml(productName)}" data-product-id="${productData.productId}">
                 <td><strong>${escapeRemoteHtml(productName)}</strong></td>
                 ${tierCells}
                 <td class="text-end"><strong>${productData.grandTotal.toLocaleString('en-US')}</strong></td>
             </tr>`;
     }).join('');
+
+    // Update reorder button state if it exists
+    const reorderBtn = document.getElementById('summaryReorderBtn');
+    if (reorderBtn) {
+        reorderBtn.classList.toggle('active', _summaryReorderMode);
+        reorderBtn.classList.toggle('btn-primary', _summaryReorderMode);
+        reorderBtn.classList.toggle('btn-outline-secondary', !_summaryReorderMode);
+        reorderBtn.innerHTML = _summaryReorderMode ? '✅ Done Reordering' : '⚙️ Manage Order';
+    }
+
+    // Add drag handlers ONLY in reorder mode
+    if (_summaryReorderMode) {
+        _addSummaryDragHandlers(summaryBody);
+    }
 
     // Footer
     const tierGrandTotals = {};

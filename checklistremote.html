@@ -110,18 +110,11 @@
                         <strong>🔀 Reorder</strong> again to lock it in. Your order is saved automatically.
                     </p>
 
-                    <h6 class="mb-2"><strong>Step 3: Track Your Progress</strong></h6>
-                    <p class="mb-2">For each business you can:</p>
-                    <ul class="mb-3">
-                        <li><strong>Check the checkbox</strong> to mark it as completed</li>
-                        <li><strong>Enter Money</strong> collected from the business</li>
-                        <li><strong>Enter Current Stock</strong> to calculate how much stock is needed</li>
-                        <li><strong>Enter Collection</strong> amount (if the business has collection storage)</li>
-                        <li><strong>Select a Product</strong> to track inventory needs</li>
-                        <li><strong>Add Notes</strong> for any extra info</li>
-                    </ul>
+                    <h6 class="mb-2"><strong>Step 4: View Summary & Reorder Products</strong></h6>
+                    <p class="mb-2">The <strong>📊 All Business Summary</strong> card aggregates all stock needed across your run list.</p>
+                    <p class="mb-3">💡 <strong>Pro Tip:</strong> Reorder products in the summary table by dragging rows to your preferred order. You can also use the <strong>⚖️ Sort by Tier</strong> button in the summary header. The order is synchronized with the main checklist page.</p>
 
-                    <h6 class="mb-2"><strong>Step 4: Manage Your List</strong></h6>
+                    <h6 class="mb-2"><strong>Step 5: Manage Your List</strong></h6>
                     <ul class="mb-3">
                         <li>Click <strong>❌</strong> on a card to remove it from your run list</li>
                         <li>Click <strong>👁️</strong> on a card to hide it temporarily without removing it</li>
@@ -167,11 +160,17 @@
             <div class="card-header d-flex justify-content-between align-items-center"
                 style="background-color: var(--card-bg); border-bottom: 1px solid var(--card-border);">
                 <h5 class="mb-0" style="color: var(--text-color); font-weight: 600;">📊 All Business Summary</h5>
-                <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#allBusinessSummaryCollapse" aria-expanded="true"
-                    aria-controls="allBusinessSummaryCollapse">
-                    Toggle Summary
-                </button>
+                <div class="d-flex gap-2 align-items-center">
+                    <button class="btn btn-sm btn-outline-success" id="summaryCopyBtn" onclick="copySummaryToClipboard()" title="Copy summary table to clipboard">📋 Copy</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="applyAlphabeticalSort()" title="Reset to alphabetical order">🔤 Alphabetical</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="applySortByTier()" title="Sort by tier and then by name">⚖️ Sort by Tier</button>
+                    <button class="btn btn-sm btn-outline-secondary" id="summaryReorderBtn" onclick="toggleSummaryReorderMode()" title="Enable drag & drop reordering">⚙️ Manage Order</button>
+                    <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#allBusinessSummaryCollapse" aria-expanded="true"
+                        aria-controls="allBusinessSummaryCollapse">
+                        Toggle
+                    </button>
+                </div>
             </div>
             <div class="collapse show" id="allBusinessSummaryCollapse">
                 <div class="card-body">

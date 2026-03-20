@@ -29,7 +29,7 @@
     // localStorage Configuration Data Structure
     const CONFIG_STORAGE_KEY = 'checklistConfigData';
     const TRACKING_STORAGE_KEY = 'checklistProductTracking';
-    const CONFIG_VERSION = '1.0.2';
+    const CONFIG_VERSION = '1.0.3';
 
     // Global state
     let checklistConfigData = null;
@@ -75,37 +75,128 @@
 
         if (!productTrackingData) {
             productTrackingData = {};
-            // Migration: Check if businesses have productIds and move them
-            migrateProductTracking();
         }
+
+        // Migration: Move productOrder and product selections to unified tracking
+        migrateProductTracking();
 
         return true;
     }
 
-    // Migrate product selections from business objects to unified tracking
+    // Migrate configuration data to unified tracking (selections and order)
     function migrateProductTracking() {
-        if (!checklistConfigData || !checklistConfigData.businesses) return;
+        if (!checklistConfigData) return;
 
         let migrated = 0;
         const tiers = getBusinessTiers();
 
-        checklistConfigData.businesses.forEach(biz => {
-            if (biz.productId) {
-                const tier = tiers.find(t => t.id === biz.tierId);
-                const tierName = tier ? tier.name : 'Unknown';
+        // 1. Migrate individual business product selections
+        if (checklistConfigData.businesses) {
+            checklistConfigData.businesses.forEach(biz => {
+                if (biz.productId) {
+                    const tier = tiers.find(t => t.id === biz.tierId);
+                    const tierName = tier ? tier.name : 'Unknown';
 
-                if (!productTrackingData[tierName]) productTrackingData[tierName] = {};
-                if (!productTrackingData[tierName][biz.businessCode]) {
-                    productTrackingData[tierName][biz.businessCode] = biz.productId;
-                    migrated++;
+                    if (!productTrackingData[tierName]) productTrackingData[tierName] = {};
+                    if (!productTrackingData[tierName][biz.businessCode]) {
+                        productTrackingData[tierName][biz.businessCode] = biz.productId;
+                        migrated++;
+                    }
                 }
+            });
+        }
+
+        // 2. Migrate global product order
+        const legacyConfigOrder = checklistConfigData.productOrder;
+        const legacyTrackingOrder = productTrackingData.productOrder;
+        const legacyOrder = (Array.isArray(legacyConfigOrder) && legacyConfigOrder.length > 0) ? legacyConfigOrder : 
+                           (Array.isArray(legacyTrackingOrder) && legacyTrackingOrder.length > 0) ? legacyTrackingOrder : null;
+
+        if (legacyOrder) {
+            if (!productTrackingData.AllBusinessSummaryProductOrder || productTrackingData.AllBusinessSummaryProductOrder.length === 0) {
+                productTrackingData.AllBusinessSummaryProductOrder = [...legacyOrder];
+                migrated++;
+                debugManager.log('📦 Migrated legacy productOrder to AllBusinessSummaryProductOrder');
             }
-        });
+            // Cleanup previous keys if they exist
+            if (productTrackingData.productOrder) delete productTrackingData.productOrder;
+            if (checklistConfigData.productOrder) delete checklistConfigData.productOrder;
+        }
 
         if (migrated > 0) {
-            debugManager.log(`📦 Migrated ${migrated} product selections to unified tracking`);
+            debugManager.log(`📦 Migrated ${migrated} items to unified tracking`);
             saveTrackingToLocalStorage();
         }
+    }
+
+    // Get the custom product order (array of IDs)
+    function getProductOrder() {
+        if (!productTrackingData || !productTrackingData.AllBusinessSummaryProductOrder) return [];
+        return productTrackingData.AllBusinessSummaryProductOrder;
+    }
+
+    // Set the custom product order (array of IDs)
+    function setProductOrder(newOrder) {
+        if (!productTrackingData) productTrackingData = {};
+        productTrackingData.AllBusinessSummaryProductOrder = Array.isArray(newOrder) ? newOrder : [];
+        saveTrackingToLocalStorage();
+        
+        // Also sync to main config for backward compatibility and easier exports/legacy support
+        if (checklistConfigData) {
+            checklistConfigData.AllBusinessSummaryProductOrder = [...productTrackingData.AllBusinessSummaryProductOrder];
+            saveConfigToLocalStorage();
+        }
+    }
+
+    // Get all product IDs sorted by tier and then by name
+    function getProductsSortedByTier() {
+        if (!checklistConfigData || !checklistConfigData.products) return [];
+        
+        const tiers = getBusinessTiers();
+        const tierOrderMap = {};
+        tiers.forEach((tier, index) => {
+            tierOrderMap[tier.id] = index;
+        });
+
+        const products = [...checklistConfigData.products];
+        products.sort((a, b) => {
+            const tierIdxA = tierOrderMap[a.tierId] !== undefined ? tierOrderMap[a.tierId] : 999;
+            const tierIdxB = tierOrderMap[b.tierId] !== undefined ? tierOrderMap[b.tierId] : 999;
+            
+            if (tierIdxA !== tierIdxB) {
+                return tierIdxA - tierIdxB;
+            }
+            const nameA = a.productName || a.product_name || '';
+            const nameB = b.productName || b.product_name || '';
+            return nameA.localeCompare(nameB);
+        });
+        
+        return products.map(p => p.id);
+    }
+
+    // Get products sorted by custom order (or alphabetical if no order set)
+    function getProductsInOrder(productNames) {
+        const productOrder = getProductOrder();
+        if (!productOrder || productOrder.length === 0) {
+            // No custom order, return alphabetically sorted
+            return [...productNames].sort((a, b) => a.localeCompare(b));
+        }
+        
+        const orderedProducts = [];
+        
+        // Map order IDs to names that exist in the current productNames list
+        productOrder.forEach(productId => {
+            const productName = getProductName(productId);
+            if (productName && productNames.includes(productName)) {
+                orderedProducts.push(productName);
+            }
+        });
+        
+        // Then add any products not in the order list (alphabetically)
+        const unorderedProducts = productNames.filter(name => !orderedProducts.includes(name));
+        unorderedProducts.sort((a, b) => a.localeCompare(b));
+        
+        return [...orderedProducts, ...unorderedProducts];
     }
 
     // Save tracking to localStorage
@@ -180,7 +271,6 @@
             tiers: [],
             businesses: [],
             products: [],
-            productOrder: [], // Array of product IDs in display order
             version: CONFIG_VERSION
         };
     }
@@ -291,6 +381,10 @@
     window.saveTrackingToLocalStorage = saveTrackingToLocalStorage;
     window.getProductSelection = getProductSelection;
     window.setProductSelection = setProductSelection;
+    window.getProductOrder = getProductOrder;
+    window.setProductOrder = setProductOrder;
+    window.getProductsSortedByTier = getProductsSortedByTier;
+    window.getProductsInOrder = getProductsInOrder;
     window.getDefaultConfig = getDefaultConfig;
     window.getBusinessTiers = getBusinessTiers;
     window.getProductName = getProductName;
