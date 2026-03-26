@@ -97,7 +97,7 @@ window.buildRemoteChecklist = function () {
                     </div>
                     <!-- Fields row -->
                     <div class="mt-2 row g-2">
-                        <div class="${hasCollection ? 'col-md-2' : 'col-md-3'}">
+                        <div class="${hasCollection ? 'col-12 col-sm-4 col-lg-2' : 'col-12 col-sm-6 col-lg-3'}">
                             <small class="text-muted d-block mb-1" style="font-weight:600;">
                                 <strong>💰 Money:</strong>
                             </small>
@@ -108,7 +108,7 @@ window.buildRemoteChecklist = function () {
                                    data-tier="${biz.tier_name || ''}"
                                    oninput="saveRemoteProgress();">
                         </div>
-                        <div class="${hasCollection ? 'col-md-2' : 'col-md-3'}">
+                        <div class="${hasCollection ? 'col-12 col-sm-4 col-lg-2' : 'col-12 col-sm-6 col-lg-3'}">
                             <small class="text-muted d-block mb-1" style="font-weight:600;">
                                 <strong>📊 Stock (Max):</strong> ${(biz.storage_capacity || 0).toLocaleString('en-US')}
                             </small>
@@ -130,7 +130,7 @@ window.buildRemoteChecklist = function () {
                                 </div>
                             </div>
                         </div>
-                        <div class="${hasCollection ? 'col-md-2' : 'col-md-3'}">
+                        <div class="${hasCollection ? 'col-12 col-sm-4 col-lg-2' : 'col-12 col-sm-6 col-lg-3'}">
                             <small class="text-muted d-block mb-1" style="font-weight:600;">
                                 <strong>📦 Product:</strong>
                             </small>
@@ -143,7 +143,7 @@ window.buildRemoteChecklist = function () {
                             </select>
                         </div>
                         ${hasCollection ? `
-                        <div class="col-md-2">
+                        <div class="col-12 col-sm-4 col-lg-2">
                             <small class="text-muted d-block mb-1" style="font-weight:600;">
                                 <strong>📦 Collection:</strong> ${(biz.collection_storage || 0).toLocaleString('en-US')}
                             </small>
@@ -154,7 +154,7 @@ window.buildRemoteChecklist = function () {
                                    data-tier="${biz.tier_name || ''}"
                                    oninput="saveRemoteProgress();">
                         </div>` : ''}
-                        <div class="${hasCollection ? 'col-md-4' : 'col-md-3'}">
+                        <div class="${hasCollection ? 'col-12 col-sm-8 col-lg-4' : 'col-12 col-sm-6 col-lg-3'}">
                             <small class="text-muted d-block mb-1" style="font-weight:600;">
                                 <strong>📝 Notes:</strong>
                             </small>
@@ -414,31 +414,24 @@ window.calculateRemoteStockNeeded = function (code, maxStock) {
     const input = document.querySelector(`.stock-target-input[data-business-code="${code}"]`);
     if (!display || !input) return;
 
-    const current = parseFloat(input.value.replace(/,/g, '')) || 0;
+    const rawValue = input.value.trim();
 
-    if (current === 0) {
-        display.innerHTML = '<small class="text-muted">Enter current stock to calculate</small>';
-        window.calculateAllBusinessSummary(); // Recalculate summary
-        return;
-    }
-    if (current > maxStock) {
-        display.innerHTML = `<small class="text-danger"><strong>Error: Current (${current.toLocaleString()}) exceeds Max (${maxStock.toLocaleString()})</strong></small>`;
-        window.calculateAllBusinessSummary(); // Recalculate summary
-        return;
-    }
-    if (current < 0) {
-        display.innerHTML = `<small class="text-danger"><strong>Error: Current cannot be negative</strong></small>`;
-        window.calculateAllBusinessSummary(); // Recalculate summary
+    if (rawValue === '') {
+        // Blank: show prompt, treat as 0 needed in summaries
+        display.innerHTML = '<small class="text-muted">Enter stock</small>';
+        window.calculateAllBusinessSummary();
         return;
     }
 
-    const needed = maxStock - current;
-    if (needed === 0) {
+    const currentStock = parseFloat(rawValue.replace(/,/g, '')) || 0;
+    const stockNeeded = maxStock - currentStock;
+
+    if (stockNeeded <= 0) {
         display.innerHTML = '<small style="font-weight:700;color:#28a745;">✅ Stock is full</small>';
     } else {
-        display.innerHTML = `<small style="font-weight:700;color:#11998e;"><strong>📊 Needed: ${needed.toLocaleString()}</strong></small>`;
+        display.innerHTML = `<small style="font-weight:700;color:#11998e;"><strong>📊 Needed: ${stockNeeded.toLocaleString()}</strong></small>`;
     }
-    window.calculateAllBusinessSummary(); // Recalculate summary
+    window.calculateAllBusinessSummary();
 };
 
 // ─── Business Picker ─────────────────────────────────────────────────────
@@ -834,25 +827,39 @@ window.calculateAllBusinessSummary = function () {
     const tierHeaderCells = tierNames.map(tn => `<th class="text-end">${escapeRemoteHtml(tn)}</th>`).join('');
     headerRow.innerHTML = `<th>Product Name</th>${tierHeaderCells}<th class="text-end"><strong>Grand Total</strong></th>`;
 
-    // Body
-    const productNames = Object.keys(allProductsMap);
-    const sortedProducts = window.getProductsInOrder ? window.getProductsInOrder(productNames) : productNames.sort();
-    
-    summaryBody.innerHTML = sortedProducts.map(productName => {
-        const productData = allProductsMap[productName];
-        if (!productData) return ''; // Should not happen
+    // Toggle check
+    const rawTracking = localStorage.getItem('checklistProductTracking');
+    let showProducts = true;
+    if (rawTracking) {
+        try {
+            const tracking = JSON.parse(rawTracking);
+            showProducts = tracking.AllBusinessSummaryShowProducts !== false;
+        } catch (e) {}
+    }
 
-        const tierCells = tierNames.map(tn => {
-            const val = productData.tiers[tn] || 0;
-            return `<td class="text-end">${val > 0 ? val.toLocaleString('en-US') : '-'}</td>`;
+    const filteredProducts = showProducts 
+        ? sortedProducts 
+        : sortedProducts.filter(name => allProductsMap[name].grandTotal > 0);
+
+    if (filteredProducts.length === 0 && productNames.length > 0) {
+        summaryBody.innerHTML = `<tr><td colspan="${tierNames.length + 2}" class="text-center text-muted">No stock needed at this time</td></tr>`;
+    } else {
+        summaryBody.innerHTML = filteredProducts.map(productName => {
+            const productData = allProductsMap[productName];
+            if (!productData) return '';
+
+            const tierCells = tierNames.map(tn => {
+                const val = productData.tiers[tn] || 0;
+                return `<td class="text-end">${val > 0 ? val.toLocaleString('en-US') : '-'}</td>`;
+            }).join('');
+            return `
+                <tr ${_summaryReorderMode ? 'draggable="true"' : ''} data-product-name="${escapeRemoteHtml(productName)}" data-product-id="${productData.productId}">
+                    <td><strong>${escapeRemoteHtml(productName)}</strong></td>
+                    ${tierCells}
+                    <td class="text-end"><strong>${productData.grandTotal.toLocaleString('en-US')}</strong></td>
+                </tr>`;
         }).join('');
-        return `
-            <tr ${_summaryReorderMode ? 'draggable="true"' : ''} data-product-name="${escapeRemoteHtml(productName)}" data-product-id="${productData.productId}">
-                <td><strong>${escapeRemoteHtml(productName)}</strong></td>
-                ${tierCells}
-                <td class="text-end"><strong>${productData.grandTotal.toLocaleString('en-US')}</strong></td>
-            </tr>`;
-    }).join('');
+    }
 
     // Update reorder button state if it exists
     const reorderBtn = document.getElementById('summaryReorderBtn');

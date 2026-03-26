@@ -140,9 +140,13 @@
                                         a task (checked businesses are excluded from summary calculations)</li>
                                     <li><strong>Add Money:</strong> Enter the current money amount in the Money field
                                     </li>
-                                    <li><strong>Track Stock:</strong> Enter current stock to see how much more is needed
-                                        to reach max. The system automatically calculates "Stock Needed" based on Max
-                                        Stock - Current Stock</li>
+                                    <li><strong>Track Stock:</strong> Enter your current stock to see how much more is needed.
+                                        <ul>
+                                            <li>Entering <strong>0</strong> tells the system you have nothing, and it will request the <strong>Max Stock</strong> amount.</li>
+                                            <li>Leaving the field <strong>Blank</strong> tells the system you aren't tracking this business yet (it will show "Enter stock" and be excluded from summaries).</li>
+                                            <li>Entering a number (e.g., 5,000) will calculate the difference needed: <code>Max - Current</code>.</li>
+                                        </ul>
+                                    </li>
                                     <li><strong>Select Product:</strong> Choose which product this business is producing
                                         from the Product dropdown. This is used for summary calculations</li>
                                     <li><strong>Track Collection:</strong> Enter collection storage amounts (if
@@ -151,21 +155,16 @@
                                 </ul>
 
                                 <h6 class="mb-2"><strong>Step 5: View Tier Summaries</strong></h6>
-                                <p class="mb-2">Each tier card has a <span class="badge bg-info">📊 Show Summary</span>
-                                    / <span class="badge bg-info">📊 Hide Summary</span> button. Click it to view a
-                                    summary table showing:</p>
+                                <p class="mb-2">Click 📊 Show Summary on any tier to see its totals. You can control what appears in these summaries using the <strong>⚙️ Configuration Management</strong> panel:</p>
                                 <ul class="mb-3">
-                                    <li><strong>Product Name:</strong> All products assigned to businesses in this tier
-                                    </li>
-                                    <li><strong>Total Products Needed:</strong> Sum of stock needed for each product
-                                        across all businesses in the tier</li>
+                                    <li><strong>Show Products (Toggle ON):</strong> Displays all tracked products, even if they are already full.</li>
+                                    <li><strong>Show Products (Toggle OFF):</strong> Acts as a <strong>Smart Filter</strong>, hiding products that are full and only showing you what needs restocking (Needed > 0).</li>
                                 </ul>
                                 <p class="mb-2"><em>Note:</em> Businesses with checked checkboxes are excluded from
-                                    summary calculations. The summary only counts businesses that need stock.</p>
+                                    summary calculations.</p>
 
                                 <h6 class="mb-2"><strong>Step 6: View All Business Summary</strong></h6>
-                                <p class="mb-2">Above the tier cards, you'll find the <strong>📊 All Business
-                                        Summary</strong> card (appears when products are selected). This shows:</p>
+                                <p class="mb-2">The <strong>📊 All Business Summary</strong> card (at the top) provides a total count of all products needed across every tier. Just like the Tier Summaries, you can use the <strong>Show Products</strong> toggle to filter for only active needs (Needed > 0).</p>
                                 <ul class="mb-3">
                                     <li><strong>Product Name:</strong> All products across all tiers</li>
                                     <li><strong>Tier Columns:</strong> Stock needed for each product per tier</li>
@@ -314,6 +313,25 @@
                                 Template</button>
                             <button type="button" class="btn btn-info" onclick="generatePersonTableString()">📋 Generate
                                 Checklist</button>
+                        </div>
+                    </div>
+                    <div class="mb-0 pt-3 border-top">
+                        <h5>Summary Display Settings</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="toggleTierSummaryProducts" checked 
+                                           onchange="handleSummaryToggle('TierSummaryShowProducts', this.checked)">
+                                    <label class="form-check-label" for="toggleTierSummaryProducts" style="color: var(--text-color);">Show products in Tier Summaries</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="toggleAllBusinessSummaryProducts" checked
+                                           onchange="handleSummaryToggle('AllBusinessSummaryShowProducts', this.checked)">
+                                    <label class="form-check-label" for="toggleAllBusinessSummaryProducts" style="color: var(--text-color);">Show products in All Business Summary</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

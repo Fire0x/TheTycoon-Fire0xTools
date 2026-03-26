@@ -49,11 +49,16 @@ const NavbarManager = {
             href: 'changelog.html',
             text: '📝 Changelog',
             id: 'nav-changelog'
+        },
+        {
+            href: 'About.html',
+            text: 'ℹ️ About',
+            id: 'nav-about'
         }
     ],
 
     // Excluded HTML files (will not appear in navbar)
-    excludedPages: ['checklist-1.html', 'Version Control/checklist.html'],
+    excludedPages: ['checklist-1.html', 'Version Control/checklist.html', 'About.html'],
 
     /**
      * Get current page filename
@@ -166,7 +171,7 @@ ${dropdownItemsHTML}
 
         return `
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="index.html"><img src="${logoPath}" alt="${logoAlt}" style="height: ${logoHeight}; margin-right: 10px;">${siteName}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

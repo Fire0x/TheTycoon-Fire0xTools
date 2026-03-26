@@ -37,7 +37,8 @@ const ConfigData = {
         'import.html': 'Import / Export',
         'fishing.html': 'Fishing Management',
         'logistics.html': 'Logistics Analysis',
-        'checklistremote.html': 'Remote Business Checklist'
+        'checklistremote.html': 'Remote Business Checklist',
+        'About.html': 'ℹ️ About'
     },
 
     // Hero section data for each page
@@ -97,29 +98,34 @@ const ConfigData = {
         'checklistremote.html': {
             title: 'Remote Business Checklist',
             description: 'Remote version of the business checklist tool.'
+        },
+        'About.html': {
+            title: 'ℹ️ About TheTycoon Tools',
+            description: 'Learn more about why this site was created, the team behind it, and how to contribute.'
         }
     },
 
     // Website overall version
-    websiteVersion: '1.1.6',
+    websiteVersion: '1.1.7',
 
     // Individual page versions
     pageVersions: {
         'index.html': '0.0.6',
         'Info.html': '0.1.2',
         'merchants.html': '0.1.1',
-        'checklist.html': '0.2.7',
+        'checklist.html': '0.2.8',
         'VehicleDeliveries.html': '1.1.1',
         'education_timer.html': '0.1.3',
         'apartment.html': '0.1.5',
         'Info-Ref.html': '0.1.3',
         'checklist-1.html': '0.3.9',
         'changelog.html': '0.1.0',
-        'import.html': '0.1.0',
+        'import.html': '0.1.1',
         'fishing.html': '0.0.2',
         'logistics.html': '0.0.6',
         'mining.html': '0.0.1',
-        'checklistremote.html': '0.0.3'
+        'checklistremote.html': '0.0.4',
+        'About.html': '0.0.1'
     }
 };
 

@@ -100,6 +100,11 @@ window.addEventListener('DOMContentLoaded', async function () {
 
     initRemoteHowToUseCollapse();
     window.initBusinessPicker();
+
+    // Initialize summary toggles UI state
+    const toggleRemoteAll = document.getElementById('toggleRemoteAllBusinessSummaryProducts');
+    if (toggleRemoteAll) toggleRemoteAll.checked = window.getSummaryToggle('AllBusinessSummaryShowProducts');
+
     updateTimes();
     setInterval(updateTimes, 1000);
     await loadRemoteBusinessData();

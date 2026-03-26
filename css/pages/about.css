@@ -1,0 +1,220 @@
+/* About Page Specific Styles */
+:root {
+    --about-hero-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --card-bg-glass: rgba(255, 255, 255, 0.8);
+    --card-border-glass: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] {
+    --card-bg-glass: rgba(30, 30, 30, 0.8);
+    --card-border-glass: rgba(255, 255, 255, 0.1);
+}
+
+.hero.about-hero {
+    background: var(--about-hero-gradient);
+    color: white;
+    padding: 6rem 0;
+    border-radius: 0 0 3rem 3rem;
+    box-shadow: 0 15px 35px rgba(99, 102, 241, 0.25);
+    border-bottom: none;
+}
+
+.hero.about-hero h1.glow-text {
+    background: white;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.hero.about-hero p.lead {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.about-card {
+    background: var(--card-bg-glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border-glass);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--text-color);
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.about-card h2 {
+    color: var(--link-color, #6366f1);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.thank-you-section {
+    background: var(--footer-bg);
+    border-radius: 3rem;
+    padding: 4rem 0;
+    margin: 4rem 0;
+}
+
+[data-theme="dark"] .thank-you-section {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.thank-you-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.thank-you-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.thank-you-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.thank-you-item .icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.thank-you-item h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.thank-you-item p {
+    color: var(--footer-text);
+    font-size: 1rem;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+.credits-list {
+    list-style: none;
+    padding: 0;
+}
+
+.credits-list li {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.credits-list li:last-child {
+    border-bottom: none;
+}
+
+.credits-list li::before {
+    content: "🌟";
+    margin-right: 1.25rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.credit-content {
+    flex-grow: 1;
+}
+
+.credit-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+}
+
+.credit-version {
+    background: var(--info-gradient);
+    color: white;
+    padding: 0.1rem 0.5rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+}
+
+.credit-date {
+    color: var(--footer-text);
+    font-style: italic;
+}
+
+.suggestion-box {
+    background: #1e293b;
+    color: white;
+    border-radius: 2rem;
+    padding: 4rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .suggestion-box {
+    background: #0f172a;
+}
+
+.suggestion-box::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 400px;
+    height: 400px;
+    background: rgba(99, 102, 241, 0.25);
+    border-radius: 50%;
+    filter: blur(60px);
+}
+
+.suggestion-box h2 {
+    color: white;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.suggestion-box .btn {
+    padding: 0.875rem 3rem;
+    font-weight: 700;
+    border-radius: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .hero.about-hero {
+        padding: 4rem 1rem;
+        border-radius: 0 0 2rem 2rem;
+    }
+    
+    .about-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .thank-you-section {
+        padding: 3rem 0;
+        border-radius: 2rem;
+    }
+    
+    .suggestion-box {
+        padding: 3rem 1.5rem;
+    }
+}

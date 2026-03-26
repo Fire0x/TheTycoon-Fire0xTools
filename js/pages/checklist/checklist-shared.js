@@ -80,6 +80,9 @@
         // Migration: Move productOrder and product selections to unified tracking
         migrateProductTracking();
 
+        // Update UI toggles to match loaded state
+        updateSummaryTogglesUI();
+
         return true;
     }
 
@@ -368,7 +371,59 @@
         return offset === -4 ? 'EDT' : 'EST';
     }
 
+    // Get a summary toggle setting
+    function getSummaryToggle(key) {
+        if (!productTrackingData) return true;
+        return productTrackingData[key] !== false;
+    }
+
+    // Set a summary toggle setting
+    function setSummaryToggle(key, value) {
+        if (!productTrackingData) productTrackingData = {};
+        productTrackingData[key] = !!value;
+        saveTrackingToLocalStorage();
+    }
+
+    /**
+     * Updates the checkbox UI to match the current productTrackingData
+     */
+    function updateSummaryTogglesUI() {
+        if (!productTrackingData) return;
+        
+        const tierToggle = document.getElementById('toggleTierSummaryProducts');
+        const allBizToggle = document.getElementById('toggleAllBusinessSummaryProducts');
+        
+        if (tierToggle) {
+            tierToggle.checked = productTrackingData.TierSummaryShowProducts !== false;
+        }
+        
+        if (allBizToggle) {
+            allBizToggle.checked = productTrackingData.AllBusinessSummaryShowProducts !== false;
+        }
+        
+        debugManager.log('✅ Updated Summary Toggles UI from tracking data');
+    }
+
+    // Handle summary toggle changes from UI
+    function handleSummaryToggle(key, value) {
+        setSummaryToggle(key, value);
+        debugManager.log(`Toggle changed: ${key} = ${value}`);
+        
+        // Refresh summaries if the functions exist
+        if (typeof window.calculateTierSummary === 'function') {
+            const tiers = getBusinessTiers();
+            tiers.forEach(tier => window.calculateTierSummary(tier.name));
+        }
+        if (typeof window.calculateAllBusinessSummary === 'function') {
+            window.calculateAllBusinessSummary();
+        }
+    }
+
     // Export functions to global scope
+    window.handleSummaryToggle = handleSummaryToggle;
+    window.getSummaryToggle = getSummaryToggle;
+    window.setSummaryToggle = setSummaryToggle;
+    window.updateSummaryTogglesUI = updateSummaryTogglesUI;
     window.CONFIG_STORAGE_KEY = CONFIG_STORAGE_KEY;
     window.TRACKING_STORAGE_KEY = TRACKING_STORAGE_KEY;
     window.CONFIG_VERSION = CONFIG_VERSION;
@@ -420,6 +475,7 @@
             try {
                 productTrackingData = JSON.parse(event.newValue);
                 debugManager.log('🔄 Updated product tracking from storage event');
+                updateSummaryTogglesUI();
             } catch (e) {
                 debugManager.error('Error parsing tracking from storage event:', e);
             }

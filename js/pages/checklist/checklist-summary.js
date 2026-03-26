@@ -107,19 +107,39 @@
             return;
         }
         
+        const trackingData = window.productTrackingData ? window.productTrackingData() : {};
+        const showProducts = trackingData.TierSummaryShowProducts !== false;
+        
         let grandTotalStock = 0;
         const productNames = Object.keys(productMap);
         const sortedProducts = window.getProductsInOrder ? window.getProductsInOrder(productNames) : productNames.sort();
+
+        const filteredProducts = showProducts 
+            ? sortedProducts 
+            : sortedProducts.filter(name => productMap[name].totalNeeded > 0);
         
-        summaryBody.innerHTML = sortedProducts.map(productName => {
-            const productData = productMap[productName];
-            grandTotalStock += productData.totalNeeded;
-            return `
-                <tr>
-                    <td>${window.escapeHtml(productName)}</td>
-                    <td class="text-end"><strong>${productData.totalNeeded.toLocaleString('en-US')}</strong></td>
-                </tr>`;
-        }).join('');
+        if (filteredProducts.length === 0 && productNames.length > 0) {
+            const message = showProducts ? 'No products selected' : 'No stock needed at this time';
+            summaryBody.innerHTML = `<tr><td colspan="2" class="text-center text-muted">${message}</td></tr>`;
+            // Still calculate grandTotalStock for the footer
+            productNames.forEach(name => grandTotalStock += productMap[name].totalNeeded);
+        } else {
+            summaryBody.innerHTML = filteredProducts.map(productName => {
+                const productData = productMap[productName];
+                grandTotalStock += productData.totalNeeded;
+                return `
+                    <tr>
+                        <td>${window.escapeHtml(productName)}</td>
+                        <td class="text-end"><strong>${productData.totalNeeded.toLocaleString('en-US')}</strong></td>
+                    </tr>`;
+            }).join('');
+            
+            // If we are filtering, we still need to add up the hidden products for the grand total
+            if (!showProducts) {
+                const hiddenProducts = sortedProducts.filter(name => productMap[name].totalNeeded === 0);
+                hiddenProducts.forEach(name => grandTotalStock += productMap[name].totalNeeded); // which is 0, but for completeness
+            }
+        }
         
         if (summaryFooter) {
             summaryFooter.innerHTML = `
@@ -236,23 +256,35 @@
         const tierHeaderCells = tierNames.map(tn => `<th class="text-end">${window.escapeHtml(tn)}</th>`).join('');
         headerRow.innerHTML = `<th>Product Name</th>${tierHeaderCells}<th class="text-end"><strong>Grand Total</strong></th>`;
         
+        const trackingData = window.productTrackingData ? window.productTrackingData() : {};
+        const showProducts = trackingData.AllBusinessSummaryShowProducts !== false;
+
         const productNames = Object.keys(allProductsMap);
         const sortedProducts = window.getProductsInOrder ? window.getProductsInOrder(productNames) : productNames.sort();
         
-        summaryBody.innerHTML = sortedProducts.map(productName => {
-            const productData = allProductsMap[productName];
-            const tierCells = tierNames.map(tn => {
-                const val = productData.tiers[tn] || 0;
-                return `<td class="text-end">${val > 0 ? val.toLocaleString('en-US') : '-'}</td>`;
+        const filteredProducts = showProducts 
+            ? sortedProducts 
+            : sortedProducts.filter(name => allProductsMap[name].grandTotal > 0);
+        
+        if (filteredProducts.length === 0 && productNames.length > 0) {
+            const message = showProducts ? 'No products selected' : 'No stock needed at this time';
+            summaryBody.innerHTML = `<tr><td colspan="${tierNames.length + 2}" class="text-center text-muted">${message}</td></tr>`;
+        } else {
+            summaryBody.innerHTML = filteredProducts.map(productName => {
+                const productData = allProductsMap[productName];
+                const tierCells = tierNames.map(tn => {
+                    const val = productData.tiers[tn] || 0;
+                    return `<td class="text-end">${val > 0 ? val.toLocaleString('en-US') : '-'}</td>`;
+                }).join('');
+                
+                return `
+                    <tr ${_summaryReorderMode ? 'draggable="true"' : ''} data-product-name="${window.escapeHtml(productName)}" data-product-id="${productData.productId}">
+                        <td><strong>${window.escapeHtml(productName)}</strong></td>
+                        ${tierCells}
+                        <td class="text-end"><strong>${productData.grandTotal.toLocaleString('en-US')}</strong></td>
+                    </tr>`;
             }).join('');
-            
-            return `
-                <tr ${_summaryReorderMode ? 'draggable="true"' : ''} data-product-name="${window.escapeHtml(productName)}" data-product-id="${productData.productId}">
-                    <td><strong>${window.escapeHtml(productName)}</strong></td>
-                    ${tierCells}
-                    <td class="text-end"><strong>${productData.grandTotal.toLocaleString('en-US')}</strong></td>
-                </tr>`;
-        }).join('');
+        }
 
         const reorderBtn = document.getElementById('summaryReorderBtn');
         if (reorderBtn) {

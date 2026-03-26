@@ -139,7 +139,7 @@
                     const businessName = biz.businessName || biz.businessCode;
                     const hasCollection = biz.canCollectItems === true;
                     // Adjust column classes: Money, Stock, Product, Collection (if applicable), Notes
-                    const colClass = hasCollection ? 'col-md-2' : 'col-md-3';
+                    const colClass = hasCollection ? 'col-12 col-sm-4 col-lg-2' : 'col-12 col-sm-6 col-lg-3';
                     const maxStock = biz.maxStock || 0;
                     const collectionStorage = biz.collectionStorage || 0;
                     const maxStockDisplay = maxStock.toLocaleString('en-US');
@@ -231,7 +231,7 @@
                                                            oninput="saveProgress();">
                                                 </div>
                                                 ` : ''}
-                                                <div class="${hasCollection ? 'col-md-4' : 'col-md-3'}">
+                                                <div class="${hasCollection ? 'col-12 col-sm-8 col-lg-4' : 'col-12 col-sm-6 col-lg-3'}">
                                                     <small class="text-muted d-block mb-1" style="font-weight: 600;">
                                                         <strong>📝 Notes:</strong>
                                                     </small>

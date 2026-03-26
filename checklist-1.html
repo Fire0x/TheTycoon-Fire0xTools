@@ -234,6 +234,7 @@
                             </tfoot>
                         </table>
                     </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -289,6 +290,25 @@
                                 Template</button>
                             <button type="button" class="btn btn-info" onclick="generatePersonTableString()">📋 Generate
                                 Checklist</button>
+                        </div>
+                    </div>
+                    <div class="mb-0 pt-3 border-top">
+                        <h5>Summary Display Settings</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="toggleTierSummaryProducts" checked 
+                                           onchange="handleSummaryToggle('TierSummaryShowProducts', this.checked)">
+                                    <label class="form-check-label" for="toggleTierSummaryProducts">Show products in Tier Summaries</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="toggleAllBusinessSummaryProducts" checked
+                                           onchange="handleSummaryToggle('AllBusinessSummaryShowProducts', this.checked)">
+                                    <label class="form-check-label" for="toggleAllBusinessSummaryProducts">Show products in All Business Summary</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

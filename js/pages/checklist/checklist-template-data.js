@@ -224,6 +224,8 @@ window.ChecklistTemplateData = {
     ],
     "checklistTracking": {
         "AllBusinessSummaryProductOrder": [],
+        "TierSummaryShowProducts": true,
+        "AllBusinessSummaryShowProducts": true,
         "Tier 1: Fruit Stand": {
             "TIER1-BIZ01": 1
         }

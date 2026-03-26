@@ -60,21 +60,91 @@
                     <article class="changelog-entry mb-4">
                         <div class="card">
                             <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.1.2.1</h3>
+                                <p class="text-muted mb-3">2026-03-27</p>
+                                <ul class="mb-0">
+                                    <li><strong>Core Design - Sticky Navigation & Footer:</strong> Implemented modern
+                                        sticky navbar with glassmorphism and a sticky footer across all tools.</li>
+                                    <li><strong>Import/Export - Ecosystem Synchronization:</strong> Fully aligned the
+                                        centralized <code>import.html</code> export structure with <code>checklist.html</code>.
+                                        Both now export <code>tiers</code>, <code>businesses</code>, and <code>products</code> at the root.</li>
+                                    <li><strong>Import/Export - Robust Compatibility:</strong> Enhanced all importers
+                                        to automatically detect and unwrap nested <code>checklistTemplate</code>
+                                        structures or legacy formats.</li>
+                                    <li><strong>Business Checklist - Refined Stock & Summary Logic:</strong> 
+                                        <ul>
+                                            <li>Entering <strong>0</strong> acts as a shortcut for Max Stock.</li>
+                                            <li>Leaving a field <strong>Blank</strong> displays "Enter stock" and excludes it from summaries.</li>
+                                            <li>Summary toggles now act as <strong>Smart Filters</strong>; when OFF, only products needing restocking are shown.</li>
+                                            <li>Visibility settings stay in sync across multiple tabs and imports.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Checklist - Responsive Layout Fixes:</strong> Redesigned the business
+                                        grid to intelligently wrap (4/2/1 columns) for better split-screen and mobile support.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Previous Entries -->
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
+
+                    <!-- Previous Latest Entry -->
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title mb-1">Version 1.2.0</h3>
+                                <p class="text-muted mb-3">2026-03-24</p>
+                                <ul class="mb-0">
+                                    <li><strong>(Disabled for now for future release)New Page - About Tools:</strong>
+                                        Created a dedicated <a href="About.html">About page</a> explaining the site's
+                                        origin, mission, and
+                                        the team behind it.</li>
+                                    <li><strong>Community - Enhanced Recognition:</strong> Added a modular "Community
+                                        Contributions" section with support for optional version and date metadata for
+                                        each suggestion.</li>
+                                    <li><strong>Community - Direct Support:</strong> Integrated a Google Form for bug
+                                        reports and suggestions directly into the About page. Added clear instructions
+                                        for direct Discord contact with @Fire0x.</li>
+                                    <li><strong>Accessibility - Standards Compliance:</strong> Implemented ARIA
+                                        landmarks, labelled sections, and hidden decorative elements to improve screen
+                                        reader compatibility across the new About page.</li>
+                                    <li><strong>Design - Premium Aesthetics:</strong> Added a high-end hero section with
+                                        gradients, glassmorphism cards, and full dark theme support to the About tools
+                                        page.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="changelog-entry mb-4">
+                        <div class="card">
+                            <div class="card-body">
                                 <h3 class="card-title mb-1">Version 1.1.6</h3>
                                 <p class="text-muted mb-3">2026-03-21</p>
                                 <ul class="mb-0">
                                     <li><strong>Business Checklist - Product Reordering:</strong> Added drag-and-drop
-                                        functionality to the "All Business Summary" table. Enable manual reordering 
-                                        via the new <strong>⚙️ Manage Order</strong> button to custom-organize your products.</li>
-                                    <li><strong>Business Checklist - Improved Interactivity:</strong> Drag-and-drop is now 
-                                        disabled by default, allowing for normal text selection and clicking. 
-                                        Added a <strong>📋 Copy</strong> button to quickly export the summary to clipboard.</li>
-                                    <li><strong>Business Checklist - Quick Sorting:</strong> Added <strong>🔤 Alphabetical</strong> 
-                                        and <strong>⚖️ Sort by Tier</strong> buttons to the summary header for instant organization.</li>
-                                    <li><strong>Business Checklist - Data Restructuring (v1.0.3):</strong> Product order is now 
-                                        saved within <code>checklistTracking</code> (as <code>AllBusinessSummaryProductOrder</code>) 
-                                        for better persistence. Existing data is automatically migrated.</li>
-                                    <li><strong>Cross-Platform Support:</strong> All new summary features are fully 
+                                        functionality to the "All Business Summary" table. Enable manual reordering
+                                        via the new <strong>⚙️ Manage Order</strong> button to custom-organize your
+                                        products.</li>
+                                    <li><strong>Business Checklist - Improved Interactivity:</strong> Drag-and-drop is
+                                        now
+                                        disabled by default, allowing for normal text selection and clicking.
+                                        Added a <strong>📋 Copy</strong> button to quickly export the summary to
+                                        clipboard.</li>
+                                    <li><strong>Business Checklist - Quick Sorting:</strong> Added <strong>🔤
+                                            Alphabetical</strong>
+                                        and <strong>⚖️ Sort by Tier</strong> buttons to the summary header for instant
+                                        organization.</li>
+                                    <li><strong>Business Checklist - Data Restructuring (v1.0.3):</strong> Product order
+                                        is now
+                                        saved within <code>checklistTracking</code> (as
+                                        <code>AllBusinessSummaryProductOrder</code>)
+                                        for better persistence. Existing data is automatically migrated.
+                                    </li>
+                                    <li><strong>Cross-Platform Support:</strong> All new summary features are fully
                                         synchronized between local and remote checklists in real-time.</li>
                                 </ul>
                             </div>
@@ -88,11 +158,13 @@
                                 <h3 class="card-title mb-1">Version 1.1.5</h3>
                                 <p class="text-muted mb-3">2026-03-16</p>
                                 <ul class="mb-0">
-                                    <li><strong>Business Checklist - Funds to Collect (Suggestion by Belua):</strong> Added a
+                                    <li><strong>Business Checklist - Funds to Collect (Suggestion by Belua):</strong>
+                                        Added a
                                         new "Funds to Collect" metric to both Tier Summaries and the All-Business
                                         Summary. This calculates the total money entered across all businesses,
                                         providing a clear financial overview similar to the stock tracking system.</li>
-                                    <li><strong>Business Checklist - Money Aggregation Fix:</strong> Resolved an issue where
+                                    <li><strong>Business Checklist - Money Aggregation Fix:</strong> Resolved an issue
+                                        where
                                         funds were not being correctly totaled for tiers with multiple businesses or
                                         when no product was selected. Funds now always sum correctly for all
                                         checked-in businesses.</li>
@@ -113,7 +185,8 @@
                                     <li><strong>Remote Checklist - Sync Fixes:</strong> Resolved issue where product
                                         selections were not updating in real-time across tabs. Added
                                         <code>storage</code>
-                                        event listeners to ensure product dropdowns stay perfectly in sync.</li>
+                                        event listeners to ensure product dropdowns stay perfectly in sync.
+                                    </li>
                                     <li><strong>Remote Checklist - Orphaned Business Cleanup:</strong> Implemented
                                         automatic detection and removal of "orphaned" businesses (businesses in the run
                                         list
@@ -169,7 +242,8 @@
                                 <h3 class="card-title mb-1">Version 1.1.2</h3>
                                 <p class="text-muted mb-3">2026-03-08</p>
                                 <ul class="mb-0">
-                                    <li><strong>Remote Checklist -</strong> Added <code>checklistremote.html</code>
+                                    <li><strong>Remote Checklist -</strong> (Credit Belua for suggestion) Added
+                                        <code>checklistremote.html</code>
                                         including all business card fields (money,
                                         stock, product, collection, notes), drag-to-reorder, run list management, and
                                         real-time sync with the main checklist.

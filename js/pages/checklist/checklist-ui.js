@@ -152,6 +152,11 @@
     }
 
     // Calculate stock needed for checklist
+    // Input = current stock on hand. Needed = Max - Current.
+    // Blank -> "Enter stock" (treated as 0 current, so Needed = Max, still included in summaries)
+    // 0    -> shortcut "I have none" -> Needed = Max
+    // N    -> Needed = Max - N
+    // N >= Max -> "Stock is full"
     function calculateStockNeededChecklist(tierName, businessCode, maxStock) {
         const displayId = `stock-needed-${tierName}-${businessCode}`;
         const display = document.getElementById(displayId);
@@ -159,52 +164,35 @@
 
         if (!display || !input) return;
 
-        const currentValue = input.value.replace(/,/g, '');
-        const current = parseFloat(currentValue) || 0;
+        const rawValue = input.value.trim();
 
-        if (current === 0) {
-            display.innerHTML = '<small class="text-muted">Enter current stock to calculate</small>';
-            if (typeof window.saveProgress === 'function') {
-                window.saveProgress();
-            }
+        if (rawValue === '') {
+            // Blank: treat as 0 needed in summaries, show prompt
+            display.innerHTML = '<small class="text-muted">Enter stock</small>';
+            if (typeof window.saveProgress === 'function') window.saveProgress();
+            setTimeout(() => {
+                if (typeof calculateTierSummary === 'function') calculateTierSummary(tierName);
+            }, 100);
             return;
         }
 
-        // Validate: current cannot exceed max
-        if (current > maxStock) {
-            display.innerHTML = `<small class="text-danger"><strong>Error: Current (${current.toLocaleString('en-US')}) exceeds Max (${maxStock.toLocaleString('en-US')})</strong></small>`;
-            return;
-        }
-
-        // Validate: current cannot be negative
-        if (current < 0) {
-            display.innerHTML = `<small class="text-danger"><strong>Error: Current cannot be negative</strong></small>`;
-            return;
-        }
-
-        // Calculation: Max Stock - Current Stock = Needed
-        const needed = maxStock - current;
+        const currentStock = parseFloat(rawValue.replace(/,/g, '')) || 0;
+        const stockNeeded = maxStock - currentStock;
 
         let displayText = '';
-        if (needed === 0) {
+        if (stockNeeded <= 0) {
             displayText = '<small style="font-weight: 700; color: #28a745;">✅ Stock is full</small>';
         } else {
-            displayText = `<small style="font-weight: 700; color: #11998e;"><strong>📊 Needed: ${needed.toLocaleString('en-US')}</strong></small>`;
+            displayText = `<small style="font-weight: 700; color: #11998e;"><strong>📊 Needed: ${stockNeeded.toLocaleString('en-US')}</strong></small>`;
         }
 
         display.innerHTML = displayText;
 
-        // Auto-save to localStorage only if value is valid
-        if (typeof window.saveProgress === 'function') {
-            window.saveProgress();
-        }
+        if (typeof window.saveProgress === 'function') window.saveProgress();
 
-        // Recalculate tier summary after stock calculation
         setTimeout(() => {
             debugManager.log(`Stock calculation triggered summary recalculation for tier: ${tierName}`);
-            if (typeof calculateTierSummary === 'function') {
-                calculateTierSummary(tierName);
-            }
+            if (typeof calculateTierSummary === 'function') calculateTierSummary(tierName);
         }, 100);
     }
 

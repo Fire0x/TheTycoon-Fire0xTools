@@ -223,9 +223,9 @@
         debugManager.log('Detecting format for data:', Object.keys(jsonData));
 
         // Check for unified format (has multiple page data types)
-        if (jsonData.checklist || jsonData.apartments || jsonData.merchants || jsonData.vehicles || jsonData.eventVehicles || jsonData.normalVehicles || jsonData.education || jsonData.fishing || jsonData.logistics) {
+        if (jsonData.checklist || jsonData.checklistTemplate || jsonData.apartments || jsonData.merchants || jsonData.vehicles || jsonData.eventVehicles || jsonData.normalVehicles || jsonData.education || jsonData.fishing || jsonData.logistics) {
             const pages = [];
-            if (jsonData.checklist) pages.push('checklist');
+            if (jsonData.checklist || jsonData.checklistTemplate) pages.push('checklist');
             if (jsonData.apartments) pages.push('apartments');
             if (jsonData.merchants) pages.push('merchants');
             if (jsonData.vehicles) pages.push('vehicles');
@@ -245,12 +245,21 @@
             };
         }
 
-        // Check for checklist format
+        // Check for checklist format (standard)
         if (jsonData.tiers && Array.isArray(jsonData.tiers) && jsonData.businesses && Array.isArray(jsonData.businesses)) {
             return {
                 type: 'checklist',
                 page: 'checklist',
                 description: 'Checklist configuration format'
+            };
+        }
+
+        // Check for checklist format (wrapped)
+        if ((jsonData.checklist && jsonData.checklist.tiers) || (jsonData.checklistTemplate && jsonData.checklistTemplate.tiers)) {
+            return {
+                type: 'checklist',
+                page: 'checklist',
+                description: 'Checklist configuration format (nested)'
             };
         }
 
@@ -395,7 +404,30 @@
         };
 
         // Only add non-excluded pages
-        if (allData.checklist) exportData.checklist = allData.checklist;
+        if (allData.checklist) {
+            // Mirror checklist.html by exporting everything from config at root level
+            // This ensures AllBusinessSummaryProductOrder and any other config fields are included
+            Object.assign(exportData, allData.checklist);
+            
+            // Explicitly sync tracking toggles if they exist (they are usually in checklistTracking)
+            if (allData.checklistTracking) {
+                if (allData.checklistTracking.TierSummaryShowProducts !== undefined) {
+                    exportData.TierSummaryShowProducts = allData.checklistTracking.TierSummaryShowProducts;
+                }
+                if (allData.checklistTracking.AllBusinessSummaryShowProducts !== undefined) {
+                    exportData.AllBusinessSummaryShowProducts = allData.checklistTracking.AllBusinessSummaryShowProducts;
+                }
+                // Ensure AllBusinessSummaryProductOrder is at root if it's only in tracking
+                if (allData.checklistTracking.AllBusinessSummaryProductOrder && !exportData.AllBusinessSummaryProductOrder) {
+                    exportData.AllBusinessSummaryProductOrder = allData.checklistTracking.AllBusinessSummaryProductOrder;
+                }
+            }
+
+            // Keep checklistTemplate and checklist for backward compatibility with newer versions
+            // but ensure they don't cause triple redundancy in the JSON if not needed
+            exportData.checklistTemplate = allData.checklist;
+            exportData.checklist = allData.checklist;
+        }
         if (allData.apartments) exportData.apartments = allData.apartments;
         if (allData.education) exportData.education = allData.education;
         if (allData.fishing) exportData.fishing = allData.fishing;
@@ -467,9 +499,23 @@
         const exportData = {
             export_date: new Date().toISOString(),
             version: '1.0.0',
-            [pageName]: data,
             hash: hash
         };
+
+        if (pageName === 'checklist') {
+            // Mirror checklist-modals.js by exporting all fields at root level
+            Object.assign(exportData, data);
+            
+            // Also include tracking toggles if we are exporting checklist page
+            const tracking = JSON.parse(localStorage.getItem(STORAGE_KEYS.checklistTracking) || '{}');
+            if (tracking.TierSummaryShowProducts !== undefined) exportData.TierSummaryShowProducts = tracking.TierSummaryShowProducts;
+            if (tracking.AllBusinessSummaryShowProducts !== undefined) exportData.AllBusinessSummaryShowProducts = tracking.AllBusinessSummaryShowProducts;
+            
+            exportData.checklistTemplate = data;
+            exportData[pageName] = data;
+        } else {
+            exportData[pageName] = data;
+        }
 
         debugManager.log(`=== exportPageData END for ${pageName} ===`);
         return exportData;
@@ -487,22 +533,72 @@
         const result = { success: 0, errors: 0, messages: [] };
 
         try {
-            if (!data.tiers || !Array.isArray(data.tiers)) {
+            // Handle nested formats (unwrap checklistTemplate or checklist if present at root)
+            let cleanData = data;
+            if (data.checklistTemplate && data.checklistTemplate.tiers) {
+                const tracking = data.checklistTracking;
+                const runList = data.checklistRunList;
+                cleanData = data.checklistTemplate;
+                if (tracking) cleanData.checklistTracking = tracking;
+                if (runList) cleanData.checklistRunList = runList;
+                debugManager.log('Unwrapped data from .checklistTemplate');
+            } else if (data.checklist && data.checklist.tiers) {
+                const tracking = data.checklistTracking;
+                const runList = data.checklistRunList;
+                cleanData = data.checklist;
+                if (tracking) cleanData.checklistTracking = tracking;
+                if (runList) cleanData.checklistRunList = runList;
+                debugManager.log('Unwrapped data from .checklist');
+            }
+
+            if (!cleanData.tiers || !Array.isArray(cleanData.tiers)) {
                 throw new Error('Invalid checklist format: tiers array is required');
             }
-            if (!data.businesses || !Array.isArray(data.businesses)) {
+            if (!cleanData.businesses || !Array.isArray(cleanData.businesses)) {
                 throw new Error('Invalid checklist format: businesses array is required');
             }
 
+            // Normalization/Migration (Mirroring main checklist)
+            const importedOrder = cleanData.AllBusinessSummaryProductOrder || cleanData.productOrder;
+            if (importedOrder && Array.isArray(importedOrder)) {
+                cleanData.AllBusinessSummaryProductOrder = [...importedOrder];
+                if (cleanData.productOrder) delete cleanData.productOrder;
+            }
+
             if (mode === 'replace') {
-                localStorage.setItem(STORAGE_KEYS.checklist, JSON.stringify(data));
+                localStorage.setItem(STORAGE_KEYS.checklist, JSON.stringify(cleanData));
                 result.success = 1;
                 result.messages.push('Checklist data replaced successfully');
             } else {
                 // Merge logic could be added here if needed
-                localStorage.setItem(STORAGE_KEYS.checklist, JSON.stringify(data));
+                localStorage.setItem(STORAGE_KEYS.checklist, JSON.stringify(cleanData));
                 result.success = 1;
                 result.messages.push('Checklist data merged successfully');
+            }
+
+            // Handle bundled product tracking if present
+            const trackingData = cleanData.checklistTracking || {};
+            // If toggles are at root (from mirroring export), move them to tracking
+            if (cleanData.TierSummaryShowProducts !== undefined) trackingData.TierSummaryShowProducts = cleanData.TierSummaryShowProducts;
+            if (cleanData.AllBusinessSummaryShowProducts !== undefined) trackingData.AllBusinessSummaryShowProducts = cleanData.AllBusinessSummaryShowProducts;
+
+            if (Object.keys(trackingData).length > 0) {
+                try {
+                    // Sync normalization logic for tracking internal order
+                    if (trackingData.productOrder && !trackingData.AllBusinessSummaryProductOrder) {
+                        trackingData.AllBusinessSummaryProductOrder = [...trackingData.productOrder];
+                    }
+                    localStorage.setItem('checklistProductTracking', JSON.stringify(trackingData));
+                    debugManager.log('Restored checklistProductTracking from bundle/root toggles');
+                } catch (e) {
+                    debugManager.warn('Could not restore bundled tracking:', e);
+                }
+            }
+
+            // Handle bundled run list if present
+            if (cleanData.checklistRunList && Array.isArray(cleanData.checklistRunList)) {
+                localStorage.setItem('checklistRemoteRunList', JSON.stringify(cleanData.checklistRunList));
+                debugManager.log('Restored checklistRemoteRunList from bundle');
             }
 
             // Trigger initialization and migration in the shared module if available
@@ -1169,8 +1265,9 @@
         if (format.type === 'unified') {
             const results = { success: 0, updated: 0, errors: 0, messages: [] };
 
-            if (jsonData.checklist) {
-                const r = importChecklistData(jsonData.checklist, mode);
+            if (jsonData.checklist || jsonData.checklistTemplate) {
+                const dataToImport = jsonData.checklist || jsonData.checklistTemplate;
+                const r = importChecklistData(dataToImport, mode);
                 results.success += r.success; results.errors += r.errors; results.messages.push(...r.messages);
             }
             if (jsonData.apartments || jsonData.timers || jsonData.reviews) {

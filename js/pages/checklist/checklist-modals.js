@@ -1263,6 +1263,13 @@
 
         const { version, ...configDataWithoutVersion } = configData;
         const exportObj = { ...configDataWithoutVersion };
+        
+        // Explicitly include summary toggles at root level if they exist in tracking
+        if (tracking) {
+            if (tracking.TierSummaryShowProducts !== undefined) exportObj.TierSummaryShowProducts = tracking.TierSummaryShowProducts;
+            if (tracking.AllBusinessSummaryShowProducts !== undefined) exportObj.AllBusinessSummaryShowProducts = tracking.AllBusinessSummaryShowProducts;
+        }
+
         if (tracking) exportObj.checklistTracking = tracking;
         if (runList) exportObj.checklistRunList = runList;
 
@@ -1383,7 +1390,26 @@
         }
 
         try {
-            const imported = JSON.parse(importText);
+            let imported = JSON.parse(importText);
+            
+            // Handle nested formats (unwrap checklistTemplate or checklist if present at root)
+            if (imported.checklistTemplate && imported.checklistTemplate.tiers) {
+                const tracking = imported.checklistTracking;
+                const runList = imported.checklistRunList;
+                imported = imported.checklistTemplate;
+                // Preserve bundled tracking/runlist if they were outside the template
+                if (tracking) imported.checklistTracking = tracking;
+                if (runList) imported.checklistRunList = runList;
+                debugManager.log('Unwrapped data from .checklistTemplate');
+            } else if (imported.checklist && imported.checklist.tiers) {
+                const tracking = imported.checklistTracking;
+                const runList = imported.checklistRunList;
+                imported = imported.checklist;
+                if (tracking) imported.checklistTracking = tracking;
+                if (runList) imported.checklistRunList = runList;
+                debugManager.log('Unwrapped data from .checklist');
+            }
+
             debugManager.log('Parsed import data:', {
                 tiers: imported.tiers?.length || 0,
                 businesses: imported.businesses?.length || 0,
@@ -1480,6 +1506,10 @@
             requestAnimationFrame(() => {
                 if (typeof window.loadAllBusinesses === 'function') {
                     window.loadAllBusinesses();
+                }
+                // Sync toggles after load
+                if (typeof window.updateSummaryTogglesUI === 'function') {
+                    window.updateSummaryTogglesUI();
                 }
             });
         } catch (error) {
